@@ -1,7 +1,7 @@
 <idea-plugin>
   <id>org.abra.language</id>
   <name>Abra Plugin</name>
-  <version>0.0.1-pre-alpha</version>
+  <version>0.0.2-pre-alpha</version>
   <vendor email="support@yourcompany.com" url="http://www.yourcompany.com">YourCompany</vendor>
 
   <description><![CDATA[
