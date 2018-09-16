@@ -15,6 +15,8 @@
       <li> Static resolution of trit vector size
       <li> Resolve references (also cross file references)
       <li> Resolve template references
+      <li> Code folding
+      <li> Braces matching
       </ul>
 
       <b>Known bugs</b>
@@ -32,7 +34,7 @@
 
 
   <!-- please see http://www.jetbrains.org/intellij/sdk/docs/basics/getting_started/build_number_ranges.html for description -->
-  <idea-version since-build="173.0"/>
+  <idea-version since-build="171.0"/>
 
   <!-- please see http://www.jetbrains.org/intellij/sdk/docs/basics/getting_started/plugin_compatibility.html
        on how to target different products -->
