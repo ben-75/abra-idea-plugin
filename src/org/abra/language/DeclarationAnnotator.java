@@ -34,6 +34,11 @@ public class DeclarationAnnotator  implements Annotator {
             Annotation annotation = holder.createInfoAnnotation(range,
                     null);
             annotation.setTextAttributes(AbraSyntaxHighlighter.LUT_DECLARATION);
+        } else if (element instanceof AbraTypeSize) {
+            TextRange range = new TextRange(element.getTextRange().getStartOffset()+1, element.getTextRange().getEndOffset()-1);
+            Annotation annotation = holder.createInfoAnnotation(range,
+                    null);
+            annotation.setTextAttributes(AbraSyntaxHighlighter.SIZE_DEF);
         }
     }
 

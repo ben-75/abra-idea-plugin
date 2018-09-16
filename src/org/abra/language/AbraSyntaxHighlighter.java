@@ -13,6 +13,7 @@ import org.abra.language.psi.AbraTypes;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import static com.intellij.openapi.editor.DefaultLanguageHighlighterColors.KEYWORD;
 import static com.intellij.openapi.editor.colors.TextAttributesKey.createTextAttributesKey;
 
 public class AbraSyntaxHighlighter extends SyntaxHighlighterBase  {
@@ -28,15 +29,19 @@ public class AbraSyntaxHighlighter extends SyntaxHighlighterBase  {
     public static final TextAttributesKey FIELD_DECLARATION =
             createTextAttributesKey("FIELD_DECLARATION", DefaultLanguageHighlighterColors.GLOBAL_VARIABLE);
     public static final TextAttributesKey FCT_DECLARATION =
-            createTextAttributesKey("FCT_DECLARATION", DefaultLanguageHighlighterColors.KEYWORD);
+            createTextAttributesKey("FCT_DECLARATION", DefaultLanguageHighlighterColors.INSTANCE_FIELD);
     public static final TextAttributesKey LUT_DECLARATION =
-            createTextAttributesKey("LUT_DECLARATION", DefaultLanguageHighlighterColors.KEYWORD);
+            createTextAttributesKey("LUT_DECLARATION", DefaultLanguageHighlighterColors.INSTANCE_FIELD);
+    public static final TextAttributesKey SIZE_DEF =
+            createTextAttributesKey("LUT_DECLARATION", DefaultLanguageHighlighterColors.STRING);
+
     private static final TextAttributesKey[] EMPTY_KEYS = new TextAttributesKey[0];
 
 
 
     private static final TextAttributesKey[] BAD_CHAR_KEYS = new TextAttributesKey[]{BAD_CHARACTER};
     private static final TextAttributesKey[] COMMENT_KEYS = new TextAttributesKey[]{COMMENT};
+    private static final TextAttributesKey[] KEYWORD_KEYS = new TextAttributesKey[]{KEYWORD};
 
     @NotNull
     @Override
@@ -47,7 +52,21 @@ public class AbraSyntaxHighlighter extends SyntaxHighlighterBase  {
     @NotNull
     @Override
     public TextAttributesKey[] getTokenHighlights(IElementType tokenType) {
-        if (tokenType.equals(AbraTypes.COMMENT)) {
+        if (tokenType.equals(AbraTypes.TEMPLATE_KEYWORD)) {
+            return KEYWORD_KEYS;
+        }else if (tokenType.equals(AbraTypes.FUNC_KEYWORD)) {
+            return KEYWORD_KEYS;
+        }else if (tokenType.equals(AbraTypes.LUT_KEYWORD)) {
+            return KEYWORD_KEYS;
+        }else if (tokenType.equals(AbraTypes.RETURN_KEYWORD)) {
+            return KEYWORD_KEYS;
+        }else if (tokenType.equals(AbraTypes.IMPORT_KEYWORD)) {
+            return KEYWORD_KEYS;
+        }else if (tokenType.equals(AbraTypes.TYPE_KEYWORD)) {
+            return KEYWORD_KEYS;
+        }else if (tokenType.equals(AbraTypes.USE_KEYWORD)) {
+            return KEYWORD_KEYS;
+        }else if (tokenType.equals(AbraTypes.COMMENT)) {
             return COMMENT_KEYS;
         } else if (tokenType.equals(TokenType.BAD_CHARACTER)) {
             return BAD_CHAR_KEYS;
