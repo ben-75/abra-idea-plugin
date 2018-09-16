@@ -1,0 +1,64 @@
+<idea-plugin>
+  <id>org.abra.language</id>
+  <name>Abra Plugin</name>
+  <version>0.0.1-pre-alpha</version>
+  <vendor email="support@yourcompany.com" url="http://www.yourcompany.com">YourCompany</vendor>
+
+  <description><![CDATA[
+      Support for Abra language
+    ]]></description>
+
+  <change-notes><![CDATA[
+      <b>Features</b>
+      <ul>
+      <li> Basic syntax highligthing
+      <li> Static resolution of trit vector size
+      <li> Resolve references (also cross file references)
+      <li> Resolve template references
+      </ul>
+
+      <b>Known bugs</b>
+      <ul>
+      <li> Color settings are out-dated
+      <li> Renaming is broken
+      </ul>
+
+      <b>Limitations</b>
+      <ul>
+      <li> Don't resolve field references
+      </ul>
+    ]]>
+  </change-notes>
+
+
+  <!-- please see http://www.jetbrains.org/intellij/sdk/docs/basics/getting_started/build_number_ranges.html for description -->
+  <idea-version since-build="173.0"/>
+
+  <!-- please see http://www.jetbrains.org/intellij/sdk/docs/basics/getting_started/plugin_compatibility.html
+       on how to target different products -->
+  <!-- uncomment to enable plugin in all products
+  <depends>com.intellij.modules.lang</depends>
+  -->
+
+  <extensions defaultExtensionNs="com.intellij">
+    <fileTypeFactory implementation="org.abra.language.AbraFileTypeFactory"/>
+    <lang.parserDefinition language="Abra" implementationClass="org.abra.language.AbraParserDefinition"/>
+    <lang.syntaxHighlighterFactory language="Abra" implementationClass="org.abra.language.AbraSyntaxHighlighterFactory"/>
+    <lang.braceMatcher language="Abra" implementationClass="org.abra.language.AbraBraceMatcher"/>
+    <lang.commenter language="Abra" implementationClass="org.abra.language.AbraCommenter"/>
+    <lang.foldingBuilder language="Abra" implementationClass="org.abra.language.AbraFoldingBuilder"/>
+    <colorSettingsPage implementation="org.abra.language.AbraColorSettingsPage"/>
+    <lang.psiStructureViewFactory language="Abra" implementationClass="org.abra.language.AbraStructureViewFactory"/>
+    <lang.findUsagesProvider language="Abra" implementationClass="org.abra.language.AbraFindUsagesProvider"/>
+    <annotator language="Abra" implementationClass="org.abra.language.FunctionReferenceAnnotator"/>
+    <annotator language="Abra" implementationClass="org.abra.language.DeclarationAnnotator"/>
+    <annotator language="Abra" implementationClass="org.abra.language.MultiDeclarationAnnotator"/>
+    <annotator language="Abra" implementationClass="org.abra.language.LutValidationAnnotator"/>
+    <completion.contributor language="Abra" implementationClass="org.abra.language.AbraCompletionContributor"/>
+  </extensions>
+
+  <actions>
+    <!-- Add your actions here -->
+  </actions>
+
+</idea-plugin>
