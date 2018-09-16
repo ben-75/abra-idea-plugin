@@ -103,14 +103,35 @@ integer         ::= trit | number | ('-' number)
 file_path                   ::= FILENAME (SLASH FILENAME)*
 
 
-typeName                    ::= IDENTIFIER      {methods=[getName setName getNameIdentifier]}
+typeName                    ::= IDENTIFIER
+                                {mixin="org.abra.language.psi.impl.AbraNamedElementImpl"
+                                implements="org.abra.language.psi.AbraNamedElement"
+                                methods=[getName setName getNameIdentifier]}
 fieldName                   ::= IDENTIFIER
-lutName                     ::= IDENTIFIER      {methods=[getName setName getNameIdentifier]}
-templateName                ::= IDENTIFIER      {methods=[getName setName getNameIdentifier]}
-placeHolderName             ::= IDENTIFIER      {methods=[getName setName getNameIdentifier]}
-funcName                    ::= IDENTIFIER      {methods=[getName setName getNameIdentifier]}
-paramName                   ::= IDENTIFIER      {methods=[getName setName getNameIdentifier]}
-varName                     ::= IDENTIFIER      {methods=[getName setName getNameIdentifier]}
+lutName                     ::= IDENTIFIER
+                                {mixin="org.abra.language.psi.impl.AbraNamedElementImpl"
+                                implements="org.abra.language.psi.AbraNamedElement"
+                                methods=[getName setName getNameIdentifier]}
+templateName                ::= IDENTIFIER
+                                {mixin="org.abra.language.psi.impl.AbraNamedElementImpl"
+                                implements="org.abra.language.psi.AbraNamedElement"
+                                methods=[getName setName getNameIdentifier]}
+placeHolderName             ::= IDENTIFIER
+                                {mixin="org.abra.language.psi.impl.AbraNamedElementImpl"
+                                implements="org.abra.language.psi.AbraNamedElement"
+                                methods=[getName setName getNameIdentifier]}
+funcName                    ::= IDENTIFIER
+                                {mixin="org.abra.language.psi.impl.AbraNamedElementImpl"
+                                implements="org.abra.language.psi.AbraNamedElement"
+                                methods=[getName setName getNameIdentifier]}
+paramName                   ::= IDENTIFIER
+                                {mixin="org.abra.language.psi.impl.AbraNamedElementImpl"
+                                implements="org.abra.language.psi.AbraNamedElement"
+                                methods=[getName setName getNameIdentifier]}
+varName                     ::= IDENTIFIER
+                                {mixin="org.abra.language.psi.impl.AbraNamedElementImpl"
+                                implements="org.abra.language.psi.AbraNamedElement"
+                                methods=[getName setName getNameIdentifier]}
 
 typeNameRef                 ::= IDENTIFIER      {implements="org.abra.language.psi.AbraResolvable" methods = [getReference]}
 fieldNameRef                ::= IDENTIFIER      {implements="org.abra.language.psi.AbraResolvable" methods = [getReference]}

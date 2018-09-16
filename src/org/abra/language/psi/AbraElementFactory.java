@@ -29,7 +29,7 @@ public class AbraElementFactory {
     }
 
     public static AbraVarName createAbraVarName(Project project, String name) {
-        final AbraFile file = createFile(project, "func f(param [1])={"+name+"=param;a}");
+        final AbraFile file = createFile(project, "func f(param [1])={"+name+"=param;a;};");
         return ((AbraFuncStmt) file.getFirstChild()).getFuncDefinition().getFuncBody().getAssignExprList().get(0).getVarName();
     }
 
@@ -39,8 +39,13 @@ public class AbraElementFactory {
     }
 
     public static AbraTemplateName createAbraTemplateName(Project project, String name) {
-        final AbraFile file = createFile(project, "template "+name+"<T> f<T>(c [T]) = {1;}");
+        final AbraFile file = createFile(project, "template "+name+"<T> f<T>(c [T]) = {1;};");
         return ((AbraTemplateStmt) file.getFirstChild()).getTemplateName();
+    }
+
+    public static AbraPlaceHolderName createAbraPlaceHolderName(Project project, String name) {
+        final AbraFile file = createFile(project, "template t<"+name+"> f<T>(c [T]) = {1;};");
+        return ((AbraTemplateStmt) file.getFirstChild()).getPlaceHolderNameList().get(0);
     }
 
     //====================================================================
@@ -52,6 +57,15 @@ public class AbraElementFactory {
         final AbraFile file = createFile(project, "f(p [1])={"+name+"(1);};");
         return ((AbraFuncStmt)file.getFirstChild()).getFuncDefinition().getFuncBody().getAssignExprList().get(0).getMergeExpr().getConcatExprList().get(0).getFuncExprList().get(0).getFuncNameRef();
     }
+
+
+    public static AbraParamOrVarNameRef createAbraVarOrParamNameRef(Project project, String name) {
+        final AbraFile file = createFile(project, "f(p [1])={a="+name+";a;};");
+        return ((AbraFuncStmt)file.getFirstChild()).getFuncDefinition().getFuncBody()
+                .getAssignExprList().get(0).getMergeExpr().getConcatExprList().get(0).getSliceExprList().get(0).getParamOrVarNameRef();
+    }
+
+
 
     private static AbraFile createFile(Project project, String text) {
         String name = "dummy.abra";

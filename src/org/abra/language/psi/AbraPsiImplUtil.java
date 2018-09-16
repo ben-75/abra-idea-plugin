@@ -507,7 +507,23 @@ public class AbraPsiImplUtil {
         return -1;
     }
 
+    public static String getName(AbraPlaceHolderName element) {
+        return element.getText();
+    }
 
+    public static PsiElement setName(AbraPlaceHolderName element, String newName) {
+        ASTNode globalIdNode = element.getNode().getFirstChildNode();
+        if (globalIdNode != null) {
+            AbraPlaceHolderName templateName = AbraElementFactory.createAbraPlaceHolderName(element.getProject(), newName);
+            ASTNode newKeyNode = templateName.getFirstChild().getNode();
+            element.getNode().replaceChild(globalIdNode, newKeyNode);
+        }
+        return element;
+    }
+
+    public static PsiElement getNameIdentifier(AbraPlaceHolderName element) {
+        return element;
+    }
     //====================================================================
     //====================== References ==================================
     //====================================================================
