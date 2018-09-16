@@ -39,6 +39,7 @@ DIGIT=[0-9]
 IDENTIFIER=([A-Za-z_])([A-Za-z0-9_])*
 SEMICOLON=[;]
 COMMA=[,]
+AMP=[&]
 DOT=[\.]
 MERGE_OPERATOR=(\\)
 OPEN_BRACKET=(\[)
@@ -93,6 +94,7 @@ SLASH=(\/)
   {IDENTIFIER}          { return IDENTIFIER; }
   {SEMICOLON}           { return SEMICOLON; }
   {COMMA}               { return COMMA; }
+  {AMP}                 { return AMP; }
   {ASSIGN}              { return ASSIGN; }
   {MERGE_OPERATOR}      { return MERGE_OPERATOR; }
 

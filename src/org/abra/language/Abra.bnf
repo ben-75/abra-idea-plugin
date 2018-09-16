@@ -58,9 +58,9 @@ funcBody        ::= mergeExpr | (OPEN_BRACE (assignExpr SEMICOLON)* (RETURN_KEYW
 
 assignExpr      ::= (STATE_KEYWORD)? varName typeSize? ASSIGN mergeExpr
 
-mergeExpr       ::= (concatExpr | postfixExpr) (MERGE_OPERATOR (concatExpr | postfixExpr))*
+mergeExpr       ::= (concatExpr) (MERGE_OPERATOR (concatExpr))*
 
-concatExpr      ::= postfixExpr (COMMA postfixExpr)+
+concatExpr      ::= postfixExpr ((AMP|COMMA) postfixExpr)*
 
 private postfixExpr     ::= funcExpr | lutExpr | sliceExpr | integer | typeExpr |  (OPEN_PAR mergeExpr CLOSE_PAR)
 
