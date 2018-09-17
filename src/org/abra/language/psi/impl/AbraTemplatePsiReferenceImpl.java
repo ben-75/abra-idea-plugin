@@ -7,6 +7,7 @@ import com.intellij.psi.PsiFile;
 import com.intellij.psi.PsiReference;
 import com.intellij.psi.PsiReferenceBase;
 import com.intellij.psi.tree.TokenSet;
+import com.intellij.util.IncorrectOperationException;
 import org.abra.language.psi.*;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -14,7 +15,7 @@ import org.jetbrains.annotations.Nullable;
 public class AbraTemplatePsiReferenceImpl extends PsiReferenceBase implements PsiReference {
 
 
-    public AbraTemplatePsiReferenceImpl(@NotNull PsiElement element) {
+    public AbraTemplatePsiReferenceImpl(@NotNull AbraTemplateNameRef element) {
         super(element);
     }
 
@@ -24,7 +25,14 @@ public class AbraTemplatePsiReferenceImpl extends PsiReferenceBase implements Ps
         final int parent = 0;
         return new TextRange(parent, myElement.getTextLength() + parent);
     }
-    //TODO : handleRename
+
+    @Override
+    public AbraTemplateNameRef handleElementRename(String newElementName) throws IncorrectOperationException {
+        AbraTemplateNameRef ref = AbraElementFactory.createAbraTemplateNameRef(myElement.getProject(), newElementName);
+        ASTNode newKeyNode = ref.getFirstChild().getNode();
+        myElement.getNode().replaceChild(myElement.getFirstChild().getNode(), newKeyNode);
+        return ref;
+    }
 
     @Nullable
     @Override

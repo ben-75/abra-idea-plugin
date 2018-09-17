@@ -76,9 +76,16 @@ public class AbraElementFactory {
                 .getAssignExprList().get(0).getMergeExpr().getConcatExprList().get(0).getLutExprList().get(0).getLutOrParamOrVarNameRef();
     }
 
+
+    public static AbraTemplateNameRef createAbraTemplateNameRef(Project project, String newElementName) {
+        final AbraFile file = createFile(project, newElementName+"<Tryte>;");
+        return ((AbraUseStmt)file.getFirstChild()).getTemplateNameRef();
+    }
+
     private static AbraFile createFile(Project project, String text) {
         String name = "dummy.abra";
         return (AbraFile) PsiFileFactory.getInstance(project).
                 createFileFromText(name, AbraFileType.INSTANCE, text);
     }
+
 }
