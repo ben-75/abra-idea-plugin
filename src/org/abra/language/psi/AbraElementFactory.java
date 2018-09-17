@@ -55,7 +55,7 @@ public class AbraElementFactory {
 
     public static AbraFuncNameRef createAbraFunctionReference(Project project, String name) {
         final AbraFile file = createFile(project, "f(p [1])={"+name+"(1);};");
-        return ((AbraFuncStmt)file.getFirstChild()).getFuncDefinition().getFuncBody().getAssignExprList().get(0).getMergeExpr().getConcatExprList().get(0).getFuncExprList().get(0).getFuncNameRef();
+        return ((AbraFuncStmt)file.getFirstChild()).getFuncDefinition().getFuncBody().getMergeExpr().getConcatExprList().get(0).getFuncExprList().get(0).getFuncNameRef();
     }
 
 
