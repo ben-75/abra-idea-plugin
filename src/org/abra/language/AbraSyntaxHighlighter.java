@@ -25,15 +25,18 @@ public class AbraSyntaxHighlighter extends SyntaxHighlighterBase  {
 
 
     public static final TextAttributesKey TYPE_DECLARATION =
-            createTextAttributesKey("TYPE_DECLARATION", DefaultLanguageHighlighterColors.STRING);
+            createTextAttributesKey("TYPE_DECLARATION", DefaultLanguageHighlighterColors.TEMPLATE_LANGUAGE_COLOR);
     public static final TextAttributesKey FIELD_DECLARATION =
             createTextAttributesKey("FIELD_DECLARATION", DefaultLanguageHighlighterColors.GLOBAL_VARIABLE);
     public static final TextAttributesKey FCT_DECLARATION =
-            createTextAttributesKey("FCT_DECLARATION", DefaultLanguageHighlighterColors.INSTANCE_FIELD);
+            createTextAttributesKey("FCT_DECLARATION", DefaultLanguageHighlighterColors.STRING);
     public static final TextAttributesKey LUT_DECLARATION =
             createTextAttributesKey("LUT_DECLARATION", DefaultLanguageHighlighterColors.INSTANCE_FIELD);
     public static final TextAttributesKey SIZE_DEF =
-            createTextAttributesKey("LUT_DECLARATION", DefaultLanguageHighlighterColors.STRING);
+            createTextAttributesKey("LUT_DECLARATION", DefaultLanguageHighlighterColors.NUMBER);
+    public static final TextAttributesKey LOCAL_VAR =
+            createTextAttributesKey("LOCAL_VAR", DefaultLanguageHighlighterColors.LOCAL_VARIABLE);
+
 
     private static final TextAttributesKey[] EMPTY_KEYS = new TextAttributesKey[0];
 

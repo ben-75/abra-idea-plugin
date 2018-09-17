@@ -8,6 +8,7 @@ import com.intellij.openapi.util.TextRange;
 import com.intellij.psi.PsiElement;
 import org.abra.language.AbraSyntaxHighlighter;
 import org.abra.language.psi.*;
+import org.abra.language.psi.impl.AbraLutOrVarOrParamPsiReferenceImpl;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Arrays;
@@ -15,12 +16,7 @@ import java.util.Arrays;
 public class DeclarationAnnotator  implements Annotator {
     @Override
     public void annotate(@NotNull final PsiElement element, @NotNull AnnotationHolder holder) {
-        if (element instanceof AbraFuncName) {
-            TextRange range = new TextRange(element.getTextRange().getStartOffset(), element.getTextRange().getEndOffset());
-            Annotation annotation = holder.createInfoAnnotation(range,
-                    null);
-            annotation.setTextAttributes(AbraSyntaxHighlighter.FCT_DECLARATION);
-        } else if (element instanceof AbraTypeName) {
+        if (element instanceof AbraTypeName) {
             TextRange range = new TextRange(element.getTextRange().getStartOffset(), element.getTextRange().getEndOffset());
             Annotation annotation = holder.createInfoAnnotation(range,
                     null);
@@ -29,7 +25,21 @@ public class DeclarationAnnotator  implements Annotator {
             }else {
                 annotation.setTextAttributes(AbraSyntaxHighlighter.TYPE_DECLARATION);
             }
-        } else if (element instanceof AbraLutName) {
+        } else if (element instanceof AbraFuncName || element instanceof AbraFuncNameRef) {
+            TextRange range = new TextRange(element.getTextRange().getStartOffset(), element.getTextRange().getEndOffset());
+            Annotation annotation = holder.createInfoAnnotation(range,
+                    null);
+            annotation.setTextAttributes(AbraSyntaxHighlighter.FCT_DECLARATION);
+        } else if (element instanceof AbraVarName ||
+                   element instanceof AbraParamName ||
+                   element instanceof AbraParamOrVarNameRef ||
+                  (element instanceof AbraLutOrParamOrVarNameRef && !(element.getReference().resolve() instanceof AbraLutName)) ) {
+            TextRange range = new TextRange(element.getTextRange().getStartOffset(), element.getTextRange().getEndOffset());
+            Annotation annotation = holder.createInfoAnnotation(range,
+                    null);
+            annotation.setTextAttributes(AbraSyntaxHighlighter.LOCAL_VAR);
+        } else if (element instanceof AbraLutName ||
+                (element instanceof AbraLutOrParamOrVarNameRef && (element.getReference().resolve() instanceof AbraLutName)) ) {
             TextRange range = new TextRange(element.getTextRange().getStartOffset(), element.getTextRange().getEndOffset());
             Annotation annotation = holder.createInfoAnnotation(range,
                     null);

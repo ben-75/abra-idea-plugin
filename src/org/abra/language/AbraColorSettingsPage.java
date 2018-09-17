@@ -21,9 +21,9 @@ public class AbraColorSettingsPage implements ColorSettingsPage {
             new AttributesDescriptor("Keywords", KEYWORD),
             new AttributesDescriptor("Type definition", AbraSyntaxHighlighter.TYPE_DECLARATION),
             new AttributesDescriptor("Field definition", AbraSyntaxHighlighter.TYPE_DECLARATION),
-            new AttributesDescriptor("Functions definition", AbraSyntaxHighlighter.FCT_DECLARATION),
-            new AttributesDescriptor("LUT definition", AbraSyntaxHighlighter.LUT_DECLARATION),
-            new AttributesDescriptor("Trit-Vector size", AbraSyntaxHighlighter.SIZE_DEF),
+            new AttributesDescriptor("Functions definition and usage", AbraSyntaxHighlighter.FCT_DECLARATION),
+            new AttributesDescriptor("LUT definition and usage", AbraSyntaxHighlighter.LUT_DECLARATION),
+            new AttributesDescriptor("Local variables", AbraSyntaxHighlighter.LOCAL_VAR),
     };
 
     private static final Map<String,TextAttributesKey> ANNOTATOR_MAP = new HashMap();
@@ -86,19 +86,19 @@ public class AbraColorSettingsPage implements ColorSettingsPage {
                 "\n" +
                 "<funcdef>digest</funcdef>(state [<sizedef>State</sizedef>]) =\n" +
                 "  // single statement function\n" +
-                "  state, transform(state, 81);\n" +
+                "  <local_var>state</local_var>, transform(<local_var>state</local_var>, 81);\n" +
                 "\n" +
                 "// This a function\n" +
                 "<funcdef>nullOrTryte</funcdef>(t [<sizedef>Bool</sizedef>], val [<sizedef>Tryte</sizedef>]) = {\n" +
                 "  // concatenate the 3 separate trits via the LUT\n" +
-                "  nullOrTrit[t, val[0]],\n" +
-                "  nullOrTrit[t, val[1]],\n" +
-                "  nullOrTrit[t, val[2]];\n" +
+                "  nullOrTrit[<local_var>t</local_var>, <local_var>val</local_var>[0]],\n" +
+                "  nullOrTrit[<local_var>t</local_var>, <local_var>val</local_var>[1]],\n" +
+                "  nullOrTrit[<local_var>t</local_var>, <local_var>val</local_var>[2]];\n" +
                 "};\n" +
                 "//this is a template\n" +
-                "template <funcdef>addFunc</funcdef><T> add<T> (lhs [<sizedef>T</sizedef>], rhs [<sizedef>T</sizedef>]) = {\n" +
+                "template <funcdef>addFunc</funcdef><T> add<T> (<local_var>lhs</local_var> [<sizedef>T</sizedef>], <local_var>rhs</local_var> [<sizedef>T</sizedef>]) = {\n" +
                 "  // use full adder but don't return the carry trit\n" +
-                "  sum = fullAdd<T>(lhs, rhs, 0);\n" +
+                "  sum = fullAdd<T>(<local_var>lhs</local_var>, <local_var>rhs</local_var>, 0);\n" +
                 "  return sum[1..];\n" +
                 "};";
     }
@@ -112,6 +112,7 @@ public class AbraColorSettingsPage implements ColorSettingsPage {
             ANNOTATOR_MAP.put("fielddef",AbraSyntaxHighlighter.FIELD_DECLARATION);
             ANNOTATOR_MAP.put("funcdef",AbraSyntaxHighlighter.FCT_DECLARATION);
             ANNOTATOR_MAP.put("sizedef",AbraSyntaxHighlighter.SIZE_DEF);
+            ANNOTATOR_MAP.put("local_var",AbraSyntaxHighlighter.LOCAL_VAR);
         }
 
         return ANNOTATOR_MAP;
