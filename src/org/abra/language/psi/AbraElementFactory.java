@@ -70,6 +70,12 @@ public class AbraElementFactory {
                 .getAssignExprList().get(0).getMergeExpr().getConcatExprList().get(0).getSliceExprList().get(0).getParamOrVarNameRef();
     }
 
+    public static AbraLutOrParamOrVarNameRef createAbraLutOrParamOrVarRef(Project project, String name) {
+        final AbraFile file = createFile(project, "f(p [1])={a="+name+"[1];a;};");
+        return ((AbraFuncStmt)file.getFirstChild()).getFuncDefinition().getFuncBody()
+                .getAssignExprList().get(0).getMergeExpr().getConcatExprList().get(0).getLutExprList().get(0).getLutOrParamOrVarNameRef();
+    }
+
     private static AbraFile createFile(Project project, String text) {
         String name = "dummy.abra";
         return (AbraFile) PsiFileFactory.getInstance(project).
