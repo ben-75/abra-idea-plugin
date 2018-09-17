@@ -82,6 +82,11 @@ public class AbraElementFactory {
         return ((AbraUseStmt)file.getFirstChild()).getTemplateNameRef();
     }
 
+    public static AbraTypeOrPlaceHolderNameRef createAbraTypeOrPlaceHolderNameRef(Project project, String name) {
+        final AbraFile file = createFile(project, "template incFunc<T> inc<"+name+"> (a[1]) = {return 1;};");
+        return ((AbraTemplateStmt)file.getFirstChild()).getFuncDefinition().getTypeOrPlaceHolderNameRef();
+    }
+
     private static AbraFile createFile(Project project, String text) {
         String name = "dummy.abra";
         return (AbraFile) PsiFileFactory.getInstance(project).
