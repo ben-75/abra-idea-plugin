@@ -20,7 +20,12 @@ public class AbraFileReferencePsiReferenceImpl extends PsiReferenceBase implemen
         this.importFile = abraImportFile;
         this.virtualFile = virtualFile;
     }
-
+    @NotNull
+    @Override
+    public TextRange getRangeInElement() {
+        final int parent = 0;
+        return new TextRange(parent, myElement.getTextLength() + parent);
+    }
     @Nullable
     @Override
     public PsiElement resolve() {
