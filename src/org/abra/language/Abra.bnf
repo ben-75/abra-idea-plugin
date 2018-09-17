@@ -50,6 +50,9 @@ useStmt         ::= (USE_KEYWORD)? templateNameRef OPEN_TAG (typeNameRef (',' ty
                     methods=[getPresentation getName setName getNameIdentifier]}
 
 fieldSpec       ::= fieldName typeSize
+                    {mixin="org.abra.language.psi.impl.AbraDefinitionImpl"
+                     implements="org.abra.language.psi.AbraDefinition"
+                     methods=[getPresentation]}
 
 funcDefinition  ::= funcName (OPEN_TAG typeOrPlaceHolderNameRef CLOSE_TAG)? OPEN_PAR (funcParameter (COMMA funcParameter)*) CLOSE_PAR ASSIGN funcBody
 funcParameter   ::= paramName typeSize

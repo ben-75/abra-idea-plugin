@@ -155,6 +155,34 @@ public class AbraPsiImplUtil {
     public static PsiElement getNameIdentifier(AbraLutName element) {
         return element;
     }
+
+
+    //====================================================================
+    //====================== AbraFieldSpec ===============================
+    //====================================================================
+
+    public static ItemPresentation getPresentation(AbraFieldSpec element) {
+        return new ItemPresentation() {
+            @Nullable
+            @Override
+            public String getPresentableText() {
+                return element.getFieldName().getText();
+            }
+
+            @Nullable
+            @Override
+            public String getLocationString() {
+                return "["+element.getTypeSize().getResolvedSize()+"]";
+            }
+
+            @Nullable
+            @Override
+            public Icon getIcon(boolean unused) {
+                return AbraIcons.VECTOR;
+            }
+        };
+    }
+
     //====================================================================
     //====================== AbraFuncStmt ================================
     //====================================================================

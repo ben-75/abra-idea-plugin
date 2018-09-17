@@ -65,12 +65,12 @@ public class AbraStructureViewElement implements StructureViewTreeElement, Sorta
                 }
                 return treeElements.toArray(new TreeElement[treeElements.size()]);
             }
-//        } else if (element instanceof AbraTypedef && ((AbraTypedef)element).getTritstructure()!=null) {
-//                List<TreeElement> treeElements = new ArrayList<TreeElement>(((AbraTypedef)element).getTritstructure().getTritfields().getFielddefList().size());
-//                for(AbraFielddef field : ((AbraTypedef)element).getTritstructure().getTritfields().getFielddefList()){
-//                    treeElements.add(new AbraStructureViewElement((AbraFielddef) field));
-//                }
-//                return treeElements.toArray(new TreeElement[treeElements.size()]);
+        } else if (element instanceof AbraTypeStmt && ((AbraTypeStmt)element).getFieldSpecList().size()>0) {
+                List<TreeElement> treeElements = new ArrayList<TreeElement>(((AbraTypeStmt)element).getFieldSpecList().size());
+                for(AbraFieldSpec field : ((AbraTypeStmt)element).getFieldSpecList()){
+                    treeElements.add(new AbraStructureViewElement((AbraFieldSpec) field));
+                }
+                return treeElements.toArray(new TreeElement[treeElements.size()]);
         }
         return EMPTY_ARRAY;
     }
