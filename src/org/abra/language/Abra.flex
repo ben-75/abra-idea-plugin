@@ -51,7 +51,8 @@ CLOSE_PAR=(\))
 OPEN_TAG=(<)
 CLOSE_TAG=(>)
 RANGE_OPERATOR=(\.\.)
-PLUS_OR_MINUS=(\-|\+)
+MINUS=\-(\ )*([^,\ \]\)\}=;])
+PLUS=(\+)
 DIV_TIMES_MODULO=(\/|\*|\%)
 ASSIGN = [:=]
 TRIT_CHAR = (0|1|-)
@@ -90,6 +91,8 @@ SLASH=(\/)
 <LUT_BODY>  {CLOSE_BRACKET}   { yybegin(YYINITIAL); return CLOSE_BRACKET; }
 
   {DIGIT}               { return DIGIT; }
+  {PLUS}                { return PLUS_OR_MINUS; }
+  {MINUS}               { zzMarkedPos=zzStartRead+1; return PLUS_OR_MINUS; }
   {TRIT_CHAR}           { return TRIT_CHAR; }
   {IDENTIFIER}          { return IDENTIFIER; }
   {SEMICOLON}           { return SEMICOLON; }
@@ -109,7 +112,6 @@ SLASH=(\/)
   {OPEN_PAR}            { return OPEN_PAR; }
   {CLOSE_PAR}           { return CLOSE_PAR; }
   {RANGE_OPERATOR}      { return RANGE_OPERATOR; }
-  {PLUS_OR_MINUS}       { return PLUS_OR_MINUS; }
   {DIV_TIMES_MODULO}    { return DIV_TIMES_MODULO; }
   {DOT}                 { return DOT; }
   {OPEN_TAG}            { return OPEN_TAG; }

@@ -65,11 +65,14 @@ public class AbraPsiImplUtil {
     }
 
     public static int getResolvedSize(AbraTypeStmt element){
-        int resolvedSize = 0;
-        for(AbraTypeSize typeSize:element.getTypeSizeList()){
-            resolvedSize += typeSize.getConstExpr().getResolvedSize();
+        if(element.getTypeSize()==null) {
+            int resolvedSize = 0;
+            for(AbraFieldSpec fieldSpec:element.getFieldSpecList()){
+                resolvedSize =+ fieldSpec.getTypeSize().getResolvedSize();
+            }
+            return resolvedSize;
         }
-        return resolvedSize;
+        return element.getTypeSize().getResolvedSize();
     }
 
     public static String getName(AbraTypeName element) {
@@ -377,6 +380,131 @@ public class AbraPsiImplUtil {
     //====================== Const Stuff =================================
     //====================================================================
 
+    public static int getResolvedSize(AbraMergeExpr element){
+        return element.getConcatExprList().get(0).getResolvedSize();
+    }
+
+    public static int getResolvedSize(AbraConcatExpr element){
+        int r = 0;
+        for(AbraSliceExpr slice : element.getSliceExprList()){
+            r+= slice.getResolvedSize();
+        }
+        for(AbraFuncExpr func : element.getFuncExprList()){
+            r+= func.getResolvedSize();
+        }
+        for(AbraInteger integer : element.getIntegerList()){
+            r+= integer.getResolvedSize();
+        }
+        for(AbraLutExpr lutExpr : element.getLutExprList()){
+            r+= lutExpr.getResolvedSize();
+        }
+        for(AbraMergeExpr mergeExpr : element.getMergeExprList()){
+            r+= mergeExpr.getResolvedSize();
+        }
+        for(AbraTypeExpr typeExpr : element.getTypeExprList()){
+            r+= typeExpr.getResolvedSize();
+        }
+        return r;
+    }
+
+    public static int getResolvedSize(AbraSliceExpr sliceExpr){
+        if(sliceExpr.getConstExprList().size()==0){
+            if(sliceExpr.getFieldNameRefList().size()>0)
+                return sliceExpr.getParamOrVarNameRef().getResolvedSize();
+            return sliceExpr.getFieldNameRefList().get(sliceExpr.getFieldNameRefList().size()-1).getResolvedSize();
+        }
+        if(!sliceExpr.hasRangeOperator())return 1;
+        if(sliceExpr.hasClosedRange()){
+            return sliceExpr.getConstExprList().get(1).getResolvedSize()-sliceExpr.getConstExprList().get(0).getResolvedSize();
+        }
+        return 0;
+    }
+
+    public static boolean hasRangeOperator(AbraSliceExpr sliceExpr){
+        return sliceExpr.getText().contains("..");
+    }
+
+    public static boolean hasOpenRange(AbraSliceExpr sliceExpr){
+        return sliceExpr.hasRangeOperator() && sliceExpr.getConstExprList().size()==1;
+    }
+
+    public static boolean hasClosedRange(AbraSliceExpr sliceExpr){
+        return sliceExpr.hasRangeOperator() && sliceExpr.getConstExprList().size()==2;
+    }
+
+    public static int getResolvedSize(AbraParamOrVarNameRef paramOrVarNameRef){
+        PsiElement resolved = paramOrVarNameRef.getReference().resolve();
+        if(resolved instanceof AbraVarName){
+            return ((AbraVarName)resolved).getResolvedSize();
+        }
+        if(resolved instanceof AbraParamName){
+            return ((AbraParamName)resolved).getResolvedSize();
+        }
+        return 0;
+    }
+
+    public static int getResolvedSize(AbraFuncExpr funcExpr){
+        if(funcExpr.hasPostSlice()){
+            //TODO
+            return 0;
+        }
+        AbraFuncName funcName = (AbraFuncName) funcExpr.getFuncNameRef().getReference().resolve();
+        if(funcName!=null){
+            ((AbraFuncDefinition)funcName.getParent()).getFuncBody().getMergeExpr().getResolvedSize();
+        }
+        return 0;
+    }
+
+    public static int getResolvedSize(AbraInteger integer){
+        return Integer.valueOf(integer.getText());
+    }
+
+    public static int getResolvedSize(AbraTypeExpr typeExpr){
+        int r = 0;
+        for(AbraFieldNameRef fieldNameRef:typeExpr.getFieldNameRefList()){
+            r += fieldNameRef.getResolvedSize();
+        }
+        return r;
+    }
+
+    public static int getResolvedSize(AbraFieldNameRef fieldNameRef){
+        AbraFieldName resolved = (AbraFieldName)fieldNameRef.getReference().resolve();
+        if(resolved!=null){
+            return ((AbraFieldSpec)resolved.getParent()).getTypeSize().getResolvedSize();
+        }
+        return 0;
+    }
+
+    public static int getResolvedSize(AbraTypeSize typeSize){
+        return typeSize.getConstExpr().getResolvedSize();
+    }
+    public static int getResolvedSize(AbraParamName paramName){
+        return ((AbraFuncParameter)paramName.getParent()).getTypeSize().getResolvedSize();
+    }
+    public static int getResolvedSize(AbraLutName lutName){
+        return getLength(((AbraLutStmt)lutName.getParent()).getTritListList().get(1));
+    }
+    public static int getResolvedSize(AbraVarName varName){
+        if(((AbraAssignExpr)varName.getParent()).getTypeSize()!=null){
+            return ((AbraAssignExpr)varName.getParent()).getTypeSize().getResolvedSize();
+        }
+        return ((AbraAssignExpr)varName.getParent()).getMergeExpr().getResolvedSize();
+    }
+    public static int getResolvedSize(AbraLutExpr element){
+        AbraLutOrParamOrVarNameRef ref = element.getLutOrParamOrVarNameRef();
+        PsiElement resolved = ref.getReference().resolve();
+        if(resolved instanceof AbraLutName){
+            return ((AbraLutName)resolved).getResolvedSize();
+        }
+        if(resolved instanceof AbraParamName){
+            return ((AbraParamName)resolved).getResolvedSize();
+        }
+        if(resolved instanceof AbraVarName){
+            return ((AbraVarName)resolved).getResolvedSize();
+        }
+        return 0;
+    }
+
     public static int getResolvedSize(AbraConstExpr element){
         if(element.getConstOperator()==null){
             return element.getConstTerm().getResolvedSize();
@@ -411,8 +539,8 @@ public class AbraPsiImplUtil {
         if(element.getInteger()!=null){
             return Integer.valueOf(element.getText());
         }
-        if(element.getConstExpr()!=null){
-            return element.getConstExpr().getResolvedSize();
+        if(element.getMergeExpr()!=null){
+            return element.getMergeExpr().getResolvedSize();
         }
         PsiElement resolved = element.getTypeOrPlaceHolderNameRef().getReference().resolve();
         if(resolved!=null){
@@ -461,8 +589,8 @@ public class AbraPsiImplUtil {
         if(element.getInteger()!=null){
             return Integer.valueOf(element.getText());
         }
-        if(element.getConstExpr()!=null){
-            return element.getConstExpr().getResolvedSize();
+        if(element.getMergeExpr()!=null){
+            return element.getMergeExpr().getResolvedSize();
         }
         PsiElement resolved = element.getTypeOrPlaceHolderNameRef().getReference().resolve();
         if(resolved!=null){
@@ -529,7 +657,7 @@ public class AbraPsiImplUtil {
     //====================================================================
 
     public static PsiReference getReference(AbraFieldNameRef fieldNameRef) {
-        return null;
+        return new AbraFieldPsiReferenceImpl(fieldNameRef);
     }
 
     public static PsiReference getReference(AbraTypeNameRef typeNameRef) {
@@ -592,6 +720,21 @@ public class AbraPsiImplUtil {
         return element;
     }
 
+    public static boolean hasRangeOperator(AbraFuncExpr funcExpr){
+        return hasPostSlice(funcExpr) && funcExpr.getText().substring(funcExpr.getConstExprList().get(0).getStartOffsetInParent()).contains("..");
+    }
+
+    public static boolean hasOpenRange(AbraFuncExpr funcExpr){
+        return hasPostSlice(funcExpr) &&funcExpr.hasRangeOperator() && funcExpr.getConstExprList().size()==1;
+    }
+
+    public static boolean hasClosedRange(AbraFuncExpr funcExpr){
+        return hasPostSlice(funcExpr) && funcExpr.hasRangeOperator() && funcExpr.getConstExprList().size()==2;
+    }
+
+    public static boolean hasPostSlice(AbraFuncExpr funcExpr){
+        return funcExpr.getConstExprList().size()>0;
+    }
     //====================================================================
     //====================== LocalVars ===================================
     //====================================================================

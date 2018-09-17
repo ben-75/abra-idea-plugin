@@ -24,6 +24,7 @@ public class AbraFuncPsiReferenceImpl  extends PsiReferenceBase implements PsiRe
         final int parent = 0;
         return new TextRange(parent, myElement.getTextLength() + parent);
     }
+    //TODO : handleRename
 
     @Nullable
     @Override

@@ -23,6 +23,7 @@ public class AbraTypeOrPlaceHolderPsiReferenceImpl extends PsiReferenceBase impl
         final int parent = 0;
         return new TextRange(parent, myElement.getTextLength() + parent);
     }
+    //TODO : handleRename
 
     @Nullable
     @Override

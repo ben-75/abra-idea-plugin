@@ -7,6 +7,7 @@ import com.intellij.psi.PsiFile;
 import com.intellij.psi.PsiReference;
 import com.intellij.psi.PsiReferenceBase;
 import com.intellij.psi.tree.TokenSet;
+import com.intellij.util.IncorrectOperationException;
 import org.abra.language.psi.*;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -23,6 +24,14 @@ public class AbraTypePsiReferenceImpl  extends PsiReferenceBase implements PsiRe
     public TextRange getRangeInElement() {
         final int parent = 0;
         return new TextRange(parent, myElement.getTextLength() + parent);
+    }
+
+    @Override
+    public PsiElement handleElementRename(String newElementName) throws IncorrectOperationException {
+        AbraTypeNameRef ref = AbraElementFactory.createAbraTypeNameRef(myElement.getProject(), newElementName);
+        ASTNode newKeyNode = ref.getFirstChild().getNode();
+        myElement.getNode().replaceChild(myElement.getFirstChild().getNode(), newKeyNode);
+        return ref;
     }
 
     @Nullable

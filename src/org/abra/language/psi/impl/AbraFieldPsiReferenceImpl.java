@@ -11,10 +11,10 @@ import org.abra.language.psi.*;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-public class AbraTemplatePsiReferenceImpl extends PsiReferenceBase implements PsiReference {
+public class AbraFieldPsiReferenceImpl   extends PsiReferenceBase implements PsiReference {
 
 
-    public AbraTemplatePsiReferenceImpl(@NotNull PsiElement element) {
+    public AbraFieldPsiReferenceImpl(@NotNull PsiElement element) {
         super(element);
     }
 
@@ -42,23 +42,25 @@ public class AbraTemplatePsiReferenceImpl extends PsiReferenceBase implements Ps
         return new Object[0];
     }
 
-    private AbraTemplateName resolveInFile(PsiFile aFile){
-        for(ASTNode stmt:aFile.getNode().getChildren(TokenSet.create(AbraTypes.TEMPLATE_STMT))){
-            if(((AbraTemplateStmt)stmt.getPsi()).getTemplateName().getText().equals(myElement.getText())){
-                return ((AbraTemplateStmt)stmt.getPsi()).getTemplateName();
+    private PsiElement resolveInFile(PsiFile aFile){
+        for(ASTNode stmt:aFile.getNode().getChildren(TokenSet.create(AbraTypes.TYPE_STMT))){
+            for(AbraFieldSpec fieldSpec:((AbraTypeStmt)stmt.getPsi()).getFieldSpecList()){
+                if(fieldSpec.getFieldName().getText().equals(myElement.getText())){
+                    return fieldSpec.getFieldName();
+                }
             }
         }
         return null;
     }
 
-    private AbraTemplateName resolveFromImports(PsiFile startingFile){
+    private PsiElement resolveFromImports(PsiFile startingFile){
         for(ASTNode stmt:startingFile.getNode().getChildren(TokenSet.create(AbraTypes.IMPORT_STMT))){
             PsiReference[] importedFiles = AbraPsiImplUtil.getReferences((AbraImportStmt) stmt.getPsi());
             if(importedFiles!=null) {
                 for (PsiReference psiRef : importedFiles) {
                     PsiElement anAbraFile = psiRef.resolve();
                     if(anAbraFile!=null){
-                        AbraTemplateName resolved = resolveInFile((PsiFile) anAbraFile);
+                        PsiElement resolved = resolveInFile((PsiFile) anAbraFile);
                         if(resolved!=null)return resolved;
                     }
                 }

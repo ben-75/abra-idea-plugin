@@ -25,6 +25,8 @@ public class AbraLutOrVarOrParamPsiReferenceImpl extends PsiReferenceBase implem
         return new TextRange(parent, myElement.getTextLength() + parent);
     }
 
+    //TODO : handleRename
+
     @Nullable
     @Override
     public PsiElement resolve() {

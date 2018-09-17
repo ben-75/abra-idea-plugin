@@ -59,13 +59,16 @@ public class AbraElementFactory {
     }
 
 
+    public static AbraTypeNameRef createAbraTypeNameRef(Project project, String name) {
+        final AbraFile file = createFile(project, "f<"+name+">;");
+        return ((AbraUseStmt)file.getFirstChild()).getTypeNameRefList().get(0);
+    }
+
     public static AbraParamOrVarNameRef createAbraVarOrParamNameRef(Project project, String name) {
         final AbraFile file = createFile(project, "f(p [1])={a="+name+";a;};");
         return ((AbraFuncStmt)file.getFirstChild()).getFuncDefinition().getFuncBody()
                 .getAssignExprList().get(0).getMergeExpr().getConcatExprList().get(0).getSliceExprList().get(0).getParamOrVarNameRef();
     }
-
-
 
     private static AbraFile createFile(Project project, String text) {
         String name = "dummy.abra";
