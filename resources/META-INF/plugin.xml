@@ -5,7 +5,7 @@
   <vendor email="support@yourcompany.com" url="http://www.yourcompany.com">YourCompany</vendor>
 
   <description><![CDATA[
-      Support for Abra language
+      [Expirimental] support for Abra language
     ]]></description>
 
   <change-notes><![CDATA[
@@ -17,18 +17,9 @@
       <li> Resolve template references
       <li> Code folding
       <li> Braces matching
+      <li> ...
       </ul>
 
-      <b>Known bugs</b>
-      <ul>
-      <li> Color settings are out-dated
-      <li> Renaming is broken
-      </ul>
-
-      <b>Limitations</b>
-      <ul>
-      <li> Don't resolve field references
-      </ul>
     ]]>
   </change-notes>
 
