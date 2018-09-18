@@ -2,18 +2,20 @@ package org.abra.language.psi;
 
 import com.intellij.lang.ASTNode;
 import com.intellij.navigation.ItemPresentation;
+import com.intellij.openapi.module.Module;
+import com.intellij.openapi.module.ModuleManager;
+import com.intellij.openapi.roots.ModuleRootManager;
+import com.intellij.openapi.vfs.LocalFileSystem;
 import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiReference;
-import com.intellij.psi.search.FileTypeIndex;
-import com.intellij.psi.search.GlobalSearchScope;
-import com.intellij.util.indexing.FileBasedIndex;
 import org.abra.language.AbraFileType;
 import org.abra.language.AbraIcons;
 import org.abra.language.psi.impl.*;
 import org.jetbrains.annotations.Nullable;
 
 import javax.swing.*;
+import java.io.File;
 import java.util.*;
 
 public class AbraPsiImplUtil {
@@ -712,20 +714,51 @@ public class AbraPsiImplUtil {
         return new AbraFuncPsiReferenceImpl(funcNameRef);
     }
 
-    public static PsiReference[] getReferences(AbraImportStmt importFile){
-        Collection<VirtualFile> allFiles = FileBasedIndex.getInstance().getContainingFiles(FileTypeIndex.NAME, AbraFileType.INSTANCE, GlobalSearchScope.projectScope(importFile.getProject()));
+    public static PsiReference[] getReferences(AbraImportStmt importStmt){
         List<PsiReference> importedFiles = new ArrayList<>();
-        importFile.getFilePath().getText();
-        for(VirtualFile f:allFiles){
-            if(f.getPath().indexOf(importFile.getFilePath().getText())>-1){
-                importedFiles.add(new AbraFileReferencePsiReferenceImpl(importFile, f));
+        VirtualFile srcRoot = importStmt.getSourceRoot();
+        if(importStmt!=null){
+            VirtualFile target = LocalFileSystem.getInstance().findFileByIoFile(new File(srcRoot.getPath(),importStmt.getFilePath().getText()));
+            if(target!=null){
+                VirtualFile[] children = target.getChildren();
+                for(VirtualFile child:children){
+                    if(!child.isDirectory() && child.getFileType()==AbraFileType.INSTANCE){
+                        importedFiles.add(new AbraFileReferencePsiReferenceImpl(importStmt, child));
+                    }
+                }
+            }else{
+                target = LocalFileSystem.getInstance().findFileByIoFile(new File(srcRoot.getPath(),importStmt.getFilePath().getText()+".abra"));
+                if(target!=null) {
+                    importedFiles.add(new AbraFileReferencePsiReferenceImpl(importStmt, target));
+                }
             }
         }
         PsiReference[] arr = new PsiReference[importedFiles.size()];
         return importedFiles.toArray(arr);
     }
 
+    public static VirtualFile getSourceRoot(AbraImportStmt importStmt){
+        List<VirtualFile> allRoots = getAllSourceRoot(importStmt);
+        VirtualFile srcRoot = importStmt.getContainingFile().getVirtualFile();
+        while(srcRoot!=null && !allRoots.contains(srcRoot))srcRoot = srcRoot.getParent();
+        return srcRoot;
+    }
 
+    private static List<VirtualFile> getAllSourceRoot(AbraImportStmt importStmt){
+        ArrayList<VirtualFile> allRoots = new ArrayList<>();
+        ModuleManager manager = ModuleManager.getInstance(importStmt.getProject());
+        Module[] modules = manager.getModules();
+        for (Module module : modules) {
+            ModuleRootManager root = ModuleRootManager.getInstance(module);
+            for (VirtualFile file : root.getSourceRoots()) {
+                allRoots.add(file);
+            }
+            for(VirtualFile contentRoot:root.getContentRoots()){
+                allRoots.add(contentRoot);
+            }
+        }
+        return allRoots;
+    }
     //====================================================================
     //====================== FuncParams ==================================
     //====================================================================

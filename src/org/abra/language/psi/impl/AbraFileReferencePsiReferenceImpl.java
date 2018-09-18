@@ -12,12 +12,10 @@ import org.jetbrains.annotations.Nullable;
 
 public class AbraFileReferencePsiReferenceImpl extends PsiReferenceBase implements PsiReference {
 
-    private AbraImportStmt importFile;
     private VirtualFile virtualFile;
 
     public AbraFileReferencePsiReferenceImpl(AbraImportStmt abraImportFile, VirtualFile virtualFile) {
         super(abraImportFile, false);
-        this.importFile = abraImportFile;
         this.virtualFile = virtualFile;
     }
     @NotNull
@@ -29,12 +27,15 @@ public class AbraFileReferencePsiReferenceImpl extends PsiReferenceBase implemen
     @Nullable
     @Override
     public PsiElement resolve() {
-        return PsiManager.getInstance(importFile.getProject()).findFile(virtualFile);
+        return PsiManager.getInstance(myElement.getProject()).findFile(virtualFile);
     }
+
 
     @NotNull
     @Override
     public Object[] getVariants() {
         return new Object[0];
     }
+
+
 }

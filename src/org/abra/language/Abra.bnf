@@ -20,7 +20,7 @@ private stmt    ::= (importStmt | typeStmt | lutStmt | funcStmt | templateStmt |
 
 
 importStmt      ::= IMPORT_KEYWORD file_path
-                    {methods=[getReferences]}
+                    {methods=[getReferences getSourceRoot]}
 
 typeStmt        ::= (TYPE_KEYWORD)? typeName (typeSize | (OPEN_BRACE (fieldSpec SEMICOLON)+ CLOSE_BRACE))
                     {mixin="org.abra.language.psi.impl.AbraDefinitionImpl"

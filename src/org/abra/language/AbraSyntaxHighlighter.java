@@ -32,11 +32,14 @@ public class AbraSyntaxHighlighter extends SyntaxHighlighterBase  {
             createTextAttributesKey("FCT_DECLARATION", DefaultLanguageHighlighterColors.STRING);
     public static final TextAttributesKey LUT_DECLARATION =
             createTextAttributesKey("LUT_DECLARATION", DefaultLanguageHighlighterColors.INSTANCE_FIELD);
+    public static final TextAttributesKey TEMPLATE_DECLARATION =
+            createTextAttributesKey("TEMPLATE_DECLARATION", DefaultLanguageHighlighterColors.FUNCTION_CALL);
     public static final TextAttributesKey SIZE_DEF =
             createTextAttributesKey("LUT_DECLARATION", DefaultLanguageHighlighterColors.NUMBER);
     public static final TextAttributesKey LOCAL_VAR =
             createTextAttributesKey("LOCAL_VAR", DefaultLanguageHighlighterColors.LOCAL_VARIABLE);
-
+    public static final TextAttributesKey TRIT =
+            createTextAttributesKey("TRIT", DefaultLanguageHighlighterColors.IDENTIFIER);
 
     private static final TextAttributesKey[] EMPTY_KEYS = new TextAttributesKey[0];
 
@@ -45,6 +48,7 @@ public class AbraSyntaxHighlighter extends SyntaxHighlighterBase  {
     private static final TextAttributesKey[] BAD_CHAR_KEYS = new TextAttributesKey[]{BAD_CHARACTER};
     private static final TextAttributesKey[] COMMENT_KEYS = new TextAttributesKey[]{COMMENT};
     private static final TextAttributesKey[] KEYWORD_KEYS = new TextAttributesKey[]{KEYWORD};
+    private static final TextAttributesKey[] TRIT_KEYS = new TextAttributesKey[]{TRIT};
 
     @NotNull
     @Override
@@ -71,6 +75,8 @@ public class AbraSyntaxHighlighter extends SyntaxHighlighterBase  {
             return KEYWORD_KEYS;
         }else if (tokenType.equals(AbraTypes.COMMENT)) {
             return COMMENT_KEYS;
+        }else if (tokenType.equals(AbraTypes.TRIT_CHAR)) {
+            return TRIT_KEYS;
         } else if (tokenType.equals(TokenType.BAD_CHARACTER)) {
             return BAD_CHAR_KEYS;
         } else {
