@@ -1,7 +1,7 @@
 <idea-plugin>
   <id>org.abra.language</id>
   <name>Abra Plugin</name>
-  <version>0.0.3-pre-alpha</version>
+  <version>0.0.4-pre-alpha</version>
   <vendor email="support@yourcompany.com" url="http://www.yourcompany.com">YourCompany</vendor>
 
   <description><![CDATA[
@@ -15,6 +15,7 @@
       <li> Static resolution of trit vector size
       <li> Resolve references (also cross file references)
       <li> Resolve template references
+      <li> LUT: detection of duplicate entries, detection of inconsistent input(resp. output) length
       <li> Code folding
       <li> Braces matching
       <li> ...
