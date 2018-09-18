@@ -108,8 +108,8 @@ public class AbraPsiImplUtil {
             @Nullable
             @Override
             public String getLocationString() {
-                return "["+element.getTritListList().get(0).getTritList().size()+" -> "+
-                        element.getTritListList().get(1).getTritList().size()+"]";
+                return "["+element.getLutEntryList().get(0).getInputLength()+" -> "+
+                           element.getLutEntryList().get(0).getOutputLength()+"]";
             }
 
             @Nullable
@@ -510,7 +510,7 @@ public class AbraPsiImplUtil {
         return ((AbraFuncParameter)paramName.getParent()).getTypeSize().getResolvedSize();
     }
     public static int getResolvedSize(AbraLutName lutName){
-        return getLength(((AbraLutStmt)lutName.getParent()).getTritListList().get(1));
+        return ((AbraLutStmt)lutName.getParent()).getLutEntryList().get(0).getTritListList().get(1).getLength();
     }
     public static int getResolvedSize(AbraVarName varName){
         if(((AbraAssignExpr)varName.getParent()).getTypeSize()!=null){
@@ -785,14 +785,20 @@ public class AbraPsiImplUtil {
         return element;
     }
 
-
-
-
+    //====================================================================
+    //====================== LUT =========================================
+    //====================================================================
 
     public static int getLength(AbraTritList tritList){
         return tritList.getTritList().size();
     }
 
+    public static int getInputLength(AbraLutEntry lutEntry){
+        return lutEntry.getTritListList().get(0).getLength();
+    }
 
+    public static int getOutputLength(AbraLutEntry lutEntry){
+        return lutEntry.getTritListList().get(1).getLength();
+    }
 
 }

@@ -27,7 +27,7 @@ typeStmt        ::= (TYPE_KEYWORD)? typeName (typeSize | (OPEN_BRACE (fieldSpec 
                     implements="org.abra.language.psi.AbraDefinition"
                     methods=[getPresentation getName setName getNameIdentifier getResolvedSize]}
 
-lutStmt         ::= (LUT_KEYWORD)? lutName OPEN_BRACKET (tritList '=' tritList ';')+ CLOSE_BRACKET
+lutStmt         ::= (LUT_KEYWORD)? lutName OPEN_BRACKET lutEntry+ CLOSE_BRACKET
                     {mixin="org.abra.language.psi.impl.AbraDefinitionImpl"
                     implements="org.abra.language.psi.AbraDefinition"
                     methods=[getPresentation getName setName getNameIdentifier]}
@@ -102,7 +102,11 @@ constPrimary    ::= trit | integer | typeOrPlaceHolderNameRef | (OPEN_PAR mergeE
 typeSize        ::= OPEN_BRACKET constExpr CLOSE_BRACKET
                 {methods=[getResolvedSize]}
 
+lutEntry        ::= tritList ASSIGN tritList SEMICOLON
+                {methods = [getInputLength getOutputLength]}
+
 tritList        ::= trit (COMMA trit)*
+                {methods = [getLength]}
 
 
 trit            ::= TRIT_CHAR
