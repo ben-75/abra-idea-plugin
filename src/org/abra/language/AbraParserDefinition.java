@@ -51,6 +51,7 @@ public class AbraParserDefinition implements ParserDefinition {
         return new AbraFile(viewProvider);
     }
 
+    @SuppressWarnings("deprecated")
     public SpaceRequirements spaceExistanceTypeBetweenTokens(ASTNode left, ASTNode right) {
         return SpaceRequirements.MAY;
     }

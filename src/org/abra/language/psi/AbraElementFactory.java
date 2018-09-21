@@ -93,4 +93,21 @@ public class AbraElementFactory {
                 createFileFromText(name, AbraFileType.INSTANCE, text);
     }
 
+    public static AbraStaticConstExpr createAbraStaticConstExpr(Project project, String s) {
+        final AbraFile file = createFile(project, "T["+s+"];");
+        try{
+            return ((AbraTypeStmt)file.getFirstChild()).getStaticTypeSize().getStaticConstExpr();
+        }catch (ClassCastException e){
+            throw new RuntimeException("Invalid syntax:"+s, e);
+        }
+    }
+
+    public static AbraConstExpr createAbraConstExpr(Project project, String s) {
+        final AbraFile file = createFile(project, "f(a["+s+"])={a;};");
+        try{
+            return ((AbraFuncStmt)file.getFirstChild()).getFuncDefinition().getFuncParameterList().get(0).getTypeSize().getConstExpr();
+        }catch (ClassCastException e){
+            throw new RuntimeException("Invalid syntax:"+s, e);
+        }
+    }
 }

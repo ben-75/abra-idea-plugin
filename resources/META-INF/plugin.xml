@@ -49,6 +49,7 @@
     <annotator language="Abra" implementationClass="org.abra.language.MultiDeclarationAnnotator"/>
     <annotator language="Abra" implementationClass="org.abra.language.LutValidationAnnotator"/>
     <completion.contributor language="Abra" implementationClass="org.abra.language.AbraCompletionContributor"/>
+    <bundledColorScheme path="/colors/AbraDefault"/>
   </extensions>
 
   <actions>

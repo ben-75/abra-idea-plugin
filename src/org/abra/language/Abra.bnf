@@ -22,10 +22,10 @@ private stmt    ::= (importStmt | typeStmt | lutStmt | funcStmt | templateStmt |
 importStmt      ::= IMPORT_KEYWORD file_path
                     {methods=[getReferences getSourceRoot]}
 
-typeStmt        ::= (TYPE_KEYWORD)? typeName (typeSize | (OPEN_BRACE (fieldSpec SEMICOLON)+ CLOSE_BRACE))
+typeStmt        ::= (TYPE_KEYWORD)? typeName (staticTypeSize | (OPEN_BRACE (fieldSpec SEMICOLON)+ CLOSE_BRACE))
                     {mixin="org.abra.language.psi.impl.AbraDefinitionImpl"
                     implements="org.abra.language.psi.AbraDefinition"
-                    methods=[getPresentation getName setName getNameIdentifier getResolvedSize]}
+                    methods=[getPresentation getName setName getNameIdentifier getResolvedSize ]}
 
 lutStmt         ::= (LUT_KEYWORD)? lutName OPEN_BRACKET lutEntry+ CLOSE_BRACKET
                     {mixin="org.abra.language.psi.impl.AbraDefinitionImpl"
@@ -49,12 +49,12 @@ useStmt         ::= (USE_KEYWORD)? templateNameRef OPEN_TAG (typeNameRef (',' ty
                     implements="org.abra.language.psi.AbraDefinition"
                     methods=[getPresentation getName setName getNameIdentifier]}
 
-fieldSpec       ::= fieldName typeSize
+fieldSpec       ::= fieldName staticTypeSize
                     {mixin="org.abra.language.psi.impl.AbraDefinitionImpl"
                      implements="org.abra.language.psi.AbraDefinition"
                      methods=[getPresentation]}
 
-funcDefinition  ::= funcName (OPEN_TAG typeOrPlaceHolderNameRef CLOSE_TAG)? OPEN_PAR (funcParameter (COMMA funcParameter)*) CLOSE_PAR ASSIGN funcBody
+funcDefinition  ::= typeSize? funcName (OPEN_TAG typeOrPlaceHolderNameRef CLOSE_TAG)? OPEN_PAR (funcParameter (COMMA funcParameter)*) CLOSE_PAR ASSIGN funcBody
 funcParameter   ::= paramName typeSize
 funcBody        ::= mergeExpr | (OPEN_BRACE (assignExpr SEMICOLON)* (RETURN_KEYWORD)? mergeExpr SEMICOLON CLOSE_BRACE)
 
@@ -63,44 +63,56 @@ funcBody        ::= mergeExpr | (OPEN_BRACE (assignExpr SEMICOLON)* (RETURN_KEYW
 assignExpr      ::= (STATE_KEYWORD)? varName typeSize? ASSIGN mergeExpr
 
 mergeExpr       ::= (concatExpr) (MERGE_OPERATOR (concatExpr))*
-                {methods=[getResolvedSize]}
+                {methods=[getResolvedSize ]}
 
 concatExpr      ::= postfixExpr ((AMP|COMMA) postfixExpr)*
-                {methods=[getResolvedSize]}
+                {methods=[getResolvedSize ]}
 
 private postfixExpr     ::=  typeExpr | funcExpr | lutExpr | sliceExpr | integer | (OPEN_PAR mergeExpr CLOSE_PAR)
 
 
 typeExpr        ::= typeNameRef OPEN_BRACE (fieldNameRef ASSIGN mergeExpr SEMICOLON)+ CLOSE_BRACE
-                {methods=[getResolvedSize]}
+                {methods=[getResolvedSize ]}
 
-funcExpr        ::= funcNameRef (OPEN_TAG typeOrPlaceHolderNameRef CLOSE_TAG)? OPEN_PAR (mergeExpr (COMMA mergeExpr)*) CLOSE_PAR (OPEN_BRACKET constExpr (RANGE_OPERATOR constExpr?)? CLOSE_BRACKET)?
-                {methods=[getResolvedSize hasRangeOperator hasOpenRange hasClosedRange hasPostSlice]}
+funcExpr        ::= funcNameRef (OPEN_TAG constExpr CLOSE_TAG)? OPEN_PAR (mergeExpr (COMMA mergeExpr)*) CLOSE_PAR (OPEN_BRACKET rangeExpr CLOSE_BRACKET)?
+                {methods=[getResolvedSize  hasRangeOperator hasOpenRange hasClosedRange hasPostSlice isInFuncStatement isInTemplateStatement getStatment]}
 
 lutExpr         ::= lutOrParamOrVarNameRef OPEN_BRACKET (mergeExpr (COMMA mergeExpr)*) CLOSE_BRACKET
-                {methods=[getResolvedSize]}
+                {methods=[getResolvedSize ]}
 
-sliceExpr       ::= paramOrVarNameRef (DOT fieldNameRef)* (OPEN_BRACKET constExpr (RANGE_OPERATOR constExpr?)? CLOSE_BRACKET)?
-                {methods=[getResolvedSize hasRangeOperator hasOpenRange hasClosedRange]}
+sliceExpr       ::= paramOrVarNameRef (DOT fieldNameRef)* (OPEN_BRACKET rangeExpr CLOSE_BRACKET)?
+                {methods=[getResolvedSize  hasRangeOperator hasOpenRange hasClosedRange]}
 
-//lutOrSliceExpr  ::= varOrParamOrLutNameRef (DOT fieldNameRef)* (OPEN_BRACKET ((mergeExpr (COMMA mergeExpr)*) | (constExpr (RANGE_OPERATOR constExpr?)?)) CLOSE_BRACKET)?
+rangeExpr       ::= constExpr ((RANGE_OPERATOR constExpr?)|SMART_RANGE_OPERATOR constExpr)?
+                {methods=[hasRangeOperator hasOpenRange hasClosedRange]}
 
 constExpr       ::= constTerm (constOperator constExpr)?
+                {methods=[getResolvedSize ]}
+
+staticConstExpr ::= staticConstTerm (constOperator staticConstExpr)?
                 {methods=[getResolvedSize]}
 
 constOperator   ::= PLUS_OR_MINUS
 
-constTerm       ::= constPrimary (termOperator constTerm )?
+staticConstTerm ::= staticConstPrimary (termOperator staticConstTerm )?
                 {methods=[getResolvedSize]}
+
+constTerm       ::= constPrimary (termOperator constTerm )?
+                {methods=[getResolvedSize ]}
 
 termOperator    ::= DIV_TIMES_MODULO
 
-constPrimary    ::= trit | integer | typeOrPlaceHolderNameRef | (OPEN_PAR mergeExpr CLOSE_PAR)
-                {methods=[getResolvedSize]}
+staticConstPrimary    ::= integer | typeNameRef
+                      {methods=[getResolvedSize]}
 
+constPrimary    ::= trit | integer | typeOrPlaceHolderNameRef | (OPEN_PAR mergeExpr CLOSE_PAR)
+                {methods=[getResolvedSize ]}
+
+staticTypeSize  ::= OPEN_BRACKET staticConstExpr CLOSE_BRACKET
+                {methods=[getResolvedSize]}
 
 typeSize        ::= OPEN_BRACKET constExpr CLOSE_BRACKET
-                {methods=[getResolvedSize]}
+                {methods=[getResolvedSize ]}
 
 lutEntry        ::= tritList ASSIGN tritList SEMICOLON
                 {methods = [getInputLength getOutputLength]}
@@ -114,7 +126,7 @@ trit            ::= TRIT_CHAR
 number          ::= DIGIT+
 
 integer         ::= ('-') number | trit | number
-                {methods = [getResolvedSize]}
+                {methods = [getResolvedSize ]}
 
 
 file_path                   ::= FILENAME (SLASH FILENAME)*
@@ -128,7 +140,7 @@ fieldName                   ::= IDENTIFIER
 lutName                     ::= IDENTIFIER
                                 {mixin="org.abra.language.psi.impl.AbraNamedElementImpl"
                                 implements="org.abra.language.psi.AbraNamedElement"
-                                methods=[getName setName getNameIdentifier getResolvedSize]}
+                                methods=[getName setName getNameIdentifier getResolvedSize ]}
 templateName                ::= IDENTIFIER
                                 {mixin="org.abra.language.psi.impl.AbraNamedElementImpl"
                                 implements="org.abra.language.psi.AbraNamedElement"
@@ -144,16 +156,16 @@ funcName                    ::= IDENTIFIER
 paramName                   ::= IDENTIFIER
                                 {mixin="org.abra.language.psi.impl.AbraNamedElementImpl"
                                 implements="org.abra.language.psi.AbraNamedElement"
-                                methods=[getName setName getNameIdentifier getResolvedSize]}
+                                methods=[getName setName getNameIdentifier getResolvedSize ]}
 varName                     ::= IDENTIFIER
                                 {mixin="org.abra.language.psi.impl.AbraNamedElementImpl"
                                 implements="org.abra.language.psi.AbraNamedElement"
-                                methods=[getName setName getNameIdentifier getResolvedSize]}
+                                methods=[getName setName getNameIdentifier getResolvedSize ]}
 
 typeNameRef                 ::= IDENTIFIER      {implements="org.abra.language.psi.AbraResolvable" methods = [getReference]}
 fieldNameRef                ::= IDENTIFIER      {implements="org.abra.language.psi.AbraResolvable" methods = [getReference getResolvedSize]}
 lutOrParamOrVarNameRef      ::= IDENTIFIER      {implements="org.abra.language.psi.AbraResolvable" methods = [getReference]}
 templateNameRef             ::= IDENTIFIER      {implements="org.abra.language.psi.AbraResolvable" methods = [getReference]}
-funcNameRef                 ::= IDENTIFIER      {implements="org.abra.language.psi.AbraResolvable" methods = [getReference]}
-paramOrVarNameRef           ::= IDENTIFIER      {implements="org.abra.language.psi.AbraResolvable" methods = [getReference getResolvedSize]}
+funcNameRef                 ::= IDENTIFIER      {implements="org.abra.language.psi.AbraResolvable" methods = [getReference getFuncExpr]}
+paramOrVarNameRef           ::= IDENTIFIER      {implements="org.abra.language.psi.AbraResolvable" methods = [getReference getResolvedSize ]}
 typeOrPlaceHolderNameRef    ::= IDENTIFIER      {implements="org.abra.language.psi.AbraResolvable" methods = [getReference getTemplateStatement getPlaceHolderIndex]}

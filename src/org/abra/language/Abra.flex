@@ -51,10 +51,11 @@ CLOSE_PAR=(\))
 OPEN_TAG=(<)
 CLOSE_TAG=(>)
 RANGE_OPERATOR=(\.\.)
+SMART_RANGE_OPERATOR=(\:)
 MINUS=\-(\ )*([^,\ \]\)\}=;])
 PLUS=(\+)
 DIV_TIMES_MODULO=(\/|\*|\%)
-ASSIGN = [:=]
+ASSIGN = [=]
 TRIT_CHAR = (0|1|-)
 LUT_START=\[([^\];])+;   //detect start of LUT statement by matching '[' followed by a ';' before the closing ']'
 SLASH=(\/)
@@ -112,6 +113,7 @@ SLASH=(\/)
   {OPEN_PAR}            { return OPEN_PAR; }
   {CLOSE_PAR}           { return CLOSE_PAR; }
   {RANGE_OPERATOR}      { return RANGE_OPERATOR; }
+  {SMART_RANGE_OPERATOR}      { return SMART_RANGE_OPERATOR; }
   {DIV_TIMES_MODULO}    { return DIV_TIMES_MODULO; }
   {DOT}                 { return DOT; }
   {OPEN_TAG}            { return OPEN_TAG; }
