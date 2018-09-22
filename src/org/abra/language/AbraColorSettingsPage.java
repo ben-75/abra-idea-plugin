@@ -20,6 +20,7 @@ public class AbraColorSettingsPage implements ColorSettingsPage {
             new AttributesDescriptor("Comments", AbraSyntaxHighlighter.COMMENT),
             new AttributesDescriptor("Keywords", KEYWORD),
             new AttributesDescriptor("Type definition", AbraSyntaxHighlighter.ABRA_TYPE_DECLARATION),
+            new AttributesDescriptor("Type reference", AbraSyntaxHighlighter.ABRA_TYPE_REFERENCE),
             new AttributesDescriptor("Field definition", AbraSyntaxHighlighter.ABRA_FIELD_DECLARATION),
             new AttributesDescriptor("Functions definition and usage", AbraSyntaxHighlighter.ABRA_FCT_DECLARATION),
             new AttributesDescriptor("LUT definition and usage", AbraSyntaxHighlighter.ABRA_LUT_DECLARATION),
@@ -57,25 +58,25 @@ public class AbraColorSettingsPage implements ColorSettingsPage {
                 "<typedef>Int</typedef> [27];\n" +
                 "<typedef>Long</typedef> [81];\n" +
                 "<typedef>Hash</typedef> [243];\n" +
-                "<typedef>State</typedef> [Hash * 3];\n" +
+                "<typedef>State</typedef> [<typeref>Hash</typeref> * 3];\n" +
                 "\n" +
                 "// Named structured trio vector\n" +
                 "<typedef>Transaction</typedef> {\n" +
-                "  <fielddef>signature</fielddef> [27 * Hash]\n" +
-                ", <fielddef>extradatadigest</fielddef> [Hash]\n" +
-                ", <fielddef>address</fielddef> [Hash]\n" +
-                ", <fielddef>value</fielddef> [Long]\n" +
-                ", <fielddef>issuancetimestamp</fielddef> [Int]\n" +
-                ", <fielddef>timelocklowerbound</fielddef> [Int]\n" +
-                ", <fielddef>timelockupperbound</fielddef> [Int]\n" +
-                ", <fielddef>bundle</fielddef> [Long]\n" +
-                ", <fielddef>trunk</fielddef> [Hash]\n" +
-                ", <fielddef>branch</fielddef> [Hash]\n" +
-                ", <fielddef>tag</fielddef> [Long]\n" +
-                ", <fielddef>attachmenttimestamp</fielddef> [Int]\n" +
-                ", <fielddef>attachmenttimestamplowerbound</fielddef> [Int]\n" +
-                ", <fielddef>attachmenttimestampupperbound</fielddef> [Int]\n" +
-                ", <fielddef>nonce</fielddef> [Long]\n" +
+                "  <fielddef>signature</fielddef> [27 * <typeref>Hash</typeref>]\n" +
+                ", <fielddef>extradatadigest</fielddef> [<typeref>Hash</typeref>]\n" +
+                ", <fielddef>address</fielddef> [<typeref>Hash</typeref>]\n" +
+                ", <fielddef>value</fielddef> [<typeref>Long</typeref>]\n" +
+                ", <fielddef>issuancetimestamp</fielddef> [<typeref>Int</typeref>]\n" +
+                ", <fielddef>timelocklowerbound</fielddef> [<typeref>Int</typeref>]\n" +
+                ", <fielddef>timelockupperbound</fielddef> [<typeref>Int</typeref>]\n" +
+                ", <fielddef>bundle</fielddef> [<typeref>Long</typeref>]\n" +
+                ", <fielddef>trunk</fielddef> [<typeref>Hash</typeref>]\n" +
+                ", <fielddef>branch</fielddef> [<typeref>Hash</typeref>]\n" +
+                ", <fielddef>tag</fielddef> [<typeref>Long</typeref>]\n" +
+                ", <fielddef>attachmenttimestamp</fielddef> [<typeref>Int</typeref>]\n" +
+                ", <fielddef>attachmenttimestamplowerbound</fielddef> [<typeref>Int</typeref>]\n" +
+                ", <fielddef>attachmenttimestampupperbound</fielddef> [<typeref>Int</typeref>]\n" +
+                ", <fielddef>nonce</fielddef> [<typeref>Long</typeref>]\n" +
                 "};\n" +
                 "\n" +
                 "\n" +
@@ -86,12 +87,12 @@ public class AbraColorSettingsPage implements ColorSettingsPage {
                 "];\n" +
                 "\n" +
                 "\n" +
-                "<funcdef>digest</funcdef>(state [State]) =\n" +
+                "<funcdef>digest</funcdef>(state [<typeref>State</typeref>]) =\n" +
                 "  // single statement function\n" +
                 "  <local_var>state</local_var>, transform(<local_var>state</local_var>, 81);\n" +
                 "\n" +
                 "// This a function\n" +
-                "<funcdef>nullOrTryte</funcdef>(<local_var>t</local_var> [Bool], <local_var>val</local_var> [Tryte]) = {\n" +
+                "<funcdef>nullOrTryte</funcdef>(<local_var>t</local_var> [Bool], <local_var>val</local_var> [<typeref>Tryte</typeref>]) = {\n" +
                 "  // concatenate the 3 separate trits via the LUT\n" +
                 "  <lutdef>nullOrTrit</lutdef>[<local_var>t</local_var>, <local_var>val</local_var>[0]],\n" +
                 "  <lutdef>nullOrTrit</lutdef>[<local_var>t</local_var>, <local_var>val</local_var>[1]],\n" +
@@ -105,7 +106,7 @@ public class AbraColorSettingsPage implements ColorSettingsPage {
                 "};" +
                 "" +
                 "//this is a use statement\n" +
-                "use <templatedef>addFunc</templatedef><Trytes>;";
+                "use <templatedef>addFunc</templatedef><<typeref>Trytes</typeref>>;";
     }
 
     @Nullable
@@ -119,6 +120,7 @@ public class AbraColorSettingsPage implements ColorSettingsPage {
             ANNOTATOR_MAP.put("local_var",AbraSyntaxHighlighter.ABRA_LOCAL_VAR);
             ANNOTATOR_MAP.put("trit",AbraSyntaxHighlighter.ABRA_TRIT);
             ANNOTATOR_MAP.put("templatedef",AbraSyntaxHighlighter.ABRA_TEMPLATE_DECLARATION);
+            ANNOTATOR_MAP.put("typeref",AbraSyntaxHighlighter.ABRA_TYPE_REFERENCE);
         }
 
         return ANNOTATOR_MAP;

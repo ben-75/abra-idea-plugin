@@ -56,11 +56,11 @@ public class DeclarationAnnotator  implements Annotator {
             Annotation annotation = holder.createInfoAnnotation(range,
                     null);
             annotation.setTextAttributes(AbraSyntaxHighlighter.ABRA_TEMPLATE_DECLARATION);
-        } else if (element instanceof AbraTypeSize) {
-//            TextRange range = new TextRange(element.getTextRange().getStartOffset()+1, element.getTextRange().getEndOffset()-1);
-//            Annotation annotation = holder.createInfoAnnotation(range,
-//                    null);
-//            annotation.setTextAttributes(AbraSyntaxHighlighter.SIZE_DEF);
+        } else if (element instanceof AbraTypeNameRef || (element instanceof AbraTypeOrPlaceHolderNameRef && element.getReference().resolve() instanceof AbraTypeName)) {
+            TextRange range = new TextRange(element.getTextRange().getStartOffset(), element.getTextRange().getEndOffset());
+            Annotation annotation = holder.createInfoAnnotation(range,
+                    null);
+            annotation.setTextAttributes(AbraSyntaxHighlighter.ABRA_TYPE_REFERENCE);
         }
     }
 }

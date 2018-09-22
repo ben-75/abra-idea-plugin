@@ -26,6 +26,8 @@ public class AbraSyntaxHighlighter extends SyntaxHighlighterBase  {
 
     public static final TextAttributesKey ABRA_TYPE_DECLARATION =
             createTextAttributesKey("ABRA_TYPE_DECLARATION", DefaultLanguageHighlighterColors.TEMPLATE_LANGUAGE_COLOR);
+    public static final TextAttributesKey ABRA_TYPE_REFERENCE =
+            createTextAttributesKey("ABRA_TYPE_REFERENCE", DefaultLanguageHighlighterColors.TEMPLATE_LANGUAGE_COLOR);
     public static final TextAttributesKey ABRA_FIELD_DECLARATION =
             createTextAttributesKey("ABRA_FIELD_DECLARATION", DefaultLanguageHighlighterColors.GLOBAL_VARIABLE);
     public static final TextAttributesKey ABRA_FCT_DECLARATION =
