@@ -14,7 +14,6 @@ import org.abra.language.AbraIcons;
 import org.abra.language.UnresolvableTokenException;
 import org.abra.language.psi.impl.*;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 import javax.swing.*;
 import java.io.File;

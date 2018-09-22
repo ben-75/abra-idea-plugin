@@ -24,22 +24,20 @@ public class AbraSyntaxHighlighter extends SyntaxHighlighterBase  {
             createTextAttributesKey("SIMPLE_BAD_CHARACTER", HighlighterColors.BAD_CHARACTER);
 
 
-    public static final TextAttributesKey TYPE_DECLARATION =
-            createTextAttributesKey("TYPE_DECLARATION", DefaultLanguageHighlighterColors.TEMPLATE_LANGUAGE_COLOR);
-    public static final TextAttributesKey FIELD_DECLARATION =
-            createTextAttributesKey("FIELD_DECLARATION", DefaultLanguageHighlighterColors.GLOBAL_VARIABLE);
-    public static final TextAttributesKey FCT_DECLARATION =
-            createTextAttributesKey("FCT_DECLARATION", DefaultLanguageHighlighterColors.STRING);
-    public static final TextAttributesKey LUT_DECLARATION =
-            createTextAttributesKey("LUT_DECLARATION", DefaultLanguageHighlighterColors.INSTANCE_FIELD);
-    public static final TextAttributesKey TEMPLATE_DECLARATION =
-            createTextAttributesKey("TEMPLATE_DECLARATION", DefaultLanguageHighlighterColors.FUNCTION_CALL);
-    public static final TextAttributesKey SIZE_DEF =
-            createTextAttributesKey("LUT_DECLARATION", DefaultLanguageHighlighterColors.NUMBER);
-    public static final TextAttributesKey LOCAL_VAR =
-            createTextAttributesKey("LOCAL_VAR", DefaultLanguageHighlighterColors.LOCAL_VARIABLE);
-    public static final TextAttributesKey TRIT =
-            createTextAttributesKey("TRIT", DefaultLanguageHighlighterColors.IDENTIFIER);
+    public static final TextAttributesKey ABRA_TYPE_DECLARATION =
+            createTextAttributesKey("ABRA_TYPE_DECLARATION", DefaultLanguageHighlighterColors.TEMPLATE_LANGUAGE_COLOR);
+    public static final TextAttributesKey ABRA_FIELD_DECLARATION =
+            createTextAttributesKey("ABRA_FIELD_DECLARATION", DefaultLanguageHighlighterColors.GLOBAL_VARIABLE);
+    public static final TextAttributesKey ABRA_FCT_DECLARATION =
+            createTextAttributesKey("ABRA_FCT_DECLARATION", DefaultLanguageHighlighterColors.STRING);
+    public static final TextAttributesKey ABRA_LUT_DECLARATION =
+            createTextAttributesKey("ABRA_LUT_DECLARATION", DefaultLanguageHighlighterColors.INSTANCE_FIELD);
+    public static final TextAttributesKey ABRA_TEMPLATE_DECLARATION =
+            createTextAttributesKey("ABRA_TEMPLATE_DECLARATION", DefaultLanguageHighlighterColors.FUNCTION_CALL);
+    public static final TextAttributesKey ABRA_LOCAL_VAR =
+            createTextAttributesKey("ABRA_LOCAL_VAR", DefaultLanguageHighlighterColors.LOCAL_VARIABLE);
+    public static final TextAttributesKey ABRA_TRIT =
+            createTextAttributesKey("ABRA_TRIT", DefaultLanguageHighlighterColors.IDENTIFIER);
 
     private static final TextAttributesKey[] EMPTY_KEYS = new TextAttributesKey[0];
 
@@ -48,7 +46,7 @@ public class AbraSyntaxHighlighter extends SyntaxHighlighterBase  {
     private static final TextAttributesKey[] BAD_CHAR_KEYS = new TextAttributesKey[]{BAD_CHARACTER};
     private static final TextAttributesKey[] COMMENT_KEYS = new TextAttributesKey[]{COMMENT};
     private static final TextAttributesKey[] KEYWORD_KEYS = new TextAttributesKey[]{KEYWORD};
-    private static final TextAttributesKey[] TRIT_KEYS = new TextAttributesKey[]{TRIT};
+    private static final TextAttributesKey[] TRIT_KEYS = new TextAttributesKey[]{ABRA_TRIT};
 
     @NotNull
     @Override

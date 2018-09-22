@@ -21,15 +21,15 @@ public class DeclarationAnnotator  implements Annotator {
             Annotation annotation = holder.createInfoAnnotation(range,
                     null);
             if(element.getParent().getParent().getParent() instanceof AbraFieldName){
-                annotation.setTextAttributes(AbraSyntaxHighlighter.FIELD_DECLARATION);
+                annotation.setTextAttributes(AbraSyntaxHighlighter.ABRA_FIELD_DECLARATION);
             }else {
-                annotation.setTextAttributes(AbraSyntaxHighlighter.TYPE_DECLARATION);
+                annotation.setTextAttributes(AbraSyntaxHighlighter.ABRA_TYPE_DECLARATION);
             }
         } else if (element instanceof AbraFuncName || element instanceof AbraFuncNameRef) {
             TextRange range = new TextRange(element.getTextRange().getStartOffset(), element.getTextRange().getEndOffset());
             Annotation annotation = holder.createInfoAnnotation(range,
                     null);
-            annotation.setTextAttributes(AbraSyntaxHighlighter.FCT_DECLARATION);
+            annotation.setTextAttributes(AbraSyntaxHighlighter.ABRA_FCT_DECLARATION);
         } else if (element instanceof AbraVarName ||
                    element instanceof AbraParamName ||
                    element instanceof AbraParamOrVarNameRef ||
@@ -37,25 +37,25 @@ public class DeclarationAnnotator  implements Annotator {
             TextRange range = new TextRange(element.getTextRange().getStartOffset(), element.getTextRange().getEndOffset());
             Annotation annotation = holder.createInfoAnnotation(range,
                     null);
-            annotation.setTextAttributes(AbraSyntaxHighlighter.LOCAL_VAR);
+            annotation.setTextAttributes(AbraSyntaxHighlighter.ABRA_LOCAL_VAR);
         } else if (element instanceof AbraLutName ||
                 (element instanceof AbraLutOrParamOrVarNameRef && (element.getReference().resolve() instanceof AbraLutName)) ) {
             TextRange range = new TextRange(element.getTextRange().getStartOffset(), element.getTextRange().getEndOffset());
             Annotation annotation = holder.createInfoAnnotation(range,
                     null);
-            annotation.setTextAttributes(AbraSyntaxHighlighter.LUT_DECLARATION);
+            annotation.setTextAttributes(AbraSyntaxHighlighter.ABRA_LUT_DECLARATION);
         } else if (element instanceof AbraFieldName ||
                 (element instanceof AbraFieldNameRef) ) {
             TextRange range = new TextRange(element.getTextRange().getStartOffset(), element.getTextRange().getEndOffset());
             Annotation annotation = holder.createInfoAnnotation(range,
                     null);
-            annotation.setTextAttributes(AbraSyntaxHighlighter.FIELD_DECLARATION);
+            annotation.setTextAttributes(AbraSyntaxHighlighter.ABRA_FIELD_DECLARATION);
         } else if (element instanceof AbraTemplateName ||
                 (element instanceof AbraTemplateNameRef) ) {
             TextRange range = new TextRange(element.getTextRange().getStartOffset(), element.getTextRange().getEndOffset());
             Annotation annotation = holder.createInfoAnnotation(range,
                     null);
-            annotation.setTextAttributes(AbraSyntaxHighlighter.TEMPLATE_DECLARATION);
+            annotation.setTextAttributes(AbraSyntaxHighlighter.ABRA_TEMPLATE_DECLARATION);
         } else if (element instanceof AbraTypeSize) {
 //            TextRange range = new TextRange(element.getTextRange().getStartOffset()+1, element.getTextRange().getEndOffset()-1);
 //            Annotation annotation = holder.createInfoAnnotation(range,

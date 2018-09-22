@@ -49,7 +49,8 @@
     <annotator language="Abra" implementationClass="org.abra.language.MultiDeclarationAnnotator"/>
     <annotator language="Abra" implementationClass="org.abra.language.LutValidationAnnotator"/>
     <completion.contributor language="Abra" implementationClass="org.abra.language.AbraCompletionContributor"/>
-    <bundledColorScheme path="/colors/AbraDefault"/>
+    <additionalTextAttributes scheme="Default" file="colors/AbraDefault.xml"/>
+    <additionalTextAttributes scheme="Darcula" file="colors/AbraDarcula.xml"/>
   </extensions>
 
   <actions>
