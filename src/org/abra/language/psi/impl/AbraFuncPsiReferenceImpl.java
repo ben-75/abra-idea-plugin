@@ -68,40 +68,13 @@ public class AbraFuncPsiReferenceImpl  extends PsiReferenceBase implements PsiRe
             }
         }else{
             int sizeOfMyElement = constExpr.getResolvedSize();
-//            PsiElement resolved = constExpr.getReference().resolve();
-//            if (resolved instanceof AbraTypeName) {
-//                sizeOfMyElement = ((AbraTypeStmt)resolved.getParent()).getResolvedSize();
-//            }
-
-            //this should reference a templateNameRef within a useStatement
             for (ASTNode stmt : aFile.getNode().getChildren(TokenSet.create(AbraTypes.USE_STMT))) {
                 AbraUseStmt useStmt = (AbraUseStmt) stmt.getPsi();
                 AbraTemplateName referencedTemplateName = (AbraTemplateName) useStmt.getTemplateNameRef().getReference().resolve();
                 if (referencedTemplateName != null) {
                     AbraTemplateStmt abraTemplateStmt = (AbraTemplateStmt) referencedTemplateName.getParent();
                     if (abraTemplateStmt.getFuncDefinition().getFuncName().getText().equals(myElement.getText())) {
-//                        String funcNameSuffixPlaceHolder = abraTemplateStmt.getFuncDefinition().getTypeOrPlaceHolderNameRef().getText();
-//                        int i = 0;
-//                        for (int j = 0; j < abraTemplateStmt.getPlaceHolderNameList().size(); j++) {
-//                            if (funcNameSuffixPlaceHolder.equals(abraTemplateStmt.getPlaceHolderNameList().get(j).getText())) {
-//                                break;
-//                            }
-//                            i++;
-//                        }
-//                        //i is the index of the suffix.
-//                        AbraTypeNameRef typeNameRef = useStmt.getTypeNameRefList().get(i);
-//                        int sizeOfTheUseStatement = ((AbraTypeStmt) typeNameRef.getReference().resolve().getParent()).getResolvedSize();
                         int sizeOfTheUseStatement = sizeOfNamedParam(useStmt,abraTemplateStmt,abraTemplateStmt.getFuncDefinition().getTypeOrPlaceHolderNameRef().getText());
-
-//                        if(sizeOfMyElement==-1 && resolved instanceof AbraPlaceHolderName) {
-//                            AbraPsiImplUtil.ContextStack.INSTANCE.push(AbraPsiImplUtil.getTemplateContextMap(useStmt));
-//                            try {
-////                                sizeOfMyElement = sizeOfNamedParam(useStmt,abraTemplateStmt,typeOrPlaceHolderNameRef);
-//                                sizeOfMyElement = sizeOfNamedParam(useStmt,(AbraTemplateStmt) ((AbraFuncExpr)myElement.getParent()).getStatment(),constExpr);
-//                            } finally {
-//                                AbraPsiImplUtil.ContextStack.INSTANCE.pop();
-//                            }
-//                        }
                         if(sizeOfMyElement==sizeOfTheUseStatement)return useStmt.getTemplateNameRef();
                     }
                 }
@@ -116,81 +89,7 @@ public class AbraFuncPsiReferenceImpl  extends PsiReferenceBase implements PsiRe
             }
         }
 
-        return resolveFromImports(aFile, constExpr);
-
-//        for (ASTNode stmt : aFile.getNode().getChildren(TokenSet.create(AbraTypes.FUNC_STMT))) {
-//            if(!isTemplateRef) {
-//                if (((AbraFuncStmt) stmt.getPsi()).getFuncDefinition().getFuncName().getText().equals(myElement.getText())) {
-//                    return ((AbraFuncStmt) stmt.getPsi()).getFuncDefinition().getFuncName();
-//                }
-//            }else{
-//                AbraTypeOrPlaceHolderNameRef typeOrPlaceHolderNameRef = ((AbraFuncStmt) stmt.getPsi()).getFuncDefinition().getTypeOrPlaceHolderNameRef();
-//                if(typeOrPlaceHolderNameRef!=null && it.getText().equals(typeOrPlaceHolderNameRef.getText())){
-//                    return ((AbraFuncStmt) stmt.getPsi()).getFuncDefinition().getFuncName();
-//                }
-//            }
-//        }
-//        if(isTemplateRef) {
-//            //at this point it is the type name ref
-//            for (ASTNode stmt : aFile.getNode().getChildren(TokenSet.create(AbraTypes.USE_STMT))) {
-//
-//                AbraUseStmt useStmt = (AbraUseStmt) stmt.getPsi();
-//
-//                AbraTemplateName referencedTemplateName = (AbraTemplateName) useStmt.getTemplateNameRef().getReference().resolve();
-//                if (referencedTemplateName != null) {
-//                    AbraTemplateStmt abraTemplateStmt = (AbraTemplateStmt) referencedTemplateName.getParent();
-//                    String funcNameSuffixPlaceHolder = abraTemplateStmt.getFuncDefinition().getTypeOrPlaceHolderNameRef().getText();
-//                    int i = 0;
-//                    for (int j = 0; j < abraTemplateStmt.getPlaceHolderNameList().size(); j++) {
-//                        if (funcNameSuffixPlaceHolder.equals(abraTemplateStmt.getPlaceHolderNameList().get(j).getText())) {
-//                            break;
-//                        }
-//                        i++;
-//                    }
-//
-//
-//
-//                    AbraTypeNameRef typeNameRef0 = AbraPsiImplUtil.ContextStack.INSTANCE.isEmpty()?(AbraTypeNameRef) it:(AbraTypeNameRef) AbraPsiImplUtil.ContextStack.INSTANCE.resolveInContext(it.getText());
-//                    AbraTypeNameRef typeNameRef1 = useStmt.getTypeNameRefList().get(i);
-//                    if(((AbraTypeStmt)typeNameRef0.getReference().resolve().getParent()).getResolvedSize() == ((AbraTypeStmt)typeNameRef1.getReference().resolve().getParent()).getResolvedSize()) {
-//                        if ((((AbraTemplateStmtImpl) referencedTemplateName.getParent()).getFuncDefinition().getFuncName().getText()).equals(myElement.getText())) {
-//                            AbraPsiImplUtil.ContextStack.INSTANCE.push(AbraPsiImplUtil.getTemplateContextMap(useStmt));
-//                            try{
-//                                return useStmt.getTemplateNameRef();
-//                            }finally {
-//                                AbraPsiImplUtil.ContextStack.INSTANCE.pop();
-//                            }
-//                        }
-//                    }
-//
-//
-//
-//
-//                    String textToMatch = AbraPsiImplUtil.ContextStack.INSTANCE.isEmpty()?it.getText():AbraPsiImplUtil.ContextStack.INSTANCE.resolveInContext(it.getText()).getText();
-//                    String funcNameSuffix = useStmt.getTypeNameRefList().get(i).getText();
-//                    if(textToMatch.equals(funcNameSuffix)) {
-//                        if ((((AbraTemplateStmtImpl) referencedTemplateName.getParent()).getFuncDefinition().getFuncName().getText()).equals(myElement.getText())) {
-//                            AbraPsiImplUtil.ContextStack.INSTANCE.push(AbraPsiImplUtil.getTemplateContextMap(useStmt));
-//                            try{
-//                                return useStmt.getTemplateNameRef();
-//                            }finally {
-//                                AbraPsiImplUtil.ContextStack.INSTANCE.pop();
-//                            }
-//                        }
-//                    }
-//                }
-//            }
-//
-//            //now the use case of a template call from a template
-//            for(ASTNode stmt:aFile.getNode().getChildren(TokenSet.create(AbraTypes.TEMPLATE_STMT))){
-//                AbraTemplateStmt templateStmt = (AbraTemplateStmt)stmt.getPsi();
-//                if(templateStmt.getFuncDefinition().getFuncName().getText().equals(myElement.getText())){
-//                    return templateStmt.getFuncDefinition().getFuncName();
-//                }
-//            }
-//        }
-
-//        return null;
+        return null;//resolveFromImports(aFile, constExpr);
     }
 
     private int sizeOfNamedParam(AbraUseStmt useStmt, AbraTemplateStmt templateStmt, String typeRefName){
