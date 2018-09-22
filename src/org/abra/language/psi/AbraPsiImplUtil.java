@@ -30,19 +30,19 @@ public class AbraPsiImplUtil {
 
     public static ItemPresentation getPresentation(AbraTypeStmt element) {
         return new ItemPresentation() {
-            @Nullable
+            @NotNull
             @Override
             public String getPresentableText() {
                 return element.getTypeName().getText();
             }
 
-            @Nullable
+            @NotNull
             @Override
             public String getLocationString() {
                 return "[" + element.getResolvedSize() + "]";
             }
 
-            @Nullable
+            @NotNull
             @Override
             public Icon getIcon(boolean unused) {
                 return AbraIcons.TYPE;
@@ -103,20 +103,20 @@ public class AbraPsiImplUtil {
 
     public static ItemPresentation getPresentation(AbraLutStmt element) {
         return new ItemPresentation() {
-            @Nullable
+            @NotNull
             @Override
             public String getPresentableText() {
                 return element.getLutName().getText();
             }
 
-            @Nullable
+            @NotNull
             @Override
             public String getLocationString() {
                 return "("+element.getLutEntryList().get(0).getInputLength()+") -> "+
                            element.getLutEntryList().get(0).getOutputLength();
             }
 
-            @Nullable
+            @NotNull
             @Override
             public Icon getIcon(boolean unused) {
                 return AbraIcons.LUT;
@@ -167,19 +167,19 @@ public class AbraPsiImplUtil {
 
     public static ItemPresentation getPresentation(AbraFieldSpec element) {
         return new ItemPresentation() {
-            @Nullable
+            @NotNull
             @Override
             public String getPresentableText() {
                 return element.getFieldName().getText();
             }
 
-            @Nullable
+            @NotNull
             @Override
             public String getLocationString() {
                 return "["+element.getStaticTypeSize().getResolvedSize()+"]";
             }
 
-            @Nullable
+            @NotNull
             @Override
             public Icon getIcon(boolean unused) {
                 return AbraIcons.VECTOR;
@@ -193,13 +193,13 @@ public class AbraPsiImplUtil {
 
     public static ItemPresentation getPresentation(AbraFuncStmt element) {
         return new ItemPresentation() {
-            @Nullable
+            @NotNull
             @Override
             public String getPresentableText() {
                 return element.getFuncDefinition().getFuncName().getText();
             }
 
-            @Nullable
+            @NotNull
             @Override
             public String getLocationString() {
                 StringBuilder sb = new StringBuilder("( ");
@@ -218,7 +218,7 @@ public class AbraPsiImplUtil {
                 return sb.toString();
             }
 
-            @Nullable
+            @NotNull
             @Override
             public Icon getIcon(boolean unused) {
                 return AbraIcons.FUNCTION;
@@ -267,7 +267,7 @@ public class AbraPsiImplUtil {
 
     public static ItemPresentation getPresentation(AbraTemplateStmt element) {
         return new ItemPresentation() {
-            @Nullable
+            @NotNull
             @Override
             public String getPresentableText() {
                 StringBuilder sb = new StringBuilder("<");
@@ -281,7 +281,7 @@ public class AbraPsiImplUtil {
                 return element.getTemplateName().getText()+sb.toString();
             }
 
-            @Nullable
+            @NotNull
             @Override
             public String getLocationString() {
                 if(element.getFuncDefinition().getTypeSize()==null)
@@ -290,7 +290,7 @@ public class AbraPsiImplUtil {
                         ,element.getFuncDefinition().getText().indexOf("=")).trim()+ " -> "+element.getFuncDefinition().getTypeSize().getText().substring(1,element.getFuncDefinition().getTypeSize().getTextLength()-1);
             }
 
-            @Nullable
+            @NotNull
             @Override
             public Icon getIcon(boolean unused) {
                 return AbraIcons.TEMPLATE;
@@ -336,14 +336,14 @@ public class AbraPsiImplUtil {
     }
 
 
-    public static String getExpandedFunctionName(AbraTemplateStmt templateStmt, Map<Integer, AbraTypeNameRef> resolutionMap){
+    private static String getExpandedFunctionName(AbraTemplateStmt templateStmt, Map<Integer, AbraTypeNameRef> resolutionMap){
         int index = getPlaceHolderIndex(templateStmt.getFuncDefinition().getTypeOrPlaceHolderNameRef());
         if(index==-1) return "";
         return templateStmt.getFuncDefinition().getFuncName().getText()+"<"+resolutionMap.get(index).getText()+">";
     }
 
 
-    public static String getExpandedFunctionParameters(AbraTemplateStmt templateStmt, Map<Integer, AbraTypeNameRef> resolutionMap){
+    private static String getExpandedFunctionParameters(AbraTemplateStmt templateStmt, Map<Integer, AbraTypeNameRef> resolutionMap){
         StringBuilder sb = new StringBuilder();
         int i=0;
         for(AbraFuncParameter p:templateStmt.getFuncDefinition().getFuncParameterList()){
@@ -354,7 +354,7 @@ public class AbraPsiImplUtil {
         return sb.toString();
     }
 
-    public static String getExpandedReturnType(AbraTemplateStmt templateStmt, Map<Integer, AbraTypeNameRef> resolutionMap){
+    private static String getExpandedReturnType(AbraTemplateStmt templateStmt, Map<Integer, AbraTypeNameRef> resolutionMap){
         return ""+getResolvedSize(templateStmt.getFuncDefinition().getTypeSize().getConstExpr(), resolutionMap, templateStmt);
     }
 
@@ -364,7 +364,7 @@ public class AbraPsiImplUtil {
 
     public static ItemPresentation getPresentation(AbraUseStmt element) {
         return new ItemPresentation() {
-            @Nullable
+            @NotNull
             @Override
             public String getPresentableText() {
                 AbraTemplateName templateName = (AbraTemplateName) element.getTemplateNameRef().getReference().resolve();
@@ -372,19 +372,17 @@ public class AbraPsiImplUtil {
                 return getExpandedFunctionName((AbraTemplateStmt) templateName.getParent(), getResolutionMap(element));
             }
 
-            @Nullable
+            @NotNull
             @Override
             public String getLocationString() {
                 AbraTemplateName templateName = (AbraTemplateName) element.getTemplateNameRef().getReference().resolve();
                 if(templateName==null)return "?";
                 AbraTemplateStmt templateStmt = (AbraTemplateStmt) templateName.getParent();
-                StringBuilder sb = new StringBuilder("( ");
-                sb.append(getExpandedFunctionParameters(templateStmt, getResolutionMap(element)));
-                sb.append(" ) -> "+getExpandedReturnType(templateStmt, getResolutionMap(element)));
-                return sb.toString();
+                return "( " + getExpandedFunctionParameters(templateStmt, getResolutionMap(element)) +
+                        " ) -> " + getExpandedReturnType(templateStmt, getResolutionMap(element));
             }
 
-            @Nullable
+            @NotNull
             @Override
             public Icon getIcon(boolean unused) {
                 return AbraIcons.FUNCTION;
@@ -486,11 +484,11 @@ public class AbraPsiImplUtil {
             if(resolved instanceof AbraPlaceHolderName){
                 resolved = ContextStack.INSTANCE.resolveInContext((AbraPlaceHolderName) resolved);
                 if(resolved instanceof AbraPlaceHolderName){
-                    return ((AbraTypeStmt)((AbraTypeNameRef)ContextStack.INSTANCE.get().peek().get(resolved)).getParent()).getStaticTypeSize().getResolvedSize();
+                    return ((AbraTypeStmt) ContextStack.INSTANCE.get().peek().get(resolved).getParent()).getStaticTypeSize().getResolvedSize();
                 }
             }
             if(resolved instanceof AbraTypeName){
-                return ((AbraTypeStmt)((AbraTypeName)resolved).getParent()).getResolvedSize();
+                return ((AbraTypeStmt) resolved.getParent()).getResolvedSize();
             }
         }
         throw new UnresolvableTokenException(sliceExpr.getText());
@@ -852,20 +850,18 @@ public class AbraPsiImplUtil {
     public static PsiReference[] getReferences(AbraImportStmt importStmt){
         List<PsiReference> importedFiles = new ArrayList<>();
         VirtualFile srcRoot = importStmt.getSourceRoot();
-        if(importStmt!=null){
-            VirtualFile target = LocalFileSystem.getInstance().findFileByIoFile(new File(srcRoot.getPath(),importStmt.getFilePath().getText()));
-            if(target!=null){
-                VirtualFile[] children = target.getChildren();
-                for(VirtualFile child:children){
-                    if(!child.isDirectory() && child.getFileType()==AbraFileType.INSTANCE){
-                        importedFiles.add(new AbraFileReferencePsiReferenceImpl(importStmt, child));
-                    }
+        VirtualFile target = LocalFileSystem.getInstance().findFileByIoFile(new File(srcRoot.getPath(),importStmt.getFilePath().getText()));
+        if(target!=null){
+            VirtualFile[] children = target.getChildren();
+            for(VirtualFile child:children){
+                if(!child.isDirectory() && child.getFileType()==AbraFileType.INSTANCE){
+                    importedFiles.add(new AbraFileReferencePsiReferenceImpl(importStmt, child));
                 }
-            }else{
-                target = LocalFileSystem.getInstance().findFileByIoFile(new File(srcRoot.getPath(),importStmt.getFilePath().getText()+".abra"));
-                if(target!=null) {
-                    importedFiles.add(new AbraFileReferencePsiReferenceImpl(importStmt, target));
-                }
+            }
+        }else{
+            target = LocalFileSystem.getInstance().findFileByIoFile(new File(srcRoot.getPath(),importStmt.getFilePath().getText()+".abra"));
+            if(target!=null) {
+                importedFiles.add(new AbraFileReferencePsiReferenceImpl(importStmt, target));
             }
         }
         PsiReference[] arr = new PsiReference[importedFiles.size()];
@@ -885,12 +881,8 @@ public class AbraPsiImplUtil {
         Module[] modules = manager.getModules();
         for (Module module : modules) {
             ModuleRootManager root = ModuleRootManager.getInstance(module);
-            for (VirtualFile file : root.getSourceRoots()) {
-                allRoots.add(file);
-            }
-            for(VirtualFile contentRoot:root.getContentRoots()){
-                allRoots.add(contentRoot);
-            }
+            allRoots.addAll(Arrays.asList(root.getSourceRoots()));
+            allRoots.addAll(Arrays.asList(root.getContentRoots()));
         }
         return allRoots;
     }
@@ -989,108 +981,11 @@ public class AbraPsiImplUtil {
         return lutEntry.getTritListList().get(1).getLength();
     }
 
-    private static boolean containsErrorOrUnresolved(AbraConstExpr expr){
-        return expr.getText().contains("UNRESOLVED") || expr.getText().contains("ERROR");
-    }
-    public static AbraConstExpr sum(AbraConstExpr a, AbraConstExpr b){
-        if(a==null){
-            int bInt = b.getResolvedSize();
-            if(bInt>0) return AbraElementFactory.createAbraConstExpr(b.getProject(),""+bInt);
-            return b;
-        }
-        int aInt = a.getResolvedSize();
-        int bInt = b.getResolvedSize();
-        if(aInt>0){
-            if(bInt>0){
-                return AbraElementFactory.createAbraConstExpr(a.getProject(),""+(aInt+bInt));
-            }
-            if(containsErrorOrUnresolved(b))return AbraElementFactory.createAbraConstExpr(a.getProject(),"UNRESOLVED");
-            return AbraElementFactory.createAbraConstExpr(a.getProject(),""+aInt+"+("+b.getText()+")");
-        }else{
-            if(containsErrorOrUnresolved(a))return AbraElementFactory.createAbraConstExpr(a.getProject(),"UNRESOLVED");
-            if(bInt>0){
-                return AbraElementFactory.createAbraConstExpr(a.getProject(),""+a.getText()+"+"+bInt);
-            }else{
-                return AbraElementFactory.createAbraConstExpr(a.getProject(),""+a.getText()+"+("+b.getText()+")");
-            }
-        }
-    }
 
-    public static AbraConstExpr diff(AbraConstExpr a, AbraConstExpr b){
-        int aInt = a.getResolvedSize();
-        int bInt = b.getResolvedSize();
-        if(aInt>0){
-            if(bInt>0){
-                return AbraElementFactory.createAbraConstExpr(a.getProject(),""+(aInt-bInt));
-            }
-            if(containsErrorOrUnresolved(b))return AbraElementFactory.createAbraConstExpr(a.getProject(),"UNRESOLVED");
-            return AbraElementFactory.createAbraConstExpr(a.getProject(),""+aInt+"-("+b.getText()+")");
-        }else{
-            if(containsErrorOrUnresolved(a))return AbraElementFactory.createAbraConstExpr(a.getProject(),"UNRESOLVED");
-            if(bInt>0){
-                return AbraElementFactory.createAbraConstExpr(a.getProject(),"("+a.getText()+")-"+bInt);
-            }else{
-                return AbraElementFactory.createAbraConstExpr(a.getProject(),""+a.getText()+"-("+b.getText()+")");
-            }
-        }
-    }
+    //====================================================================
+    //=============== Helper for UseStatement resolution =================
+    //====================================================================
 
-    public static AbraConstExpr mult(AbraConstExpr a, AbraConstExpr b){
-        int aInt = a.getResolvedSize();
-        int bInt = b.getResolvedSize();
-        if(aInt>0){
-            if(bInt>0){
-                return AbraElementFactory.createAbraConstExpr(a.getProject(),""+(aInt*bInt));
-            }
-            if(containsErrorOrUnresolved(b))return AbraElementFactory.createAbraConstExpr(a.getProject(),"UNRESOLVED");
-            return AbraElementFactory.createAbraConstExpr(a.getProject(),""+aInt+"*("+b.getText()+")");
-        }else{
-            if(containsErrorOrUnresolved(a))return AbraElementFactory.createAbraConstExpr(a.getProject(),"UNRESOLVED");
-            if(bInt>0){
-                return AbraElementFactory.createAbraConstExpr(a.getProject(),""+a.getText()+"*"+bInt);
-            }else{
-                return AbraElementFactory.createAbraConstExpr(a.getProject(),""+a.getText()+"*("+b.getText()+")");
-            }
-        }
-    }
-
-    public static AbraConstExpr div(AbraConstExpr a, AbraConstExpr b){
-        int aInt = a.getResolvedSize();
-        int bInt = b.getResolvedSize();
-        if(aInt>0){
-            if(bInt>0){
-                return AbraElementFactory.createAbraConstExpr(a.getProject(),""+(aInt/bInt));
-            }
-            if(containsErrorOrUnresolved(b))return AbraElementFactory.createAbraConstExpr(a.getProject(),"UNRESOLVED");
-            return AbraElementFactory.createAbraConstExpr(a.getProject(),""+aInt+"/("+b.getText()+")");
-        }else{
-            if(containsErrorOrUnresolved(a))return AbraElementFactory.createAbraConstExpr(a.getProject(),"UNRESOLVED");
-            if(bInt>0){
-                return AbraElementFactory.createAbraConstExpr(a.getProject(),""+a.getText()+")/"+bInt);
-            }else{
-                return AbraElementFactory.createAbraConstExpr(a.getProject(),""+a.getText()+"/("+b.getText()+")");
-            }
-        }
-    }
-
-    public static AbraConstExpr modulo(AbraConstExpr a, AbraConstExpr b){
-        int aInt = a.getResolvedSize();
-        int bInt = b.getResolvedSize();
-        if(aInt>0){
-            if(bInt>0){
-                return AbraElementFactory.createAbraConstExpr(a.getProject(),""+(aInt%bInt));
-            }
-            if(containsErrorOrUnresolved(b))return AbraElementFactory.createAbraConstExpr(a.getProject(),"UNRESOLVED");
-            return AbraElementFactory.createAbraConstExpr(a.getProject(),""+aInt+"%("+b.getText()+")");
-        }else{
-            if(containsErrorOrUnresolved(a))return AbraElementFactory.createAbraConstExpr(a.getProject(),"UNRESOLVED");
-            if(bInt>0){
-                return AbraElementFactory.createAbraConstExpr(a.getProject(),""+a.getText()+"%"+bInt);
-            }else{
-                return AbraElementFactory.createAbraConstExpr(a.getProject(),""+a.getText()+"%("+b.getText()+")");
-            }
-        }
-    }
 
     public static class ContextStack extends ThreadLocal<Stack<Map<AbraPlaceHolderName, AbraTypeNameRef>>>{
 
@@ -1116,12 +1011,7 @@ public class AbraPsiImplUtil {
             }
             return elementToResolve;
         }
-        public PsiElement resolveInContext(String elementToResolve){
-            for(PsiElement key:get().peek().keySet()){
-                if(key.getText().equals(elementToResolve))return get().peek().get(key);
-            }
-            return null;
-        }
+
         public boolean isEmpty() {
             return get()==null || get().size()==0;
         }
