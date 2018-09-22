@@ -13,6 +13,7 @@ import org.abra.language.AbraFileType;
 import org.abra.language.AbraIcons;
 import org.abra.language.UnresolvableTokenException;
 import org.abra.language.psi.impl.*;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import javax.swing.*;
@@ -812,34 +813,42 @@ public class AbraPsiImplUtil {
     //====================== References ==================================
     //====================================================================
 
+    @NotNull
     public static PsiReference getReference(AbraFieldNameRef fieldNameRef) {
         return new AbraFieldPsiReferenceImpl(fieldNameRef);
     }
 
+    @NotNull
     public static PsiReference getReference(AbraTypeNameRef typeNameRef) {
         return new AbraTypePsiReferenceImpl(typeNameRef);
     }
 
+    @NotNull
     public static PsiReference getReference(AbraTemplateNameRef templateNameRef) {
         return new AbraTemplatePsiReferenceImpl(templateNameRef);
     }
 
+    @NotNull
     public static PsiReference getReference(AbraLutOrParamOrVarNameRef lutOrParamOrVarNameRef) {
         return new AbraLutOrVarOrParamPsiReferenceImpl(lutOrParamOrVarNameRef);
     }
 
+    @NotNull
     public static PsiReference getReference(AbraParamOrVarNameRef paramOrVarNameRef) {
         return new AbraVarOrParamPsiReferenceImpl(paramOrVarNameRef);
     }
 
+    @NotNull
     public static PsiReference getReference(AbraTypeOrPlaceHolderNameRef typeOrPlaceHolderNameRef) {
         return new AbraTypeOrPlaceHolderPsiReferenceImpl(typeOrPlaceHolderNameRef);
     }
 
+    @NotNull
     public static PsiReference getReference(AbraFuncNameRef funcNameRef) {
         return new AbraFuncPsiReferenceImpl(funcNameRef);
     }
 
+    @NotNull
     public static PsiReference[] getReferences(AbraImportStmt importStmt){
         List<PsiReference> importedFiles = new ArrayList<>();
         VirtualFile srcRoot = importStmt.getSourceRoot();
