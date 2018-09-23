@@ -261,6 +261,12 @@ public class AbraPsiImplUtil {
     public static PsiElement getNameIdentifier(AbraFuncName element) {
         return element;
     }
+
+    public static AbraDefinition getStatement(AbraFuncNameRef element){
+        PsiElement abraDefinition = element;
+        while(!(abraDefinition instanceof AbraDefinition))abraDefinition = abraDefinition.getParent();
+        return (AbraDefinition) abraDefinition;
+    }
     //====================================================================
     //====================== AbraTemplateStmt ============================
     //====================================================================

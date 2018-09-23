@@ -65,12 +65,22 @@ public class AbraVarOrParamPsiReferenceImpl extends PsiReferenceBase implements 
             }
         }
         //look in function parameters
-        while(!(funcBody instanceof AbraFuncName)){
-            funcBody = funcBody.getPrevSibling();
-            if(funcBody instanceof AbraFuncParameter){
-                AbraFuncParameter p = (AbraFuncParameter)funcBody;
+        PsiElement funcParam = funcBody;
+        while(!(funcParam instanceof AbraFuncName)){
+            funcParam = funcParam.getPrevSibling();
+            if(funcParam instanceof AbraFuncParameter){
+                AbraFuncParameter p = (AbraFuncParameter)funcParam;
                 if(p.getParamName().getText().equals(myElement.getText())){
                     return p.getParamName();
+                }
+            }
+        }
+
+        if(funcBody.getParent().getParent() instanceof AbraTemplateStmt){
+            AbraTemplateStmt templateStmt = (AbraTemplateStmt)funcBody.getParent().getParent();
+            for(AbraPlaceHolderName phn:templateStmt.getPlaceHolderNameList()){
+                if(phn.getText().equals(myElement.getText())){
+                    return phn;
                 }
             }
         }

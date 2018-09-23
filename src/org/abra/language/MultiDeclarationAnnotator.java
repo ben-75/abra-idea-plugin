@@ -17,6 +17,18 @@ public class MultiDeclarationAnnotator implements Annotator {
         AbraConstExpr constExpr = null;
         if (element instanceof AbraFuncStmt) {
             functionReference = AbraElementFactory.createAbraFunctionReference(element.getProject(),((AbraFuncStmt)element).getFuncDefinition().getFuncName().getText(),(AbraFile) element.getContainingFile().getContainingFile());
+            if(((AbraFuncStmt)element).getFuncDefinition().getTypeOrPlaceHolderNameRef()!=null){
+                PsiElement resolved = ((AbraFuncStmt)element).getFuncDefinition().getTypeOrPlaceHolderNameRef().getReference().resolve();
+                if(resolved instanceof AbraTypeName){
+                    AbraTypeStmt typeStmt = (AbraTypeStmt)resolved.getParent();
+                    if(typeStmt.getStaticTypeSize()!=null) {
+                        constExpr = AbraElementFactory.createAbraConstExpr(element.getProject(), "" + typeStmt.getStaticTypeSize().getResolvedSize());
+                    }else{
+                        constExpr = AbraElementFactory.createAbraConstExpr(element.getProject(), "" + typeStmt.getFieldSpecList().get(typeStmt.getFieldSpecList().size()-1).getStaticTypeSize().getResolvedSize());
+                    }
+                }
+            }
+
         }else if(element instanceof AbraUseStmt){
 
             AbraTemplateName templateName = (AbraTemplateName) ((AbraUseStmt)element).getTemplateNameRef().getReference().resolve();
@@ -36,11 +48,17 @@ public class MultiDeclarationAnnotator implements Annotator {
                         if(resolved!=((AbraFuncStmt)element).getFuncDefinition().getFuncName()){
                             TextRange range = new TextRange(element.getTextRange().getStartOffset(),element.getTextRange().getEndOffset());
                             holder.createErrorAnnotation(range, "Duplicate declaration");
+
+                            TextRange range2 = new TextRange(resolved.getTextRange().getStartOffset(),resolved.getTextRange().getEndOffset());
+                            holder.createErrorAnnotation(range2, "Duplicate declaration");
                         }
                     }else if(element instanceof AbraUseStmt){
                         if(resolved!=((AbraUseStmt)element).getTemplateNameRef()){
                             TextRange range = new TextRange(element.getTextRange().getStartOffset(), element.getTextRange().getEndOffset());
                             holder.createErrorAnnotation(range, "Duplicate declaration");
+
+                            TextRange range2 = new TextRange(resolved.getTextRange().getStartOffset(),resolved.getTextRange().getEndOffset());
+                            holder.createErrorAnnotation(range2, "Duplicate declaration");
                         }
                     }
                 }

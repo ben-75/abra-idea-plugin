@@ -166,6 +166,6 @@ typeNameRef                 ::= IDENTIFIER      {implements="org.abra.language.p
 fieldNameRef                ::= IDENTIFIER      {implements="org.abra.language.psi.AbraResolvable" methods = [getReference getResolvedSize]}
 lutOrParamOrVarNameRef      ::= IDENTIFIER      {implements="org.abra.language.psi.AbraResolvable" methods = [getReference]}
 templateNameRef             ::= IDENTIFIER      {implements="org.abra.language.psi.AbraResolvable" methods = [getReference]}
-funcNameRef                 ::= IDENTIFIER      {implements="org.abra.language.psi.AbraResolvable" methods = [getReference getFuncExpr]}
+funcNameRef                 ::= IDENTIFIER      {implements="org.abra.language.psi.AbraResolvable" methods = [getReference getFuncExpr getStatement]}
 paramOrVarNameRef           ::= IDENTIFIER      {implements="org.abra.language.psi.AbraResolvable" methods = [getReference getResolvedSize ]}
 typeOrPlaceHolderNameRef    ::= IDENTIFIER      {implements="org.abra.language.psi.AbraResolvable" methods = [getReference getTemplateStatement getPlaceHolderIndex]}

@@ -15,6 +15,9 @@ import java.util.List;
 public class FunctionReferenceAnnotator implements Annotator {
     @Override
     public void annotate(@NotNull final PsiElement element, @NotNull AnnotationHolder holder) {
+        if(element instanceof AbraFile){
+            System.out.println("just a test");
+        }
         if(element instanceof AbraResolvable){
             if(element.getReference()==null)return;
             PsiReference psiReference = element.getReference();
