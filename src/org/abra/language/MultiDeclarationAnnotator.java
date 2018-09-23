@@ -7,33 +7,46 @@ import com.intellij.openapi.editor.DefaultLanguageHighlighterColors;
 import com.intellij.openapi.util.TextRange;
 import com.intellij.psi.PsiElement;
 import org.abra.language.psi.*;
+import org.abra.language.psi.impl.AbraFuncPsiReferenceImpl;
 import org.jetbrains.annotations.NotNull;
 
 public class MultiDeclarationAnnotator implements Annotator {
     @Override
     public void annotate(@NotNull final PsiElement element, @NotNull AnnotationHolder holder) {
-//        AbraFuncNameRef functionReference = null;
-//        if (element instanceof AbraFuncStmt) {
-//            functionReference = AbraElementFactory.createAbraFunctionReference(element.getProject(),((AbraFuncStmt)element).getFunctionIdentifier().getText());
-//        }else if(element instanceof AbraFunctionInstanciation){
-//            functionReference = AbraElementFactory.createAbraFunctionReference(element.getProject(),((AbraFunctionInstanciation)element).getExpandedName());
-//        }
-//        if(functionReference!=null){
-//            AbraFunctionReferencePsiReferenceImpl dummy = new AbraFunctionReferencePsiReferenceImpl(functionReference);
-//            PsiElement resolved = dummy.resolveFunctionReference(element.getContainingFile(), true);
-//            if(resolved!=null){
-//                if (element instanceof AbraFuncStmt) {
-//                    if(resolved!=((AbraFuncStmt)element).getFunctionIdentifier()){
-//                        TextRange range = new TextRange(element.getTextRange().getStartOffset(),element.getTextRange().getEndOffset());
-//                        holder.createErrorAnnotation(range, "Duplicate declaration");
-//                    }
-//                }else if(element instanceof AbraFunctionInstanciation){
-//                    if(resolved!=element){
-//                        TextRange range = new TextRange(element.getTextRange().getStartOffset(), element.getTextRange().getEndOffset());
-//                        holder.createErrorAnnotation(range, "Duplicate declaration");
-//                    }
-//                }
-//            }
-//        }
+        AbraFuncNameRef functionReference = null;
+        AbraConstExpr constExpr = null;
+        if (element instanceof AbraFuncStmt) {
+            functionReference = AbraElementFactory.createAbraFunctionReference(element.getProject(),((AbraFuncStmt)element).getFuncDefinition().getFuncName().getText(),(AbraFile) element.getContainingFile().getContainingFile());
+        }else if(element instanceof AbraUseStmt){
+
+            AbraTemplateName templateName = (AbraTemplateName) ((AbraUseStmt)element).getTemplateNameRef().getReference().resolve();
+            if(templateName==null)return;
+            String expandedFuncName = AbraPsiImplUtil.getExpandedFunctionName((AbraTemplateStmt) templateName.getParent(),AbraPsiImplUtil.getResolutionMap((AbraUseStmt)element));
+            String funcName = expandedFuncName.substring(0,expandedFuncName.indexOf("<"));
+            functionReference = AbraElementFactory.createAbraFunctionReference(element.getProject(),funcName,(AbraFile) element.getContainingFile().getContainingFile());
+            String constLiteral = expandedFuncName.substring(expandedFuncName.indexOf("<")+1,expandedFuncName.length()-1);
+            constExpr = AbraElementFactory.createAbraConstExpr(element.getProject(),constLiteral);
+        }
+        if(functionReference!=null){
+            AbraFuncPsiReferenceImpl dummy = new AbraFuncPsiReferenceImpl(functionReference);
+            try{
+                PsiElement resolved = dummy.resolveInFile(element.getContainingFile(), constExpr);
+                if(resolved!=null){
+                    if (element instanceof AbraFuncStmt) {
+                        if(resolved!=((AbraFuncStmt)element).getFuncDefinition().getFuncName()){
+                            TextRange range = new TextRange(element.getTextRange().getStartOffset(),element.getTextRange().getEndOffset());
+                            holder.createErrorAnnotation(range, "Duplicate declaration");
+                        }
+                    }else if(element instanceof AbraUseStmt){
+                        if(resolved!=((AbraUseStmt)element).getTemplateNameRef()){
+                            TextRange range = new TextRange(element.getTextRange().getStartOffset(), element.getTextRange().getEndOffset());
+                            holder.createErrorAnnotation(range, "Duplicate declaration");
+                        }
+                    }
+                }
+            }catch (UnresolvableTokenException e){
+                //ignore
+            }
+        }
     }
 }

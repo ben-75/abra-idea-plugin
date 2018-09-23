@@ -12,6 +12,9 @@ import org.abra.language.psi.*;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class AbraLutOrVarOrParamPsiReferenceImpl extends PsiReferenceBase implements PsiReference {
 
 
@@ -93,17 +96,28 @@ public class AbraLutOrVarOrParamPsiReferenceImpl extends PsiReferenceBase implem
         return null;
     }
 
-    private AbraLutName resolveFromImports(PsiFile startingFile){
-        for(ASTNode stmt:startingFile.getNode().getChildren(TokenSet.create(AbraTypes.IMPORT_STMT))){
-            PsiReference[] importedFiles = AbraPsiImplUtil.getReferences((AbraImportStmt) stmt.getPsi());
-            if(importedFiles!=null) {
-                for (PsiReference psiRef : importedFiles) {
-                    PsiElement anAbraFile = psiRef.resolve();
-                    if(anAbraFile!=null){
-                        AbraLutName resolved = resolveInFile((PsiFile) anAbraFile);
-                        if(resolved!=null)return resolved;
-                    }
-                }
+//    private AbraLutName resolveFromImports(PsiFile startingFile){
+//        for(ASTNode stmt:startingFile.getNode().getChildren(TokenSet.create(AbraTypes.IMPORT_STMT))){
+//            PsiReference[] importedFiles = AbraPsiImplUtil.getReferences((AbraImportStmt) stmt.getPsi());
+//            if(importedFiles!=null) {
+//                for (PsiReference psiRef : importedFiles) {
+//                    PsiElement anAbraFile = psiRef.resolve();
+//                    if(anAbraFile!=null){
+//                        AbraLutName resolved = resolveInFile((PsiFile) anAbraFile);
+//                        if(resolved!=null)return resolved;
+//                    }
+//                }
+//            }
+//        }
+//        return null;
+//    }
+
+    private PsiElement resolveFromImports(PsiFile startingFile){
+        List<AbraFile> importsTree = (((AbraFile)startingFile).getImportTree(new ArrayList<>()));
+        if(importsTree.size()>0){
+            for(PsiFile f:importsTree){
+                PsiElement resolved = resolveInFile(f);
+                if(resolved!=null)return resolved;
             }
         }
         return null;

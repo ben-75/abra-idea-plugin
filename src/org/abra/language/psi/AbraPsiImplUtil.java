@@ -4,6 +4,7 @@ import com.intellij.lang.ASTNode;
 import com.intellij.navigation.ItemPresentation;
 import com.intellij.openapi.module.Module;
 import com.intellij.openapi.module.ModuleManager;
+import com.intellij.openapi.project.Project;
 import com.intellij.openapi.roots.ModuleRootManager;
 import com.intellij.openapi.vfs.LocalFileSystem;
 import com.intellij.openapi.vfs.VirtualFile;
@@ -335,7 +336,7 @@ public class AbraPsiImplUtil {
     }
 
 
-    private static String getExpandedFunctionName(AbraTemplateStmt templateStmt, Map<Integer, AbraTypeNameRef> resolutionMap){
+    public static String getExpandedFunctionName(AbraTemplateStmt templateStmt, Map<Integer, AbraTypeNameRef> resolutionMap){
         int index = getPlaceHolderIndex(templateStmt.getFuncDefinition().getTypeOrPlaceHolderNameRef());
         if(index==-1) return "";
         return templateStmt.getFuncDefinition().getFuncName().getText()+"<"+resolutionMap.get(index).getText()+">";
@@ -694,7 +695,7 @@ public class AbraPsiImplUtil {
                 return ((AbraTypeStmt)resolved.getParent()).getResolvedSize();
             }
         }
-        throw new UnresolvableTokenException(element.getText());
+        throw new UnresolvableTokenException(element.getText()+ " in file "+element.getContainingFile().getName());
     }
 
     public static int getResolvedSize(AbraStaticConstPrimary element) throws UnresolvableTokenException {
@@ -868,15 +869,22 @@ public class AbraPsiImplUtil {
     }
 
     public static VirtualFile getSourceRoot(AbraImportStmt importStmt){
-        List<VirtualFile> allRoots = getAllSourceRoot(importStmt);
+        List<VirtualFile> allRoots = getAllSourceRoot(importStmt.getProject());
         VirtualFile srcRoot = importStmt.getContainingFile().getVirtualFile();
         while(srcRoot!=null && !allRoots.contains(srcRoot))srcRoot = srcRoot.getParent();
         return srcRoot;
     }
 
-    private static List<VirtualFile> getAllSourceRoot(AbraImportStmt importStmt){
+    public static VirtualFile getSourceRoot(Project project, VirtualFile file){
+        List<VirtualFile> allRoots = getAllSourceRoot(project);
+        VirtualFile srcRoot = file;
+        while(srcRoot!=null && !allRoots.contains(srcRoot))srcRoot = srcRoot.getParent();
+        return srcRoot;
+    }
+
+    public static List<VirtualFile> getAllSourceRoot(Project project){
         ArrayList<VirtualFile> allRoots = new ArrayList<>();
-        ModuleManager manager = ModuleManager.getInstance(importStmt.getProject());
+        ModuleManager manager = ModuleManager.getInstance(project);
         Module[] modules = manager.getModules();
         for (Module module : modules) {
             ModuleRootManager root = ModuleRootManager.getInstance(module);

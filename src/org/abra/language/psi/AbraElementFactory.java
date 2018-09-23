@@ -1,8 +1,11 @@
 package org.abra.language.psi;
 
 import com.intellij.openapi.project.Project;
+import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.psi.*;
 import org.abra.language.AbraFileType;
+
+import java.util.List;
 
 /**
  * Factory for AbraPsi elements
@@ -58,6 +61,16 @@ public class AbraElementFactory {
         return ((AbraFuncStmt)file.getFirstChild()).getFuncDefinition().getFuncBody().getMergeExpr().getConcatExprList().get(0).getFuncExprList().get(0).getFuncNameRef();
     }
 
+    public static AbraFuncNameRef createAbraFunctionReference(Project project, String name, AbraFile originalFile) {
+        StringBuilder sb = new StringBuilder("");
+        if(originalFile!=null){
+            sb.append("import ").append(originalFile.getImportableFilePath()).append(";");
+        }
+
+
+        final AbraFile file = createFile(project, sb.toString()+"f(p [1])={"+name+"(1);};");
+        return ((AbraFuncStmt)file.getFirstChild().getNextSibling().getNextSibling()).getFuncDefinition().getFuncBody().getMergeExpr().getConcatExprList().get(0).getFuncExprList().get(0).getFuncNameRef();
+    }
 
     public static AbraTypeNameRef createAbraTypeNameRef(Project project, String name) {
         final AbraFile file = createFile(project, "f<"+name+">;");

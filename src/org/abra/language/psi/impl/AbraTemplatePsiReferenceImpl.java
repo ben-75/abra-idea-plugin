@@ -12,6 +12,9 @@ import org.abra.language.psi.*;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class AbraTemplatePsiReferenceImpl extends PsiReferenceBase implements PsiReference {
 
 
@@ -59,17 +62,28 @@ public class AbraTemplatePsiReferenceImpl extends PsiReferenceBase implements Ps
         return null;
     }
 
-    private AbraTemplateName resolveFromImports(PsiFile startingFile){
-        for(ASTNode stmt:startingFile.getNode().getChildren(TokenSet.create(AbraTypes.IMPORT_STMT))){
-            PsiReference[] importedFiles = AbraPsiImplUtil.getReferences((AbraImportStmt) stmt.getPsi());
-            if(importedFiles!=null) {
-                for (PsiReference psiRef : importedFiles) {
-                    PsiElement anAbraFile = psiRef.resolve();
-                    if(anAbraFile!=null){
-                        AbraTemplateName resolved = resolveInFile((PsiFile) anAbraFile);
-                        if(resolved!=null)return resolved;
-                    }
-                }
+//    private AbraTemplateName resolveFromImports(PsiFile startingFile){
+//        for(ASTNode stmt:startingFile.getNode().getChildren(TokenSet.create(AbraTypes.IMPORT_STMT))){
+//            PsiReference[] importedFiles = AbraPsiImplUtil.getReferences((AbraImportStmt) stmt.getPsi());
+//            if(importedFiles!=null) {
+//                for (PsiReference psiRef : importedFiles) {
+//                    PsiElement anAbraFile = psiRef.resolve();
+//                    if(anAbraFile!=null){
+//                        AbraTemplateName resolved = resolveInFile((PsiFile) anAbraFile);
+//                        if(resolved!=null)return resolved;
+//                    }
+//                }
+//            }
+//        }
+//        return null;
+//    }
+
+    private PsiElement resolveFromImports(PsiFile startingFile){
+        List<AbraFile> importsTree = (((AbraFile)startingFile).getImportTree(new ArrayList<>()));
+        if(importsTree.size()>0){
+            for(PsiFile f:importsTree){
+                PsiElement resolved = resolveInFile(f);
+                if(resolved!=null)return resolved;
             }
         }
         return null;

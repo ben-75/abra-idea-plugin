@@ -1,12 +1,20 @@
 package org.abra.language.psi;
 
 import com.intellij.extapi.psi.PsiFileBase;
+import com.intellij.lang.ASTNode;
 import com.intellij.openapi.fileTypes.FileType;
+import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.psi.FileViewProvider;
+import com.intellij.psi.PsiElement;
+import com.intellij.psi.PsiFile;
+import com.intellij.psi.PsiReference;
+import com.intellij.psi.tree.TokenSet;
 import org.abra.language.AbraFileType;
 import org.abra.language.AbraLanguage;
 import org.jetbrains.annotations.NotNull;
 import javax.swing.*;
+import java.util.ArrayList;
+import java.util.List;
 
 
 public class AbraFile extends PsiFileBase {
@@ -36,4 +44,24 @@ public class AbraFile extends PsiFileBase {
         super.onContentReload();
     }
 
+    public String getImportableFilePath(){
+        VirtualFile sourceRoot = AbraPsiImplUtil.getSourceRoot(getProject(),getVirtualFile());
+        return getVirtualFile().getPath().substring(sourceRoot.getPath().length()+1,getVirtualFile().getPath().length()-5);
+    }
+
+    public List<AbraFile> getImportTree(List<AbraFile> importsTree){
+        for(ASTNode stmt:getNode().getChildren(TokenSet.create(AbraTypes.IMPORT_STMT))){
+            PsiReference[] importedFiles = AbraPsiImplUtil.getReferences((AbraImportStmt) stmt.getPsi());
+            if(importedFiles!=null) {
+                for (PsiReference psiRef : importedFiles) {
+                    AbraFile anAbraFile = (AbraFile)psiRef.resolve();
+                    if(anAbraFile!=null && !importsTree.contains(anAbraFile)){
+                        importsTree.add(anAbraFile);
+                        anAbraFile.getImportTree(importsTree);
+                    }
+                }
+            }
+        }
+        return importsTree;
+    }
 }

@@ -9,6 +9,9 @@ import org.abra.language.psi.*;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class AbraFuncPsiReferenceImpl  extends PsiReferenceBase implements PsiReference {
 
 
@@ -57,7 +60,7 @@ public class AbraFuncPsiReferenceImpl  extends PsiReferenceBase implements PsiRe
         return new Object[0];
     }
 
-    private PsiElement resolveInFile(PsiFile aFile, AbraConstExpr constExpr){
+    public PsiElement resolveInFile(PsiFile aFile, AbraConstExpr constExpr){
 
         if(constExpr==null){
             //this reference a standard function in this file or in another
@@ -103,21 +106,19 @@ public class AbraFuncPsiReferenceImpl  extends PsiReferenceBase implements PsiRe
         //i is the index of the suffix.
         if(i<useStmt.getTypeNameRefList().size()) {
             AbraTypeNameRef typeNameRef = useStmt.getTypeNameRefList().get(i);
-            return ((AbraTypeStmt) typeNameRef.getReference().resolve().getParent()).getResolvedSize();
+            PsiElement resolvedTypeName = typeNameRef.getReference().resolve();
+            if(resolvedTypeName!=null)
+                return ((AbraTypeStmt) typeNameRef.getReference().resolve().getParent()).getResolvedSize();
         }
         return -2;
     }
+
     private PsiElement resolveFromImports(PsiFile startingFile, AbraConstExpr typeOrPlaceHolderNameRef){
-        for(ASTNode stmt:startingFile.getNode().getChildren(TokenSet.create(AbraTypes.IMPORT_STMT))){
-            PsiReference[] importedFiles = AbraPsiImplUtil.getReferences((AbraImportStmt) stmt.getPsi());
-            if(importedFiles!=null) {
-                for (PsiReference psiRef : importedFiles) {
-                    PsiElement anAbraFile = psiRef.resolve();
-                    if(anAbraFile!=null){
-                        PsiElement resolved = resolveInFile((PsiFile) anAbraFile, typeOrPlaceHolderNameRef);
-                        if(resolved!=null)return resolved;
-                    }
-                }
+        List<AbraFile> importsTree = (((AbraFile)startingFile).getImportTree(new ArrayList<>()));
+        if(importsTree.size()>0){
+            for(PsiFile f:importsTree){
+                PsiElement resolved = resolveInFile(f, typeOrPlaceHolderNameRef);
+                if(resolved!=null)return resolved;
             }
         }
         return null;
