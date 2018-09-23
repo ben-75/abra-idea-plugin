@@ -115,8 +115,12 @@ public class AbraFuncPsiReferenceImpl  extends PsiReferenceBase implements PsiRe
 
     private PsiElement resolveFromImports(PsiFile startingFile, AbraConstExpr typeOrPlaceHolderNameRef){
         List<AbraFile> importsTree = (((AbraFile)startingFile).getImportTree(new ArrayList<>()));
-        if(importsTree.size()>0){
-            for(PsiFile f:importsTree){
+       return resolveFromImportTree(importsTree, typeOrPlaceHolderNameRef);
+    }
+
+    public PsiElement resolveFromImportTree(List<AbraFile> scope, AbraConstExpr typeOrPlaceHolderNameRef){
+        if(scope.size()>0){
+            for(PsiFile f:scope){
                 PsiElement resolved = resolveInFile(f, typeOrPlaceHolderNameRef);
                 if(resolved!=null)return resolved;
             }
