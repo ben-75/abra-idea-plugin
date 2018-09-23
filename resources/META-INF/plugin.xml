@@ -1,14 +1,12 @@
 <idea-plugin>
   <id>org.abra.language</id>
   <name>Abra Plugin</name>
-  <version>0.0.4-pre-alpha</version>
-  <vendor email="support@yourcompany.com" url="http://www.yourcompany.com">YourCompany</vendor>
+  <version>0.0.5-pre-alpha</version>
+  <vendor email="support@yourcompany.com" url="https://github.com/ben-75/abra-idea-plugin">Abra plugin on github</vendor>
 
   <description><![CDATA[
-      [Expirimental] support for Abra language
-    ]]></description>
+      [Expirimental] support for Abra language <br>
 
-  <change-notes><![CDATA[
       <b>Features</b>
       <ul>
       <li> Basic syntax highligthing
@@ -16,11 +14,16 @@
       <li> Resolve references (also cross file references)
       <li> Resolve template references
       <li> LUT: detection of duplicate entries, detection of inconsistent input(resp. output) length
+      <li> Detection of duplicate declarations
+      <li> Detection of ambiguous reference
       <li> Code folding
       <li> Braces matching
       <li> ...
       </ul>
+    ]]></description>
 
+  <change-notes><![CDATA[
+        Bug fixes
     ]]>
   </change-notes>
 
