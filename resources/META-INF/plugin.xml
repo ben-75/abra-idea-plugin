@@ -2,12 +2,12 @@
   <id>org.abra.language</id>
   <name>Abra Plugin</name>
   <version>0.0.5-pre-alpha</version>
-  <vendor email="support@yourcompany.com" url="https://github.com/ben-75/abra-idea-plugin">Abra plugin on github</vendor>
+  <vendor url="https://github.com/ben-75/abra-idea-plugin"/>
 
   <description><![CDATA[
-      [Expirimental] support for Abra language <br>
+      [Experimental] support for Abra language
 
-      <b>Features</b>
+      <h3>Features</h3>
       <ul>
       <li> Basic syntax highligthing
       <li> Static resolution of trit vector size
