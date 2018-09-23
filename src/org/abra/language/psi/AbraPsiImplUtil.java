@@ -856,7 +856,12 @@ public class AbraPsiImplUtil {
     public static PsiReference[] getReferences(AbraImportStmt importStmt){
         List<PsiReference> importedFiles = new ArrayList<>();
         VirtualFile srcRoot = importStmt.getSourceRoot();
-        VirtualFile target = LocalFileSystem.getInstance().findFileByIoFile(new File(srcRoot.getPath(),importStmt.getFilePath().getText()));
+        VirtualFile target = null;
+        try{
+            target = LocalFileSystem.getInstance().findFileByIoFile(new File(srcRoot.getPath(),importStmt.getFilePath().getText()));
+        }catch (NullPointerException e){
+            //ignore : filename is not valid.
+        }
         if(target!=null){
             VirtualFile[] children = target.getChildren();
             for(VirtualFile child:children){

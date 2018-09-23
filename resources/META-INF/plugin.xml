@@ -47,7 +47,7 @@
     <colorSettingsPage implementation="org.abra.language.AbraColorSettingsPage"/>
     <lang.psiStructureViewFactory language="Abra" implementationClass="org.abra.language.AbraStructureViewFactory"/>
     <lang.findUsagesProvider language="Abra" implementationClass="org.abra.language.AbraFindUsagesProvider"/>
-    <annotator language="Abra" implementationClass="org.abra.language.FunctionReferenceAnnotator"/>
+    <annotator language="Abra" implementationClass="org.abra.language.ReferenceValidatorAnnotator"/>
     <annotator language="Abra" implementationClass="org.abra.language.DeclarationAnnotator"/>
     <annotator language="Abra" implementationClass="org.abra.language.MultiDeclarationAnnotator"/>
     <annotator language="Abra" implementationClass="org.abra.language.LutValidationAnnotator"/>
