@@ -2,24 +2,31 @@
 <list>
   <option name="ABRA_FCT_DECLARATION">
     <value>
-      <option name="FOREGROUND" value="23b661" />
+      <option name="FOREGROUND" value="ffc66d" />
     </value>
   </option>
   <option name="ABRA_LOCAL_VAR">
     <value>
-      <option name="FOREGROUND" value="a9b7c6" />
+      <option name="FOREGROUND" value="9876aa" />
       <option name="FONT_TYPE" value="2" />
       <option name="EFFECT_TYPE" value="1" />
     </value>
   </option>
   <option name="ABRA_LUT_DECLARATION">
     <value>
-      <option name="FOREGROUND" value="94ff" />
+      <option name="FOREGROUND" value="99ff" />
     </value>
   </option>
   <option name="ABRA_TEMPLATE_DECLARATION">
     <value>
-      <option name="FOREGROUND" value="5ff0f" />
+      <option name="FOREGROUND" value="995457" />
+    </value>
+  </option>
+  <option name="ABRA_TYPE_DECLARATION">
+    <value>
+      <option name="FOREGROUND" value="43cc84" />
+      <option name="FONT_TYPE" value="3" />
+      <option name="EFFECT_TYPE" value="4" />
     </value>
   </option>
   <option name="ABRA_TRIT">
@@ -32,13 +39,6 @@
     <value>
       <option name="FOREGROUND" value="725984" />
       <option name="FONT_TYPE" value="2" />
-    </value>
-  </option>
-  <option name="ABRA_TYPE_DECLARATION">
-    <value>
-      <option name="FOREGROUND" value="ffc66d" />
-      <option name="FONT_TYPE" value="3" />
-      <option name="EFFECT_TYPE" value="4" />
     </value>
   </option>
   <option name="ABRA_TYPE_REFERENCE">
