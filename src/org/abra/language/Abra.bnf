@@ -56,36 +56,36 @@ fieldSpec       ::= fieldName staticTypeSize
 
 funcDefinition  ::= typeSize? funcName (OPEN_TAG typeOrPlaceHolderNameRef CLOSE_TAG)? OPEN_PAR (funcParameter (COMMA funcParameter)*) CLOSE_PAR ASSIGN funcBody
 funcParameter   ::= paramName typeSize
-funcBody        ::= mergeExpr | (OPEN_BRACE (assignExpr SEMICOLON)* (RETURN_KEYWORD)? mergeExpr SEMICOLON CLOSE_BRACE)
+funcBody        ::= returnExpr | (OPEN_BRACE (assignExpr SEMICOLON)* (RETURN_KEYWORD)? (returnExpr | OPEN_PAR returnExpr CLOSE_PAR) SEMICOLON CLOSE_BRACE)
+returnExpr      ::=  concatExpr | mergeExpr | funcExpr | typeExpr | lutExpr | sliceExpr | integer
+                {methods=[getResolvedSize]}
 
+assignExpr      ::= (STATE_KEYWORD)? varName typeSize? ASSIGN returnExpr
 
-
-assignExpr      ::= (STATE_KEYWORD)? varName typeSize? ASSIGN mergeExpr
-
-mergeExpr       ::= (concatExpr) (MERGE_OPERATOR (concatExpr))*
+mergeExpr       ::= (postfixExpr) (MERGE_OPERATOR (postfixExpr))+
                 {methods=[getResolvedSize ]}
 
-concatExpr      ::= postfixExpr ((AMP|COMMA) postfixExpr)*
+concatExpr      ::= postfixExpr (AMP postfixExpr)+
                 {methods=[getResolvedSize ]}
 
-private postfixExpr     ::=  typeExpr | funcExpr | lutExpr | sliceExpr | integer | (OPEN_PAR mergeExpr CLOSE_PAR)
-
-
-typeExpr        ::= typeNameRef OPEN_BRACE (fieldNameRef ASSIGN mergeExpr SEMICOLON)+ CLOSE_BRACE
+postfixExpr     ::=  typeExpr | funcExpr | lutExpr | sliceExpr | integer | (OPEN_PAR mergeExpr CLOSE_PAR) | (OPEN_PAR concatExpr CLOSE_PAR)
                 {methods=[getResolvedSize ]}
 
-funcExpr        ::= funcNameRef (OPEN_TAG constExpr CLOSE_TAG)? OPEN_PAR (mergeExpr (COMMA mergeExpr)*) CLOSE_PAR (OPEN_BRACKET rangeExpr CLOSE_BRACKET)?
+typeExpr        ::= typeNameRef OPEN_BRACE (fieldNameRef ASSIGN returnExpr SEMICOLON)+ CLOSE_BRACE
+                {methods=[getResolvedSize ]}
+
+funcExpr        ::= funcNameRef (OPEN_TAG constExpr CLOSE_TAG)? OPEN_PAR (concatExpr | (postfixExpr (COMMA postfixExpr)*)) CLOSE_PAR (OPEN_BRACKET rangeExpr CLOSE_BRACKET)?
                 {methods=[getResolvedSize  hasRangeOperator hasOpenRange hasClosedRange hasPostSlice isInFuncStatement isInTemplateStatement getStatment]}
 
-lutExpr         ::= lutOrParamOrVarNameRef OPEN_BRACKET (mergeExpr (COMMA mergeExpr)*) CLOSE_BRACKET
+lutExpr         ::= lutOrParamOrVarNameRef OPEN_BRACKET (postfixExpr (COMMA postfixExpr)*) CLOSE_BRACKET
                 {methods=[getResolvedSize ]}
 
 sliceExpr       ::= paramOrVarNameRef (DOT fieldNameRef)* (OPEN_BRACKET rangeExpr CLOSE_BRACKET)?
                 {methods=[getResolvedSize  hasRangeOperator hasOpenRange hasClosedRange]}
 
-rangeExpr       ::= constExpr ((RANGE_OPERATOR constExpr?)|SMART_RANGE_OPERATOR constExpr)?
+rangeExpr       ::= constExpr ((RANGE_OPERATOR constExpr?)|smartRange constExpr)?
                 {methods=[hasRangeOperator hasOpenRange hasClosedRange]}
-
+smartRange      ::= SMART_RANGE_OPERATOR
 constExpr       ::= constTerm (constOperator constExpr)?
                 {methods=[getResolvedSize ]}
 

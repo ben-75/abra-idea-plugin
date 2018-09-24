@@ -58,7 +58,7 @@ public class AbraElementFactory {
 
     public static AbraFuncNameRef createAbraFunctionReference(Project project, String name) {
         final AbraFile file = createFile(project, "f(p [1])={"+name+"(1);};");
-        return ((AbraFuncStmt)file.getFirstChild()).getFuncDefinition().getFuncBody().getMergeExpr().getConcatExprList().get(0).getFuncExprList().get(0).getFuncNameRef();
+        return ((AbraFuncStmt)file.getFirstChild()).getFuncDefinition().getFuncBody().getReturnExpr().getFuncExpr().getFuncNameRef();
     }
 
     public static AbraFuncNameRef createAbraFunctionReference(Project project, String name, AbraFile originalFile) {
@@ -69,7 +69,7 @@ public class AbraElementFactory {
 
 
         final AbraFile file = createFile(project, sb.toString()+"f(p [1])={"+name+"(1);};");
-        return ((AbraFuncStmt)file.getFirstChild().getNextSibling().getNextSibling()).getFuncDefinition().getFuncBody().getMergeExpr().getConcatExprList().get(0).getFuncExprList().get(0).getFuncNameRef();
+        return ((AbraFuncStmt)file.getFirstChild().getNextSibling().getNextSibling()).getFuncDefinition().getFuncBody().getReturnExpr().getFuncExpr().getFuncNameRef();
     }
 
     public static AbraTypeNameRef createAbraTypeNameRef(Project project, String name) {
@@ -80,13 +80,13 @@ public class AbraElementFactory {
     public static AbraParamOrVarNameRef createAbraVarOrParamNameRef(Project project, String name) {
         final AbraFile file = createFile(project, "f(p [1])={a="+name+";a;};");
         return ((AbraFuncStmt)file.getFirstChild()).getFuncDefinition().getFuncBody()
-                .getAssignExprList().get(0).getMergeExpr().getConcatExprList().get(0).getSliceExprList().get(0).getParamOrVarNameRef();
+                .getAssignExprList().get(0).getReturnExpr().getSliceExpr().getParamOrVarNameRef();
     }
 
     public static AbraLutOrParamOrVarNameRef createAbraLutOrParamOrVarRef(Project project, String name) {
         final AbraFile file = createFile(project, "f(p [1])={a="+name+"[1];a;};");
         return ((AbraFuncStmt)file.getFirstChild()).getFuncDefinition().getFuncBody()
-                .getAssignExprList().get(0).getMergeExpr().getConcatExprList().get(0).getLutExprList().get(0).getLutOrParamOrVarNameRef();
+                .getAssignExprList().get(0).getReturnExpr().getLutExpr().getLutOrParamOrVarNameRef();
     }
 
 

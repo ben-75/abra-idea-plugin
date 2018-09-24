@@ -84,7 +84,7 @@ public class AbraFuncPsiReferenceImpl  extends PsiReferenceBase implements PsiRe
                     }
                 }else if(stmt.getPsi() instanceof AbraFuncStmt){
                     AbraFuncStmt funcStmt = (AbraFuncStmt) stmt.getPsi();
-                    if(funcStmt.getFuncDefinition().getTypeOrPlaceHolderNameRef()!=null){
+                    if(funcStmt.getFuncDefinition().getFuncName().getText().equals(myElement.getText()) && funcStmt.getFuncDefinition().getTypeOrPlaceHolderNameRef()!=null){
                         PsiElement resolved = funcStmt.getFuncDefinition().getTypeOrPlaceHolderNameRef().getReference().resolve();
                         if(resolved instanceof AbraTypeName){
                             if(((AbraTypeStmt)resolved.getParent()).getResolvedSize()==sizeOfMyElement){

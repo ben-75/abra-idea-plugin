@@ -72,7 +72,7 @@ public class AbraPsiImplUtil {
         if(element.getStaticTypeSize()==null) {
             int resolvedSize = 0;
             for(AbraFieldSpec fieldSpec:element.getFieldSpecList()){
-                resolvedSize =+ fieldSpec.getStaticTypeSize().getResolvedSize();
+                resolvedSize = resolvedSize + fieldSpec.getStaticTypeSize().getResolvedSize();
             }
             return resolvedSize;
         }
@@ -441,39 +441,46 @@ public class AbraPsiImplUtil {
     //====================================================================
 
     public static int getResolvedSize(AbraMergeExpr element){
-        return element.getConcatExprList().get(0).getResolvedSize();
+        return element.getPostfixExprList().get(0).getResolvedSize();
     }
 
     public static int getResolvedSize(AbraConcatExpr element){
         int r = 0;
-        for(AbraSliceExpr slice : element.getSliceExprList()){
-            r+= slice.getResolvedSize();
-        }
-        for(AbraFuncExpr func : element.getFuncExprList()){
-            r+= func.getResolvedSize();
-        }
-        for(AbraInteger integer : element.getIntegerList()){
-            r+= integer.getResolvedSize();
-        }
-        for(AbraLutExpr lutExpr : element.getLutExprList()){
-            r+= lutExpr.getResolvedSize();
-        }
-        for(AbraMergeExpr mergeExpr : element.getMergeExprList()){
-            r+= mergeExpr.getResolvedSize();
-        }
-        for(AbraTypeExpr typeExpr : element.getTypeExprList()){
-            r+= typeExpr.getResolvedSize();
+        for(AbraPostfixExpr postfixExpr : element.getPostfixExprList()) {
+            if (postfixExpr.getSliceExpr() != null) {
+                r += postfixExpr.getSliceExpr().getResolvedSize();
+            } else if (postfixExpr.getFuncExpr() != null) {
+                r += postfixExpr.getFuncExpr().getResolvedSize();
+            } else if (postfixExpr.getInteger() != null) {
+                r += postfixExpr.getInteger().getResolvedSize();
+            } else if (postfixExpr.getLutExpr() != null) {
+                r += postfixExpr.getLutExpr().getResolvedSize();
+            } else if (postfixExpr.getMergeExpr() != null) {
+                r += postfixExpr.getMergeExpr().getResolvedSize();
+            } else if (postfixExpr.getTypeExpr() != null) {
+                r += postfixExpr.getTypeExpr().getResolvedSize();
+            } else if (postfixExpr.getConcatExpr() != null) {
+                r += postfixExpr.getConcatExpr().getResolvedSize();
+            }
         }
         return r;
     }
 
     public static int getResolvedSize(AbraSliceExpr sliceExpr){
+
+
         if(sliceExpr.getRangeExpr()==null){
             if(sliceExpr.getFieldNameRefList().size()==0)
                 return sliceExpr.getParamOrVarNameRef().getResolvedSize();
             return sliceExpr.getFieldNameRefList().get(sliceExpr.getFieldNameRefList().size()-1).getResolvedSize();
         }
-        if(!sliceExpr.hasRangeOperator())return 1;
+        if(!sliceExpr.hasRangeOperator() && sliceExpr.getRangeExpr().getSmartRange()==null)return 1;
+
+        if(sliceExpr.getRangeExpr().getSmartRange()!=null){
+            PsiElement constExpr = sliceExpr.getRangeExpr().getSmartRange();
+            while(!(constExpr instanceof AbraConcatExpr))constExpr = constExpr.getNextSibling();
+            return ((AbraConcatExpr)constExpr).getResolvedSize();
+        }
         if(sliceExpr.hasClosedRange()){
             return sliceExpr.getRangeExpr().getConstExprList().get(1).getResolvedSize()-sliceExpr.getRangeExpr().getConstExprList().get(0).getResolvedSize();
         }
@@ -538,7 +545,7 @@ public class AbraPsiImplUtil {
     public static int getResolvedSize(AbraFuncExpr funcExpr){
         PsiElement element = funcExpr.getFuncNameRef().getReference().resolve();
         if(element instanceof AbraFuncName){
-            int funcResolvedSize = ((AbraFuncDefinition) element.getParent()).getFuncBody().getMergeExpr().getResolvedSize();
+            int funcResolvedSize = ((AbraFuncDefinition) element.getParent()).getFuncBody().getReturnExpr().getResolvedSize();
             if (funcExpr.hasPostSlice()) {
                 if(!funcExpr.getRangeExpr().hasRangeOperator())return 1;
                 else if(funcExpr.getRangeExpr().hasClosedRange())return (funcExpr.getRangeExpr().getConstExprList().get(1).getResolvedSize()-funcExpr.getRangeExpr().getConstExprList().get(0).getResolvedSize());
@@ -555,7 +562,7 @@ public class AbraPsiImplUtil {
                     if(!funcExpr.getRangeExpr().hasRangeOperator())return 1;
                     else if(funcExpr.getRangeExpr().hasClosedRange())return (funcExpr.getRangeExpr().getConstExprList().get(1).getResolvedSize()-funcExpr.getRangeExpr().getConstExprList().get(0).getResolvedSize());
                 }
-                int funcResolvedSize = ((AbraTemplateStmt)((AbraUseStmt) element.getParent()).getTemplateNameRef().getReference().resolve().getParent()).getFuncDefinition().getFuncBody().getMergeExpr().getResolvedSize();
+                int funcResolvedSize = ((AbraTemplateStmt)((AbraUseStmt) element.getParent()).getTemplateNameRef().getReference().resolve().getParent()).getFuncDefinition().getTypeSize().getResolvedSize();
                 if(funcExpr.hasPostSlice()){
                     return funcResolvedSize-funcExpr.getRangeExpr().getConstExprList().get(0).getResolvedSize();
                 }
@@ -607,7 +614,29 @@ public class AbraPsiImplUtil {
         if(((AbraAssignExpr)varName.getParent()).getTypeSize()!=null){
             return ((AbraAssignExpr)varName.getParent()).getTypeSize().getResolvedSize();
         }
-        return ((AbraAssignExpr)varName.getParent()).getMergeExpr().getResolvedSize();
+        return ((AbraAssignExpr)varName.getParent()).getReturnExpr().getResolvedSize();
+    }
+
+    public static int getResolvedSize(AbraReturnExpr returnExpr){
+        if(returnExpr.getFuncExpr()!=null)return returnExpr.getFuncExpr().getResolvedSize();
+        if(returnExpr.getInteger()!=null)return returnExpr.getInteger().getResolvedSize();
+        if(returnExpr.getLutExpr()!=null)return returnExpr.getLutExpr().getResolvedSize();
+        if(returnExpr.getSliceExpr()!=null)return returnExpr.getSliceExpr().getResolvedSize();
+        if(returnExpr.getTypeExpr()!=null)return returnExpr.getTypeExpr().getResolvedSize();
+        if(returnExpr.getConcatExpr()!=null)return returnExpr.getConcatExpr().getResolvedSize();
+        if(returnExpr.getMergeExpr()!=null)return returnExpr.getMergeExpr().getResolvedSize();
+        return 0;
+    }
+
+    public static int getResolvedSize(AbraPostfixExpr postfixExpr){
+        if(postfixExpr.getFuncExpr()!=null)return postfixExpr.getFuncExpr().getResolvedSize();
+        if(postfixExpr.getInteger()!=null)return postfixExpr.getInteger().getResolvedSize();
+        if(postfixExpr.getLutExpr()!=null)return postfixExpr.getLutExpr().getResolvedSize();
+        if(postfixExpr.getSliceExpr()!=null)return postfixExpr.getSliceExpr().getResolvedSize();
+        if(postfixExpr.getTypeExpr()!=null)return postfixExpr.getTypeExpr().getResolvedSize();
+        if(postfixExpr.getConcatExpr()!=null)return postfixExpr.getConcatExpr().getResolvedSize();
+        if(postfixExpr.getMergeExpr()!=null)return postfixExpr.getMergeExpr().getResolvedSize();
+        return 0;
     }
 
     public static int getResolvedSize(AbraLutExpr element){
@@ -678,7 +707,7 @@ public class AbraPsiImplUtil {
 
     public static int getResolvedSize(AbraConstPrimary element){
         if(element.getTrit()!=null){
-            if(element.getText().equals("-"))return -1;
+            if(element.getText().equals("-"))return 1;
             return Integer.valueOf(element.getText());
         }
         if(element.getInteger()!=null){
@@ -698,7 +727,11 @@ public class AbraPsiImplUtil {
                     if(ContextStack.INSTANCE.isEmpty())return -3;
                     return ((AbraTypeStmt)ContextStack.INSTANCE.get().peek().get(resolvedInContext).getReference().resolve().getParent()).getStaticTypeSize().getResolvedSize();
                 }
-                return ((AbraTypeStmt)resolved.getParent()).getResolvedSize();
+                if(resolvedInContext instanceof AbraTypeNameRef){
+                    PsiElement e = resolvedInContext.getReference().resolve();
+                    return e==null?-4:((AbraTypeStmt)e.getParent()).getResolvedSize();
+                }
+                return ((AbraTypeStmt)resolvedInContext.getParent()).getResolvedSize();
             }
         }
         throw new UnresolvableTokenException(element.getText()+ " in file "+element.getContainingFile().getName());
@@ -744,7 +777,7 @@ public class AbraPsiImplUtil {
 
     public static int getResolvedSize(AbraConstPrimary element, Map<Integer, AbraTypeNameRef> resolutionMap, AbraTemplateStmt templateStmt){
         if(element.getTrit()!=null){
-            if(element.getText().equals("-"))return -1;
+            if(element.getText().equals("-"))return 1;
             return Integer.valueOf(element.getText());
         }
         if(element.getInteger()!=null){

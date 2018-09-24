@@ -1,7 +1,7 @@
 <idea-plugin>
   <id>org.abra.language</id>
   <name>Abra Plugin</name>
-  <version>0.0.5-pre-alpha</version>
+  <version>0.0.6-pre-alpha</version>
   <vendor url="https://github.com/ben-75/abra-idea-plugin"/>
 
   <description><![CDATA[
@@ -18,6 +18,7 @@
       <li> Detection of ambiguous reference
       <li> Code folding
       <li> Braces matching
+      <li> Check args count and args length
       <li> ...
       </ul>
     ]]></description>
@@ -51,6 +52,7 @@
     <annotator language="Abra" implementationClass="org.abra.language.DeclarationAnnotator"/>
     <annotator language="Abra" implementationClass="org.abra.language.MultiDeclarationAnnotator"/>
     <annotator language="Abra" implementationClass="org.abra.language.LutValidationAnnotator"/>
+    <annotator language="Abra" implementationClass="org.abra.language.FuncArgsAnnotator"/>
     <completion.contributor language="Abra" implementationClass="org.abra.language.AbraCompletionContributor"/>
     <additionalTextAttributes scheme="Default" file="colors/AbraDefault.xml"/>
     <additionalTextAttributes scheme="Darcula" file="colors/AbraDarcula.xml"/>
