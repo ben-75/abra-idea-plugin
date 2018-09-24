@@ -478,8 +478,8 @@ public class AbraPsiImplUtil {
 
         if(sliceExpr.getRangeExpr().getSmartRange()!=null){
             PsiElement constExpr = sliceExpr.getRangeExpr().getSmartRange();
-            while(!(constExpr instanceof AbraConcatExpr))constExpr = constExpr.getNextSibling();
-            return ((AbraConcatExpr)constExpr).getResolvedSize();
+            while(!(constExpr instanceof AbraConstExpr))constExpr = constExpr.getNextSibling();
+            return ((AbraConstExpr)constExpr).getResolvedSize();
         }
         if(sliceExpr.hasClosedRange()){
             return sliceExpr.getRangeExpr().getConstExprList().get(1).getResolvedSize()-sliceExpr.getRangeExpr().getConstExprList().get(0).getResolvedSize();
