@@ -39,7 +39,11 @@ public class AbraPsiImplUtil {
             @NotNull
             @Override
             public String getLocationString() {
-                return "[" + element.getResolvedSize() + "]";
+                try {
+                    return "[" + element.getResolvedSize() + "]";
+                }catch (UnresolvableTokenException e){
+                    return "[?]";
+                }
             }
 
             @NotNull
@@ -176,7 +180,11 @@ public class AbraPsiImplUtil {
             @NotNull
             @Override
             public String getLocationString() {
-                return "["+element.getStaticTypeSize().getResolvedSize()+"]";
+                try{
+                    return "["+element.getStaticTypeSize().getResolvedSize()+"]";
+                }catch (UnresolvableTokenException e){
+                    return "[?]";
+                }
             }
 
             @NotNull
@@ -205,13 +213,21 @@ public class AbraPsiImplUtil {
                 StringBuilder sb = new StringBuilder("( ");
                 int i=0;
                 for(AbraFuncParameter p:element.getFuncDefinition().getFuncParameterList()){
-                    sb.append(p.getTypeSize().getConstExpr().getResolvedSize());
+                    try{
+                        sb.append(p.getTypeSize().getConstExpr().getResolvedSize());
+                    }catch (UnresolvableTokenException e){
+                        sb.append("[?]");
+                    }
                     i++;
                     if(i<element.getFuncDefinition().getFuncParameterList().size())sb.append(" , ");
                 }
                 sb.append(" ) -> ");
                 if(element.getFuncDefinition().getTypeSize()!=null){
-                    sb.append(element.getFuncDefinition().getTypeSize().getConstExpr().getResolvedSize());
+                    try{
+                        sb.append(element.getFuncDefinition().getTypeSize().getConstExpr().getResolvedSize());
+                    }catch (UnresolvableTokenException e){
+                        sb.append("[?]");
+                    }
                 }else{
                     sb.append("not specified !");
                 }
