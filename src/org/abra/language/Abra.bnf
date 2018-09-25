@@ -17,7 +17,8 @@
 
 abra            ::= (stmt|COMMENT|CRLF)*
 private stmt    ::= (importStmt | typeStmt | lutStmt | funcStmt | templateStmt | useStmt) SEMICOLON
-
+                    {pin=1 recoverWhile=stmt_rule}
+private stmt_rule ::= !(stmt)
 
 importStmt      ::= IMPORT_KEYWORD file_path
                     {methods=[getReferences getSourceRoot]}
@@ -84,7 +85,9 @@ sliceExpr       ::= paramOrVarNameRef (DOT fieldNameRef)* (OPEN_BRACKET rangeExp
                 {methods=[getResolvedSize  hasRangeOperator hasOpenRange hasClosedRange]}
 
 rangeExpr       ::= constExpr ((RANGE_OPERATOR constExpr?)|smartRange constExpr)?
-                {methods=[hasRangeOperator hasOpenRange hasClosedRange]}
+                {methods=[hasRangeOperator hasOpenRange hasClosedRange]
+                 pin=2 recoverWhile=close_bracket_rule}
+
 smartRange      ::= SMART_RANGE_OPERATOR
 constExpr       ::= constTerm (constOperator constExpr)?
                 {methods=[getResolvedSize ]}
@@ -118,7 +121,8 @@ lutEntry        ::= tritList ASSIGN tritList SEMICOLON
                 {methods = [getInputLength getOutputLength]}
 
 tritList        ::= trit (COMMA trit)*
-                {methods = [getLength]}
+                {methods = [getLength]
+                 pin=2 recoverWhile="tritList_rule"}
 
 
 trit            ::= TRIT_CHAR
@@ -129,7 +133,11 @@ integer         ::= ('-') number | trit | number
                 {methods = [getResolvedSize ]}
 
 
-file_path                   ::= FILENAME (SLASH FILENAME)*
+file_path                   ::= FILENAME (SLASH FILENAME)*  {pin=1 recoverWhile="semicolon_rule"}
+private semicolon_rule      ::= !(';'|SEMICOLON)
+private open_bracket_rule   ::= !('['|OPEN_BRACKET)
+private close_bracket_rule  ::= !(']'|CLOSE_BRACKET)
+private tritList_rule       ::= !(';'|'=')
 
 
 typeName                    ::= IDENTIFIER
@@ -140,7 +148,8 @@ fieldName                   ::= IDENTIFIER
 lutName                     ::= IDENTIFIER
                                 {mixin="org.abra.language.psi.impl.AbraNamedElementImpl"
                                 implements="org.abra.language.psi.AbraNamedElement"
-                                methods=[getName setName getNameIdentifier getResolvedSize ]}
+                                methods=[getName setName getNameIdentifier getResolvedSize ]
+                                pin=1 recoverWhile="open_bracket_rule"}
 templateName                ::= IDENTIFIER
                                 {mixin="org.abra.language.psi.impl.AbraNamedElementImpl"
                                 implements="org.abra.language.psi.AbraNamedElement"
