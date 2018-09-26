@@ -43,7 +43,12 @@ public class ReferenceValidatorAnnotator implements Annotator {
             log.info("ELEMENT :"+this+"   "+((AbraFile)element.getContainingFile()).getName());
             if(element.getReference()==null)return;
             PsiReference psiReference = element.getReference();
-            PsiElement resolved = psiReference.resolve();
+            PsiElement resolved = null;
+            try{
+                resolved = psiReference.resolve();
+            }catch (UnresolvableTokenException e){
+                //ignore
+            }
             if (resolved == null) {
                 int endOffset = element.getTextRange().getEndOffset();
                 TextRange range = new TextRange(element.getTextRange().getStartOffset(), endOffset);
