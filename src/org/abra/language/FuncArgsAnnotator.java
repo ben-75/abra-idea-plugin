@@ -38,11 +38,16 @@ public class FuncArgsAnnotator  implements Annotator {
                         holder.createErrorAnnotation(range, "Unexpected arguments count. Expecting : " + expectedArgsCount + " args, but found " + argsCount);
                     } else if (!funcExpr.isInTemplateStatement()) {
                         for (int i = 0; i < funcDefinition.getFuncParameterList().size(); i++) {
-                            int expectedSize = funcDefinition.getFuncParameterList().get(i).getTypeSize().getResolvedSize();
-                            int effectiveSize = funcExpr.getConcatExpr() != null ? funcExpr.getConcatExpr().getResolvedSize() : funcExpr.getPostfixExprList().get(i).getResolvedSize();
-                            if (expectedSize != effectiveSize && (funcExpr.getConcatExpr()!=null || (funcExpr.getPostfixExprList().get(i).getInteger()==null))) {
+                            try {
+                                int expectedSize = funcDefinition.getFuncParameterList().get(i).getTypeSize().getResolvedSize();
+                                int effectiveSize = funcExpr.getConcatExpr() != null ? funcExpr.getConcatExpr().getResolvedSize() : funcExpr.getPostfixExprList().get(i).getResolvedSize();
+                                if (expectedSize != effectiveSize && (funcExpr.getConcatExpr() != null || (funcExpr.getPostfixExprList().get(i).getInteger() == null))) {
+                                    TextRange range = funcExpr.getConcatExpr() != null ? funcExpr.getConcatExpr().getTextRange() : funcExpr.getPostfixExprList().get(i).getTextRange();
+                                    holder.createErrorAnnotation(range, "Unexpected argument size. Expecting : " + expectedSize + "trits, but found " + effectiveSize + " trits");
+                                }
+                            }catch (UnresolvableTokenException e){
                                 TextRange range = funcExpr.getConcatExpr() != null ? funcExpr.getConcatExpr().getTextRange() : funcExpr.getPostfixExprList().get(i).getTextRange();
-                                holder.createErrorAnnotation(range, "Unexpected argument size. Expecting : " + expectedSize + "trits, but found " + effectiveSize + " trits");
+                                holder.createErrorAnnotation(range, "Trit vector size cannot be computed");
                             }
                         }
                     }
