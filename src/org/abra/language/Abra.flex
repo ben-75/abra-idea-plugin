@@ -23,8 +23,10 @@ import static org.abra.language.psi.AbraTypes.*;
 %unicode
 
 WHITE_SPACE=\s+
-
+NO_CRLF=(.)+[^\r\n]*
 COMMENT=("//")[^\r\n]*
+TEST_CMT=("//?")[^\r\n]*
+EXPR_CMT=("//=")[^\r\n]*
 WHITE_SPACE=(\r|[ \t\n\x0B\f\r]+)+
 IMPORT_KEYWORD=(import)
 TYPE_KEYWORD=(type)
@@ -66,12 +68,17 @@ SLASH=(\/)
 %state WAITING_TEMPLATE_PARAM
 %state TEMPLATE_PARAM
 %state TEMPLATE_BODY
+%state WAIT_TEST_ASSERT
+%state WAIT_EXPR_ASSERT
 
 %%
   {WHITE_SPACE}         { return WHITE_SPACE; }
 
   "\\r"                 { return CRLF; }
-
+  {TEST_CMT}        { yybegin(WAIT_TEST_ASSERT);zzMarkedPos=zzStartRead+3; return TEST_COMMENT;}
+<WAIT_TEST_ASSERT> {NO_CRLF}  { yybegin(YYINITIAL); return TEST_ASSERTION;}
+  {EXPR_CMT}        { yybegin(WAIT_EXPR_ASSERT);zzMarkedPos=zzStartRead+3; return EXPR_COMMENT;}
+<WAIT_EXPR_ASSERT> {NO_CRLF}  { yybegin(YYINITIAL); return EXPR_ASSERTION;}
   {COMMENT}             { return COMMENT; }
   {WHITE_SPACE}         { return WHITE_SPACE; }
   {IMPORT_KEYWORD}      { yybegin(WAITING_PATH); return IMPORT_KEYWORD; }

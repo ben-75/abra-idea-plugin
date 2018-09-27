@@ -27,6 +27,10 @@ public class AbraColorSettingsPage implements ColorSettingsPage {
             new AttributesDescriptor("Local variables", AbraSyntaxHighlighter.ABRA_LOCAL_VAR),
             new AttributesDescriptor("Trits", AbraSyntaxHighlighter.ABRA_TRIT),
             new AttributesDescriptor("Template definition and usage", AbraSyntaxHighlighter.ABRA_TEMPLATE_DECLARATION),
+            new AttributesDescriptor("Test assertion prefix", AbraSyntaxHighlighter.ABRA_TEST_ASSERTION_PREFIX),
+            new AttributesDescriptor("Test assertion", AbraSyntaxHighlighter.ABRA_TEST_ASSERTION),
+            new AttributesDescriptor("Expression assertion prefix", AbraSyntaxHighlighter.ABRA_EXPR_ASSERTION_PREFIX),
+            new AttributesDescriptor("Expression assertion", AbraSyntaxHighlighter.ABRA_EXPR_ASSERTION),
     };
 
     private static final Map<String,TextAttributesKey> ANNOTATOR_MAP = new HashMap();
@@ -85,7 +89,10 @@ public class AbraColorSettingsPage implements ColorSettingsPage {
                 "  <trit>0</trit> = <trit>1</trit>;\n" +
                 "  <trit>1</trit> = <trit>0</trit>;\n" +
                 "];\n" +
-                "\n" +
+                "//Following line is a unit test\n" +
+                "//? not[0]=1\n" +
+                "//Following line is an expression to evaluate and print the result on the console\n" +
+                "//= not[1]\n" +
                 "\n" +
                 "<funcdef>digest</funcdef>(state [<typeref>State</typeref>]) =\n" +
                 "  // single statement function\n" +

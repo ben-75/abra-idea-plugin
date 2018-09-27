@@ -20,6 +20,14 @@ public class AbraSyntaxHighlighter extends SyntaxHighlighterBase  {
 
     public static final TextAttributesKey COMMENT =
             createTextAttributesKey("SIMPLE_COMMENT", DefaultLanguageHighlighterColors.LINE_COMMENT);
+    public static final TextAttributesKey TEST_COMMENT =
+            createTextAttributesKey("TEST_COMMENT", DefaultLanguageHighlighterColors.LINE_COMMENT);
+    public static final TextAttributesKey EXPR_COMMENT =
+            createTextAttributesKey("EXPR_COMMENT", DefaultLanguageHighlighterColors.LINE_COMMENT);
+    public static final TextAttributesKey TEST_ASSERT =
+            createTextAttributesKey("TEST_ASSERT", DefaultLanguageHighlighterColors.LINE_COMMENT);
+    public static final TextAttributesKey EXPR_ASSERT =
+            createTextAttributesKey("EXPR_ASSERT", DefaultLanguageHighlighterColors.LINE_COMMENT);
     public static final TextAttributesKey BAD_CHARACTER =
             createTextAttributesKey("SIMPLE_BAD_CHARACTER", HighlighterColors.BAD_CHARACTER);
 
@@ -40,13 +48,24 @@ public class AbraSyntaxHighlighter extends SyntaxHighlighterBase  {
             createTextAttributesKey("ABRA_LOCAL_VAR", DefaultLanguageHighlighterColors.LOCAL_VARIABLE);
     public static final TextAttributesKey ABRA_TRIT =
             createTextAttributesKey("ABRA_TRIT", DefaultLanguageHighlighterColors.IDENTIFIER);
-
+    public static final TextAttributesKey ABRA_TEST_ASSERTION_PREFIX =
+            createTextAttributesKey("ABRA_TEST_ASSERTION_PREFIX", DefaultLanguageHighlighterColors.LINE_COMMENT);
+    public static final TextAttributesKey ABRA_EXPR_ASSERTION_PREFIX =
+            createTextAttributesKey("ABRA_EXPR_ASSERTION_PREFIX", DefaultLanguageHighlighterColors.LINE_COMMENT);
+    public static final TextAttributesKey ABRA_TEST_ASSERTION =
+            createTextAttributesKey("ABRA_TEST_ASSERTION", DefaultLanguageHighlighterColors.LINE_COMMENT);
+    public static final TextAttributesKey ABRA_EXPR_ASSERTION =
+            createTextAttributesKey("ABRA_EXPR_ASSERTION", DefaultLanguageHighlighterColors.LINE_COMMENT);
     private static final TextAttributesKey[] EMPTY_KEYS = new TextAttributesKey[0];
 
 
 
     private static final TextAttributesKey[] BAD_CHAR_KEYS = new TextAttributesKey[]{BAD_CHARACTER};
     private static final TextAttributesKey[] COMMENT_KEYS = new TextAttributesKey[]{COMMENT};
+    private static final TextAttributesKey[] TEST_COMMENT_KEYS = new TextAttributesKey[]{ABRA_TEST_ASSERTION_PREFIX};
+    private static final TextAttributesKey[] EXPR_COMMENT_KEYS = new TextAttributesKey[]{ABRA_EXPR_ASSERTION_PREFIX};
+    private static final TextAttributesKey[] TEST_ASSERT_KEYS = new TextAttributesKey[]{ABRA_TEST_ASSERTION};
+    private static final TextAttributesKey[] EXPR_ASSERT_KEYS = new TextAttributesKey[]{ABRA_EXPR_ASSERTION};
     private static final TextAttributesKey[] KEYWORD_KEYS = new TextAttributesKey[]{KEYWORD};
     private static final TextAttributesKey[] TRIT_KEYS = new TextAttributesKey[]{ABRA_TRIT};
 
@@ -75,6 +94,14 @@ public class AbraSyntaxHighlighter extends SyntaxHighlighterBase  {
             return KEYWORD_KEYS;
         }else if (tokenType.equals(AbraTypes.COMMENT)) {
             return COMMENT_KEYS;
+        }else if (tokenType.equals(AbraTypes.TEST_COMMENT)) {
+            return TEST_COMMENT_KEYS;
+        }else if (tokenType.equals(AbraTypes.EXPR_COMMENT)) {
+            return EXPR_COMMENT_KEYS;
+        }else if (tokenType.equals(AbraTypes.TEST_ASSERTION)) {
+            return TEST_ASSERT_KEYS;
+        }else if (tokenType.equals(AbraTypes.EXPR_ASSERTION)) {
+            return EXPR_ASSERT_KEYS;
         }else if (tokenType.equals(AbraTypes.TRIT_CHAR)) {
             return TRIT_KEYS;
         } else if (tokenType.equals(TokenType.BAD_CHARACTER)) {

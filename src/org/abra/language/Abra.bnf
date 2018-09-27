@@ -15,10 +15,10 @@
 
 }
 
-abra            ::= (stmt|COMMENT|CRLF)*
+abra            ::= (stmt|TEST_COMMENT TEST_ASSERTION|EXPR_COMMENT EXPR_ASSERTION|COMMENT|CRLF)*
 private stmt    ::= (importStmt | typeStmt | lutStmt | funcStmt | templateStmt | useStmt) SEMICOLON
                     {pin=1 recoverWhile=stmt_rule}
-private stmt_rule ::= !(stmt)
+private stmt_rule ::= !(stmt | TEST_COMMENT | EXPR_COMMENT)
 
 importStmt      ::= IMPORT_KEYWORD file_path
                     {methods=[getReferences getSourceRoot]}
