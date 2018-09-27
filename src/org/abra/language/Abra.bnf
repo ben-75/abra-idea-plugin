@@ -39,7 +39,7 @@ funcStmt        ::= (FUNC_KEYWORD)? funcDefinition
                     methods=[getPresentation getName setName getNameIdentifier]}
 
 
-templateStmt    ::= TEMPLATE_KEYWORD templateName OPEN_TAG (placeHolderName (COMMA placeHolderName)*) CLOSE_TAG funcDefinition
+templateStmt    ::= TEMPLATE_KEYWORD templateName OPEN_TAG (placeHolderName (COMMA placeHolderName)*) CLOSE_TAG FUNC_KEYWORD? funcDefinition
                     {mixin="org.abra.language.psi.impl.AbraDefinitionImpl"
                     implements="org.abra.language.psi.AbraDefinition"
                     methods=[getPresentation getName setName getNameIdentifier]}
