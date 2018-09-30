@@ -22,15 +22,11 @@ public class FuncArgsAnnotator  implements Annotator {
                     int argsCount = 0;
                     int startOffset = 0;
                     int endOffset = 0;
-                    if (funcExpr.getConcatExpr() != null) {
-                        argsCount = 1;
-                        startOffset = funcExpr.getConcatExpr().getTextRange().getStartOffset();
-                        endOffset = funcExpr.getConcatExpr().getTextRange().getEndOffset();
-                    } else {
+
                         argsCount = funcExpr.getPostfixExprList().size();
                         startOffset = funcExpr.getPostfixExprList().get(0).getTextRange().getStartOffset();
                         endOffset = funcExpr.getPostfixExprList().get(argsCount - 1).getTextRange().getEndOffset();
-                    }
+
                     int expectedArgsCount = funcDefinition.getFuncParameterList().size();
 
                     if (expectedArgsCount != argsCount) {
@@ -40,13 +36,13 @@ public class FuncArgsAnnotator  implements Annotator {
                         for (int i = 0; i < funcDefinition.getFuncParameterList().size(); i++) {
                             try {
                                 int expectedSize = funcDefinition.getFuncParameterList().get(i).getTypeSize().getResolvedSize();
-                                int effectiveSize = funcExpr.getConcatExpr() != null ? funcExpr.getConcatExpr().getResolvedSize() : funcExpr.getPostfixExprList().get(i).getResolvedSize();
-                                if (expectedSize != effectiveSize && (funcExpr.getConcatExpr() != null || (funcExpr.getPostfixExprList().get(i).getInteger() == null))) {
-                                    TextRange range = funcExpr.getConcatExpr() != null ? funcExpr.getConcatExpr().getTextRange() : funcExpr.getPostfixExprList().get(i).getTextRange();
+                                int effectiveSize = funcExpr.getPostfixExprList().get(i).getResolvedSize();
+                                if (expectedSize != effectiveSize && funcExpr.getPostfixExprList().get(i).getConcatTerm().getInteger()==null) {
+                                    TextRange range = funcExpr.getPostfixExprList().get(i).getTextRange();
                                     holder.createErrorAnnotation(range, "Unexpected argument size. Expecting : " + expectedSize + "trits, but found " + effectiveSize + " trits");
                                 }
                             }catch (UnresolvableTokenException e){
-                                TextRange range = funcExpr.getConcatExpr() != null ? funcExpr.getConcatExpr().getTextRange() : funcExpr.getPostfixExprList().get(i).getTextRange();
+                                TextRange range = funcExpr.getPostfixExprList().get(i).getTextRange();
                                 holder.createErrorAnnotation(range, "Trit vector size cannot be computed");
                             }
                         }

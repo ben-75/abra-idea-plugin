@@ -27,7 +27,7 @@ public class AbraElementFactory {
     }
 
     public static AbraParamName createAbraParamName(Project project, String name) {
-        final AbraFile file = createFile(project, "f("+name+" [1])=param,param;");
+        final AbraFile file = createFile(project, "func f("+name+" [1])=param,param;");
         return ((AbraFuncStmt) file.getFirstChild()).getFuncDefinition().getFuncParameterList().get(0).getParamName();
     }
 
@@ -37,7 +37,7 @@ public class AbraElementFactory {
     }
 
     public static AbraLutName createAbraLutName(Project project, String name) {
-        final AbraFile file = createFile(project, name+"[0,0=0;];");
+        final AbraFile file = createFile(project, "lut "+name+"[0,0=0;];");
         return ((AbraLutStmt) file.getFirstChild()).getLutName();
     }
 
@@ -57,8 +57,8 @@ public class AbraElementFactory {
 
 
     public static AbraFuncNameRef createAbraFunctionReference(Project project, String name) {
-        final AbraFile file = createFile(project, "f(p [1])={"+name+"(1);};");
-        return ((AbraFuncStmt)file.getFirstChild()).getFuncDefinition().getFuncBody().getReturnExpr().getFuncExpr().getFuncNameRef();
+        final AbraFile file = createFile(project, "func f(p [1])={"+name+"(1);};");
+        return ((AbraFuncStmt)file.getFirstChild()).getFuncDefinition().getFuncBody().getReturnExpr().getConcatTerm().getFuncExpr().getFuncNameRef();
     }
 
     public static AbraFuncNameRef createAbraFunctionReference(Project project, String name, AbraFile originalFile) {
@@ -68,30 +68,30 @@ public class AbraElementFactory {
         }
 
 
-        final AbraFile file = createFile(project, sb.toString()+"f(p [1])={"+name+"(1);};");
-        return ((AbraFuncStmt)file.getFirstChild().getNextSibling().getNextSibling()).getFuncDefinition().getFuncBody().getReturnExpr().getFuncExpr().getFuncNameRef();
+        final AbraFile file = createFile(project, sb.toString()+"func f(p [1])={"+name+"(1);};");
+        return ((AbraFuncStmt)file.getFirstChild().getNextSibling().getNextSibling()).getFuncDefinition().getFuncBody().getReturnExpr().getConcatTerm().getFuncExpr().getFuncNameRef();
     }
 
     public static AbraTypeNameRef createAbraTypeNameRef(Project project, String name) {
-        final AbraFile file = createFile(project, "f<"+name+">;");
+        final AbraFile file = createFile(project, "func f<"+name+">;");
         return ((AbraUseStmt)file.getFirstChild()).getTypeNameRefList().get(0);
     }
 
     public static AbraParamOrVarNameRef createAbraVarOrParamNameRef(Project project, String name) {
-        final AbraFile file = createFile(project, "f(p [1])={a="+name+";a;};");
+        final AbraFile file = createFile(project, "func f(p [1])={a="+name+";a;};");
         return ((AbraFuncStmt)file.getFirstChild()).getFuncDefinition().getFuncBody()
-                .getAssignExprList().get(0).getReturnExpr().getSliceExpr().getParamOrVarNameRef();
+                .getAssignExprList().get(0).getReturnExpr().getConcatTerm().getSliceExpr().getParamOrVarNameRef();
     }
 
     public static AbraLutOrParamOrVarNameRef createAbraLutOrParamOrVarRef(Project project, String name) {
-        final AbraFile file = createFile(project, "f(p [1])={a="+name+"[1];a;};");
+        final AbraFile file = createFile(project, "func f(p [1])={a="+name+"[1];a;};");
         return ((AbraFuncStmt)file.getFirstChild()).getFuncDefinition().getFuncBody()
-                .getAssignExprList().get(0).getReturnExpr().getLutExpr().getLutOrParamOrVarNameRef();
+                .getAssignExprList().get(0).getReturnExpr().getConcatTerm().getLutExpr().getLutOrParamOrVarNameRef();
     }
 
 
     public static AbraTemplateNameRef createAbraTemplateNameRef(Project project, String newElementName) {
-        final AbraFile file = createFile(project, newElementName+"<Tryte>;");
+        final AbraFile file = createFile(project, "type "+newElementName+"<Tryte>;");
         return ((AbraUseStmt)file.getFirstChild()).getTemplateNameRef();
     }
 
@@ -107,7 +107,7 @@ public class AbraElementFactory {
     }
 
     public static AbraStaticConstExpr createAbraStaticConstExpr(Project project, String s) {
-        final AbraFile file = createFile(project, "T["+s+"];");
+        final AbraFile file = createFile(project, "type T["+s+"];");
         try{
             return ((AbraTypeStmt)file.getFirstChild()).getStaticTypeSize().getStaticConstExpr();
         }catch (ClassCastException e){
@@ -116,7 +116,7 @@ public class AbraElementFactory {
     }
 
     public static AbraConstExpr createAbraConstExpr(Project project, String s) {
-        final AbraFile file = createFile(project, "f(a["+s+"])={a;};");
+        final AbraFile file = createFile(project, "func f(a["+s+"])={a;};");
         try{
             return ((AbraFuncStmt)file.getFirstChild()).getFuncDefinition().getFuncParameterList().get(0).getTypeSize().getConstExpr();
         }catch (ClassCastException e){

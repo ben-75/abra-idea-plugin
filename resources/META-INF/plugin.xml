@@ -1,7 +1,7 @@
 <idea-plugin>
   <id>org.abra.language</id>
   <name>Abra Plugin</name>
-  <version>0.0.8-pre-alpha</version>
+  <version>0.0.9-pre-alpha</version>
   <vendor url="https://github.com/ben-75/abra-idea-plugin"/>
 
   <description><![CDATA[
@@ -24,7 +24,10 @@
     ]]></description>
 
   <change-notes><![CDATA[
-        Bug fixes
+        <ul>
+        <li>Keywords are now mandatory
+        <li>Known regression regarding ability to recover from syntax errors
+        </ul>
     ]]>
   </change-notes>
 
@@ -60,6 +63,11 @@
 
   <actions>
     <!-- Add your actions here -->
+    <action id="AbraPlugin.RunInterpreter"
+            class="org.abra.interpreter.action.org.abra.interpreter.action.RunAbraInterpreter"
+            text="Run Abra interpreter...">
+      <add-to-group group-id="EditorPopupMenu.Run" anchor="first"/>
+    </action>
   </actions>
 
 </idea-plugin>
