@@ -645,10 +645,13 @@ public class AbraPsiImplUtil {
     }
 
     public static int getResolvedSize(AbraVarName varName){
-        if(((AbraAssignExpr)varName.getParent()).getTypeSize()!=null){
-            return ((AbraAssignExpr)varName.getParent()).getTypeSize().getResolvedSize();
+        if(varName.getParent() instanceof AbraAssignExpr) {
+            if (((AbraAssignExpr) varName.getParent()).getTypeSize() != null) {
+                return ((AbraAssignExpr) varName.getParent()).getTypeSize().getResolvedSize();
+            }
+            return ((AbraAssignExpr) varName.getParent()).getReturnExpr().getResolvedSize();
         }
-        return ((AbraAssignExpr)varName.getParent()).getReturnExpr().getResolvedSize();
+        return ((AbraStateExpr) varName.getParent()).getTypeSize().getResolvedSize();
     }
 
     public static int getResolvedSize(AbraReturnExpr returnExpr){
