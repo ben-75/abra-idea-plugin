@@ -3,7 +3,6 @@ package org.abra.language;
 import com.intellij.lang.ASTNode;
 import com.intellij.lang.annotation.AnnotationHolder;
 import com.intellij.lang.annotation.Annotator;
-import com.intellij.openapi.diagnostic.Logger;
 import com.intellij.openapi.util.TextRange;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiReference;
@@ -17,13 +16,11 @@ import java.util.HashSet;
 import java.util.List;
 
 public class ReferenceValidatorAnnotator implements Annotator {
-    private static final Logger log = Logger.getInstance(ReferenceValidatorAnnotator.class);
 
     private HashSet<AbraFile> usedImports = new HashSet<>();
     @Override
     public void annotate(@NotNull final PsiElement element, @NotNull AnnotationHolder holder) {
         if(element instanceof AbraFile){
-            log.info("FILE :"+this+"   "+((AbraFile)element).getName());
             for(ASTNode node:element.getNode().getChildren(TokenSet.create(AbraTypes.IMPORT_STMT))){
                 AbraImportStmt importStmt = (AbraImportStmt) node.getPsi();
                 boolean importNotUsed = true;
@@ -40,7 +37,6 @@ public class ReferenceValidatorAnnotator implements Annotator {
             }
         }
         if(element instanceof AbraResolvable){
-            log.info("ELEMENT :"+this+"   "+((AbraFile)element.getContainingFile()).getName());
             if(element.getReference()==null)return;
             PsiReference psiReference = element.getReference();
             PsiElement resolved = null;
