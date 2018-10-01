@@ -53,4 +53,10 @@
       <option name="FOREGROUND" value="fffd00" />
     </value>
   </option>
+  <option name="ABRA_STATE_VAR_REFERENCE">
+    <value>
+      <option name="FOREGROUND" value="f6fff4" />
+      <option name="FONT_TYPE" value="3" />
+    </value>
+  </option>
 </list>

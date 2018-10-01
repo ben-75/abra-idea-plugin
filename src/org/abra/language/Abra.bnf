@@ -170,7 +170,7 @@ paramName                   ::= IDENTIFIER
 varName                     ::= IDENTIFIER
                                 {mixin="org.abra.language.psi.impl.AbraNamedElementImpl"
                                 implements="org.abra.language.psi.AbraNamedElement"
-                                methods=[getName setName getNameIdentifier getResolvedSize ]}
+                                methods=[getName setName getNameIdentifier getResolvedSize getReference]}
 
 typeNameRef                 ::= IDENTIFIER      {implements="org.abra.language.psi.AbraResolvable" methods = [getReference]}
 fieldNameRef                ::= IDENTIFIER      {implements="org.abra.language.psi.AbraResolvable" methods = [getReference getResolvedSize]}

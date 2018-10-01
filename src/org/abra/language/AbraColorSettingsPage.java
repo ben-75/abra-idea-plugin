@@ -31,6 +31,7 @@ public class AbraColorSettingsPage implements ColorSettingsPage {
             new AttributesDescriptor("Test assertion", AbraSyntaxHighlighter.ABRA_TEST_ASSERTION),
             new AttributesDescriptor("Expression assertion prefix", AbraSyntaxHighlighter.ABRA_EXPR_ASSERTION_PREFIX),
             new AttributesDescriptor("Expression assertion", AbraSyntaxHighlighter.ABRA_EXPR_ASSERTION),
+            new AttributesDescriptor("State variable", AbraSyntaxHighlighter.ABRA_STATE_VAR_REFERENCE),
     };
 
     private static final Map<String,TextAttributesKey> ANNOTATOR_MAP = new HashMap();
@@ -94,9 +95,9 @@ public class AbraColorSettingsPage implements ColorSettingsPage {
                 "//Following line is an expression to evaluate and print the result on the console\n" +
                 "//= not[1]\n" +
                 "\n" +
-                "<funcdef>digest</funcdef>(state [<typeref>State</typeref>]) =\n" +
+                "<funcdef>digest</funcdef>(stt [<typeref>State</typeref>]) =\n" +
                 "  // single statement function\n" +
-                "  <local_var>state</local_var>, transform(<local_var>state</local_var>, 81);\n" +
+                "  <local_var>stt</local_var>, transform(<local_var>state</local_var>, 81);\n" +
                 "\n" +
                 "// This a function\n" +
                 "<funcdef>nullOrTryte</funcdef>(<local_var>t</local_var> [Bool], <local_var>val</local_var> [<typeref>Tryte</typeref>]) = {\n" +
@@ -113,7 +114,17 @@ public class AbraColorSettingsPage implements ColorSettingsPage {
                 "};" +
                 "" +
                 "//this is a use statement\n" +
-                "use <templatedef>addFunc</templatedef><<typeref>Trytes</typeref>>;";
+                "use <templatedef>addFunc</templatedef><<typeref>Trytes</typeref>>;" +
+                "" +
+                "<keyword>func</keyword> [<typeref>Transaction</typeref>] leaf (<local_var>param</local_var> [<typeref>TxCmd</typeref>]) = {\n" +
+                "  <keyword>state</keyword> <statevar>data</statevar> [<typeref>Transaction</typeref>];\n" +
+                "  <local_var>oldData</local_var> = <statevar>data</statevar>;\n" +
+                "  <local_var>set = <funcdef>nullOr</funcdef><<typeref>Transaction</typeref>>(<lutdef>equal</lutdef>[<trit>1</trit>, <local_var>param</local_var>.<fielddef>cmd</fielddef>], <local_var>param</local_var>.<fielddef>data</fielddef>);\n" +
+                "  <local_var>get = <funcdef>nullOr</funcdef><<typeref>Transaction</typeref>>(<lutdef>equal</lutdef>[<trit>0</trit>, <local_var>param</local_var>.<fielddef>cmd</fielddef>], <statevar>data</statevar>);\n" +
+                "  <local_var>del = <funcdef>nullOr</funcdef><<typeref>Transaction</typeref>>(<lutdef>equal</lutdef>[<trit>-</trit>, <local_var>param</local_var>.<fielddef>cmd</fielddef>], 0);\n" +
+                "  <statevar>data</statevar> = <local_var>set</local_var> \\ <local_var>get</local_var> \\ <local_var>del</local_var>;\n" +
+                "  <keyword>return</keyword> <local_var>oldData</local_var>;\n" +
+                "};";
     }
 
     @Nullable
@@ -128,6 +139,7 @@ public class AbraColorSettingsPage implements ColorSettingsPage {
             ANNOTATOR_MAP.put("trit",AbraSyntaxHighlighter.ABRA_TRIT);
             ANNOTATOR_MAP.put("templatedef",AbraSyntaxHighlighter.ABRA_TEMPLATE_DECLARATION);
             ANNOTATOR_MAP.put("typeref",AbraSyntaxHighlighter.ABRA_TYPE_REFERENCE);
+            ANNOTATOR_MAP.put("statevar",AbraSyntaxHighlighter.ABRA_STATE_VAR_REFERENCE);
         }
 
         return ANNOTATOR_MAP;

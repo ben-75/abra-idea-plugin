@@ -36,6 +36,8 @@ public class AbraSyntaxHighlighter extends SyntaxHighlighterBase  {
             createTextAttributesKey("ABRA_TYPE_DECLARATION", DefaultLanguageHighlighterColors.TEMPLATE_LANGUAGE_COLOR);
     public static final TextAttributesKey ABRA_TYPE_REFERENCE =
             createTextAttributesKey("ABRA_TYPE_REFERENCE", DefaultLanguageHighlighterColors.TEMPLATE_LANGUAGE_COLOR);
+    public static final TextAttributesKey ABRA_STATE_VAR_REFERENCE =
+            createTextAttributesKey("ABRA_STATE_VAR_REFERENCE", DefaultLanguageHighlighterColors.TEMPLATE_LANGUAGE_COLOR);
     public static final TextAttributesKey ABRA_FIELD_DECLARATION =
             createTextAttributesKey("ABRA_FIELD_DECLARATION", DefaultLanguageHighlighterColors.GLOBAL_VARIABLE);
     public static final TextAttributesKey ABRA_FCT_DECLARATION =
@@ -91,6 +93,8 @@ public class AbraSyntaxHighlighter extends SyntaxHighlighterBase  {
         }else if (tokenType.equals(AbraTypes.TYPE_KEYWORD)) {
             return KEYWORD_KEYS;
         }else if (tokenType.equals(AbraTypes.USE_KEYWORD)) {
+            return KEYWORD_KEYS;
+        }else if (tokenType.equals(AbraTypes.STATE_KEYWORD)) {
             return KEYWORD_KEYS;
         }else if (tokenType.equals(AbraTypes.COMMENT)) {
             return COMMENT_KEYS;

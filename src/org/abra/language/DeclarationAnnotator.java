@@ -37,7 +37,12 @@ public class DeclarationAnnotator  implements Annotator {
             TextRange range = new TextRange(element.getTextRange().getStartOffset(), element.getTextRange().getEndOffset());
             Annotation annotation = holder.createInfoAnnotation(range,
                     null);
-            annotation.setTextAttributes(AbraSyntaxHighlighter.ABRA_LOCAL_VAR);
+            if((element instanceof AbraVarName && (element.getParent() instanceof AbraStateExpr || element.getReference().resolve()!=null)) ||
+                    (element instanceof AbraParamOrVarNameRef && element.getReference().resolve()!=null && element.getReference().resolve().getParent() instanceof AbraStateExpr)){
+                annotation.setTextAttributes(AbraSyntaxHighlighter.ABRA_STATE_VAR_REFERENCE);
+            }else {
+                annotation.setTextAttributes(AbraSyntaxHighlighter.ABRA_LOCAL_VAR);
+            }
         } else if (element instanceof AbraLutName ||
                 (element instanceof AbraLutOrParamOrVarNameRef && (element.getReference().resolve() instanceof AbraLutName)) ) {
             TextRange range = new TextRange(element.getTextRange().getStartOffset(), element.getTextRange().getEndOffset());
@@ -61,6 +66,11 @@ public class DeclarationAnnotator  implements Annotator {
             Annotation annotation = holder.createInfoAnnotation(range,
                     null);
             annotation.setTextAttributes(AbraSyntaxHighlighter.ABRA_TYPE_REFERENCE);
+//        } else if (element instanceof AbraVarName && element.getParent() instanceof AbraStateExpr) {
+//            TextRange range = new TextRange(element.getTextRange().getStartOffset(), element.getTextRange().getEndOffset());
+//            Annotation annotation = holder.createInfoAnnotation(range,
+//                    null);
+//            annotation.setTextAttributes(AbraSyntaxHighlighter.ABRA_STATE_VAR_REFERENCE);
         }
     }
 }

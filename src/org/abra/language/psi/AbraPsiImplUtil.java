@@ -915,6 +915,12 @@ public class AbraPsiImplUtil {
     }
 
     @NotNull
+    public static PsiReference getReference(AbraVarName varName) {
+        return new AbraStateVarPsiReferenceImpl(varName);
+    }
+
+
+    @NotNull
     public static PsiReference[] getReferences(AbraImportStmt importStmt){
         List<PsiReference> importedFiles = new ArrayList<>();
         VirtualFile srcRoot = importStmt.getSourceRoot();
