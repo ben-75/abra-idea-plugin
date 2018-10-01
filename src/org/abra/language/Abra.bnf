@@ -56,11 +56,11 @@ fieldSpec       ::= fieldName staticTypeSize
 
 funcDefinition  ::= typeSize? funcName (OPEN_TAG typeOrPlaceHolderNameRef CLOSE_TAG)? OPEN_PAR (funcParameter (COMMA funcParameter)*) CLOSE_PAR ASSIGN funcBody
 funcParameter   ::= paramName typeSize
-funcBody        ::= returnExpr | (OPEN_BRACE (assignExpr SEMICOLON)* (RETURN_KEYWORD)? (returnExpr | OPEN_PAR returnExpr CLOSE_PAR) SEMICOLON CLOSE_BRACE)
+funcBody        ::= returnExpr | (OPEN_BRACE stateExpr* assignExpr* (RETURN_KEYWORD)? (returnExpr | OPEN_PAR returnExpr CLOSE_PAR) SEMICOLON CLOSE_BRACE)
 returnExpr      ::=  concatExpr | mergeExpr | simpleExpr
                 {methods=[getResolvedSize]}
-
-assignExpr      ::= (STATE_KEYWORD)? varName typeSize? ASSIGN returnExpr
+stateExpr       ::= STATE_KEYWORD varName typeSize SEMICOLON
+assignExpr      ::= varName typeSize? ASSIGN returnExpr SEMICOLON
 
 mergeExpr       ::= (concatTerm) (MERGE_OPERATOR (concatTerm))+
                 {methods=[getResolvedSize ]}

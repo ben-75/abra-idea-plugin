@@ -72,7 +72,7 @@ public class ReferenceValidatorAnnotator implements Annotator {
                     }else if(resolved instanceof AbraTypeOrPlaceHolderPsiReferenceImpl){
                         resolved2 = ((AbraTypeOrPlaceHolderPsiReferenceImpl)element.getReference()).resolveFromImportTree(importTree);
                     }else if(resolved instanceof AbraFuncPsiReferenceImpl){
-                        resolved2 = ((AbraFuncPsiReferenceImpl)element.getReference()).resolveFromImportTree(importTree,null);
+                        resolved2 = ((AbraFuncPsiReferenceImpl)element.getReference()).resolveFromImportTree(importTree,null, null);
                     }
 
                     if(resolved2!=null){

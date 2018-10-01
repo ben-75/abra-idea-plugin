@@ -31,7 +31,17 @@ public class SliceEvaluator {
                 length = fieldRange.getLength();
             }
             TRIT[] resp = new TRIT[length];
-            System.arraycopy(value,startOffset,resp,0,length);
+            if(startOffset+length>value.length){
+                //feed with 0 if required
+                TRIT[] expanded = new TRIT[startOffset+length];
+                System.arraycopy(value,0,expanded,0,value.length);
+                for(int j=value.length;j<startOffset+length;j++){
+                    expanded[j]=TRIT.Z;
+                }
+                System.arraycopy(expanded, startOffset, resp, 0, length);
+            }else {
+                System.arraycopy(value, startOffset, resp, 0, length);
+            }
             return resp;
         }
 

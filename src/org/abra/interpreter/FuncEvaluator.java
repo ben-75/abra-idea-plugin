@@ -2,13 +2,14 @@ package org.abra.interpreter;
 
 import com.intellij.psi.PsiElement;
 import org.abra.language.psi.*;
+import org.abra.language.psi.impl.AbraFuncPsiReferenceImpl;
 import org.abra.utils.TRIT;
 
 public class FuncEvaluator {
 
     public static TRIT[] eval(AbraFuncExpr expr, AbraEvaluationContext context){
-        System.out.println("FuncEvaluator:"+expr.getText());
-        PsiElement resolved = expr.getFuncNameRef().getReference().resolve();
+        System.out.println("FUNC :"+expr.getText());
+        PsiElement resolved = ((AbraFuncPsiReferenceImpl)expr.getFuncNameRef().getReference()).resolveInContext(context);
         if(resolved==null){
             throw new AbraSyntaxError("Cannot resolve "+expr.getFuncNameRef()+" at "+InterpreterUtils.getErrorLocationString(expr));
         }
@@ -34,30 +35,54 @@ public class FuncEvaluator {
             funcDefinition = templateStmt.getFuncDefinition();
         }else {
             funcDefinition = (AbraFuncDefinition) resolved.getParent();
+//            if(funcDefinition.getParent() instanceof AbraTemplateStmt){
+//                //yeah... we have resolved the function statically to a template.
+//                //but we have an execution context here. We need to do something.
+//
+//                AbraTemplateStmt templateStmt = (AbraTemplateStmt) funcDefinition.getParent();
+//                int i=0;
+//                for(AbraPlaceHolderName phn:templateStmt.getPlaceHolderNameList()){
+//                    PsiElement resolved2 = funcDefinition.getTypeOrPlaceHolderNameRef().getReference().resolve();
+//                    if(resolved2==null){
+//                        throw new AbraSyntaxError("Cannot resolve type or placeholder "+funcDefinition.getTypeOrPlaceHolderNameRef().getText()+" at "+InterpreterUtils.getErrorLocationString(funcDefinition.getTypeOrPlaceHolderNameRef()));
+//                    }
+//                    if(resolved2 instanceof AbraTypeName) {
+//                        AbraTypeStmt typeStmt = (AbraTypeStmt) resolved2.getParent();
+//                        newContext.add(phn, typeStmt.getResolvedSize());
+//                    }else if(resolved2 instanceof AbraPlaceHolderName){
+//                        //need to find the use statement for funcDefinition.getFuncName()<resolved2>
+//
+//
+//                        newContext.add(phn, context.getType((AbraPlaceHolderName) resolved2));
+//                    }
+//                    i++;
+//                }
+//
+//            }
         }
 
-            int i=0;
-            for(AbraFuncParameter param:funcDefinition.getFuncParameterList()){
-                TRIT[] paramValue = PostFixEvaluator.eval(expr.getPostfixExprList().get(i), context);
-                newContext.add(param.getParamName(),paramValue);
-                i++;
-            }
+        int i=0;
+        for(AbraFuncParameter param:funcDefinition.getFuncParameterList()){
+            TRIT[] paramValue = PostFixEvaluator.eval(expr.getPostfixExprList().get(i), context);
+            newContext.add(param.getParamName(),paramValue);
+            i++;
+        }
 
         context.pushChildContext(newContext);
         try {
-            return execute(context, funcDefinition, newContext);
+            return execute(funcDefinition, newContext);
         }finally {
             context.popContext();
         }
     }
 
-    public static TRIT[] execute(AbraEvaluationContext rootContext, AbraFuncDefinition funcDefinition, AbraEvaluationContext newContext) {
+    public static TRIT[] execute(AbraFuncDefinition funcDefinition, AbraEvaluationContext newContext) {
         for(AbraAssignExpr assignExpr:funcDefinition.getFuncBody().getAssignExprList()){
-            newContext.add(assignExpr.getVarName(), ReturnEvaluator.eval(assignExpr.getReturnExpr(),rootContext));
+            newContext.add(assignExpr.getVarName(), ReturnEvaluator.eval(assignExpr.getReturnExpr(),newContext));
         }
 
 
-            return ReturnEvaluator.eval(funcDefinition.getFuncBody().getReturnExpr(), rootContext);
+            return ReturnEvaluator.eval(funcDefinition.getFuncBody().getReturnExpr(), newContext);
 
     }
 }

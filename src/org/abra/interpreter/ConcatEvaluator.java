@@ -16,7 +16,12 @@ public class ConcatEvaluator {
     public static TRIT[] eval(AbraConcatExpr expr, AbraEvaluationContext context){
         ArrayList<TRIT> resp = new ArrayList<>();
         for(AbraConcatTerm postfixExpr:expr.getConcatTermList()){
-            resp.addAll(Arrays.asList(ConcatTermEvaluator.eval(postfixExpr, context)));
+            TRIT[] concatTermValue = ConcatTermEvaluator.eval(postfixExpr, context);
+            if(concatTermValue!=null) {
+                resp.addAll(Arrays.asList());
+            }else{
+                System.out.println("Concat Term :"+postfixExpr.getText()+" is null in current context.");
+            }
         }
         return resp.toArray(new TRIT[resp.size()]);
     }

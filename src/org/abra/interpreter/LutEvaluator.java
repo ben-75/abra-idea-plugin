@@ -14,6 +14,7 @@ import static org.abra.interpreter.InterpreterUtils.getErrorLocationString;
 public class LutEvaluator {
 
     public static TRIT[] eval(AbraLutExpr expr, AbraEvaluationContext context){
+        System.out.println("LUT  :"+expr.getText());
         PsiElement resolved = expr.getLutOrParamOrVarNameRef().getReference().resolve();
 //        if(!(resolved instanceof AbraLutName)){
 //            throw new AbraSyntaxError("Cannot resolve "+expr.getLutOrParamOrVarNameRef().getText()+" in "+InterpreterUtils.getErrorLocationString(expr.getLutOrParamOrVarNameRef()));
@@ -40,11 +41,14 @@ public class LutEvaluator {
         }
         if(resolved instanceof AbraVarName){
             TRIT[] trits = context.get((AbraNamedElement) resolved);
-            AbraInteger integerExpr = (AbraInteger) expr.getPostfixExprList().get(0);
-            if(integerExpr==null){
-                throw new RuntimeException("Hum... something to review in the bnf.");
+            AbraInteger integerExpr = expr.getPostfixExprList().get(0).getConcatTerm().getInteger();
+            if(integerExpr!=null){
+                return new TRIT[]{trits[Integer.parseInt(integerExpr.getText())]};
             }
-            return new TRIT[]{trits[Integer.parseInt(integerExpr.getText())]};
+
+            RangeEvaluator.apply(expr.getPostfixExprList().get(0).getConcatTerm().getSliceExpr().getRangeExpr(),trits,context);
+
+            throw new RuntimeException("Hum... something to review in the bnf.");
         }
         return null;
     }

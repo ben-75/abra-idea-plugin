@@ -55,6 +55,17 @@ public class AbraVarOrParamPsiReferenceImpl extends PsiReferenceBase implements 
             }
             funcBody = funcBody.getParent();
         }
+
+        //look in state vars
+        if(((AbraFuncBody)funcBody).getStateExprList()!=null) {
+            for (AbraStateExpr stateExpr : ((AbraFuncBody) funcBody).getStateExprList()){
+                if(stateExpr.equals(myExpression))break;
+                if(stateExpr.getVarName().getText().equals(myElement.getText())){
+                    return stateExpr.getVarName();
+                }
+            }
+        }
+
         //look in local vars
         if(((AbraFuncBody)funcBody).getAssignExprList()!=null) {
             for (AbraAssignExpr assignExpr : ((AbraFuncBody) funcBody).getAssignExprList()){

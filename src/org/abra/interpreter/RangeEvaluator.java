@@ -16,7 +16,18 @@ public class RangeEvaluator {
         if(rangeExpr.getSmartRange()!=null){
             int length = ConstEvaluator.eval(rangeExpr.getConstExprList().get(1), context);
             TRIT[] dest = new TRIT[length];
-            System.arraycopy(value, start,dest,0, length);
+
+            if(start+length>value.length){
+                //feed with 0 if required
+                TRIT[] expanded = new TRIT[start+length];
+                System.arraycopy(value,0,expanded,0,value.length);
+                for(int j=value.length;j<start+length;j++){
+                    expanded[j]=TRIT.Z;
+                }
+                System.arraycopy(expanded, start, dest, 0, length);
+            }else {
+                System.arraycopy(value, start, dest, 0, length);
+            }
             return dest;
         }
         //rangeOperator

@@ -36,31 +36,11 @@ public class AbraEvaluationContext {
     }
 
     public TRIT[] get(AbraNamedElement key){
-        AbraEvaluationContext ec = this;
-        while(ec.childContext!=null)ec = ec.childContext;
-        TRIT[] resp = ec.localNameMap.get(key.getText());
-        while(resp==null && ec.parentContext!=null){
-            resp = ec.localNameMap.get(key.getText());
-            ec=ec.parentContext;
+        TRIT[] resp = localNameMap.get(key.getText());
+        if(resp==null && parentContext!=null){
+            return localNameMap.get(key.getText());
         }
-        return resp==null?ec.localNameMap.get(key.getText()):resp;
-//
-//        if(childContext==null) return localNameMap.get(key);
-//        TRIT[] resp = childContext.get(key);
-//        if(resp==null){
-//            return getUpper(key);
-//        }else{
-//            return resp;
-//        }
-    }
-
-    public TRIT[] getUpper(AbraNamedElement key){
-        TRIT[] resp = localNameMap.get(key);
-        if(resp==null){
-            return parentContext==null?null:parentContext.getUpper(key);
-        }else{
-            return resp;
-        }
+        return resp;
     }
 
     public void add(AbraPlaceHolderName phn, int resolvedSize) {
@@ -68,30 +48,11 @@ public class AbraEvaluationContext {
     }
 
     public Integer getType(AbraPlaceHolderName phn){
-        AbraEvaluationContext ec = this;
-        while(ec.childContext!=null)ec = ec.childContext;
-        Integer resp = ec.typeMap.get(phn.getText());
-        while(resp==null && ec.parentContext!=null){
-            resp = ec.typeMap.get(phn.getText());
-            ec=ec.parentContext;
+        Integer resp = typeMap.get(phn.getText());
+        if(resp==null && parentContext!=null){
+            return parentContext.getType(phn);
         }
-        return resp==null?ec.typeMap.get(phn.getText()):resp;
-//        if(childContext==null) return typeMap.get(phn);
-//        Integer resp = childContext.getType(phn);
-//        if(resp==null){
-//            return getTypeUpper(phn);
-//        }else{
-//            return resp;
-//        }
-    }
-
-    public Integer getTypeUpper(AbraPlaceHolderName phn){
-        Integer resp = typeMap.get(phn);
-        if(resp==null){
-            return parentContext==null?null:parentContext.getTypeUpper(phn);
-        }else{
-            return resp;
-        }
+        return resp;
     }
 
 }

@@ -42,7 +42,7 @@ public class MultiDeclarationAnnotator implements Annotator {
         if(functionReference!=null){
             AbraFuncPsiReferenceImpl dummy = new AbraFuncPsiReferenceImpl(functionReference);
             try{
-                PsiElement resolved = dummy.resolveInFile(element.getContainingFile(), constExpr);
+                PsiElement resolved = dummy.resolveInFile(element.getContainingFile(), constExpr, null);
                 if(resolved!=null){
                     if (element instanceof AbraFuncStmt) {
                         if(resolved!=((AbraFuncStmt)element).getFuncDefinition().getFuncName()){

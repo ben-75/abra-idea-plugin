@@ -29,13 +29,10 @@ public class RunAbraInterpreter extends AnAction {
             if (dialog.getExitCode() == DialogWrapper.OK_EXIT_CODE) {
                 AbraFuncDefinition funcDefinition = (AbraFuncDefinition) element.getParent();
                 AbraEvaluationContext rootContext = new AbraEvaluationContext();
-                AbraEvaluationContext evaluationContext = new AbraEvaluationContext();
                 for(AbraFuncParameter param:funcDefinition.getFuncParameterList()){
                     rootContext.add(param.getParamName(),dialog.getTrits(param.getParamName()));
-                 //   evaluationContext.add(param.getParamName(),dialog.getTrits(param.getParamName()));
                 }
-                rootContext.pushChildContext(evaluationContext);
-                TRIT[] response = FuncEvaluator.execute(rootContext,funcDefinition,evaluationContext);
+                TRIT[] response = FuncEvaluator.execute(funcDefinition,rootContext);
                 System.out.println("TRITS :"+ TritUtils.trit2String(response));
                 System.out.println("DECIM :"+ TritUtils.trit2Decimal(response));
                 System.out.println("TRYTES:"+ TritUtils.trit2Trytes(response));
