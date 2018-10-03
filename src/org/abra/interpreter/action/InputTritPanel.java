@@ -1,4 +1,4 @@
-package org.abra.interpreter.action.org.abra.interpreter.action;
+package org.abra.interpreter.action;
 
 import com.intellij.openapi.ui.VerticalFlowLayout;
 import com.intellij.ui.components.panels.HorizontalLayout;
