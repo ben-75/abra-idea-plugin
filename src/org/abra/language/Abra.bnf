@@ -18,8 +18,6 @@
 abra            ::= (stmt|TEST_COMMENT TEST_ASSERTION|EXPR_COMMENT EXPR_ASSERTION|COMMENT|CRLF)*
 private stmt    ::= (importStmt | typeStmt | lutStmt | funcStmt | templateStmt | useStmt) SEMICOLON
 
-private stmt_rule ::= !(stmt | TEST_COMMENT | EXPR_COMMENT)
-
 importStmt      ::= IMPORT_KEYWORD file_path
                     {methods=[getReferences getSourceRoot]}
 
@@ -136,17 +134,13 @@ integer         ::= ('-') number | trit | number
 
 file_path                   ::= FILENAME (SLASH FILENAME)*  {pin=1 recoverWhile="semicolon_rule"}
 private semicolon_rule      ::= !(';'|SEMICOLON)
-private open_bracket_rule   ::= !('['|OPEN_BRACKET)
-private close_bracket_rule  ::= !(']'|CLOSE_BRACKET)
-private tritList_rule       ::= !(';'|'=')
-
 
 typeName                    ::= IDENTIFIER
                                 {mixin="org.abra.language.psi.impl.AbraNamedElementImpl"
                                 implements="org.abra.language.psi.AbraNamedElement"
                                 methods=[getName setName getNameIdentifier]}
 fieldName                   ::= IDENTIFIER
-                            {methods = [getFieldRange]}
+
 lutName                     ::= IDENTIFIER
                                 {mixin="org.abra.language.psi.impl.AbraNamedElementImpl"
                                 implements="org.abra.language.psi.AbraNamedElement"

@@ -12,7 +12,7 @@ import org.jetbrains.annotations.Nullable;
 
 public class AbraFileReferencePsiReferenceImpl extends PsiReferenceBase implements PsiReference {
 
-    private VirtualFile virtualFile;
+    private final VirtualFile virtualFile;
 
     public AbraFileReferencePsiReferenceImpl(AbraImportStmt abraImportFile, VirtualFile virtualFile) {
         super(abraImportFile, false);

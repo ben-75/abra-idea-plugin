@@ -10,8 +10,6 @@ import com.intellij.openapi.vfs.LocalFileSystem;
 import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiReference;
-import org.abra.interpreter.AbraSyntaxError;
-import org.abra.interpreter.InterpreterUtils;
 import org.abra.language.AbraFileType;
 import org.abra.language.AbraIcons;
 import org.abra.language.UnresolvableTokenException;
@@ -31,6 +29,7 @@ public class AbraPsiImplUtil {
     //====================================================================
 
 
+    @NotNull
     public static ItemPresentation getPresentation(AbraTypeStmt element) {
         return new ItemPresentation() {
             @NotNull
@@ -108,6 +107,7 @@ public class AbraPsiImplUtil {
     //====================== AbraLutStmt =================================
     //====================================================================
 
+    @NotNull
     public static ItemPresentation getPresentation(AbraLutStmt element) {
         return new ItemPresentation() {
             @NotNull
@@ -172,6 +172,7 @@ public class AbraPsiImplUtil {
     //====================== AbraFieldSpec ===============================
     //====================================================================
 
+    @NotNull
     public static ItemPresentation getPresentation(AbraFieldSpec element) {
         return new ItemPresentation() {
             @NotNull
@@ -202,6 +203,7 @@ public class AbraPsiImplUtil {
     //====================== AbraFuncStmt ================================
     //====================================================================
 
+    @NotNull
     public static ItemPresentation getPresentation(AbraFuncStmt element) {
         return new ItemPresentation() {
             @NotNull
@@ -290,6 +292,7 @@ public class AbraPsiImplUtil {
     //====================== AbraTemplateStmt ============================
     //====================================================================
 
+    @NotNull
     public static ItemPresentation getPresentation(AbraTemplateStmt element) {
         return new ItemPresentation() {
             @NotNull
@@ -387,6 +390,7 @@ public class AbraPsiImplUtil {
     //====================== AbraUseStmt =================================
     //====================================================================
 
+    @NotNull
     public static ItemPresentation getPresentation(AbraUseStmt element) {
         return new ItemPresentation() {
             @NotNull
@@ -1075,7 +1079,7 @@ public class AbraPsiImplUtil {
 
     public static class ContextStack extends ThreadLocal<Stack<Map<AbraPlaceHolderName, AbraTypeNameRef>>>{
 
-        public static ContextStack INSTANCE = new ContextStack();
+        public static final ContextStack INSTANCE = new ContextStack();
 
         public void push(Map<AbraPlaceHolderName, AbraTypeNameRef> aContext){
             Stack<Map<AbraPlaceHolderName, AbraTypeNameRef>> stack = get();
@@ -1110,16 +1114,4 @@ public class AbraPsiImplUtil {
         return null;
     }
 
-    public static FieldRange getFieldRange(AbraFieldName fieldName){
-        int length = ((AbraFieldSpec)fieldName.getParent()).getStaticTypeSize().getResolvedSize();
-        int offsetInParent = 0;
-        for(AbraFieldSpec fSpec:((AbraTypeStmt)fieldName.getParent().getParent()).getFieldSpecList()){
-            if(fSpec.getFieldName().equals(fieldName)){
-                return new FieldRange(offsetInParent,length);
-            }else{
-                offsetInParent = offsetInParent+fSpec.getStaticTypeSize().getResolvedSize();
-            }
-        }
-        throw new AbraSyntaxError("Cannot resolve field "+fieldName.getText()+" in "+ InterpreterUtils.getErrorLocationString(fieldName));
-    }
 }

@@ -7,7 +7,6 @@ import com.intellij.lang.findUsages.FindUsagesProvider;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiNamedElement;
 import com.intellij.psi.tree.TokenSet;
-import org.abra.language.psi.AbraTokenType;
 import org.abra.language.psi.AbraTypes;
 import org.jetbrains.annotations.NotNull;
 

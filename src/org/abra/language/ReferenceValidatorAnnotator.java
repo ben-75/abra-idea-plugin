@@ -17,7 +17,7 @@ import java.util.List;
 
 public class ReferenceValidatorAnnotator implements Annotator {
 
-    private HashSet<AbraFile> usedImports = new HashSet<>();
+    private final HashSet<AbraFile> usedImports = new HashSet<>();
     @Override
     public void annotate(@NotNull final PsiElement element, @NotNull AnnotationHolder holder) {
         if(element instanceof AbraFile){
@@ -65,10 +65,8 @@ public class ReferenceValidatorAnnotator implements Annotator {
                         resolved2 = ((AbraTemplatePsiReferenceImpl)element.getReference()).resolveFromImportTree(importTree);
                     }else if(resolved instanceof AbraTypeOrPlaceHolderPsiReferenceImpl){
                         resolved2 = ((AbraTypeOrPlaceHolderPsiReferenceImpl)element.getReference()).resolveFromImportTree(importTree);
-                    }else if(resolved instanceof AbraTypeOrPlaceHolderPsiReferenceImpl){
-                        resolved2 = ((AbraTypeOrPlaceHolderPsiReferenceImpl)element.getReference()).resolveFromImportTree(importTree);
                     }else if(resolved instanceof AbraFuncPsiReferenceImpl){
-                        resolved2 = ((AbraFuncPsiReferenceImpl)element.getReference()).resolveFromImportTree(importTree,null, null);
+                        resolved2 = ((AbraFuncPsiReferenceImpl)element.getReference()).resolveFromImportTree(importTree,null);
                     }
 
                     if(resolved2!=null){

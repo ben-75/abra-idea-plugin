@@ -19,13 +19,9 @@ public class FuncArgsAnnotator  implements Annotator {
                     AbraPsiImplUtil.ContextStack.INSTANCE.push(AbraPsiImplUtil.getTemplateContextMap((AbraUseStmt)resolved.getParent()));
                 }
                 try {
-                    int argsCount = 0;
-                    int startOffset = 0;
-                    int endOffset = 0;
-
-                        argsCount = funcExpr.getPostfixExprList().size();
-                        startOffset = funcExpr.getPostfixExprList().get(0).getTextRange().getStartOffset();
-                        endOffset = funcExpr.getPostfixExprList().get(argsCount - 1).getTextRange().getEndOffset();
+                    int  argsCount = funcExpr.getPostfixExprList().size();
+                    int   startOffset = funcExpr.getPostfixExprList().get(0).getTextRange().getStartOffset();
+                    int  endOffset = funcExpr.getPostfixExprList().get(argsCount - 1).getTextRange().getEndOffset();
 
                     int expectedArgsCount = funcDefinition.getFuncParameterList().size();
 

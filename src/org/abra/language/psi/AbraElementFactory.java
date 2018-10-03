@@ -1,11 +1,8 @@
 package org.abra.language.psi;
 
 import com.intellij.openapi.project.Project;
-import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.psi.*;
 import org.abra.language.AbraFileType;
-
-import java.util.List;
 
 /**
  * Factory for AbraPsi elements
@@ -62,7 +59,7 @@ public class AbraElementFactory {
     }
 
     public static AbraFuncNameRef createAbraFunctionReference(Project project, String name, AbraFile originalFile) {
-        StringBuilder sb = new StringBuilder("");
+        StringBuilder sb = new StringBuilder();
         if(originalFile!=null){
             sb.append("import ").append(originalFile.getImportableFilePath()).append(";");
         }

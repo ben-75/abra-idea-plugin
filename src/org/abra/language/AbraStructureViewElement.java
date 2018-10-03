@@ -14,7 +14,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class AbraStructureViewElement implements StructureViewTreeElement, SortableTreeElement {
-    private NavigatablePsiElement element;
+    private final NavigatablePsiElement element;
 
     public AbraStructureViewElement(NavigatablePsiElement element) {
         this.element = element;
@@ -54,6 +54,7 @@ public class AbraStructureViewElement implements StructureViewTreeElement, Sorta
         return presentation != null ? presentation : new PresentationData();
     }
 
+    @NotNull
     @Override
     public TreeElement[] getChildren() {
         if (element instanceof AbraFile) {

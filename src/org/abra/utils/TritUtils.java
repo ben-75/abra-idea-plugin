@@ -20,18 +20,18 @@ public class TritUtils {
         TRIT_FMT, TRYTE, DECIMAL, INVALID
     }
 
-    private static DATA_FORMAT[] TRIT_OR_DECIMAL = new DATA_FORMAT[]{DATA_FORMAT.TRIT_FMT,DATA_FORMAT.DECIMAL};
-    private static DATA_FORMAT[] TRYTE_OR_DECIMAL = new DATA_FORMAT[]{DATA_FORMAT.TRYTE,DATA_FORMAT.DECIMAL};
-    private static DATA_FORMAT[] INVALID = new DATA_FORMAT[]{DATA_FORMAT.INVALID};
-    private static DATA_FORMAT[] TRIT_FMT = new DATA_FORMAT[]{DATA_FORMAT.TRIT_FMT};
-    private static DATA_FORMAT[] TRYTE = new DATA_FORMAT[]{DATA_FORMAT.TRYTE};
-    private static DATA_FORMAT[] DECIMAL = new DATA_FORMAT[]{DATA_FORMAT.DECIMAL};
+    private static final DATA_FORMAT[] TRIT_OR_DECIMAL = new DATA_FORMAT[]{DATA_FORMAT.TRIT_FMT,DATA_FORMAT.DECIMAL};
+    private static final DATA_FORMAT[] TRYTE_OR_DECIMAL = new DATA_FORMAT[]{DATA_FORMAT.TRYTE,DATA_FORMAT.DECIMAL};
+    private static final DATA_FORMAT[] INVALID = new DATA_FORMAT[]{DATA_FORMAT.INVALID};
+    private static final DATA_FORMAT[] TRIT_FMT = new DATA_FORMAT[]{DATA_FORMAT.TRIT_FMT};
+    private static final DATA_FORMAT[] TRYTE = new DATA_FORMAT[]{DATA_FORMAT.TRYTE};
+    private static final DATA_FORMAT[] DECIMAL = new DATA_FORMAT[]{DATA_FORMAT.DECIMAL};
 
-    private static Pattern ambiguousTritDecimalPattern = Pattern.compile("(1)[0-1]*");
-    private static Pattern ambiguousDecimalTrytePattern = Pattern.compile("[9]*");
-    private static Pattern tritPattern = Pattern.compile("[\\-0-1]*");
-    private static Pattern decimalPattern = Pattern.compile("[0-9]*");
-    private static Pattern trytePattern = Pattern.compile("[9A-Z]*");
+    private static final Pattern ambiguousTritDecimalPattern = Pattern.compile("(1)[0-1]*");
+    private static final Pattern ambiguousDecimalTrytePattern = Pattern.compile("[9]*");
+    private static final Pattern tritPattern = Pattern.compile("[\\-0-1]*");
+    private static final Pattern decimalPattern = Pattern.compile("[0-9]*");
+    private static final Pattern trytePattern = Pattern.compile("[9A-Z]*");
 
     public static DATA_FORMAT[] detectFormat(String input){
         if(ambiguousTritDecimalPattern.matcher(input).matches())return TRIT_OR_DECIMAL;
@@ -221,7 +221,7 @@ public class TritUtils {
     }
 
     public static String trit2String(TRIT[] input) {
-        StringBuilder sb = new StringBuilder("");
+        StringBuilder sb = new StringBuilder();
         for(TRIT t:input){
             sb.append(t.label());
         }
@@ -229,7 +229,7 @@ public class TritUtils {
     }
 
     public static String trit2Trytes(TRIT[] input){
-        StringBuilder sb = new StringBuilder("");
+        StringBuilder sb = new StringBuilder();
         int i=0;
         while(i<input.length){
             String chars = input[i].label();

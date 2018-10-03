@@ -8,7 +8,7 @@ public class AbraContextualLexer {
 
     public IElementType lastIdCategory = null;
 
-    public Stack<String> contextStack = new Stack();
+    public final Stack<String> contextStack = new Stack();
 
     public boolean isStackEmpty(){
         return contextStack.isEmpty();

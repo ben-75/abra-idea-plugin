@@ -5,8 +5,6 @@ import com.intellij.openapi.util.TextRange;
 import com.intellij.psi.*;
 import com.intellij.psi.tree.TokenSet;
 import com.intellij.util.IncorrectOperationException;
-import org.abra.interpreter.AbraEvaluationContext;
-import org.abra.interpreter.ConstEvaluator;
 import org.abra.language.psi.*;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -39,10 +37,6 @@ public class AbraFuncPsiReferenceImpl  extends PsiReferenceBase implements PsiRe
     @Nullable
     @Override
     public PsiElement resolve() {
-        return resolveInContext(null);
-    }
-
-    public PsiElement resolveInContext(AbraEvaluationContext context) {
         AbraConstExpr constExpr = null;
         PsiElement it = myElement.getNextSibling();
         while(it.getNode().getElementType()== TokenType.WHITE_SPACE) it = it.getNextSibling();
@@ -53,9 +47,9 @@ public class AbraFuncPsiReferenceImpl  extends PsiReferenceBase implements PsiRe
             //at this point it is the type name ref
             constExpr = (AbraConstExpr)it;
         }
-        PsiElement resolved = resolveInFile(myElement.getContainingFile(), constExpr, context);
+        PsiElement resolved = resolveInFile(myElement.getContainingFile(), constExpr);
         if(resolved==null){
-            resolved = resolveFromImports(myElement.getContainingFile(), constExpr, context);
+            resolved = resolveFromImports(myElement.getContainingFile(), constExpr);
         }
         return resolved;
     }
@@ -66,7 +60,7 @@ public class AbraFuncPsiReferenceImpl  extends PsiReferenceBase implements PsiRe
         return new Object[0];
     }
 
-    public PsiElement resolveInFile(PsiFile aFile, AbraConstExpr constExpr, AbraEvaluationContext context){
+    public PsiElement resolveInFile(PsiFile aFile, AbraConstExpr constExpr){
 
         if(constExpr==null){
             //this reference a standard function in this file or in another
@@ -103,38 +97,11 @@ public class AbraFuncPsiReferenceImpl  extends PsiReferenceBase implements PsiRe
         }
 
         //now the use case of a template call from a template
-        if(context==null) {
-            if (((AbraFuncNameRef) myElement).getStatement() instanceof AbraTemplateStmt) {
-                for (ASTNode stmt : aFile.getNode().getChildren(TokenSet.create(AbraTypes.TEMPLATE_STMT))) {
-                    AbraTemplateStmt templateStmt = (AbraTemplateStmt) stmt.getPsi();
-                    if (templateStmt.getFuncDefinition().getFuncName().getText().equals(myElement.getText())) {
-                        return templateStmt.getFuncDefinition().getFuncName();
-                    }
-                }
-            }
-        }else if(constExpr!=null){
-            int sizeOfMyElement = ConstEvaluator.eval(constExpr,context);
-            for (ASTNode stmt : aFile.getNode().getChildren(TokenSet.create(AbraTypes.USE_STMT, AbraTypes.FUNC_STMT))) {
-                if(stmt.getPsi() instanceof AbraUseStmt) {
-                    AbraUseStmt useStmt = (AbraUseStmt) stmt.getPsi();
-                    AbraTemplateName referencedTemplateName = (AbraTemplateName) useStmt.getTemplateNameRef().getReference().resolve();
-                    if (referencedTemplateName != null) {
-                        AbraTemplateStmt abraTemplateStmt = (AbraTemplateStmt) referencedTemplateName.getParent();
-                        if (abraTemplateStmt.getFuncDefinition().getFuncName().getText().equals(myElement.getText())) {
-                            int sizeOfTheUseStatement = sizeOfNamedParam(useStmt, abraTemplateStmt, abraTemplateStmt.getFuncDefinition().getTypeOrPlaceHolderNameRef().getText());
-                            if (sizeOfMyElement == sizeOfTheUseStatement) return useStmt.getTemplateNameRef();
-                        }
-                    }
-                }else if(stmt.getPsi() instanceof AbraFuncStmt){
-                    AbraFuncStmt funcStmt = (AbraFuncStmt) stmt.getPsi();
-                    if(funcStmt.getFuncDefinition().getFuncName().getText().equals(myElement.getText()) && funcStmt.getFuncDefinition().getTypeOrPlaceHolderNameRef()!=null){
-                        PsiElement resolved = funcStmt.getFuncDefinition().getTypeOrPlaceHolderNameRef().getReference().resolve();
-                        if(resolved instanceof AbraTypeName){
-                            if(((AbraTypeStmt)resolved.getParent()).getResolvedSize()==sizeOfMyElement){
-                                return funcStmt.getFuncDefinition().getFuncName();
-                            }
-                        }
-                    }
+        if (((AbraFuncNameRef) myElement).getStatement() instanceof AbraTemplateStmt) {
+            for (ASTNode stmt : aFile.getNode().getChildren(TokenSet.create(AbraTypes.TEMPLATE_STMT))) {
+                AbraTemplateStmt templateStmt = (AbraTemplateStmt) stmt.getPsi();
+                if (templateStmt.getFuncDefinition().getFuncName().getText().equals(myElement.getText())) {
+                    return templateStmt.getFuncDefinition().getFuncName();
                 }
             }
         }
@@ -159,15 +126,15 @@ public class AbraFuncPsiReferenceImpl  extends PsiReferenceBase implements PsiRe
         return -2;
     }
 
-    private PsiElement resolveFromImports(PsiFile startingFile, AbraConstExpr typeOrPlaceHolderNameRef, AbraEvaluationContext context){
+    private PsiElement resolveFromImports(PsiFile startingFile, AbraConstExpr typeOrPlaceHolderNameRef){
         List<AbraFile> importsTree = (((AbraFile)startingFile).getImportTree(new ArrayList<>()));
-       return resolveFromImportTree(importsTree, typeOrPlaceHolderNameRef, context);
+       return resolveFromImportTree(importsTree, typeOrPlaceHolderNameRef);
     }
 
-    public PsiElement resolveFromImportTree(List<AbraFile> scope, AbraConstExpr typeOrPlaceHolderNameRef, AbraEvaluationContext context){
+    public PsiElement resolveFromImportTree(List<AbraFile> scope, AbraConstExpr typeOrPlaceHolderNameRef){
         if(scope.size()>0){
             for(PsiFile f:scope){
-                PsiElement resolved = resolveInFile(f, typeOrPlaceHolderNameRef, context);
+                PsiElement resolved = resolveInFile(f, typeOrPlaceHolderNameRef);
                 if(resolved!=null)return resolved;
             }
         }

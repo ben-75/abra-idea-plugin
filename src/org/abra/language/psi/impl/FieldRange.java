@@ -2,8 +2,8 @@ package org.abra.language.psi.impl;
 
 public class FieldRange {
 
-    private int startOffset;
-    private int length;
+    private final int startOffset;
+    private final int length;
 
     public FieldRange(int startOffset, int length) {
         this.startOffset = startOffset;

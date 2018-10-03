@@ -4,7 +4,7 @@ public enum TRIT {
 
     O("1"),Z("0"),M("-");
 
-    private String label;
+    private final String label;
 
     TRIT(String label) {
         this.label = label;

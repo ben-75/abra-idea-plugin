@@ -1,7 +1,7 @@
 package org.abra.interpreter.action;
 
 import com.intellij.openapi.ui.VerticalFlowLayout;
-import com.intellij.ui.components.panels.HorizontalLayout;
+import com.intellij.ui.JBColor;
 import org.abra.utils.TRIT;
 import org.abra.utils.TritUtils;
 
@@ -12,18 +12,16 @@ import java.awt.*;
 import java.math.BigInteger;
 
 public class InputTritPanel extends JPanel implements DocumentListener {
-    private JTextField textField;
-    private JPanel otherFormats;
-    private JLabel paramLabel;
-    private JLabel otherFormat1;
-    private JLabel otherFormat2;
+    private final JTextField textField;
+    private final JLabel otherFormat1;
+    private final JLabel otherFormat2;
 
     private TRIT[] trits;
 
     public InputTritPanel(String paramName, int preferredWidth){
         super(new VerticalFlowLayout(VerticalFlowLayout.TOP,5,1,true,false));
 
-        paramLabel = new JLabel();
+        JLabel paramLabel = new JLabel();
         paramLabel.setText(paramName+" :");
         paramLabel.setMaximumSize(new Dimension(preferredWidth, paramLabel.getPreferredSize().height));
 
@@ -35,7 +33,7 @@ public class InputTritPanel extends JPanel implements DocumentListener {
         topLine.add(textField, BorderLayout.CENTER);
         add(topLine);
 
-        otherFormats = new JPanel(new VerticalFlowLayout());
+        JPanel otherFormats = new JPanel(new VerticalFlowLayout());
         otherFormat1 = new JLabel();
         otherFormat2 = new JLabel();
         otherFormats.add(otherFormat1);
@@ -81,10 +79,10 @@ public class InputTritPanel extends JPanel implements DocumentListener {
             if (formats[0] == TritUtils.DATA_FORMAT.INVALID) {
                 otherFormat1.setText("Invalid input!");
                 otherFormat2.setText("");
-                otherFormat1.setForeground(Color.RED);
+                otherFormat1.setForeground(JBColor.RED);
                 trits = null;
             } else {
-                otherFormat1.setForeground(Color.LIGHT_GRAY);
+                otherFormat1.setForeground(JBColor.LIGHT_GRAY);
                 if (formats[0] == TritUtils.DATA_FORMAT.TRYTE) {
                     trits = TritUtils.trytes2Trits(s);
                     otherFormat1.setText("Decimal : \t" + TritUtils.trit2Decimal(trits));

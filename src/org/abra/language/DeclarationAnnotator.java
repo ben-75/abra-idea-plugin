@@ -3,15 +3,11 @@ package org.abra.language;
 import com.intellij.lang.annotation.Annotation;
 import com.intellij.lang.annotation.AnnotationHolder;
 import com.intellij.lang.annotation.Annotator;
-import com.intellij.openapi.editor.DefaultLanguageHighlighterColors;
 import com.intellij.openapi.util.TextRange;
 import com.intellij.psi.PsiElement;
 import org.abra.language.AbraSyntaxHighlighter;
 import org.abra.language.psi.*;
-import org.abra.language.psi.impl.AbraLutOrVarOrParamPsiReferenceImpl;
 import org.jetbrains.annotations.NotNull;
-
-import java.util.Arrays;
 
 public class DeclarationAnnotator  implements Annotator {
     @Override

@@ -1,17 +1,14 @@
 package org.abra.language;
 
-import com.intellij.lang.BracePair;
 import com.intellij.lexer.Lexer;
 import com.intellij.openapi.editor.DefaultLanguageHighlighterColors;
 import com.intellij.openapi.editor.HighlighterColors;
 import com.intellij.openapi.editor.colors.TextAttributesKey;
 import com.intellij.openapi.fileTypes.SyntaxHighlighterBase;
-import com.intellij.psi.PsiFile;
 import com.intellij.psi.TokenType;
 import com.intellij.psi.tree.IElementType;
 import org.abra.language.psi.AbraTypes;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 import static com.intellij.openapi.editor.DefaultLanguageHighlighterColors.KEYWORD;
 import static com.intellij.openapi.editor.colors.TextAttributesKey.createTextAttributesKey;
@@ -20,14 +17,6 @@ public class AbraSyntaxHighlighter extends SyntaxHighlighterBase  {
 
     public static final TextAttributesKey COMMENT =
             createTextAttributesKey("SIMPLE_COMMENT", DefaultLanguageHighlighterColors.LINE_COMMENT);
-    public static final TextAttributesKey TEST_COMMENT =
-            createTextAttributesKey("TEST_COMMENT", DefaultLanguageHighlighterColors.LINE_COMMENT);
-    public static final TextAttributesKey EXPR_COMMENT =
-            createTextAttributesKey("EXPR_COMMENT", DefaultLanguageHighlighterColors.LINE_COMMENT);
-    public static final TextAttributesKey TEST_ASSERT =
-            createTextAttributesKey("TEST_ASSERT", DefaultLanguageHighlighterColors.LINE_COMMENT);
-    public static final TextAttributesKey EXPR_ASSERT =
-            createTextAttributesKey("EXPR_ASSERT", DefaultLanguageHighlighterColors.LINE_COMMENT);
     public static final TextAttributesKey BAD_CHARACTER =
             createTextAttributesKey("SIMPLE_BAD_CHARACTER", HighlighterColors.BAD_CHARACTER);
 

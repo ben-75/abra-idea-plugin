@@ -1,9 +1,7 @@
 package org.abra.language;
 
-import com.intellij.lang.annotation.Annotation;
 import com.intellij.lang.annotation.AnnotationHolder;
 import com.intellij.lang.annotation.Annotator;
-import com.intellij.openapi.editor.DefaultLanguageHighlighterColors;
 import com.intellij.openapi.util.TextRange;
 import com.intellij.psi.PsiElement;
 import org.abra.language.psi.*;
@@ -42,7 +40,7 @@ public class MultiDeclarationAnnotator implements Annotator {
         if(functionReference!=null){
             AbraFuncPsiReferenceImpl dummy = new AbraFuncPsiReferenceImpl(functionReference);
             try{
-                PsiElement resolved = dummy.resolveInFile(element.getContainingFile(), constExpr, null);
+                PsiElement resolved = dummy.resolveInFile(element.getContainingFile(), constExpr);
                 if(resolved!=null){
                     if (element instanceof AbraFuncStmt) {
                         if(resolved!=((AbraFuncStmt)element).getFuncDefinition().getFuncName()){
