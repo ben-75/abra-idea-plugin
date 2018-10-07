@@ -59,6 +59,7 @@
     <completion.contributor language="Abra" implementationClass="org.abra.language.AbraCompletionContributor"/>
     <additionalTextAttributes scheme="Default" file="colors/AbraDefault.xml"/>
     <additionalTextAttributes scheme="Darcula" file="colors/AbraDarcula.xml"/>
+    <configurationType implementation="org.abra.interpreter.runconfig.AbraInterpreterConfigurationType"/>
   </extensions>
 
   <actions>
