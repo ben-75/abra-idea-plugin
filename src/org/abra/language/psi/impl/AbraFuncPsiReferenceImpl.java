@@ -72,6 +72,9 @@ public class AbraFuncPsiReferenceImpl  extends PsiReferenceBase implements PsiRe
         }else{
             //this reference either a use statement or a template statement
             AbraFuncExpr funcExpr = (AbraFuncExpr) myElement.getParent();
+            if(funcExpr.isInFuncStatement() && ((AbraFuncStmt)funcExpr.getStatment()).getFuncSignature().getFuncName().getText().equals(myElement.getText())){
+                return ((AbraFuncStmt)funcExpr.getStatment()).getFuncSignature().getFuncName();
+            }
             boolean referenceATemplate = true;
             if(constExpr.isTypeOrPlaceHolderNameRef()){
                 AbraTypeOrPlaceHolderNameRef typeOrPlaceHolderNameRef = constExpr.getTypeOrPlaceHolderNameRef();

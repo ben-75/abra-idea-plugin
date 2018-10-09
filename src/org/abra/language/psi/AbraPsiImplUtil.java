@@ -970,6 +970,27 @@ public class AbraPsiImplUtil {
         return getStatment(funcExpr) instanceof AbraFuncStmt;
     }
 
+    //====================================================================
+    //====================== AbraField ===================================
+    //====================================================================
+
+    public static String getName(AbraFieldName element) {
+        return element.getText();
+    }
+
+    public static PsiElement setName(AbraFieldName element, String newName) {
+        ASTNode globalIdNode = element.getNode().getFirstChildNode();
+        if (globalIdNode != null) {
+            AbraFieldName paramName = AbraElementFactory.createAbraFieldName(element.getProject(), newName);
+            ASTNode newKeyNode = paramName.getFirstChild().getNode();
+            element.getNode().replaceChild(globalIdNode, newKeyNode);
+        }
+        return element;
+    }
+
+    public static PsiElement getNameIdentifier(AbraFieldName element) {
+        return element;
+    }
 
     //====================================================================
     //====================== LocalVars ===================================

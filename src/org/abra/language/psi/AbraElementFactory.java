@@ -18,18 +18,23 @@ public class AbraElementFactory {
         return ((AbraTypeStmt) file.getFirstChild()).getTypeName();
     }
 
+    public static AbraFieldName createAbraFieldName(Project project, String name) {
+        final AbraFile file = createFile(project, "type t{"+name+" [1]}");
+        return ((AbraTypeStmt) file.getFirstChild()).getFieldSpecList().get(0).getFieldName();
+    }
+
     public static AbraFuncName createAbraFuncName(Project project, String name) {
-        final AbraFile file = createFile(project, "func "+name+"(param [1])=param");
+        final AbraFile file = createFile(project, "func [1] "+name+"(param [1])=param");
         return ((AbraFuncStmt) file.getFirstChild()).getFuncSignature().getFuncName();
     }
 
     public static AbraParamName createAbraParamName(Project project, String name) {
-        final AbraFile file = createFile(project, "func f("+name+" [1])=param");
+        final AbraFile file = createFile(project, "func [1] f("+name+" [1])=param");
         return ((AbraFuncStmt) file.getFirstChild()).getFuncSignature().getFuncParameterList().get(0).getParamName();
     }
 
     public static AbraVarName createAbraVarName(Project project, String name) {
-        final AbraFile file = createFile(project, "func f(param [1])={"+name+"=param\na}");
+        final AbraFile file = createFile(project, "func [1] f(param [1])={"+name+"=param\n return a}");
         return ((AbraFuncStmt) file.getFirstChild()).getFuncBody().getAssignExprList().get(0).getVarName();
     }
 
@@ -39,12 +44,12 @@ public class AbraElementFactory {
     }
 
     public static AbraTemplateName createAbraTemplateName(Project project, String name) {
-        final AbraFile file = createFile(project, "template "+name+"<T> f<T>(c [T]) = {1}");
+        final AbraFile file = createFile(project, "template "+name+"<T> func [1] f<T>(c [T]) = {return 1}");
         return ((AbraTemplateStmt) file.getFirstChild()).getTemplateName();
     }
 
     public static AbraPlaceHolderTypeName createAbraPlaceHolderName(Project project, String name) {
-        final AbraFile file = createFile(project, "template t<"+name+"> f<T>(c [T]) = {1}");
+        final AbraFile file = createFile(project, "template t<"+name+"> func [1] f<T>(c [T]) = {return 1}");
         return ((AbraTemplateStmt) file.getFirstChild()).getPlaceHolderTypeNameList().get(0);
     }
 
@@ -54,7 +59,7 @@ public class AbraElementFactory {
 
 
     public static AbraFuncNameRef createAbraFunctionReference(Project project, String name) {
-        final AbraFile file = createFile(project, "func f(p [1])={"+name+"(1)}");
+        final AbraFile file = createFile(project, "func [1] f(p [1])={return "+name+"(1)}");
         return ((AbraFuncStmt)file.getFirstChild()).getFuncBody().getReturnExpr().getMergeExpr().getConcatExprList().get(0).getPostfixExprList().get(0).getFuncExpr().getFuncNameRef();
     }
 
@@ -63,37 +68,35 @@ public class AbraElementFactory {
         if(originalFile!=null){
             sb.append("import ").append(originalFile.getImportableFilePath()).append("\n");
         }
-
-
-        final AbraFile file = createFile(project, sb.toString()+"func f(p [1])={return "+name+"(1)}");
+        final AbraFile file = createFile(project, sb.toString()+"func [1] f(p [1])={return "+name+"(1)}");
         return ((AbraFuncStmt)file.getFirstChild().getNextSibling().getNextSibling()).getFuncBody().getReturnExpr().getMergeExpr().getConcatExprList().get(0).getPostfixExprList().get(0).getFuncExpr().getFuncNameRef();
     }
 
     public static AbraTypeNameRef createAbraTypeNameRef(Project project, String name) {
-        final AbraFile file = createFile(project, "func f<"+name+">");
+        final AbraFile file = createFile(project, "use f<"+name+">");
         return ((AbraUseStmt)file.getFirstChild()).getTypeInstantiationList().get(0).getTypeNameRefList().get(0);
     }
 
     public static AbraParamOrVarNameRef createAbraVarOrParamNameRef(Project project, String name) {
-        final AbraFile file = createFile(project, "func f(p [1])={a="+name+"[1..3]\na}");
+        final AbraFile file = createFile(project, "func [1] f(p [1])={a="+name+"[1..3]\nreturn a}");
         return ((AbraFuncStmt)file.getFirstChild()).getFuncBody()
                 .getAssignExprList().get(0).getMergeExpr().getConcatExprList().get(0).getPostfixExprList().get(0).getSliceExpr().getParamOrVarNameRef();
     }
 
     public static AbraLutOrParamOrVarNameRef createAbraLutOrParamOrVarRef(Project project, String name) {
-        final AbraFile file = createFile(project, "func f(p [1])={a="+name+"[1]\na}");
+        final AbraFile file = createFile(project, "func [1] f(p [1])={a="+name+"[1]\n return a}");
         return ((AbraFuncStmt)file.getFirstChild()).getFuncBody()
                 .getAssignExprList().get(0).getMergeExpr().getConcatExprList().get(0).getPostfixExprList().get(0).getLutOrSliceExpr().getLutOrParamOrVarNameRef();
     }
 
 
     public static AbraTemplateNameRef createAbraTemplateNameRef(Project project, String newElementName) {
-        final AbraFile file = createFile(project, "type "+newElementName+"<Tryte>");
+        final AbraFile file = createFile(project, "use "+newElementName+"<Tryte>");
         return ((AbraUseStmt)file.getFirstChild()).getTemplateNameRef();
     }
 
     public static AbraTypeOrPlaceHolderNameRef createAbraTypeOrPlaceHolderNameRef(Project project, String name) {
-        final AbraFile file = createFile(project, "template incFunc<T> inc<"+name+"> (a[1]) = {return 1}");
+        final AbraFile file = createFile(project, "template incFunc<T> func [1] inc<"+name+"> (a[1]) = {return 1}");
         return ((AbraTemplateStmt)file.getFirstChild()).getFuncStmtList().get(0).getFuncSignature().getConstExpr().getConstTermList().get(0).getConstFactorList().get(0).getTypeOrPlaceHolderNameRef();
     }
 
@@ -104,7 +107,7 @@ public class AbraElementFactory {
     }
 
     public static AbraConstExpr createAbraConstExpr(Project project, String s) {
-        final AbraFile file = createFile(project, "func f(a["+s+"])={a}");
+        final AbraFile file = createFile(project, "func [1] f(a["+s+"])={a}");
         try{
             return ((AbraFuncStmt)file.getFirstChild()).getFuncSignature().getFuncParameterList().get(0).getTypeSize().getConstExpr();
         }catch (ClassCastException e){
@@ -113,7 +116,7 @@ public class AbraElementFactory {
     }
 
     public static AbraLutNameRef createAbraLutNameRef(Project project, String name) {
-        final AbraFile file = createFile(project, "func f(a[1])={b="+name+"[1,1]\nb}");
+        final AbraFile file = createFile(project, "func [1] f(a[1])={b="+name+"[1,1]\nreturn b}");
         return ((AbraFuncStmt)file.getFirstChild()).getFuncBody().getAssignExprList().get(0).getMergeExpr().getConcatExprList().get(0).getPostfixExprList().get(0).getLutExpr().getLutNameRef();
     }
 }
