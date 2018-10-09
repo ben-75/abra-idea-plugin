@@ -118,7 +118,7 @@ concatExpr ::= postfixExpr (AMP postfixExpr)*
 postfixExpr ::= integer | funcExpr | lutExpr | lutOrSliceExpr | typeExpr | sliceExpr | (OPEN_PAR mergeExpr CLOSE_PAR)
                 {methods=[getResolvedSize ]}
 
-typeExpr ::= typeName OPEN_BRACE (fieldNameRef ASSIGN mergeExpr)+ CLOSE_BRACE
+typeExpr ::= typeNameRef OPEN_BRACE (fieldNameRef ASSIGN mergeExpr)+ CLOSE_BRACE
                 {methods=[getResolvedSize ]}
 
 funcExpr ::= funcNameRef (OPEN_TAG constExpr CLOSE_TAG)? OPEN_PAR (mergeExpr (COMMA mergeExpr)*) CLOSE_PAR
@@ -175,7 +175,7 @@ fieldName ::= IDENTIFIER
                                 methods=[getName setName getNameIdentifier]}
 fieldNameRef ::= IDENTIFIER
                 {implements="org.abra.language.psi.AbraResolvable"
-                                                 methods=[getResolvedSize ]}
+                                                 methods=[getResolvedSize getReference]}
 typeName ::= IDENTIFIER
                                 {mixin="org.abra.language.psi.impl.AbraNamedElementImpl"
                                 implements="org.abra.language.psi.AbraNamedElement"

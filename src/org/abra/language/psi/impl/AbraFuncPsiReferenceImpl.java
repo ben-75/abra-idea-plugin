@@ -100,7 +100,7 @@ public class AbraFuncPsiReferenceImpl  extends PsiReferenceBase implements PsiRe
                         //((AbraTemplateStmt)useStmt.getTemplateNameRef().getReference().resolve().getParent()).getFuncStmtList().get(0).getFuncSignature().getFuncName().getText()
                         AbraFuncStmt funcStmt = AbraPsiImplUtil.getFuncWithNameInTemplate(myElement.getText(), (AbraTemplateStmt) templateName.getParent());
                         if (funcStmt!=null) {
-                            return funcStmt.getFuncSignature().getFuncName();
+                            return useStmt.getTemplateNameRef();
                         }
                     }
                 }

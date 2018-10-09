@@ -417,18 +417,22 @@ public class AbraPsiImplUtil {
         return element.getTemplateNameRef();
     }
 
-    public static Map<Integer, AbraTypeNameRef> getResolutionMap(AbraUseStmt element){
+    public static Map<Integer, AbraTypeNameRef> getResolutionMap(AbraUseStmt element, int size){
         HashMap<Integer, AbraTypeNameRef> map = new HashMap<>();
-        int i=0;
         for(AbraTypeInstantiation typeInstantiation:element.getTypeInstantiationList()){
-            map.put(i,typeInstantiation.getTypeNameRefList().get(i));
-            i++;
+            AbraTypeName typeName = (AbraTypeName) typeInstantiation.getTypeNameRefList().get(0).getReference().resolve();
+            if(((AbraTypeStmt)typeName.getParent()).getResolvedSize()==size) {
+                for(int i=0;i<typeInstantiation.getTypeNameRefList().size();i++){
+                    map.put(i, typeInstantiation.getTypeNameRefList().get(i));
+                    i++;
+                }
+            }
         }
         return map;
     }
 
-    public static Map<AbraPlaceHolderTypeName,AbraTypeNameRef> getTemplateContextMap(AbraUseStmt useStmt){
-        Map<Integer, AbraTypeNameRef> resolutionMap = getResolutionMap(useStmt);
+    public static Map<AbraPlaceHolderTypeName,AbraTypeNameRef> getTemplateContextMap(AbraUseStmt useStmt, int size){
+        Map<Integer, AbraTypeNameRef> resolutionMap = getResolutionMap(useStmt, size);
         AbraTemplateName templateName = (AbraTemplateName) useStmt.getTemplateNameRef().getReference().resolve();
         HashMap<AbraPlaceHolderTypeName,AbraTypeNameRef> context = new HashMap();
         if(templateName==null)return context;
