@@ -42,8 +42,11 @@ public class AbraTypeOrPlaceHolderPsiReferenceImpl extends PsiReferenceBase impl
         PsiElement templateStmt = myElement;
         while(!(templateStmt instanceof AbraTemplateStmt) && !(templateStmt instanceof AbraFile))templateStmt = templateStmt.getParent();
         if(templateStmt instanceof AbraTemplateStmt){
-            for(AbraPlaceHolderName phn:((AbraTemplateStmt)templateStmt).getPlaceHolderNameList()){
+            for(AbraPlaceHolderTypeName phn:((AbraTemplateStmt)templateStmt).getPlaceHolderTypeNameList()){
                 if(phn.getText().equals(myElement.getText()))return phn;
+            }
+            for(AbraTypeStmt typeStmt:((AbraTemplateStmt)templateStmt).getTypeStmtList()){
+                if(typeStmt.getTypeName().getText().equals(myElement.getText()))return typeStmt.getTypeName();
             }
         }
         PsiElement resolved = resolveInFile(myElement.getContainingFile());

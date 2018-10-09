@@ -62,69 +62,67 @@ public class AbraFuncPsiReferenceImpl  extends PsiReferenceBase implements PsiRe
 
     public PsiElement resolveInFile(PsiFile aFile, AbraConstExpr constExpr){
 
-        if(constExpr==null){
+        if(constExpr==null) {
             //this reference a standard function in this file or in another
             for (ASTNode stmt : aFile.getNode().getChildren(TokenSet.create(AbraTypes.FUNC_STMT))) {
-                if (((AbraFuncStmt) stmt.getPsi()).getFuncDefinition().getFuncName().getText().equals(myElement.getText())) {
-                    return ((AbraFuncStmt) stmt.getPsi()).getFuncDefinition().getFuncName();
+                if (((AbraFuncStmt) stmt.getPsi()).getFuncSignature().getFuncName().getText().equals(myElement.getText())) {
+                    return ((AbraFuncStmt) stmt.getPsi()).getFuncSignature().getFuncName();
                 }
             }
         }else{
-            int sizeOfMyElement = constExpr.getResolvedSize();
-            for (ASTNode stmt : aFile.getNode().getChildren(TokenSet.create(AbraTypes.USE_STMT,AbraTypes.FUNC_STMT))) {
-                if(stmt.getPsi() instanceof AbraUseStmt) {
-                    AbraUseStmt useStmt = (AbraUseStmt) stmt.getPsi();
-                    AbraTemplateName referencedTemplateName = (AbraTemplateName) useStmt.getTemplateNameRef().getReference().resolve();
-                    if (referencedTemplateName != null) {
-                        AbraTemplateStmt abraTemplateStmt = (AbraTemplateStmt) referencedTemplateName.getParent();
-                        if (abraTemplateStmt.getFuncDefinition().getFuncName().getText().equals(myElement.getText())) {
-                            int sizeOfTheUseStatement = sizeOfNamedParam(useStmt, abraTemplateStmt, abraTemplateStmt.getFuncDefinition().getTypeOrPlaceHolderNameRef().getText());
-                            if (sizeOfMyElement == sizeOfTheUseStatement) return useStmt.getTemplateNameRef();
-                        }
-                    }
-                }else if(stmt.getPsi() instanceof AbraFuncStmt){
-                    AbraFuncStmt funcStmt = (AbraFuncStmt) stmt.getPsi();
-                    if(funcStmt.getFuncDefinition().getFuncName().getText().equals(myElement.getText()) && funcStmt.getFuncDefinition().getTypeOrPlaceHolderNameRef()!=null){
-                        PsiElement resolved = funcStmt.getFuncDefinition().getTypeOrPlaceHolderNameRef().getReference().resolve();
-                        if(resolved instanceof AbraTypeName){
-                            if(((AbraTypeStmt)resolved.getParent()).getResolvedSize()==sizeOfMyElement){
-                                return funcStmt.getFuncDefinition().getFuncName();
-                            }
+            //this reference either a use statement or a template statement
+            AbraFuncExpr funcExpr = (AbraFuncExpr) myElement.getParent();
+            boolean referenceATemplate = true;
+            if(constExpr.isTypeOrPlaceHolderNameRef()){
+                AbraTypeOrPlaceHolderNameRef typeOrPlaceHolderNameRef = constExpr.getTypeOrPlaceHolderNameRef();
+                PsiElement resolved = typeOrPlaceHolderNameRef.getReference().resolve();
+                if(resolved instanceof AbraTypeName){
+                    referenceATemplate = resolved.getParent().getParent() instanceof AbraTemplateStmt;
+                }
+            }
+            if(referenceATemplate){
+                for (ASTNode stmt : aFile.getNode().getChildren(TokenSet.create(AbraTypes.TEMPLATE_STMT))) {
+                    AbraTemplateStmt templateStmt = (AbraTemplateStmt) stmt.getPsi();
+                    for(AbraFuncStmt funcStmt:templateStmt.getFuncStmtList()){
+                        if(funcStmt.getFuncSignature().getFuncName().getText().equals(myElement.getText())){
+                            return funcStmt.getFuncSignature().getFuncName();
                         }
                     }
                 }
-            }
-        }
-
-        //now the use case of a template call from a template
-        if (((AbraFuncNameRef) myElement).getStatement() instanceof AbraTemplateStmt) {
-            for (ASTNode stmt : aFile.getNode().getChildren(TokenSet.create(AbraTypes.TEMPLATE_STMT))) {
-                AbraTemplateStmt templateStmt = (AbraTemplateStmt) stmt.getPsi();
-                if (templateStmt.getFuncDefinition().getFuncName().getText().equals(myElement.getText())) {
-                    return templateStmt.getFuncDefinition().getFuncName();
+            }else{
+                for (ASTNode stmt : aFile.getNode().getChildren(TokenSet.create(AbraTypes.USE_STMT))) {
+                    AbraUseStmt useStmt = (AbraUseStmt) stmt.getPsi();
+                    AbraTemplateName templateName = (AbraTemplateName) useStmt.getTemplateNameRef().getReference().resolve();
+                    if(templateName!=null) {
+                        //((AbraTemplateStmt)useStmt.getTemplateNameRef().getReference().resolve().getParent()).getFuncStmtList().get(0).getFuncSignature().getFuncName().getText()
+                        AbraFuncStmt funcStmt = AbraPsiImplUtil.getFuncWithNameInTemplate(myElement.getText(), (AbraTemplateStmt) templateName.getParent());
+                        if (funcStmt!=null) {
+                            return funcStmt.getFuncSignature().getFuncName();
+                        }
+                    }
                 }
             }
         }
         return null;//resolveFromImports(aFile, constExpr);
     }
 
-    private int sizeOfNamedParam(AbraUseStmt useStmt, AbraTemplateStmt templateStmt, String typeRefName){
-        int i = 0;
-        for (int j = 0; j < templateStmt.getPlaceHolderNameList().size(); j++) {
-            if (typeRefName.equals(templateStmt.getPlaceHolderNameList().get(j).getText())) {
-                break;
-            }
-            i++;
-        }
-        //i is the index of the suffix.
-        if(i<useStmt.getTypeNameRefList().size()) {
-            AbraTypeNameRef typeNameRef = useStmt.getTypeNameRefList().get(i);
-            PsiElement resolvedTypeName = typeNameRef.getReference().resolve();
-            if(resolvedTypeName!=null)
-                return ((AbraTypeStmt) typeNameRef.getReference().resolve().getParent()).getResolvedSize();
-        }
-        return -2;
-    }
+//    private int sizeOfNamedParam(AbraUseStmt useStmt, AbraTemplateStmt templateStmt, String typeRefName){
+//        int i = 0;
+//        for (int j = 0; j < templateStmt.getPlaceHolderNameList().size(); j++) {
+//            if (typeRefName.equals(templateStmt.getPlaceHolderNameList().get(j).getText())) {
+//                break;
+//            }
+//            i++;
+//        }
+//        //i is the index of the suffix.
+//        if(i<useStmt.getTypeNameRefList().size()) {
+//            AbraTypeNameRef typeNameRef = useStmt.getTypeNameRefList().get(i);
+//            PsiElement resolvedTypeName = typeNameRef.getReference().resolve();
+//            if(resolvedTypeName!=null)
+//                return ((AbraTypeStmt) typeNameRef.getReference().resolve().getParent()).getResolvedSize();
+//        }
+//        return -2;
+//    }
 
     private PsiElement resolveFromImports(PsiFile startingFile, AbraConstExpr typeOrPlaceHolderNameRef){
         List<AbraFile> importsTree = (((AbraFile)startingFile).getImportTree(new ArrayList<>()));

@@ -73,14 +73,11 @@ public class AbraLutOrVarOrParamPsiReferenceImpl extends PsiReferenceBase implem
                 }
             }
         }
+
         //look in function parameters
-        while(!(funcBody instanceof AbraFuncName)){
-            funcBody = funcBody.getPrevSibling();
-            if(funcBody instanceof AbraFuncParameter){
-                AbraFuncParameter p = (AbraFuncParameter)funcBody;
-                if(p.getParamName().getText().equals(myElement.getText())){
-                    return p.getParamName();
-                }
+        for(AbraFuncParameter p:((AbraFuncBody)funcBody).getFuncSignature().getFuncParameterList()){
+            if(p.getParamName().getText().equals(myElement.getText())){
+                return p.getParamName();
             }
         }
         return null;

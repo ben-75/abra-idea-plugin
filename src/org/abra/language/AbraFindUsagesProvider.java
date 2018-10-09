@@ -35,6 +35,6 @@ public class AbraFindUsagesProvider implements FindUsagesProvider {
     }
 
     public WordsScanner getWordsScanner() {
-        return new DefaultWordsScanner(new AbraLexerAdapter(), TokenSet.create(AbraTypes.IDENTIFIER), TokenSet.create(AbraTypes.COMMENT), TokenSet.create(AbraTypes.INTEGER, AbraTypes.TRIT));
+        return new DefaultWordsScanner(new AbraLexerAdapter(), TokenSet.create(AbraTypes.IDENTIFIER), TokenSet.create(AbraTypes.COMMENT), TokenSet.create(AbraTypes.INTEGER, AbraTypes.ONE, AbraTypes.ZERO, AbraTypes.MINUS));
     }
 }

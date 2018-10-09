@@ -95,9 +95,7 @@ public class AbraSyntaxHighlighter extends SyntaxHighlighterBase  {
             return TEST_ASSERT_KEYS;
         }else if (tokenType.equals(AbraTypes.EXPR_ASSERTION)) {
             return EXPR_ASSERT_KEYS;
-        }else if (tokenType.equals(AbraTypes.TRIT_CHAR)) {
-            return TRIT_KEYS;
-        } else if (tokenType.equals(TokenType.BAD_CHARACTER)) {
+        }else if (tokenType.equals(TokenType.BAD_CHARACTER)) {
             return BAD_CHAR_KEYS;
         } else {
             return EMPTY_KEYS;

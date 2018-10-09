@@ -12,57 +12,57 @@ public class MultiDeclarationAnnotator implements Annotator {
     @Override
     public void annotate(@NotNull final PsiElement element, @NotNull AnnotationHolder holder) {
         AbraFuncNameRef functionReference = null;
-        AbraConstExpr constExpr = null;
-        if (element instanceof AbraFuncStmt) {
-            functionReference = AbraElementFactory.createAbraFunctionReference(element.getProject(),((AbraFuncStmt)element).getFuncDefinition().getFuncName().getText(),(AbraFile) element.getContainingFile().getContainingFile());
-            if(((AbraFuncStmt)element).getFuncDefinition().getTypeOrPlaceHolderNameRef()!=null){
-                PsiElement resolved = ((AbraFuncStmt)element).getFuncDefinition().getTypeOrPlaceHolderNameRef().getReference().resolve();
-                if(resolved instanceof AbraTypeName){
-                    AbraTypeStmt typeStmt = (AbraTypeStmt)resolved.getParent();
-                    if(typeStmt.getStaticTypeSize()!=null) {
-                        constExpr = AbraElementFactory.createAbraConstExpr(element.getProject(), "" + typeStmt.getStaticTypeSize().getResolvedSize());
-                    }else{
-                        constExpr = AbraElementFactory.createAbraConstExpr(element.getProject(), "" + typeStmt.getFieldSpecList().get(typeStmt.getFieldSpecList().size()-1).getStaticTypeSize().getResolvedSize());
-                    }
-                }
-            }
-
-        }else if(element instanceof AbraUseStmt){
-
-            AbraTemplateName templateName = (AbraTemplateName) ((AbraUseStmt)element).getTemplateNameRef().getReference().resolve();
-            if(templateName==null)return;
-            String expandedFuncName = AbraPsiImplUtil.getExpandedFunctionName((AbraTemplateStmt) templateName.getParent(),AbraPsiImplUtil.getResolutionMap((AbraUseStmt)element));
-            String funcName = expandedFuncName.substring(0,expandedFuncName.indexOf("<"));
-            functionReference = AbraElementFactory.createAbraFunctionReference(element.getProject(),funcName,(AbraFile) element.getContainingFile().getContainingFile());
-            String constLiteral = expandedFuncName.substring(expandedFuncName.indexOf("<")+1,expandedFuncName.length()-1);
-            constExpr = AbraElementFactory.createAbraConstExpr(element.getProject(),constLiteral);
-        }
-        if(functionReference!=null){
-            AbraFuncPsiReferenceImpl dummy = new AbraFuncPsiReferenceImpl(functionReference);
-            try{
-                PsiElement resolved = dummy.resolveInFile(element.getContainingFile(), constExpr);
-                if(resolved!=null){
-                    if (element instanceof AbraFuncStmt) {
-                        if(resolved!=((AbraFuncStmt)element).getFuncDefinition().getFuncName()){
-                            TextRange range = new TextRange(element.getTextRange().getStartOffset(),element.getTextRange().getEndOffset());
-                            holder.createErrorAnnotation(range, "Duplicate declaration");
-
-                            TextRange range2 = new TextRange(resolved.getTextRange().getStartOffset(),resolved.getTextRange().getEndOffset());
-                            holder.createErrorAnnotation(range2, "Duplicate declaration");
-                        }
-                    }else if(element instanceof AbraUseStmt){
-                        if(resolved!=((AbraUseStmt)element).getTemplateNameRef()){
-                            TextRange range = new TextRange(element.getTextRange().getStartOffset(), element.getTextRange().getEndOffset());
-                            holder.createErrorAnnotation(range, "Duplicate declaration");
-
-                            TextRange range2 = new TextRange(resolved.getTextRange().getStartOffset(),resolved.getTextRange().getEndOffset());
-                            holder.createErrorAnnotation(range2, "Duplicate declaration");
-                        }
-                    }
-                }
-            }catch (UnresolvableTokenException e){
-                //ignore
-            }
-        }
+//        AbraConstExpr constExpr = null;
+//        if (element instanceof AbraFuncStmt) {
+//            functionReference = AbraElementFactory.createAbraFunctionReference(element.getProject(),((AbraFuncStmt)element).getFuncSignature().getFuncName().getText(),(AbraFile) element.getContainingFile().getContainingFile());
+//            if(((AbraFuncStmt)element).getFuncSignature().getTypeOrPlaceHolderNameRef()!=null){
+//                PsiElement resolved = ((AbraFuncStmt)element).getFuncSignature().getTypeOrPlaceHolderNameRef().getReference().resolve();
+//                if(resolved instanceof AbraTypeName){
+//                    AbraTypeStmt typeStmt = (AbraTypeStmt)resolved.getParent();
+//                    if(typeStmt.getTypeSize()!=null) {
+//                        constExpr = AbraElementFactory.createAbraConstExpr(element.getProject(), "" + typeStmt.getTypeSize().getResolvedSize());
+//                    }else{
+//                        constExpr = AbraElementFactory.createAbraConstExpr(element.getProject(), "" + typeStmt.getFieldSpecList().get(typeStmt.getFieldSpecList().size()-1).getTypeSize().getResolvedSize());
+//                    }
+//                }
+//            }
+//
+//        }else if(element instanceof AbraUseStmt){
+//
+//            AbraTemplateName templateName = (AbraTemplateName) ((AbraUseStmt)element).getTemplateNameRef().getReference().resolve();
+//            if(templateName==null)return;
+//            String expandedFuncName = "TODO";
+//            String funcName = expandedFuncName.substring(0,expandedFuncName.indexOf("<"));
+//            functionReference = AbraElementFactory.createAbraFunctionReference(element.getProject(),funcName,(AbraFile) element.getContainingFile().getContainingFile());
+//            String constLiteral = expandedFuncName.substring(expandedFuncName.indexOf("<")+1,expandedFuncName.length()-1);
+//            constExpr = AbraElementFactory.createAbraConstExpr(element.getProject(),constLiteral);
+//        }
+//        if(functionReference!=null){
+//            AbraFuncPsiReferenceImpl dummy = new AbraFuncPsiReferenceImpl(functionReference);
+//            try{
+//                PsiElement resolved = dummy.resolveInFile(element.getContainingFile(), constExpr);
+//                if(resolved!=null){
+//                    if (element instanceof AbraFuncStmt) {
+//                        if(resolved!=((AbraFuncStmt)element).getFuncSignature().getFuncName()){
+//                            TextRange range = new TextRange(element.getTextRange().getStartOffset(),element.getTextRange().getEndOffset());
+//                            holder.createErrorAnnotation(range, "Duplicate declaration");
+//
+//                            TextRange range2 = new TextRange(resolved.getTextRange().getStartOffset(),resolved.getTextRange().getEndOffset());
+//                            holder.createErrorAnnotation(range2, "Duplicate declaration");
+//                        }
+//                    }else if(element instanceof AbraUseStmt){
+//                        if(resolved!=((AbraUseStmt)element).getTemplateNameRef()){
+//                            TextRange range = new TextRange(element.getTextRange().getStartOffset(), element.getTextRange().getEndOffset());
+//                            holder.createErrorAnnotation(range, "Duplicate declaration");
+//
+//                            TextRange range2 = new TextRange(resolved.getTextRange().getStartOffset(),resolved.getTextRange().getEndOffset());
+//                            holder.createErrorAnnotation(range2, "Duplicate declaration");
+//                        }
+//                    }
+//                }
+//            }catch (UnresolvableTokenException e){
+//                //ignore
+//            }
+//        }
     }
 }
