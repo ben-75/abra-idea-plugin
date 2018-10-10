@@ -92,7 +92,9 @@ useStmt ::= USE_KEYWORD templateNameRef typeInstantiation (COMMA typeInstantiati
                     methods=[getPresentation getName setName getNameIdentifier]}
 
 typeInstantiation ::= OPEN_TAG (typeNameRef (COMMA typeNameRef)*) CLOSE_TAG
-
+                    {mixin="org.abra.language.psi.impl.AbraDefinitionImpl"
+                    implements="org.abra.language.psi.AbraDefinition"
+                    methods=[getPresentation] }
 lutEntry ::= tritList ASSIGN tritList
                 {methods = [getInputLength getOutputLength]}
 
@@ -179,7 +181,7 @@ fieldNameRef ::= IDENTIFIER
 typeName ::= IDENTIFIER
                                 {mixin="org.abra.language.psi.impl.AbraNamedElementImpl"
                                 implements="org.abra.language.psi.AbraNamedElement"
-                                methods=[getName setName getNameIdentifier]}
+                                methods=[getName setName getNameIdentifier getResolvedSize]}
 typeNameRef ::= IDENTIFIER
                 {implements="org.abra.language.psi.AbraResolvable"
                                                  methods = [getReference ]}

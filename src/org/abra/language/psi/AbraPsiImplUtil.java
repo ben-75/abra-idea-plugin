@@ -42,7 +42,8 @@ public class AbraPsiImplUtil {
             @Override
             public String getLocationString() {
                 try {
-                    return "[" + element.getResolvedSize() + "]";
+                    int sz = element.getResolvedSize();
+                    return "["+(sz<=0?element.getTypeSize().getText():sz)+"]";
                 }catch (UnresolvableTokenException e){
                     return "[?]";
                 }
@@ -103,6 +104,9 @@ public class AbraPsiImplUtil {
         return element;
     }
 
+    public static int getResolvedSize(AbraTypeName element){
+        return ((AbraTypeStmt)element.getParent()).getResolvedSize();
+    }
     //====================================================================
     //====================== AbraLutStmt =================================
     //====================================================================
@@ -185,7 +189,8 @@ public class AbraPsiImplUtil {
             @Override
             public String getLocationString() {
                 try{
-                    return "["+element.getTypeSize().getResolvedSize()+"]";
+                    int sz = element.getTypeSize().getResolvedSize();
+                    return "["+(sz<=0?element.getTypeSize().getText():sz)+"]";
                 }catch (UnresolvableTokenException e){
                     return "[?]";
                 }
@@ -223,7 +228,8 @@ public class AbraPsiImplUtil {
                 int i=0;
                 for(AbraFuncParameter p:element.getFuncSignature().getFuncParameterList()){
                     try{
-                        sb.append(p.getTypeSize().getConstExpr().getResolvedSize());
+                        int sz = p.getTypeSize().getConstExpr().getResolvedSize();
+                        sb.append(sz<=0?p.getTypeSize().getConstExpr().getText():sz);
                     }catch (UnresolvableTokenException e){
                         sb.append("[?]");
                     }
@@ -233,7 +239,8 @@ public class AbraPsiImplUtil {
                 sb.append(" ) -> ");
                 if(element.getFuncSignature().getTypeSize()!=null){
                     try{
-                        sb.append(element.getFuncSignature().getTypeSize().getConstExpr().getResolvedSize());
+                        int sz = element.getFuncSignature().getTypeSize().getConstExpr().getResolvedSize();
+                        sb.append(sz<=0?element.getFuncSignature().getTypeSize().getConstExpr().getText():sz);
                     }catch (UnresolvableTokenException e){
                         sb.append("[?]");
                     }
@@ -394,7 +401,7 @@ public class AbraPsiImplUtil {
             @NotNull
             @Override
             public Icon getIcon(boolean unused) {
-                return AbraIcons.FUNCTION;
+                return AbraIcons.USE;
             }
         };
     }
@@ -442,6 +449,33 @@ public class AbraPsiImplUtil {
             context.put(phn,resolutionMap.get(i));
         }
         return context;
+    }
+
+    //====================================================================
+    //====================== AbraUseStmt =================================
+    //====================================================================
+
+    @NotNull
+    public static ItemPresentation getPresentation(AbraTypeInstantiation element) {
+        return new ItemPresentation() {
+            @NotNull
+            @Override
+            public String getPresentableText() {
+                return ((AbraUseStmt)element.getParent()).getTemplateNameRef().getText()+"<"+element.getTypeNameRefList().get(0).getText()+">";
+            }
+
+            @NotNull
+            @Override
+            public String getLocationString() {
+                return "";
+            }
+
+            @NotNull
+            @Override
+            public Icon getIcon(boolean unused) {
+                return AbraIcons.TEMPLATE;
+            }
+        };
     }
 
     //====================================================================
@@ -801,6 +835,52 @@ public class AbraPsiImplUtil {
         throw new UnresolvableTokenException(element.getText());
     }
 
+
+    public static int getResolvedSize2(AbraConstExpr element, Map<String, Integer> resolutionMap, AbraTemplateStmt templateStmt){
+        if(element.getConstTermList().size()==1){
+            return getResolvedSize2(element.getConstTermList().get(0),resolutionMap,templateStmt);
+        }
+        int lhs = getResolvedSize2(element.getConstTermList().get(0),resolutionMap,templateStmt);
+        int rhs = getResolvedSize2(element.getConstTermList().get(1),resolutionMap,templateStmt);
+        if(element.getText().substring(element.getConstTermList().get(0).getTextLength()).trim().startsWith("+")){
+            return lhs+rhs;
+        }
+        return lhs-rhs;
+    }
+
+    public static int getResolvedSize2(AbraConstTerm element, Map<String, Integer> resolutionMap, AbraTemplateStmt templateStmt){
+        if(element.getConstFactorList().size()==1){
+            return getResolvedSize2(element.getConstFactorList().get(0), resolutionMap, templateStmt);
+        }
+        int lhs = getResolvedSize2(element.getConstFactorList().get(0), resolutionMap, templateStmt);
+        int rhs = getResolvedSize2(element.getConstFactorList().get(1), resolutionMap, templateStmt);
+        if(element.getText().substring(element.getConstFactorList().get(0).getTextLength()).trim().startsWith("*")){
+            return lhs*rhs;
+        }
+        if(element.getText().substring(element.getConstFactorList().get(0).getTextLength()).trim().startsWith("%")){
+            return lhs % rhs;
+        }
+        return lhs / rhs;
+    }
+
+    public static int getResolvedSize2(AbraConstFactor element, Map<String, Integer> resolutionMap, AbraTemplateStmt templateStmt){
+        if(element.getNumber()!=null){
+            return element.getNumber().getResolvedSize();
+        }
+        if(element.getMinus()!=null){
+            return -1* (element.getConstFactor().getResolvedSize());
+        }
+        if(element.getConstExpr()!=null){
+            return getResolvedSize2(element.getConstExpr(), resolutionMap, templateStmt);
+        }
+        PsiElement resolved = element.getTypeOrPlaceHolderNameRef().getReference().resolve();
+        if(resolved!=null){
+            if(resolutionMap.get(resolved.getText())!=null)return resolutionMap.get(resolved.getText());
+            return -1;
+        }
+        throw new UnresolvableTokenException(element.getText());
+    }
+
     //====================================================================
     //====================== PlaceHolder==================================
     //====================================================================
@@ -911,7 +991,11 @@ public class AbraPsiImplUtil {
                 }
             }
         }else{
-            target = LocalFileSystem.getInstance().findFileByIoFile(new File(srcRoot.getPath(),importStmt.getFilePath()+".abra"));
+            try{
+                target = LocalFileSystem.getInstance().findFileByIoFile(new File(srcRoot.getPath(),importStmt.getFilePath()+".abra"));
+            }catch (NullPointerException e){
+                //ignore : filename is not valid.
+            }
             if(target!=null) {
                 importedFiles.add(new AbraFileReferencePsiReferenceImpl(importStmt, target));
             }
