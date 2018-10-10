@@ -33,7 +33,14 @@ public class FuncArgsAnnotator  implements Annotator {
 //                            try {
 //                                int expectedSize = funcSignature.getFuncParameterList().get(i).getTypeSize().getResolvedSize();
 //                                int effectiveSize = funcExpr.getMergeExprList().get(i).getResolvedSize();
-//                                if (expectedSize != effectiveSize) {
+//
+//                                try{
+//                                    Integer.parseInt(funcExpr.getMergeExprList().get(i).getText());
+//                                    effectiveSize=-1;
+//                                }catch(NumberFormatException e){
+//
+//                                }
+//                                if (expectedSize != effectiveSize && effectiveSize>0) {
 //                                    int result = funcExpr.getMergeExprList().get(i).getResolvedSize(); //side effect throw UnresolvableTokenException
 //                                    TextRange range = funcExpr.getMergeExprList().get(i).getTextRange();
 //                                    holder.createErrorAnnotation(range, "Unexpected argument size. Expecting : " + expectedSize + "trits, but found " + effectiveSize + " trits");

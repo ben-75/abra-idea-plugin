@@ -564,7 +564,29 @@ public class AbraPsiImplUtil {
         if(element instanceof AbraFuncName){
             return ((AbraFuncSignature) element.getParent()).getTypeSize().getResolvedSize();
         }
+        if(element instanceof AbraTemplateNameRef){
+            return getVirtualFunctionResolvedSize((AbraUseStmt) element.getParent(),funcExpr.getFuncNameRef().getText(),funcExpr.getConstExpr().getResolvedSize());
+        }
         throw new UnresolvableTokenException(funcExpr.getText());
+    }
+    public static int getVirtualFunctionResolvedSize(AbraUseStmt useStatement,String funcName,int size){
+        for(AbraTypeInstantiation typeInstantiation:useStatement.getTypeInstantiationList()){
+            AbraTypeName typeName = (AbraTypeName) typeInstantiation.getTypeNameRefList().get(0).getReference().resolve();
+            if(typeName!=null && ((AbraTypeStmt)typeName.getParent()).getResolvedSize()==size){
+                AbraTemplateName templateName = (AbraTemplateName) useStatement.getTemplateNameRef().getReference().resolve();
+                if(templateName!=null){
+                    AbraTemplateStmt templateStmt = (AbraTemplateStmt) templateName.getParent();
+                    AbraFuncStmt templateFunction = getFuncWithNameInTemplate(funcName, templateStmt);
+                    Map<Integer, AbraTypeNameRef> resolutionMap = new HashMap<>();
+                    resolutionMap.put(size,typeInstantiation.getTypeNameRefList().get(0));
+                    for(AbraTypeStmt typeStmt:templateStmt.getTypeStmtList()){
+                        resolutionMap.put(getResolvedSize(typeStmt.getTypeSize().getConstExpr(),resolutionMap,templateStmt),AbraElementFactory.createAbraTypeNameRef(templateStmt.getProject(),typeStmt.getTypeName().getText()));
+                    }
+                    return getResolvedSize(templateFunction.getFuncSignature().getTypeSize().getConstExpr(),resolutionMap,(AbraTemplateStmt) templateName.getParent());
+                }
+            }
+        }
+        return -1;
     }
 
     public static int getResolvedSize(AbraInteger integer){
