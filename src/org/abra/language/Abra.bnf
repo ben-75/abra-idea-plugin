@@ -201,7 +201,10 @@ fieldNameRef ::= IDENTIFIER
 typeName ::= IDENTIFIER
                                 {mixin="org.abra.language.psi.impl.AbraNamedElementImpl"
                                 implements="org.abra.language.psi.AbraNamedElement"
-                                methods=[getName setName getNameIdentifier getResolvedSize]}
+                                methods=[getName setName getNameIdentifier getResolvedSize]
+                                pin=1 recoverWhile=typeNameRecover}
+private typeNameRecover ::= !(OPEN_BRACKET|OPEN_BRACE)
+
 typeNameRef ::= IDENTIFIER
                 {implements="org.abra.language.psi.AbraResolvable"
                                                  methods = [getReference ]}
@@ -213,6 +216,9 @@ funcNameRef ::= IDENTIFIER
                 {implements="org.abra.language.psi.AbraResolvable"
                                                  methods = [getReference ]}
 lutName ::= IDENTIFIER
+        {pin=1 recoverWhile=lutNameRecover}
+private lutNameRecover ::= !OPEN_BRACKET
+
 lutNameRef ::= IDENTIFIER
                 {implements="org.abra.language.psi.AbraResolvable"
                                                  methods = [getReference ]}
