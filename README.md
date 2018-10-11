@@ -5,7 +5,7 @@ Intellij plugin for the Abra language.
 The Abra language is not completely defined yet, so consider this plugin as highly experimental.  
 The plugin should be compatible with any IntelliJ based platform (minimal build : 171.0)  
   
-  ##Getting started
+  ## Getting started
  
  - If you don't already an IDE based on IntelliJ platform installed on your computer, you can download and install 
  IntelliJ Community from [Jetbrains website](https://www.jetbrains.com/idea/download/)
@@ -16,11 +16,11 @@ The plugin should be compatible with any IntelliJ based platform (minimal build 
  
   ![Abra Plugin in Action](https://github.com/ben-75/abra-idea-plugin/blob/master/doc/ready.png?raw=true)
   
-  ##Installation
+  ## Installation
   
   The Abra plugin can be installed either from Jetbrains plugin repository, either manually, or it can be build from sources.
   
-  ###Install from plugins repository
+  ### Install from plugins repository
   
  - Open Settings from the menu File (Ctrl+Alt+S)
  - Select "Plugins" on the left pane
@@ -28,13 +28,13 @@ The plugin should be compatible with any IntelliJ based platform (minimal build 
  - Click "Search in repositories" and install `Abra Plugin`
  - Restart IntelliJ
   
-  ###Manual Install    
+  ### Manual Install    
 
  - Copy the [latest release](https://github.com/ben-75/abra-idea-plugin/releases) 
  in &lt;INTELLIJ_INSTALL&gt;/plugins/abra-language/lib/ 
  - Restart IntelliJ  
 
-  ###Building from sources  
+  ### Building from sources  
   
 Building the plugin from sources requires to setup an intellij-plugin-development-environment suitable for custom 
 language plugin development. Instructions can be found 
