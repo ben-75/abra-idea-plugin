@@ -9,7 +9,7 @@ The plugin should be compatible with any IntelliJ based platform (minimal build 
  
  - If you don't already an IDE based on IntelliJ platform installed on your computer, you can download and install 
  IntelliJ Community from [Jetbrains website](https://www.jetbrains.com/idea/download/)
- - Start IntelliJ (or any other Jetbrains IDE) and install the Abra Plugin ([details here](#Installation))
+ - Start IntelliJ (or any other Jetbrains IDE) and install the Abra Plugin ([details here](#installation))
  - After plugin installation it is recommended to restart IntelliJ
  - Create a new "Empty project" and copy the `AbraLib/` and `Examples/` at the root of the project (todo : add Link)
  - Start writing Abra code
