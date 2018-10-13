@@ -1,12 +1,14 @@
 package org.abra.language.psi.impl;
 
+import com.intellij.lang.ASTNode;
 import com.intellij.openapi.util.TextRange;
 import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiManager;
 import com.intellij.psi.PsiReference;
 import com.intellij.psi.PsiReferenceBase;
-import org.abra.language.psi.AbraImportStmt;
+import com.intellij.util.IncorrectOperationException;
+import org.abra.language.psi.*;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -14,8 +16,8 @@ public class AbraFileReferencePsiReferenceImpl extends PsiReferenceBase implemen
 
     private final VirtualFile virtualFile;
 
-    public AbraFileReferencePsiReferenceImpl(AbraImportStmt abraImportFile, VirtualFile virtualFile) {
-        super(abraImportFile, false);
+    public AbraFileReferencePsiReferenceImpl(AbraImportStmt abraImportStmt, VirtualFile virtualFile) {
+        super(abraImportStmt, false);
         this.virtualFile = virtualFile;
     }
     @NotNull
@@ -24,6 +26,15 @@ public class AbraFileReferencePsiReferenceImpl extends PsiReferenceBase implemen
         final int parent = 0;
         return new TextRange(parent, myElement.getTextLength() + parent);
     }
+
+    @Override
+    public PsiElement handleElementRename(String newElementName) throws IncorrectOperationException {
+        AbraPathName pathName = AbraElementFactory.createAbraPathName(myElement.getProject(), newElementName);
+        ASTNode newKeyNode = pathName.getFirstChild().getNode();
+        myElement.getNode().replaceChild(myElement.getLastChild().getNode(), newKeyNode);
+        return pathName;
+    }
+
     @Nullable
     @Override
     public PsiElement resolve() {

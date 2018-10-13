@@ -119,4 +119,19 @@ public class AbraElementFactory {
         final AbraFile file = createFile(project, "func [1] f(a[1])={b="+name+"[1,1]\nreturn b}");
         return ((AbraFuncStmt)file.getFirstChild()).getFuncBody().getAssignExprList().get(0).getMergeExpr().getConcatExprList().get(0).getPostfixExprList().get(0).getLutExpr().getLutNameRef();
     }
+
+    public static AbraFieldNameRef createAbraFieldNameReference(Project project, String name) {
+        final AbraFile file = createFile(project, "func [1] f(a [1])=f(p."+name+")");
+        return ((AbraFuncStmt)file.getFirstChild()).getFuncBody().getMergeExpr().getConcatExprList().get(0).getPostfixExprList().get(0)
+                .getFuncExpr().getMergeExprList().get(0).getConcatExprList().get(0).getPostfixExprList().get(0).
+                        getSliceExpr().getFieldNameRefList().get(0);
+    }
+
+    public static AbraPathName createAbraPathName(Project project, String name) {
+        final AbraFile file = createFile(project, "import Abra/"+name);
+        return ((AbraImportStmt)file.getFirstChild()).getPathNameList().get(1);
+    }
+
+
+
 }
