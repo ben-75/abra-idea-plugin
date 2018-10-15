@@ -53,10 +53,29 @@ public class AbraFieldPsiReferenceImpl   extends PsiReferenceBase implements Psi
     }
 
     private PsiElement resolveInFile(PsiFile aFile){
+        PsiElement resolved = resolveInTemplate();
+        if(resolved!=null)return resolved;
         for(ASTNode stmt:aFile.getNode().getChildren(TokenSet.create(AbraTypes.TYPE_STMT))){
             for(AbraFieldSpec fieldSpec:((AbraTypeStmt)stmt.getPsi()).getFieldSpecList()){
                 if(fieldSpec.getFieldName().getText().equals(myElement.getText())){
                     return fieldSpec.getFieldName();
+                }
+            }
+        }
+        return null;
+    }
+
+    private PsiElement resolveInTemplate(){
+        PsiElement templateStmt = myElement;
+        while(!(templateStmt instanceof AbraFile) && !(templateStmt instanceof AbraTemplateStmt)){
+            templateStmt = templateStmt.getParent();
+        }
+        if(templateStmt instanceof AbraTemplateStmt){
+            for(AbraTypeStmt localTypeStmt:((AbraTemplateStmt)templateStmt).getTypeStmtList()){
+                if(localTypeStmt.getFieldSpecList().size()>0){
+                    for(AbraFieldSpec fs:localTypeStmt.getFieldSpecList()){
+                        if(fs.getFieldName().getText().equals(myElement.getText()))return fs.getFieldName();
+                    }
                 }
             }
         }

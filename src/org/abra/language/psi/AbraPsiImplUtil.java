@@ -9,7 +9,10 @@ import com.intellij.openapi.roots.ModuleRootManager;
 import com.intellij.openapi.vfs.LocalFileSystem;
 import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.psi.PsiElement;
+import com.intellij.psi.PsiManager;
 import com.intellij.psi.PsiReference;
+import com.intellij.psi.search.FilenameIndex;
+import com.intellij.psi.tree.TokenSet;
 import org.abra.language.AbraFileType;
 import org.abra.language.AbraIcons;
 import org.abra.language.UnresolvableTokenException;
@@ -20,6 +23,7 @@ import org.jetbrains.annotations.NotNull;
 import javax.swing.*;
 import java.io.File;
 import java.util.*;
+import java.util.stream.Collectors;
 
 public class AbraPsiImplUtil {
 
@@ -329,7 +333,9 @@ public class AbraPsiImplUtil {
             public String getLocationString() {
                 if(element.getFuncStmtList().size()==1) {
                     AbraFuncSignature sig = element.getFuncStmtList().get(0).getFuncSignature();
-                    return sig.getFuncName().getText()+"<"+sig.getConstExpr().getText()+">" + " -> " + sig.getTypeSize().getText();
+                    return sig.getFuncName().getText()+"<"+
+                            String.join(",",sig.getConstExprList().stream().map(expr->expr.getText()).collect(Collectors.toList()))
+                            +">" + " -> " + sig.getTypeSize().getText();
                 }
                 return "";
             }
@@ -482,37 +488,37 @@ public class AbraPsiImplUtil {
     //====================== Range Expr ==================================
     //====================================================================
 
-    public static int getResolvedSize(AbraRangeExpr rangeExpr){
-        if(!rangeExpr.hasRangeOperator() && !rangeExpr.hasSmartRange())return 1;
-
-        if(rangeExpr.hasSmartRange()){
-            return rangeExpr.getConstExprList().get(1).getResolvedSize();
-        }
-        if(rangeExpr.hasClosedRange()){
-            return rangeExpr.getConstExprList().get(1).getResolvedSize()-rangeExpr.getConstExprList().get(0).getResolvedSize();
-        }
-        PsiElement leftSibling = rangeExpr;
-        while(!(leftSibling instanceof AbraResolvable))leftSibling = leftSibling.getPrevSibling();
-        if(leftSibling instanceof AbraFieldNameRef){
-            return ((AbraFieldNameRef) leftSibling).getResolvedSize() - rangeExpr.getConstExprList().get(0).getResolvedSize();
-        }
-        if(leftSibling instanceof AbraParamOrVarNameRef){
-            return ((AbraParamOrVarNameRef) leftSibling).getResolvedSize() - rangeExpr.getConstExprList().get(0).getResolvedSize();
-        }
-        if(leftSibling instanceof AbraTypeOrPlaceHolderNameRef){
-            PsiElement resolved = leftSibling.getReference().resolve();
-            if(resolved instanceof AbraPlaceHolderTypeName){
-                resolved = ContextStack.INSTANCE.resolveInContext((AbraPlaceHolderTypeName) resolved);
-                if(resolved instanceof AbraTypeNameRef){
-                    return ((AbraTypeStmt) ContextStack.INSTANCE.get().peek().get(resolved).getParent()).getTypeSize().getResolvedSize();
-                }
-            }
-            if(resolved instanceof AbraTypeName){
-                return ((AbraTypeStmt) resolved.getParent()).getResolvedSize();
-            }
-        }
-        throw new UnresolvableTokenException(rangeExpr.getText());
-    }
+//    public static int getResolvedSize(AbraRangeExpr rangeExpr){
+//        if(!rangeExpr.hasRangeOperator() && !rangeExpr.hasSmartRange())return 1;
+//
+//        if(rangeExpr.hasSmartRange()){
+//            return rangeExpr.getConstExprList().get(1).getResolvedSize();
+//        }
+//        if(rangeExpr.hasClosedRange()){
+//            return rangeExpr.getConstExprList().get(1).getResolvedSize()-rangeExpr.getConstExprList().get(0).getResolvedSize();
+//        }
+//        PsiElement leftSibling = rangeExpr;
+//        while(!(leftSibling instanceof AbraResolvable))leftSibling = leftSibling.getPrevSibling();
+//        if(leftSibling instanceof AbraFieldNameRef){
+//            return ((AbraFieldNameRef) leftSibling).getResolvedSize() - rangeExpr.getConstExprList().get(0).getResolvedSize();
+//        }
+//        if(leftSibling instanceof AbraParamOrVarNameRef){
+//            return ((AbraParamOrVarNameRef) leftSibling).getResolvedSize() - rangeExpr.getConstExprList().get(0).getResolvedSize();
+//        }
+//        if(leftSibling instanceof AbraTypeOrPlaceHolderNameRef){
+//            PsiElement resolved = leftSibling.getReference().resolve();
+//            if(resolved instanceof AbraPlaceHolderTypeName){
+//                resolved = ContextStack.INSTANCE.resolveInContext((AbraPlaceHolderTypeName) resolved);
+//                if(resolved instanceof AbraTypeNameRef){
+//                    return ((AbraTypeStmt) ContextStack.INSTANCE.get().peek().get(resolved).getParent()).getTypeSize().getResolvedSize();
+//                }
+//            }
+//            if(resolved instanceof AbraTypeName){
+//                return ((AbraTypeStmt) resolved.getParent()).getResolvedSize();
+//            }
+//        }
+//        throw new UnresolvableTokenException(rangeExpr.getText());
+//    }
 
     public static boolean hasRangeOperator(AbraRangeExpr rangeExpr){
         return rangeExpr.getText().contains("..");
@@ -534,40 +540,14 @@ public class AbraPsiImplUtil {
     //====================== Const Stuff =================================
     //====================================================================
 
-    public static int getResolvedSize(AbraMergeExpr element){
-        return element.getConcatExprList().get(0).getResolvedSize();
-    }
-
-    public static int getResolvedSize(AbraPostfixExpr element){
-            if (element.getSliceExpr() != null) {
-                return element.getSliceExpr().getResolvedSize();
-            } else if (element.getFuncExpr() != null) {
-                return element.getFuncExpr().getResolvedSize();
-            } else if (element.getInteger() != null) {
-                return element.getInteger().getResolvedSize();
-            } else if (element.getLutExpr() != null) {
-                return element.getLutExpr().getResolvedSize();
-            } else if (element.getMergeExpr() != null) {
-                return element.getMergeExpr().getResolvedSize();
-            } else if (element.getTypeExpr() != null) {
-                return element.getTypeExpr().getResolvedSize();
-            }else if (element.getLutOrSliceExpr() != null) {
-                return element.getLutOrSliceExpr().getResolvedSize();
-//            }else if (element.getParamOrVarNameRef() != null) {
-//                return element.getParamOrVarNameRef().getResolvedSize();
-            }
-            return 0;
-    }
-
-
-    public static int getResolvedSize(AbraSliceExpr sliceExpr){
-        if(sliceExpr.getRangeExpr()==null){
-            if(sliceExpr.getFieldNameRefList().size()==0)
-                return sliceExpr.getParamOrVarNameRef().getResolvedSize();
-            return sliceExpr.getFieldNameRefList().get(sliceExpr.getFieldNameRefList().size()-1).getResolvedSize();
-        }
-        return sliceExpr.getRangeExpr().getResolvedSize();
-    }
+//    public static int getResolvedSize(AbraSliceExpr sliceExpr){
+//        if(sliceExpr.getRangeExpr()==null){
+//            if(sliceExpr.getFieldNameRefList().size()==0)
+//                return sliceExpr.getParamOrVarNameRef().getResolvedSize();
+//            return sliceExpr.getFieldNameRefList().get(sliceExpr.getFieldNameRefList().size()-1).getResolvedSize();
+//        }
+//        return sliceExpr.getRangeExpr().getResolvedSize();
+//    }
 
     public static boolean hasRangeOperator(AbraSliceExpr sliceExpr){
         return sliceExpr.getRangeExpr()!=null && sliceExpr.getRangeExpr().hasRangeOperator();
@@ -582,27 +562,17 @@ public class AbraPsiImplUtil {
     }
 
 
-    public static int getResolvedSize(AbraParamOrVarNameRef paramOrVarNameRef){
-        PsiElement resolved = paramOrVarNameRef.getReference().resolve();
-        if(resolved instanceof AbraVarName){
-            return ((AbraVarName)resolved).getResolvedSize();
-        }
-        if(resolved instanceof AbraParamName){
-            return ((AbraParamName)resolved).getResolvedSize();
-        }
-        throw new UnresolvableTokenException(paramOrVarNameRef.getText());
-    }
+//    public static int getResolvedSize(AbraParamOrVarNameRef paramOrVarNameRef){
+//        PsiElement resolved = paramOrVarNameRef.getReference().resolve();
+//        if(resolved instanceof AbraVarName){
+//            return ((AbraVarName)resolved).getResolvedSize();
+//        }
+//        if(resolved instanceof AbraParamName){
+//            return ((AbraParamName)resolved).getResolvedSize();
+//        }
+//        throw new UnresolvableTokenException(paramOrVarNameRef.getText());
+//    }
 
-    public static int getResolvedSize(AbraFuncExpr funcExpr){
-        PsiElement element = funcExpr.getFuncNameRef().getReference().resolve();
-        if(element instanceof AbraFuncName){
-            return ((AbraFuncSignature) element.getParent()).getTypeSize().getResolvedSize();
-        }
-        if(element instanceof AbraTemplateNameRef){
-            return getVirtualFunctionResolvedSize((AbraUseStmt) element.getParent(),funcExpr.getFuncNameRef().getText(),funcExpr.getConstExpr().getResolvedSize());
-        }
-        throw new UnresolvableTokenException(funcExpr.getText());
-    }
     public static int getVirtualFunctionResolvedSize(AbraUseStmt useStatement,String funcName,int size){
         for(AbraTypeInstantiation typeInstantiation:useStatement.getTypeInstantiationList()){
             AbraTypeName typeName = (AbraTypeName) typeInstantiation.getTypeNameRefList().get(0).getReference().resolve();
@@ -655,27 +625,27 @@ public class AbraPsiImplUtil {
         return ((AbraLutStmt)lutName.getParent()).getLutEntryList().get(0).getOutputLength();
     }
 
-    public static int getResolvedSize(AbraVarName varName){
-        if(varName.getParent() instanceof AbraAssignExpr) {
-            if (((AbraAssignExpr) varName.getParent()).getTypeSize() != null) {
-                return ((AbraAssignExpr) varName.getParent()).getTypeSize().getResolvedSize();
-            }
-            return ((AbraAssignExpr) varName.getParent()).getMergeExpr().getResolvedSize();
-        }
-        return ((AbraStateExpr) varName.getParent()).getTypeSize().getResolvedSize();
-    }
+//    public static int getResolvedSize(AbraVarName varName){
+//        if(varName.getParent() instanceof AbraAssignExpr) {
+//            if (((AbraAssignExpr) varName.getParent()).getTypeSize() != null) {
+//                return ((AbraAssignExpr) varName.getParent()).getTypeSize().getResolvedSize();
+//            }
+//            return ((AbraAssignExpr) varName.getParent()).getMergeExpr().getResolvedSize();
+//        }
+//        return ((AbraStateExpr) varName.getParent()).getTypeSize().getResolvedSize();
+//    }
+//
+//    public static int getResolvedSize(AbraReturnExpr returnExpr){
+//        return returnExpr.getMergeExpr().getResolvedSize();
+//    }
 
-    public static int getResolvedSize(AbraReturnExpr returnExpr){
-        return returnExpr.getMergeExpr().getResolvedSize();
-    }
-
-    public static int getResolvedSize(AbraConcatExpr concatExpr){
-        int r = 0;
-        for(AbraPostfixExpr postfixExpr:concatExpr.getPostfixExprList()){
-            r = r+postfixExpr.getResolvedSize();
-        }
-        return r;
-    }
+//    public static int getResolvedSize(AbraConcatExpr concatExpr){
+//        int r = 0;
+//        for(AbraPostfixExpr postfixExpr:concatExpr.getPostfixExprList()){
+//            r = r+postfixExpr.getResolvedSize();
+//        }
+//        return r;
+//    }
 
     public static int getResolvedSize(AbraLutExpr element){
         PsiElement resolved = element.getLutNameRef().getReference().resolve();
@@ -876,6 +846,7 @@ public class AbraPsiImplUtil {
         PsiElement resolved = element.getTypeOrPlaceHolderNameRef().getReference().resolve();
         if(resolved!=null){
             if(resolutionMap.get(resolved.getText())!=null)return resolutionMap.get(resolved.getText());
+            if(resolved instanceof AbraTypeName)return ((AbraTypeName)resolved).getResolvedSize();
             return -1;
         }
         throw new UnresolvableTokenException(element.getText());
@@ -1186,4 +1157,122 @@ public class AbraPsiImplUtil {
         return null;
     }
 
+    /**
+     *
+     * @param funcExpr
+     * @param funcStmt
+     * @return null when funcName don't match
+     * @return empty list when none of the use statement for func statement match the type instantiation for func expr
+     * @return the subset of typeinstantiation of funcExpr covered by the type instantiation of funcStmt
+     */
+    public static List<SizesInstantiation> match(AbraFuncExpr funcExpr, AbraFuncStmt funcStmt){
+        if(! funcExpr.getFuncNameRef().getText().equals(funcStmt.getFuncSignature().getFuncName().getText())){
+            return null;
+        }
+        List<SizesInstantiation> resp = new ArrayList<>();
+        if(funcExpr.getConstExprList().size()==0){
+            if(funcStmt.getFuncSignature().getConstExprList().size()==0){
+                return resp;
+            }
+            return null;
+        }
+        List<SizesInstantiation> funcStmtSizesInst = null;
+        if(funcStmt.getParent() instanceof AbraTemplateStmt) {
+            funcStmtSizesInst = typesToSizesInstantiations(
+                    funcStmt.getFuncSignature().getConstExprList(), (AbraTemplateStmt) funcStmt.getParent(), funcStmt.getAllTypeInstantiation());
+        }else{
+            SizesInstantiation sizesInstantiation = new SizesInstantiation();
+            for(AbraConstExpr constExpr:funcStmt.getFuncSignature().getConstExprList()){
+                sizesInstantiation.add(constExpr.getResolvedSize());
+            }
+            return Collections.singletonList(sizesInstantiation);
+        }
+        List<SizesInstantiation> allSizes = getAllSizesInstantiation(funcExpr);
+        for(SizesInstantiation instantiation:allSizes){
+            if(funcStmtSizesInst.contains(instantiation))resp.add(instantiation);
+        }
+        return resp.size()==0?null:resp;
+    }
+
+    public static AbraFuncStmt getFuncStmt(AbraFuncExpr funcExpr){
+        PsiElement e = funcExpr;
+        while(!(e instanceof AbraFuncStmt))e = e.getParent();
+        return (AbraFuncStmt) e;
+    }
+
+    public static List<SizesInstantiation> getAllSizesInstantiation(AbraFuncExpr funcExpr){
+        if(funcExpr.getConstExprList().size()==0){
+            return new ArrayList<>();
+        }
+        if(!funcExpr.getFuncStmt().isInTemplate()){
+            SizesInstantiation sizesInstantiation = new SizesInstantiation();
+            for(AbraConstExpr constExpr:funcExpr.getConstExprList()){
+                sizesInstantiation.add(constExpr.getResolvedSize());
+            }
+            return Collections.singletonList(sizesInstantiation);
+        }
+        AbraTemplateStmt templateStmt = (AbraTemplateStmt) funcExpr.getFuncStmt().getParent();
+        AbraTypeInstantiation[] allTemplateInstantiations = templateStmt.getAllTypeInstantiation();
+        ArrayList<SizesInstantiation> resp = typesToSizesInstantiations(funcExpr.getConstExprList(), templateStmt, allTemplateInstantiations);
+        return resp;
+    }
+
+    @NotNull
+    public static ArrayList<SizesInstantiation> typesToSizesInstantiations(List<AbraConstExpr> constExprList, AbraTemplateStmt templateStmt, AbraTypeInstantiation[] allTemplateInstantiations) {
+        ArrayList<SizesInstantiation> resp = new ArrayList<>();
+        for(AbraTypeInstantiation typeInstantiation:allTemplateInstantiations){
+            SizesInstantiation sizesInstantiation = new SizesInstantiation();
+            for(AbraConstExpr constExpr:constExprList){
+                sizesInstantiation.add(getResolvedSize2(constExpr,getResolutionMap(templateStmt,typeInstantiation),templateStmt));
+            }
+            resp.add(sizesInstantiation);
+        }
+        return resp;
+    }
+
+    public static Map<String,Integer> getResolutionMap(AbraTemplateStmt templateStmt, AbraTypeInstantiation typeInstantiation){
+        HashMap<String,Integer> map = new HashMap<>();
+        int i=0;
+        for(AbraTypeNameRef typeNameRef:typeInstantiation.getTypeNameRefList()) {
+            AbraTypeName typeName = (AbraTypeName) typeNameRef.getReference().resolve();
+            if(typeName!=null) {
+                map.put(templateStmt.getPlaceHolderTypeNameList().get(i).getText(), typeName.getResolvedSize());
+            }else {
+                return Collections.EMPTY_MAP;
+            }
+            i++;
+        }
+        for(AbraTypeStmt typeStmt:templateStmt.getTypeStmtList()){
+            if(typeStmt.getTypeSize()!=null) {
+                map.put(typeStmt.getTypeName().getText(), getResolvedSize2(typeStmt.getTypeSize().getConstExpr(), map, templateStmt));
+            }else{
+               // System.out.println("hum... ? what do I do here ???");  --> ignore
+            }
+        }
+        return map;
+    }
+    public static AbraTypeInstantiation[] getAllTypeInstantiation(AbraTemplateStmt templateStmt){
+        Collection<VirtualFile> allAbraFiles = FilenameIndex.getAllFilesByExt(templateStmt.getProject(),"abra");
+        ArrayList<AbraTypeInstantiation> allTypeInstantiation = new ArrayList<>();
+        for(VirtualFile virtualFile:allAbraFiles){
+            AbraFile abraFile = (AbraFile) PsiManager.getInstance(templateStmt.getProject()).findFile(virtualFile);
+            if(abraFile.equals(templateStmt.getContainingFile()) || abraFile.isImporting((AbraFile) templateStmt.getContainingFile())){
+                for (ASTNode stmt : abraFile.getNode().getChildren(TokenSet.create(AbraTypes.USE_STMT))) {
+                        if (((AbraUseStmt) stmt.getPsi()).getTemplateNameRef().getText().equals(templateStmt.getTemplateName().getText())) {
+                            allTypeInstantiation.addAll(((AbraUseStmt) stmt.getPsi()).getTypeInstantiationList());
+                        }
+                    }
+                }
+        }
+        AbraTypeInstantiation[] arr = new AbraTypeInstantiation[allTypeInstantiation.size()];
+        allTypeInstantiation.toArray(arr);
+        return arr;
+    }
+
+    public static AbraTypeInstantiation[] getAllTypeInstantiation(AbraFuncStmt funcStmt){
+        if(funcStmt.getParent() instanceof AbraTemplateStmt){
+                return getAllTypeInstantiation((AbraTemplateStmt) funcStmt.getParent());
+            }
+        return new AbraTypeInstantiation[]{};
+    }
 }

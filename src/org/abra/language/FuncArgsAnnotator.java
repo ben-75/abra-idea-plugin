@@ -15,9 +15,9 @@ public class FuncArgsAnnotator  implements Annotator {
             PsiElement resolved =  funcExpr.getFuncNameRef().getReference().resolve();
             if(resolved!=null){
                 AbraFuncSignature funcSignature = resolved instanceof AbraFuncName ? (AbraFuncSignature) resolved.getParent() : getFuncSignatureForTemplateNameRef(funcExpr.getFuncNameRef().getText(),(AbraTemplateNameRef)resolved);
-                if(resolved instanceof AbraTemplateNameRef){
-                    AbraPsiImplUtil.ContextStack.INSTANCE.push(AbraPsiImplUtil.getTemplateContextMap((AbraUseStmt)resolved.getParent(), funcExpr.getConstExpr().getResolvedSize()));
-                }
+//                if(resolved instanceof AbraTemplateNameRef){
+//                    AbraPsiImplUtil.ContextStack.INSTANCE.push(AbraPsiImplUtil.getTemplateContextMap((AbraUseStmt)resolved.getParent(), funcExpr.getConstExpr().getResolvedSize()));
+//                }
                 try {
                     int  argsCount = funcExpr.getMergeExprList().size();
                     int   startOffset = funcExpr.getMergeExprList().get(0).getTextRange().getStartOffset();
@@ -28,7 +28,7 @@ public class FuncArgsAnnotator  implements Annotator {
                     if (expectedArgsCount != argsCount) {
                         TextRange range = new TextRange(startOffset, endOffset);
                         holder.createErrorAnnotation(range, "Unexpected arguments count. Expecting : " + expectedArgsCount + " args, but found " + argsCount);
-                    } else if (((AbraFuncStmt)funcExpr.getStatment()).getFuncSignature().getConstExpr()==null) {
+                    } else if (((AbraFuncStmt)funcExpr.getStatment()).getFuncSignature().getConstExprList().size()==0) {
 //                        for (int i = 0; i < funcSignature.getFuncParameterList().size(); i++) {
 //                            try {
 //                                int expectedSize = funcSignature.getFuncParameterList().get(i).getTypeSize().getResolvedSize();

@@ -97,7 +97,7 @@ public class AbraElementFactory {
 
     public static AbraTypeOrPlaceHolderNameRef createAbraTypeOrPlaceHolderNameRef(Project project, String name) {
         final AbraFile file = createFile(project, "template incFunc<T> func [1] inc<"+name+"> (a[1]) = {return 1}");
-        return ((AbraTemplateStmt)file.getFirstChild()).getFuncStmtList().get(0).getFuncSignature().getConstExpr().getConstTermList().get(0).getConstFactorList().get(0).getTypeOrPlaceHolderNameRef();
+        return ((AbraTemplateStmt)file.getFirstChild()).getFuncStmtList().get(0).getFuncSignature().getConstExprList().get(0).getConstTermList().get(0).getConstFactorList().get(0).getTypeOrPlaceHolderNameRef();
     }
 
     private static AbraFile createFile(Project project, String text) {

@@ -71,13 +71,26 @@ public class AbraFuncPsiReferenceImpl  extends PsiReferenceBase implements PsiRe
             }
         }else{
             AbraFuncExpr funcExpr = (AbraFuncExpr) myElement.getParent();
-            //override in module
-            for (ASTNode stmt : aFile.getNode().getChildren(TokenSet.create(AbraTypes.FUNC_STMT))) {
-                if (((AbraFuncStmt) stmt.getPsi()).getFuncSignature().getFuncName().getText().equals(myElement.getText()) && ((AbraFuncStmt) stmt.getPsi()).getFuncSignature().getConstExpr()!=null) {
-                    if(funcExpr.getConstExpr().getResolvedSize()==((AbraFuncStmt) stmt.getPsi()).getFuncSignature().getConstExpr().getResolvedSize())
+            for (ASTNode stmt : aFile.getNode().getChildren(TokenSet.create(AbraTypes.FUNC_STMT, AbraTypes.TEMPLATE_STMT))) {
+                if(stmt.getElementType()==AbraTypes.FUNC_STMT) {
+                    if (AbraPsiImplUtil.match(funcExpr, (AbraFuncStmt) stmt.getPsi()) != null) {
                         return ((AbraFuncStmt) stmt.getPsi()).getFuncSignature().getFuncName();
+                    }
+                }else{
+                    for (ASTNode f_stmt : stmt.getChildren(TokenSet.create(AbraTypes.FUNC_STMT))) {
+                        if (AbraPsiImplUtil.match(funcExpr, (AbraFuncStmt) f_stmt.getPsi()) != null) {
+                            return ((AbraFuncStmt) f_stmt.getPsi()).getFuncSignature().getFuncName();
+                        }
+                    }
                 }
             }
+            //override in module
+//            for (ASTNode stmt : aFile.getNode().getChildren(TokenSet.create(AbraTypes.FUNC_STMT))) {
+//                if (((AbraFuncStmt) stmt.getPsi()).getFuncSignature().getFuncName().getText().equals(myElement.getText()) && ((AbraFuncStmt) stmt.getPsi()).getFuncSignature().getConstExpr()!=null) {
+//                    if(funcExpr.getConstExpr().getResolvedSize()==((AbraFuncStmt) stmt.getPsi()).getFuncSignature().getConstExpr().getResolvedSize())
+//                        return ((AbraFuncStmt) stmt.getPsi()).getFuncSignature().getFuncName();
+//                }
+//            }
             //use statement
 //            boolean referenceATemplate = true;
 //            if(constExpr.isTypeOrPlaceHolderNameRef()){
@@ -97,18 +110,18 @@ public class AbraFuncPsiReferenceImpl  extends PsiReferenceBase implements PsiRe
 //                    }
 //                }
 //            }else{
-                for (ASTNode stmt : aFile.getNode().getChildren(TokenSet.create(AbraTypes.USE_STMT))) {
-                    AbraUseStmt useStmt = (AbraUseStmt) stmt.getPsi();
-                    AbraTemplateName templateName = (AbraTemplateName) useStmt.getTemplateNameRef().getReference().resolve();
-                    if(templateName!=null) {
-                        //((AbraTemplateStmt)useStmt.getTemplateNameRef().getReference().resolve().getParent()).getFuncStmtList().get(0).getFuncSignature().getFuncName().getText()
-                        AbraTemplateStmt templateStmt = (AbraTemplateStmt) templateName.getParent();
-                        AbraFuncStmt funcStmt = AbraPsiImplUtil.getFuncWithNameInTemplate(myElement.getText(), templateStmt);
-                        if (funcStmt!=null) {
-                            return useStmt.getTemplateNameRef();
-                        }
-                    }
-                }
+//                for (ASTNode stmt : aFile.getNode().getChildren(TokenSet.create(AbraTypes.USE_STMT))) {
+//                    AbraUseStmt useStmt = (AbraUseStmt) stmt.getPsi();
+//                    AbraTemplateName templateName = (AbraTemplateName) useStmt.getTemplateNameRef().getReference().resolve();
+//                    if(templateName!=null) {
+//                        //((AbraTemplateStmt)useStmt.getTemplateNameRef().getReference().resolve().getParent()).getFuncStmtList().get(0).getFuncSignature().getFuncName().getText()
+//                        AbraTemplateStmt templateStmt = (AbraTemplateStmt) templateName.getParent();
+//                        AbraFuncStmt funcStmt = AbraPsiImplUtil.getFuncWithNameInTemplate(myElement.getText(), templateStmt);
+//                        if (funcStmt!=null) {
+//                            return useStmt.getTemplateNameRef();
+//                        }
+//                    }
+//                }
 //            }
         }
         return null;//resolveFromImports(aFile, constExpr);

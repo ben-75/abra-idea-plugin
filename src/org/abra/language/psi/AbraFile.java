@@ -11,6 +11,7 @@ import org.abra.language.AbraFileType;
 import org.abra.language.AbraLanguage;
 import org.jetbrains.annotations.NotNull;
 import javax.swing.*;
+import java.util.ArrayList;
 import java.util.List;
 
 
@@ -58,5 +59,9 @@ public class AbraFile extends PsiFileBase {
             }
         }
         return importsTree;
+    }
+
+    public boolean isImporting(AbraFile anotherFile) {
+        return getImportTree(new ArrayList<>()).contains(anotherFile);
     }
 }

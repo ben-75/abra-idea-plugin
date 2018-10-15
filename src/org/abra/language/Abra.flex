@@ -49,6 +49,8 @@ TEMPLATE_KEYWORD=(template)
 USE_KEYWORD=(use)
 STATE_KEYWORD=(state)
 RETURN_KEYWORD=(return)
+AFFECT_KEYWORD=(affect)
+DELAY_KEYWORD=(delay)
 IDENTIFIER=([A-Za-z_])([A-Za-z0-9_])*
 OPEN_BRACKET=(\[)
 CLOSE_BRACKET=(\])
@@ -76,6 +78,7 @@ ASSIGN=[=]
 <WAIT_EXPR_ASSERT> {NO_CRLF}  { yybegin(YYINITIAL); return EXPR_ASSERTION;}
   {COMMENT}             { return COMMENT; }
 
+  {OPEN_BRACE}                { return OPEN_BRACE; }
 
   {ZERO}                      { return ZERO; }
   {ONE}                       { return ONE; }
@@ -97,10 +100,11 @@ ASSIGN=[=]
   {USE_KEYWORD}               { return USE_KEYWORD; }
   {STATE_KEYWORD}             { return STATE_KEYWORD; }
   {RETURN_KEYWORD}            { return RETURN_KEYWORD; }
+  {AFFECT_KEYWORD}            { return AFFECT_KEYWORD; }
+  {DELAY_KEYWORD}             { return DELAY_KEYWORD; }
   {IDENTIFIER}                { return IDENTIFIER; }
   {OPEN_BRACKET}              { return OPEN_BRACKET; }
   {CLOSE_BRACKET}             { return CLOSE_BRACKET; }
-  {OPEN_BRACE}                { return OPEN_BRACE; }
   {CLOSE_BRACE}               { return CLOSE_BRACE; }
   {OPEN_PAR}                  { return OPEN_PAR; }
   {CLOSE_PAR}                 { return CLOSE_PAR; }
