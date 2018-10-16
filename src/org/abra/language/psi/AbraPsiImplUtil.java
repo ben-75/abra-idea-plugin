@@ -47,7 +47,15 @@ public class AbraPsiImplUtil {
             public String getLocationString() {
                 try {
                     int sz = element.getResolvedSize();
-                    return "["+(sz<=0?element.getTypeSize().getText():sz)+"]";
+                    String txt = null;
+                    if(element.getTypeSize()==null){
+                        txt = "";
+                    }else{
+                        txt = element.getTypeSize().getText();
+                    }
+                    if(txt.startsWith("["))txt = txt.substring(1);
+                    if(txt.endsWith("]"))txt = txt.substring(0,txt.length()-1);
+                    return "["+(sz<=0?txt:sz)+"]";
                 }catch (UnresolvableTokenException e){
                     return "[?]";
                 }
@@ -194,7 +202,10 @@ public class AbraPsiImplUtil {
             public String getLocationString() {
                 try{
                     int sz = element.getTypeSize().getResolvedSize();
-                    return "["+(sz<=0?element.getTypeSize().getText():sz)+"]";
+                    String txt = sz<=0?element.getTypeSize().getText():sz+"";
+                    if(txt.startsWith("["))txt = txt.substring(1);
+                    if(txt.endsWith("]"))txt = txt.substring(0,txt.length()-1);
+                    return "["+(sz<=0?txt:sz)+"]";
                 }catch (UnresolvableTokenException e){
                     return "[?]";
                 }
