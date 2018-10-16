@@ -49,6 +49,8 @@ TEMPLATE_KEYWORD=(template)
 USE_KEYWORD=(use)
 STATE_KEYWORD=(state)
 RETURN_KEYWORD=(return)
+JOIN_KEYWORD=(join)
+LIMIT_KEYWORD=(limit)
 AFFECT_KEYWORD=(affect)
 DELAY_KEYWORD=(delay)
 IDENTIFIER=([A-Za-z_])([A-Za-z0-9_])*
@@ -100,6 +102,8 @@ ASSIGN=[=]
   {USE_KEYWORD}               { return USE_KEYWORD; }
   {STATE_KEYWORD}             { return STATE_KEYWORD; }
   {RETURN_KEYWORD}            { return RETURN_KEYWORD; }
+  {JOIN_KEYWORD}              { return JOIN_KEYWORD; }
+  {LIMIT_KEYWORD}             { return LIMIT_KEYWORD; }
   {AFFECT_KEYWORD}            { return AFFECT_KEYWORD; }
   {DELAY_KEYWORD}             { return DELAY_KEYWORD; }
   {IDENTIFIER}                { return IDENTIFIER; }

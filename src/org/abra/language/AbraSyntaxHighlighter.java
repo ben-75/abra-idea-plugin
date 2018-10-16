@@ -85,6 +85,14 @@ public class AbraSyntaxHighlighter extends SyntaxHighlighterBase  {
             return KEYWORD_KEYS;
         }else if (tokenType.equals(AbraTypes.STATE_KEYWORD)) {
             return KEYWORD_KEYS;
+        }else if (tokenType.equals(AbraTypes.JOIN_KEYWORD)) {
+            return KEYWORD_KEYS;
+        }else if (tokenType.equals(AbraTypes.LIMIT_KEYWORD)) {
+            return KEYWORD_KEYS;
+        }else if (tokenType.equals(AbraTypes.AFFECT_KEYWORD)) {
+            return KEYWORD_KEYS;
+        }else if (tokenType.equals(AbraTypes.DELAY_KEYWORD)) {
+            return KEYWORD_KEYS;
         }else if (tokenType.equals(AbraTypes.COMMENT)) {
             return COMMENT_KEYS;
         }else if (tokenType.equals(AbraTypes.TEST_COMMENT)) {

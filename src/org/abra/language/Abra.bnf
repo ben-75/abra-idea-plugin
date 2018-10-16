@@ -109,12 +109,16 @@ private lutEntryRecover ::= !(lutEntry | CLOSE_BRACKET)
 funcSignature ::= typeSize funcName (OPEN_TAG constExpr (COMMA constExpr)* CLOSE_TAG)? OPEN_PAR (funcParameter(COMMA funcParameter)*) CLOSE_PAR
 funcParameter   ::= paramName typeSize
 
-funcBody ::= mergeExpr | (OPEN_BRACE environment* stateExpr* assignExpr* returnExpr CLOSE_BRACE)
+funcBody ::= mergeExpr | (OPEN_BRACE joinExpr* affectExpr * stateExpr* assignExpr* returnExpr CLOSE_BRACE)
                 {methods=[getFuncSignature]}
 
-environment ::= AFFECT_KEYWORD environmentName (DELAY_KEYWORD number)?
+joinExpr  ::= JOIN_KEYWORD environmentName (LIMIT_KEYWORD number)?
+              {pin=1 recoverWhile=joinExprRecover}
+private joinExprRecover ::= !(joinExpr | affectExpr  | stateExpr | assignExpr | returnExpr)
+
+affectExpr  ::= AFFECT_KEYWORD environmentName (DELAY_KEYWORD number)?
               {pin=1 recoverWhile=environmentRecover}
-private environmentRecover ::= !(environment | stateExpr | assignExpr | returnExpr)
+private environmentRecover ::= !(affectExpr  | stateExpr | assignExpr | returnExpr)
 
 stateExpr ::= STATE_KEYWORD varName typeSize
               {pin=1 recoverWhile=stateExprRecover}
