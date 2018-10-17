@@ -11,8 +11,11 @@ import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiManager;
 import com.intellij.psi.PsiReference;
+import com.intellij.psi.search.FileTypeIndex;
 import com.intellij.psi.search.FilenameIndex;
+import com.intellij.psi.search.GlobalSearchScope;
 import com.intellij.psi.tree.TokenSet;
+import com.intellij.util.indexing.FileBasedIndex;
 import org.abra.language.AbraFileType;
 import org.abra.language.AbraIcons;
 import org.abra.language.UnresolvableTokenException;
@@ -1285,5 +1288,31 @@ public class AbraPsiImplUtil {
                 return getAllTypeInstantiation((AbraTemplateStmt) funcStmt.getParent());
             }
         return new AbraTypeInstantiation[]{};
+    }
+
+    public static List<AbraFuncStmt> findAllFuncStmt(Project project, String name){
+        ArrayList<AbraFuncStmt> resp = new ArrayList<>();
+        Collection<VirtualFile> virtualFiles =FileBasedIndex.getInstance().getContainingFiles(
+                FileTypeIndex.NAME, AbraFileType.INSTANCE, GlobalSearchScope.allScope(project));
+        for (VirtualFile virtualFile : virtualFiles) {
+            AbraFile abraFile = (AbraFile) PsiManager.getInstance(project).findFile(virtualFile);
+            if (abraFile != null) {
+                resp.addAll(abraFile.findAllFuncStmt(name));
+            }
+        }
+        return resp;
+    }
+
+    public static List<AbraFuncNameRef> findAllFuncNameRef(Project project, String name){
+        ArrayList<AbraFuncNameRef> resp = new ArrayList<>();
+        Collection<VirtualFile> virtualFiles =FileBasedIndex.getInstance().getContainingFiles(
+                FileTypeIndex.NAME, AbraFileType.INSTANCE, GlobalSearchScope.allScope(project));
+        for (VirtualFile virtualFile : virtualFiles) {
+            AbraFile abraFile = (AbraFile) PsiManager.getInstance(project).findFile(virtualFile);
+            if (abraFile != null) {
+                resp.addAll(abraFile.findAllFuncNameRef(name));
+            }
+        }
+        return resp;
     }
 }

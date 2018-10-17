@@ -12,7 +12,7 @@ import org.jetbrains.annotations.Nullable;
 import java.util.ArrayList;
 import java.util.List;
 
-public class AbraFuncPsiReferenceImpl  extends PsiReferenceBase implements PsiReference {
+public class AbraFuncPsiReferenceImpl extends PsiReferenceBase implements PsiPolyVariantReference {
 
 
     public AbraFuncPsiReferenceImpl(@NotNull AbraFuncNameRef element) {
@@ -34,24 +34,35 @@ public class AbraFuncPsiReferenceImpl  extends PsiReferenceBase implements PsiRe
         return ref;
     }
 
+    @NotNull
+    @Override
+    public ResolveResult[] multiResolve(boolean incompleteCode) {
+        List<ResolveResult> resolved = resolveInFile(myElement.getContainingFile());
+        resolved.addAll(resolveFromImports(myElement.getContainingFile()));
+        ResolveResult[] arr = new ResolveResult[resolved.size()];
+        resolved.toArray(arr);
+        return arr;
+    }
+
     @Nullable
     @Override
     public PsiElement resolve() {
-        AbraConstExpr constExpr = null;
-        PsiElement it = myElement.getNextSibling();
-        while(it.getNode().getElementType()== TokenType.WHITE_SPACE) it = it.getNextSibling();
-        boolean isTemplateRef = it.getNode().getElementType() == AbraTypes.OPEN_TAG;
-        if(isTemplateRef) {
-            it = it.getNextSibling();
-            while (it.getNode().getElementType() == TokenType.WHITE_SPACE) it = it.getNextSibling();
-            //at this point it is the type name ref
-            constExpr = (AbraConstExpr)it;
+        List<ResolveResult> resolved = resolveInFile(myElement.getContainingFile());
+        if(resolved.size()==1){
+            return resolved.get(0).getElement();
         }
-        PsiElement resolved = resolveInFile(myElement.getContainingFile(), constExpr);
-        if(resolved==null){
-            resolved = resolveFromImports(myElement.getContainingFile(), constExpr);
-        }
-        return resolved;
+        return null;
+    }
+
+    @NotNull
+    @Override
+    public String getCanonicalText() {
+        return super.getCanonicalText();
+    }
+
+    @Override
+    public PsiElement bindToElement(@NotNull PsiElement element) throws IncorrectOperationException {
+        return super.bindToElement(element);
     }
 
     @NotNull
@@ -60,103 +71,41 @@ public class AbraFuncPsiReferenceImpl  extends PsiReferenceBase implements PsiRe
         return new Object[0];
     }
 
-    public PsiElement resolveInFile(PsiFile aFile, AbraConstExpr constExpr){
-
-        if(constExpr==null) {
-            //this reference a standard function in this file or in another
-            for (ASTNode stmt : aFile.getNode().getChildren(TokenSet.create(AbraTypes.FUNC_STMT))) {
-                if (((AbraFuncStmt) stmt.getPsi()).getFuncSignature().getFuncName().getText().equals(myElement.getText())) {
-                    return ((AbraFuncStmt) stmt.getPsi()).getFuncSignature().getFuncName();
+    public List<ResolveResult> resolveInFile(PsiFile aFile){
+        List<ResolveResult> resolveResults = new ArrayList<>();
+        AbraFuncExpr funcExpr = (AbraFuncExpr) myElement.getParent();
+        for (ASTNode stmt : aFile.getNode().getChildren(TokenSet.create(AbraTypes.FUNC_STMT, AbraTypes.TEMPLATE_STMT))) {
+            if(stmt.getElementType()==AbraTypes.FUNC_STMT) {
+                if (AbraPsiImplUtil.match(funcExpr, (AbraFuncStmt) stmt.getPsi()) != null) {
+                    resolveResults.add(buildResolvedResult(((AbraFuncStmt) stmt.getPsi()).getFuncSignature().getFuncName()));
                 }
-            }
-        }else{
-            AbraFuncExpr funcExpr = (AbraFuncExpr) myElement.getParent();
-            for (ASTNode stmt : aFile.getNode().getChildren(TokenSet.create(AbraTypes.FUNC_STMT, AbraTypes.TEMPLATE_STMT))) {
-                if(stmt.getElementType()==AbraTypes.FUNC_STMT) {
-                    if (AbraPsiImplUtil.match(funcExpr, (AbraFuncStmt) stmt.getPsi()) != null) {
-                        return ((AbraFuncStmt) stmt.getPsi()).getFuncSignature().getFuncName();
-                    }
-                }else{
-                    for (ASTNode f_stmt : stmt.getChildren(TokenSet.create(AbraTypes.FUNC_STMT))) {
-                        if (AbraPsiImplUtil.match(funcExpr, (AbraFuncStmt) f_stmt.getPsi()) != null) {
-                            return ((AbraFuncStmt) f_stmt.getPsi()).getFuncSignature().getFuncName();
-                        }
+            }else{
+                for (ASTNode f_stmt : stmt.getChildren(TokenSet.create(AbraTypes.FUNC_STMT))) {
+                    if (AbraPsiImplUtil.match(funcExpr, (AbraFuncStmt) f_stmt.getPsi()) != null) {
+                        resolveResults.add(buildResolvedResult(((AbraFuncStmt) f_stmt.getPsi()).getFuncSignature().getFuncName()));
                     }
                 }
             }
-            //override in module
-//            for (ASTNode stmt : aFile.getNode().getChildren(TokenSet.create(AbraTypes.FUNC_STMT))) {
-//                if (((AbraFuncStmt) stmt.getPsi()).getFuncSignature().getFuncName().getText().equals(myElement.getText()) && ((AbraFuncStmt) stmt.getPsi()).getFuncSignature().getConstExpr()!=null) {
-//                    if(funcExpr.getConstExpr().getResolvedSize()==((AbraFuncStmt) stmt.getPsi()).getFuncSignature().getConstExpr().getResolvedSize())
-//                        return ((AbraFuncStmt) stmt.getPsi()).getFuncSignature().getFuncName();
-//                }
-//            }
-            //use statement
-//            boolean referenceATemplate = true;
-//            if(constExpr.isTypeOrPlaceHolderNameRef()){
-//                AbraTypeOrPlaceHolderNameRef typeOrPlaceHolderNameRef = constExpr.getTypeOrPlaceHolderNameRef();
-//                PsiElement resolved = typeOrPlaceHolderNameRef.getReference().resolve();
-//                if(resolved instanceof AbraTypeName){
-//                    referenceATemplate = resolved.getParent().getParent() instanceof AbraTemplateStmt;
-//                }
-//            }
-//            if(referenceATemplate){
-//                for (ASTNode stmt : aFile.getNode().getChildren(TokenSet.create(AbraTypes.TEMPLATE_STMT))) {
-//                    AbraTemplateStmt templateStmt = (AbraTemplateStmt) stmt.getPsi();
-//                    for(AbraFuncStmt funcStmt:templateStmt.getFuncStmtList()){
-//                        if(funcStmt.getFuncSignature().getFuncName().getText().equals(myElement.getText())){
-//                            return funcStmt.getFuncSignature().getFuncName();
-//                        }
-//                    }
-//                }
-//            }else{
-//                for (ASTNode stmt : aFile.getNode().getChildren(TokenSet.create(AbraTypes.USE_STMT))) {
-//                    AbraUseStmt useStmt = (AbraUseStmt) stmt.getPsi();
-//                    AbraTemplateName templateName = (AbraTemplateName) useStmt.getTemplateNameRef().getReference().resolve();
-//                    if(templateName!=null) {
-//                        //((AbraTemplateStmt)useStmt.getTemplateNameRef().getReference().resolve().getParent()).getFuncStmtList().get(0).getFuncSignature().getFuncName().getText()
-//                        AbraTemplateStmt templateStmt = (AbraTemplateStmt) templateName.getParent();
-//                        AbraFuncStmt funcStmt = AbraPsiImplUtil.getFuncWithNameInTemplate(myElement.getText(), templateStmt);
-//                        if (funcStmt!=null) {
-//                            return useStmt.getTemplateNameRef();
-//                        }
-//                    }
-//                }
-//            }
         }
-        return null;//resolveFromImports(aFile, constExpr);
+        return resolveResults;
     }
 
-//    private int sizeOfNamedParam(AbraUseStmt useStmt, AbraTemplateStmt templateStmt, String typeRefName){
-//        int i = 0;
-//        for (int j = 0; j < templateStmt.getPlaceHolderNameList().size(); j++) {
-//            if (typeRefName.equals(templateStmt.getPlaceHolderNameList().get(j).getText())) {
-//                break;
-//            }
-//            i++;
-//        }
-//        //i is the index of the suffix.
-//        if(i<useStmt.getTypeNameRefList().size()) {
-//            AbraTypeNameRef typeNameRef = useStmt.getTypeNameRefList().get(i);
-//            PsiElement resolvedTypeName = typeNameRef.getReference().resolve();
-//            if(resolvedTypeName!=null)
-//                return ((AbraTypeStmt) typeNameRef.getReference().resolve().getParent()).getResolvedSize();
-//        }
-//        return -2;
-//    }
+    private ResolveResult buildResolvedResult(final AbraFuncName psi) {
+        return new PsiElementResolveResult(psi,true);
+    }
 
-    private PsiElement resolveFromImports(PsiFile startingFile, AbraConstExpr typeOrPlaceHolderNameRef){
+    private List<ResolveResult> resolveFromImports(PsiFile startingFile){
         List<AbraFile> importsTree = (((AbraFile)startingFile).getImportTree(new ArrayList<>()));
-       return resolveFromImportTree(importsTree, typeOrPlaceHolderNameRef);
+       return resolveFromImportTree(importsTree);
     }
 
-    public PsiElement resolveFromImportTree(List<AbraFile> scope, AbraConstExpr typeOrPlaceHolderNameRef){
+    public List<ResolveResult> resolveFromImportTree(List<AbraFile> scope){
+        List<ResolveResult> resolveResults = new ArrayList<>();
         if(scope.size()>0){
             for(PsiFile f:scope){
-                PsiElement resolved = resolveInFile(f, typeOrPlaceHolderNameRef);
-                if(resolved!=null)return resolved;
+                resolveResults.addAll(resolveInFile(f));
             }
         }
-        return null;
+        return resolveResults;
     }
 }

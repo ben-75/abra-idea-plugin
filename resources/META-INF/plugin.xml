@@ -1,7 +1,7 @@
 <idea-plugin>
   <id>org.abra.language</id>
   <name>Abra Plugin</name>
-  <version>0.0.16-pre-alpha</version>
+  <version>0.0.17-pre-alpha</version>
   <vendor url="https://github.com/ben-75/abra-idea-plugin"/>
 
   <description><![CDATA[
@@ -59,6 +59,7 @@
     <completion.contributor language="Abra" implementationClass="org.abra.language.AbraCompletionContributor"/>
     <additionalTextAttributes scheme="Default" file="colors/AbraDefault.xml"/>
     <additionalTextAttributes scheme="Darcula" file="colors/AbraDarcula.xml"/>
+    <renamePsiElementProcessor implementation="org.abra.language.RenameFuncNameProcessor"/>
   </extensions>
 
   <actions>

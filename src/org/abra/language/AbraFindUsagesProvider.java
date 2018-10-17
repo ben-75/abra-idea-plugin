@@ -7,6 +7,7 @@ import com.intellij.lang.findUsages.FindUsagesProvider;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiNamedElement;
 import com.intellij.psi.tree.TokenSet;
+import org.abra.language.psi.AbraTokenType;
 import org.abra.language.psi.AbraTypes;
 import org.jetbrains.annotations.NotNull;
 
@@ -21,7 +22,7 @@ public class AbraFindUsagesProvider implements FindUsagesProvider {
 
     @NotNull
     public String getType(@NotNull PsiElement element) {
-        return "";
+        return element.getClass().getSimpleName();
     }
 
     @NotNull
@@ -35,6 +36,6 @@ public class AbraFindUsagesProvider implements FindUsagesProvider {
     }
 
     public WordsScanner getWordsScanner() {
-        return new DefaultWordsScanner(new AbraLexerAdapter(), TokenSet.create(AbraTypes.IDENTIFIER), TokenSet.create(AbraTypes.COMMENT), TokenSet.create(AbraTypes.INTEGER, AbraTypes.ONE, AbraTypes.ZERO, AbraTypes.MINUS));
+        return new DefaultWordsScanner(new AbraLexerAdapter(), TokenSet.create(AbraTypes.FUNC_NAME_REF), TokenSet.create(AbraTypes.COMMENT), TokenSet.create(AbraTypes.INTEGER, AbraTypes.ONE, AbraTypes.ZERO, AbraTypes.MINUS));
     }
 }
