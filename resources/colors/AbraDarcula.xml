@@ -59,4 +59,20 @@
       <option name="FONT_TYPE" value="3" />
     </value>
   </option>
+  <option name="ENV_KEYWORD">
+    <value>
+      <option name="FOREGROUND" value="c2c606" />
+      <option name="FONT_TYPE" value="1" />
+    </value>
+  </option>
+  <option name="ENV_NAME">
+    <value>
+      <option name="FOREGROUND" value="c2c606" />
+    </value>
+  </option>
+  <option name="ENV_VALUE">
+    <value>
+      <option name="FOREGROUND" value="c2c606" />
+    </value>
+  </option>
 </list>

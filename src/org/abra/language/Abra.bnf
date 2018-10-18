@@ -134,17 +134,19 @@ funcBody            ::= mergeExpr | (OPEN_BRACE joinExpr* affectExpr * stateExpr
                         methods=[getFuncSignature]
                     }
 
-joinExpr            ::= JOIN_KEYWORD environmentName (LIMIT_KEYWORD number)?
+joinExpr            ::= JOIN_KEYWORD environmentName (LIMIT_KEYWORD envValue)?
                     {
                         pin=1 recoverWhile=joinExprRecover
                     }
 private joinExprRecover ::= !(joinExpr | affectExpr  | stateExpr | assignExpr | returnExpr)
 
-affectExpr          ::= AFFECT_KEYWORD environmentName (DELAY_KEYWORD number)?
+affectExpr          ::= AFFECT_KEYWORD environmentName (DELAY_KEYWORD envValue)?
                     {
                         pin=1 recoverWhile=environmentRecover
                     }
 private environmentRecover ::= !(affectExpr  | stateExpr | assignExpr | returnExpr)
+
+envValue            ::= number
 
 stateExpr           ::= STATE_KEYWORD varName typeSize
                     {

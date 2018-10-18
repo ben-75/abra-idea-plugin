@@ -47,6 +47,14 @@ public class AbraSyntaxHighlighter extends SyntaxHighlighterBase  {
             createTextAttributesKey("ABRA_TEST_ASSERTION", DefaultLanguageHighlighterColors.LINE_COMMENT);
     public static final TextAttributesKey ABRA_EXPR_ASSERTION =
             createTextAttributesKey("ABRA_EXPR_ASSERTION", DefaultLanguageHighlighterColors.LINE_COMMENT);
+    public static final TextAttributesKey ENV_KEYWORD =
+            createTextAttributesKey("ENV_KEYWORD", DefaultLanguageHighlighterColors.KEYWORD);
+    public static final TextAttributesKey ENV_NAME =
+            createTextAttributesKey("ENV_NAME", DefaultLanguageHighlighterColors.IDENTIFIER);
+    public static final TextAttributesKey ENV_VALUE =
+            createTextAttributesKey("ENV_VALUE", DefaultLanguageHighlighterColors.IDENTIFIER);
+    public static final TextAttributesKey ENV_EXPR =
+            createTextAttributesKey("ENV_EXPR", DefaultLanguageHighlighterColors.IDENTIFIER);
     private static final TextAttributesKey[] EMPTY_KEYS = new TextAttributesKey[0];
 
 
@@ -58,6 +66,7 @@ public class AbraSyntaxHighlighter extends SyntaxHighlighterBase  {
     private static final TextAttributesKey[] TEST_ASSERT_KEYS = new TextAttributesKey[]{ABRA_TEST_ASSERTION};
     private static final TextAttributesKey[] EXPR_ASSERT_KEYS = new TextAttributesKey[]{ABRA_EXPR_ASSERTION};
     private static final TextAttributesKey[] KEYWORD_KEYS = new TextAttributesKey[]{KEYWORD};
+    private static final TextAttributesKey[] ENV_KEYWORD_KEYS = new TextAttributesKey[]{ENV_KEYWORD};
     private static final TextAttributesKey[] TRIT_KEYS = new TextAttributesKey[]{ABRA_TRIT};
 
     @NotNull
@@ -86,13 +95,13 @@ public class AbraSyntaxHighlighter extends SyntaxHighlighterBase  {
         }else if (tokenType.equals(AbraTypes.STATE_KEYWORD)) {
             return KEYWORD_KEYS;
         }else if (tokenType.equals(AbraTypes.JOIN_KEYWORD)) {
-            return KEYWORD_KEYS;
+            return ENV_KEYWORD_KEYS;
         }else if (tokenType.equals(AbraTypes.LIMIT_KEYWORD)) {
-            return KEYWORD_KEYS;
+            return ENV_KEYWORD_KEYS;
         }else if (tokenType.equals(AbraTypes.AFFECT_KEYWORD)) {
-            return KEYWORD_KEYS;
+            return ENV_KEYWORD_KEYS;
         }else if (tokenType.equals(AbraTypes.DELAY_KEYWORD)) {
-            return KEYWORD_KEYS;
+            return ENV_KEYWORD_KEYS;
         }else if (tokenType.equals(AbraTypes.COMMENT)) {
             return COMMENT_KEYS;
         }else if (tokenType.equals(AbraTypes.TEST_COMMENT)) {

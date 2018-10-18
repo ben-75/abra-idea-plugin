@@ -58,16 +58,21 @@ public class DeclarationAnnotator  implements Annotator {
             Annotation annotation = holder.createInfoAnnotation(range,
                     null);
             annotation.setTextAttributes(AbraSyntaxHighlighter.ABRA_TEMPLATE_DECLARATION);
+        }  else if (element instanceof AbraEnvironmentName ) {
+            TextRange range = new TextRange(element.getTextRange().getStartOffset(), element.getTextRange().getEndOffset());
+            Annotation annotation = holder.createInfoAnnotation(range,
+                    null);
+            annotation.setTextAttributes(AbraSyntaxHighlighter.ENV_NAME);
+        } else if (element instanceof AbraEnvValue ) {
+            TextRange range = new TextRange(element.getTextRange().getStartOffset(), element.getTextRange().getEndOffset());
+            Annotation annotation = holder.createInfoAnnotation(range,
+                    null);
+            annotation.setTextAttributes(AbraSyntaxHighlighter.ENV_VALUE);
         } else if (element instanceof AbraTypeNameRef || (element instanceof AbraTypeOrPlaceHolderNameRef && element.getReference().resolve() instanceof AbraTypeName)) {
             TextRange range = new TextRange(element.getTextRange().getStartOffset(), element.getTextRange().getEndOffset());
             Annotation annotation = holder.createInfoAnnotation(range,
                     null);
             annotation.setTextAttributes(AbraSyntaxHighlighter.ABRA_TYPE_REFERENCE);
-//        } else if (element instanceof AbraVarName && element.getParent() instanceof AbraStateExpr) {
-//            TextRange range = new TextRange(element.getTextRange().getStartOffset(), element.getTextRange().getEndOffset());
-//            Annotation annotation = holder.createInfoAnnotation(range,
-//                    null);
-//            annotation.setTextAttributes(AbraSyntaxHighlighter.ABRA_STATE_VAR_REFERENCE);
         } else if (element.getParent() instanceof AbraTritList && (element.getNode().getElementType()== AbraTypes.MINUS ||
                 element.getNode().getElementType()== AbraTypes.ZERO ||
                 element.getNode().getElementType()== AbraTypes.ONE)){
