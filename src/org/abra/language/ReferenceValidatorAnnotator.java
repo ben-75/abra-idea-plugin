@@ -19,25 +19,8 @@ import java.util.List;
 
 public class ReferenceValidatorAnnotator implements Annotator {
 
-    private final HashSet<AbraFile> usedImports = new HashSet<>();
     @Override
     public void annotate(@NotNull final PsiElement element, @NotNull AnnotationHolder holder) {
-        if(element instanceof AbraFile){
-            for(ASTNode node:element.getNode().getChildren(TokenSet.create(AbraTypes.IMPORT_STMT))){
-                AbraImportStmt importStmt = (AbraImportStmt) node.getPsi();
-                boolean importNotUsed = true;
-                for(PsiReference psiReference:importStmt.getReferences()){
-                    if(usedImports.contains(psiReference.resolve())){
-                        importNotUsed = false;
-                    }
-                }
-                if(importNotUsed){
-                    int endOffset = importStmt.getTextRange().getEndOffset();
-                    TextRange range = new TextRange(importStmt.getTextRange().getStartOffset(), endOffset);
-                    holder.createWarningAnnotation(range, "Unused import");
-                }
-            }
-        }
         if(element instanceof AbraResolvable){
             if(element.getReference()==null)return;
             PsiReference psiReference = element.getReference();
@@ -62,7 +45,6 @@ public class ReferenceValidatorAnnotator implements Annotator {
                 } else {
                     if (!resolved.getContainingFile().equals(element.getContainingFile())) {
                         //was resolved from import
-                        usedImports.add((AbraFile) resolved.getContainingFile());
 
                         List<AbraFile> importTree = ((AbraFile) element.getContainingFile()).getImportTree(new ArrayList<>());
                         importTree.remove(resolved.getContainingFile());

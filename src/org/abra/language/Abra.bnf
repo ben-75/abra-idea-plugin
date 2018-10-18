@@ -55,196 +55,303 @@
   ]
 }
 
-abra            ::= (stmt|TEST_COMMENT TEST_ASSERTION|EXPR_COMMENT EXPR_ASSERTION|COMMENT|CRLF)*
-private stmt    ::= (importStmt | typeStmt | lutStmt | funcStmt | templateStmt | useStmt)
+abra                ::= (stmt|TEST_COMMENT TEST_ASSERTION|EXPR_COMMENT EXPR_ASSERTION|COMMENT|CRLF)*
+private stmt        ::= (importStmt | typeStmt | lutStmt | funcStmt | templateStmt | useStmt)
 
-importStmt      ::= IMPORT_KEYWORD ((pathName) ( SLASH pathName)*)
-                {methods=[getReferences getSourceRoot getFilePath]
-                pin=1}
+importStmt          ::= IMPORT_KEYWORD ((pathName) ( SLASH pathName)*)
+                    {
+                        methods=[getReferences getSourceRoot getFilePath]
+                        pin=1
+                    }
 
-typeStmt        ::= TYPE_KEYWORD typeName (typeSize | (OPEN_BRACE fieldSpec+ CLOSE_BRACE))
-                {mixin="org.abra.language.psi.impl.AbraDefinitionImpl"
-                implements="org.abra.language.psi.AbraDefinition"
-                methods=[getPresentation getName setName getNameIdentifier getResolvedSize ]
-                pin=1}
+typeStmt            ::= TYPE_KEYWORD typeName (typeSize | (OPEN_BRACE fieldSpec+ CLOSE_BRACE))
+                    {
+                        mixin="org.abra.language.psi.impl.AbraDefinitionImpl"
+                        implements="org.abra.language.psi.AbraDefinition"
+                        methods=[getPresentation getName setName getNameIdentifier getResolvedSize ]
+                        pin=1
+                    }
 
-fieldSpec       ::= fieldName typeSize
-                    {mixin="org.abra.language.psi.impl.AbraDefinitionImpl"
-                    implements="org.abra.language.psi.AbraDefinition"
-                    methods=[getPresentation getResolvedSize]}
+fieldSpec           ::= fieldName typeSize
+                    {
+                        mixin="org.abra.language.psi.impl.AbraDefinitionImpl"
+                        implements="org.abra.language.psi.AbraDefinition"
+                        methods=[getPresentation getResolvedSize]
+                    }
 
-lutStmt ::= LUT_KEYWORD lutName OPEN_BRACKET lutEntry+ CLOSE_BRACKET
-                    {mixin="org.abra.language.psi.impl.AbraDefinitionImpl"
-                    implements="org.abra.language.psi.AbraDefinition"
-                    methods=[getPresentation getName setName getNameIdentifier]
-                    pin=1}
+lutStmt             ::= LUT_KEYWORD lutName OPEN_BRACKET lutEntry+ CLOSE_BRACKET
+                    {
+                        mixin="org.abra.language.psi.impl.AbraDefinitionImpl"
+                        implements="org.abra.language.psi.AbraDefinition"
+                        methods=[getPresentation getName setName getNameIdentifier]
+                        pin=1
+                    }
 
-funcStmt ::= FUNC_KEYWORD funcSignature ASSIGN funcBody
-                    {mixin="org.abra.language.psi.impl.AbraDefinitionImpl"
-                    implements="org.abra.language.psi.AbraDefinition"
-                    methods=[getPresentation getName setName getNameIdentifier isInTemplate getAllTypeInstantiation]
-                    pin=1}
+funcStmt            ::= FUNC_KEYWORD funcSignature ASSIGN funcBody
+                    {
+                        mixin="org.abra.language.psi.impl.AbraDefinitionImpl"
+                        implements="org.abra.language.psi.AbraDefinition"
+                        methods=[getPresentation getName setName getNameIdentifier isInTemplate getAllTypeInstantiation]
+                        pin=1
+                    }
 
-templateStmt ::= TEMPLATE_KEYWORD templateName OPEN_TAG (placeHolderTypeName (COMMA placeHolderTypeName)*) CLOSE_TAG (funcStmt | OPEN_BRACE typeStmt* funcStmt+ CLOSE_BRACE)
-                    {mixin="org.abra.language.psi.impl.AbraDefinitionImpl"
-                    implements="org.abra.language.psi.AbraDefinition"
-                    methods=[getPresentation getName setName getNameIdentifier getAllTypeInstantiation]
-                    pin=1}
+templateStmt        ::= TEMPLATE_KEYWORD templateName OPEN_TAG (placeHolderTypeName (COMMA placeHolderTypeName)*) CLOSE_TAG (funcStmt | OPEN_BRACE typeStmt* funcStmt+ CLOSE_BRACE)
+                    {
+                        mixin="org.abra.language.psi.impl.AbraDefinitionImpl"
+                        implements="org.abra.language.psi.AbraDefinition"
+                        methods=[getPresentation getName setName getNameIdentifier getAllTypeInstantiation]
+                        pin=1
+                    }
 
-useStmt ::= USE_KEYWORD templateNameRef typeInstantiation (COMMA typeInstantiation)*
-                    {mixin="org.abra.language.psi.impl.AbraDefinitionImpl"
-                    implements="org.abra.language.psi.AbraDefinition"
-                    methods=[getPresentation getName setName getNameIdentifier]
-                    pin=1}
+useStmt             ::= USE_KEYWORD templateNameRef typeInstantiation (COMMA typeInstantiation)*
+                    {
+                        mixin="org.abra.language.psi.impl.AbraDefinitionImpl"
+                        implements="org.abra.language.psi.AbraDefinition"
+                        methods=[getPresentation getName setName getNameIdentifier]
+                        pin=1
+                    }
 
-typeInstantiation ::= OPEN_TAG (typeNameRef (COMMA typeNameRef)*) CLOSE_TAG
-                    {mixin="org.abra.language.psi.impl.AbraDefinitionImpl"
-                    implements="org.abra.language.psi.AbraDefinition"
-                    methods=[getPresentation] }
-lutEntry ::= tritList ASSIGN tritList
-                {methods = [getInputLength getOutputLength]
-                pin=2 recoverWhile=lutEntryRecover}
+typeInstantiation   ::= OPEN_TAG (typeNameRef (COMMA typeNameRef)*) CLOSE_TAG
+                    {
+                        mixin="org.abra.language.psi.impl.AbraDefinitionImpl"
+                        implements="org.abra.language.psi.AbraDefinition"
+                        methods=[getPresentation]
+                    }
+
+lutEntry            ::= tritList ASSIGN tritList
+                    {
+                        methods = [getInputLength getOutputLength]
+                        pin=2 recoverWhile=lutEntryRecover
+                    }
 private lutEntryRecover ::= !(lutEntry | CLOSE_BRACKET)
 
-funcSignature ::= typeSize funcName (OPEN_TAG constExpr (COMMA constExpr)* CLOSE_TAG)? OPEN_PAR (funcParameter(COMMA funcParameter)*) CLOSE_PAR
-funcParameter   ::= paramName typeSize
+funcSignature       ::= typeSize funcName (OPEN_TAG constExpr (COMMA constExpr)* CLOSE_TAG)? OPEN_PAR (funcParameter(COMMA funcParameter)*) CLOSE_PAR
 
-funcBody ::= mergeExpr | (OPEN_BRACE joinExpr* affectExpr * stateExpr* assignExpr* returnExpr CLOSE_BRACE)
-                {methods=[getFuncSignature]}
+funcParameter       ::= paramName typeSize
 
-joinExpr  ::= JOIN_KEYWORD environmentName (LIMIT_KEYWORD number)?
-              {pin=1 recoverWhile=joinExprRecover}
+funcBody            ::= mergeExpr | (OPEN_BRACE joinExpr* affectExpr * stateExpr* assignExpr* returnExpr CLOSE_BRACE)
+                    {
+                        methods=[getFuncSignature]
+                    }
+
+joinExpr            ::= JOIN_KEYWORD environmentName (LIMIT_KEYWORD number)?
+                    {
+                        pin=1 recoverWhile=joinExprRecover
+                    }
 private joinExprRecover ::= !(joinExpr | affectExpr  | stateExpr | assignExpr | returnExpr)
 
-affectExpr  ::= AFFECT_KEYWORD environmentName (DELAY_KEYWORD number)?
-              {pin=1 recoverWhile=environmentRecover}
+affectExpr          ::= AFFECT_KEYWORD environmentName (DELAY_KEYWORD number)?
+                    {
+                        pin=1 recoverWhile=environmentRecover
+                    }
 private environmentRecover ::= !(affectExpr  | stateExpr | assignExpr | returnExpr)
 
-stateExpr ::= STATE_KEYWORD varName typeSize
-              {pin=1 recoverWhile=stateExprRecover}
+stateExpr           ::= STATE_KEYWORD varName typeSize
+                    {
+                        pin=1 recoverWhile=stateExprRecover
+                    }
 private stateExprRecover ::= !(stateExpr | assignExpr | returnExpr)
 
-assignExpr ::= varName typeSize? ASSIGN mergeExpr
-               {pin=3 recoverWhile=assignExprRecover}
+assignExpr          ::= varName typeSize? ASSIGN mergeExpr
+                    {
+                        pin=3 recoverWhile=assignExprRecover
+                    }
 private assignExprRecover ::= !(assignExpr | returnExpr)
 
-returnExpr ::= RETURN_KEYWORD mergeExpr
-                {pin=1 recoverWhile=returnExprRecover}
-
+returnExpr          ::= RETURN_KEYWORD mergeExpr
+                    {
+                        pin=1 recoverWhile=returnExprRecover
+                    }
 private returnExprRecover ::= (typeExpr | !(CLOSE_BRACE))
 
+mergeExpr           ::= concatExpr (MERGE_OPERATOR concatExpr)*
 
-mergeExpr ::= concatExpr (MERGE_OPERATOR concatExpr)*
+concatExpr          ::= postfixExpr (AMP postfixExpr)*
 
-concatExpr ::= postfixExpr (AMP postfixExpr)*
+postfixExpr         ::= integer | funcExpr | lutExpr | lutOrSliceExpr | typeExpr | sliceExpr | (OPEN_PAR mergeExpr CLOSE_PAR)
 
-postfixExpr ::= integer | funcExpr | lutExpr | lutOrSliceExpr | typeExpr | sliceExpr | (OPEN_PAR mergeExpr CLOSE_PAR)
-
-typeExpr ::= typeNameRef OPEN_BRACE fieldAssignExpr+ CLOSE_BRACE
-                {methods=[getResolvedSize ]}
+typeExpr            ::= typeNameRef OPEN_BRACE fieldAssignExpr+ CLOSE_BRACE
+                    {
+                        methods=[getResolvedSize ]
+                    }
 
 private fieldAssignExpr ::= fieldNameRef ASSIGN mergeExpr
-                        {pin=2 recoverWhile=returnFieldAssignExpr}
+                   {
+                        pin=2 recoverWhile=returnFieldAssignExpr
+                   }
 private returnFieldAssignExpr ::= !(fieldAssignExpr | CLOSE_BRACE)
 
-funcExpr ::= funcNameRef (OPEN_TAG constExpr (COMMA constExpr)* CLOSE_TAG)? OPEN_PAR (mergeExpr (COMMA mergeExpr)*) CLOSE_PAR
-                {methods=[isInFuncStatement isInTemplateStatement getStatment getFuncStmt]}
+funcExpr            ::= funcNameRef (OPEN_TAG constExpr (COMMA constExpr)* CLOSE_TAG)? OPEN_PAR (mergeExpr (COMMA mergeExpr)*) CLOSE_PAR
+                    {
+                        methods=[isInFuncStatement isInTemplateStatement getStatment getFuncStmt]
+                    }
 
-lutExpr ::= lutNameRef OPEN_BRACKET (mergeExpr (COMMA mergeExpr)+) CLOSE_BRACKET
-                {methods=[getResolvedSize ]}
+lutExpr             ::= lutNameRef OPEN_BRACKET (mergeExpr (COMMA mergeExpr)+) CLOSE_BRACKET
+                    {
+                        methods=[getResolvedSize ]
+                    }
 
-sliceExpr ::= paramOrVarNameRef (DOT fieldNameRef)* rangeExpr?
-                {methods=[ hasRangeOperator hasOpenRange hasClosedRange hasSmartRange]}
+sliceExpr           ::= paramOrVarNameRef (DOT fieldNameRef)* rangeExpr?
+                    {
+                        methods=[ hasRangeOperator hasOpenRange hasClosedRange hasSmartRange]
+                    }
 
-lutOrSliceExpr ::= lutOrParamOrVarNameRef OPEN_BRACKET ( mergeExpr | constExpr ) CLOSE_BRACKET
-                {methods=[getResolvedSize ]}
+lutOrSliceExpr      ::= lutOrParamOrVarNameRef OPEN_BRACKET ( mergeExpr | constExpr ) CLOSE_BRACKET
+                    {
+                        methods=[getResolvedSize ]
+                    }
 
-rangeExpr ::= OPEN_BRACKET constExpr ((RANGE_OPERATOR constExpr?) | (SMART_RANGE_OPERATOR constExpr))? CLOSE_BRACKET
-                {methods=[ hasRangeOperator hasOpenRange hasClosedRange hasSmartRange]}
+rangeExpr           ::= OPEN_BRACKET constExpr ((RANGE_OPERATOR constExpr?) | (SMART_RANGE_OPERATOR constExpr))? CLOSE_BRACKET
+                    {
+                        methods=[ hasRangeOperator hasOpenRange hasClosedRange hasSmartRange]
+                    }
 
-constExpr ::= constTerm ((PLUS|MINUS) constTerm)*
-                {methods=[getResolvedSize isTypeOrPlaceHolderNameRef getTypeOrPlaceHolderNameRef]}
+constExpr           ::= constTerm ((PLUS|MINUS) constTerm)*
+                    {
+                        methods=[getResolvedSize isTypeOrPlaceHolderNameRef getTypeOrPlaceHolderNameRef]
+                    }
 
-constTerm ::= constFactor ((SLASH|TIMES|MODULO) constFactor)*
-                {methods=[getResolvedSize ]}
+constTerm           ::= constFactor ((SLASH|TIMES|MODULO) constFactor)*
+                    {
+                        methods=[getResolvedSize ]
+                    }
 
-constFactor ::= number | typeOrPlaceHolderNameRef | (MINUS constFactor) | (OPEN_PAR constExpr CLOSE_PAR)
-                {methods = [getResolvedSize ]}
+constFactor         ::= number | typeOrPlaceHolderNameRef | (MINUS constFactor) | (OPEN_PAR constExpr CLOSE_PAR)
+                    {
+                        methods = [getResolvedSize ]
+                    }
+
+typeSize            ::= OPEN_BRACKET constExpr CLOSE_BRACKET
+                    {
+                        methods=[getResolvedSize]
+                    }
+
+tritList            ::= trit (COMMA trit)*
+                    {
+                        methods = [getLength]
+                    }
 
 
-typeSize ::= OPEN_BRACKET constExpr CLOSE_BRACKET
-                {methods=[getResolvedSize]}
+private trit        ::= ZERO|ONE|MINUS
 
-tritList ::= trit (COMMA trit)*
-                {methods = [getLength]}
+varName             ::= IDENTIFIER
+                    {
+                        mixin="org.abra.language.psi.impl.AbraNamedElementImpl"
+                        implements="org.abra.language.psi.AbraNamedElement"
+                        methods=[getName setName getNameIdentifier getReference]
+                    }
 
+paramName           ::= IDENTIFIER
+                    {
+                        mixin="org.abra.language.psi.impl.AbraNamedElementImpl"
+                        implements="org.abra.language.psi.AbraNamedElement"
+                        methods=[getName setName getNameIdentifier getResolvedSize ]
+                    }
 
-private trit ::= ZERO|ONE|MINUS
+paramOrVarNameRef   ::= IDENTIFIER
+                    {
+                        implements="org.abra.language.psi.AbraResolvable"
+                        methods = [getReference]
+                    }
 
-varName ::= IDENTIFIER
-                                {mixin="org.abra.language.psi.impl.AbraNamedElementImpl"
-                                implements="org.abra.language.psi.AbraNamedElement"
-                                methods=[getName setName getNameIdentifier getReference]}
-paramName ::= IDENTIFIER
-                                {mixin="org.abra.language.psi.impl.AbraNamedElementImpl"
-                                implements="org.abra.language.psi.AbraNamedElement"
-                                methods=[getName setName getNameIdentifier getResolvedSize ]}
-paramOrVarNameRef ::= IDENTIFIER
-                                {implements="org.abra.language.psi.AbraResolvable"
-                                methods = [getReference]}
 lutOrParamOrVarNameRef ::= IDENTIFIER
-                                {implements="org.abra.language.psi.AbraResolvable"
-                                methods = [getReference ]}
-fieldName ::= IDENTIFIER
-                                {mixin="org.abra.language.psi.impl.AbraNamedElementImpl"
-                                implements="org.abra.language.psi.AbraNamedElement"
-                                methods=[getName setName getNameIdentifier]}
-fieldNameRef ::= IDENTIFIER
-                {implements="org.abra.language.psi.AbraResolvable"
-                                                 methods=[getResolvedSize getReference]}
-typeName ::= IDENTIFIER
-                                {mixin="org.abra.language.psi.impl.AbraNamedElementImpl"
-                                implements="org.abra.language.psi.AbraNamedElement"
-                                methods=[getName setName getNameIdentifier getResolvedSize]
-                                pin=1 recoverWhile=typeNameRecover}
+                    {
+                        implements="org.abra.language.psi.AbraResolvable"
+                        methods = [getReference ]
+                    }
+
+fieldName           ::= IDENTIFIER
+                    {
+                        mixin="org.abra.language.psi.impl.AbraNamedElementImpl"
+                        implements="org.abra.language.psi.AbraNamedElement"
+                        methods=[getName setName getNameIdentifier]
+                    }
+
+fieldNameRef        ::= IDENTIFIER
+                    {
+                        implements="org.abra.language.psi.AbraResolvable"
+                        methods=[getResolvedSize getReference]
+                    }
+
+typeName            ::= IDENTIFIER
+                    {
+                        mixin="org.abra.language.psi.impl.AbraNamedElementImpl"
+                        implements="org.abra.language.psi.AbraNamedElement"
+                        methods=[getName setName getNameIdentifier getResolvedSize]
+                        pin=1 recoverWhile=typeNameRecover
+                    }
 private typeNameRecover ::= !(OPEN_BRACKET|OPEN_BRACE)
 
-typeNameRef ::= IDENTIFIER
-                {implements="org.abra.language.psi.AbraResolvable"
-                                                 methods = [getReference ]}
-funcName ::= IDENTIFIER
-                {mixin="org.abra.language.psi.impl.AbraNamedElementImpl"
-                                implements="org.abra.language.psi.AbraNamedElement"
-                                methods=[getName setName getNameIdentifier]}
-funcNameRef ::= IDENTIFIER
-                {implements="org.abra.language.psi.AbraResolvable"
-                                                 methods = [getReference ]}
-lutName ::= IDENTIFIER
-        {pin=1 recoverWhile=lutNameRecover}
+typeNameRef         ::= IDENTIFIER
+                    {
+                        implements="org.abra.language.psi.AbraResolvable"
+                        methods = [getReference ]
+                    }
+
+funcName            ::= IDENTIFIER
+                    {
+                        mixin="org.abra.language.psi.impl.AbraNamedElementImpl"
+                        implements="org.abra.language.psi.AbraNamedElement"
+                        methods=[getName setName getNameIdentifier]
+                    }
+
+funcNameRef         ::= IDENTIFIER
+                    {
+                        implements="org.abra.language.psi.AbraResolvable"
+                        methods = [getReference ]
+                    }
+
+lutName             ::= IDENTIFIER
+                    {
+                        mixin="org.abra.language.psi.impl.AbraNamedElementImpl"
+                        implements="org.abra.language.psi.AbraNamedElement"
+                        methods = [getName setName getNameIdentifier]
+                        pin=1 recoverWhile=lutNameRecover
+                    }
 private lutNameRecover ::= !OPEN_BRACKET
 
-lutNameRef ::= IDENTIFIER
-                {implements="org.abra.language.psi.AbraResolvable"
-                                                 methods = [getReference ]}
-templateName ::= IDENTIFIER
-                {mixin="org.abra.language.psi.impl.AbraNamedElementImpl"
-                                implements="org.abra.language.psi.AbraNamedElement"
-                                methods=[getName setName getNameIdentifier]}
-templateNameRef ::= IDENTIFIER
-                {implements="org.abra.language.psi.AbraResolvable"
-                                                 methods = [getReference ]}
+lutNameRef          ::= IDENTIFIER
+                    {
+                        implements="org.abra.language.psi.AbraResolvable"
+                        methods = [getReference ]
+                    }
+
+templateName        ::= IDENTIFIER
+                    {
+                        mixin="org.abra.language.psi.impl.AbraNamedElementImpl"
+                        implements="org.abra.language.psi.AbraNamedElement"
+                        methods=[getName setName getNameIdentifier]
+                    }
+
+templateNameRef     ::= IDENTIFIER
+                    {
+                        implements="org.abra.language.psi.AbraResolvable"
+                        methods = [getReference ]
+                    }
+
 placeHolderTypeName ::= IDENTIFIER
-                        {mixin="org.abra.language.psi.impl.AbraNamedElementImpl"
-                                implements="org.abra.language.psi.AbraNamedElement"
-                                methods=[getName setName getNameIdentifier]}
+                    {
+                        mixin="org.abra.language.psi.impl.AbraNamedElementImpl"
+                        implements="org.abra.language.psi.AbraNamedElement"
+                        methods=[getName setName getNameIdentifier]
+                    }
+
 typeOrPlaceHolderNameRef ::= IDENTIFIER
-                {implements="org.abra.language.psi.AbraResolvable"
-                                                 methods = [getReference ]}
-pathName ::= IDENTIFIER
-environmentName ::= IDENTIFIER
+                    {
+                        implements="org.abra.language.psi.AbraResolvable"
+                        methods = [getReference ]
+                    }
 
-number ::= (ZERO|ONE|DIGIT)+
-                {methods = [getResolvedSize ]}
+pathName            ::= IDENTIFIER
 
-integer ::= MINUS | ZERO | ONE | number | (MINUS number)
-                {methods = [getResolvedSize ]}
+environmentName     ::= IDENTIFIER
+
+number              ::= (ZERO|ONE|DIGIT)+
+                    {
+                        methods = [getResolvedSize ]
+                    }
+
+integer             ::= MINUS | ZERO | ONE | number | (MINUS number)
+                    {
+                        methods = [getResolvedSize ]
+                    }

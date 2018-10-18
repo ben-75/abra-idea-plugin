@@ -4,8 +4,7 @@ import com.intellij.extapi.psi.PsiFileBase;
 import com.intellij.lang.ASTNode;
 import com.intellij.openapi.fileTypes.FileType;
 import com.intellij.openapi.vfs.VirtualFile;
-import com.intellij.psi.FileViewProvider;
-import com.intellij.psi.PsiReference;
+import com.intellij.psi.*;
 import com.intellij.psi.tree.TokenSet;
 import com.intellij.psi.util.PsiTreeUtil;
 import org.abra.language.AbraFileType;
@@ -13,7 +12,9 @@ import org.abra.language.AbraLanguage;
 import org.jetbrains.annotations.NotNull;
 import javax.swing.*;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 
 public class AbraFile extends PsiFileBase {
@@ -103,6 +104,25 @@ public class AbraFile extends PsiFileBase {
         for(AbraFuncNameRef ref:PsiTreeUtil.findChildrenOfAnyType(this,true,AbraFuncNameRef.class)){
             if(ref.getText().equals(name)){
                 resp.add(ref);
+            }
+        }
+        return resp;
+    }
+
+    public Set<PsiElement> computeResolvedReferences() {
+        HashSet<PsiElement> resp = new HashSet<>();
+        for(AbraResolvable ref:PsiTreeUtil.findChildrenOfAnyType(this,true,AbraResolvable.class)){
+            PsiReference reference = ref.getReference();
+            if(reference instanceof PsiPolyVariantReference){
+                ResolveResult[] results = ((PsiPolyVariantReference) reference).multiResolve(false);
+                for(ResolveResult resolveResult:results){
+                    resp.add(resolveResult.getElement());
+                }
+            }else {
+                PsiElement resolved = reference.resolve();
+                if (resolved != null) {
+                    resp.add(resolved);
+                }
             }
         }
         return resp;

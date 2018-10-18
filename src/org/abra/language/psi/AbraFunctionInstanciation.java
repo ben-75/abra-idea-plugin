@@ -28,7 +28,8 @@ public class AbraFunctionInstanciation implements StructureViewTreeElement {
             HashMap<String,Integer> map = new HashMap<>();
             map.put(templateStmt.getPlaceHolderTypeNameList().get(0).getText(), typeName.getResolvedSize());
             for(AbraTypeStmt localTypeStmt:templateStmt.getTypeStmtList()){
-                map.put(localTypeStmt.getTypeName().getText(),AbraPsiImplUtil.getResolvedSize2(localTypeStmt.getTypeSize().getConstExpr(),map,templateStmt));
+                if(localTypeStmt.getTypeSize()!=null)
+                    map.put(localTypeStmt.getTypeName().getText(),AbraPsiImplUtil.getResolvedSize2(localTypeStmt.getTypeSize().getConstExpr(),map,templateStmt));
             }
             StringBuilder sb = new StringBuilder("( ");
 
