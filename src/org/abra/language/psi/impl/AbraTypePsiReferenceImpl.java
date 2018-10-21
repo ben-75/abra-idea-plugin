@@ -40,13 +40,29 @@ public class AbraTypePsiReferenceImpl  extends PsiReferenceBase implements PsiRe
     @Nullable
     @Override
     public PsiElement resolve() {
-        PsiElement resolved = resolveInFile(myElement.getContainingFile());
+        PsiElement resolved = resolveInTemplate();
+        if(resolved!=null)return resolved;
+        resolved = resolveInFile(myElement.getContainingFile());
         if(resolved==null){
             resolved = resolveFromImports(myElement.getContainingFile());
         }
         return resolved;
     }
 
+    private PsiElement resolveInTemplate(){
+        PsiElement templateStmt = myElement;
+        while(!(templateStmt instanceof AbraFile) && !(templateStmt instanceof AbraTemplateStmt)){
+            templateStmt = templateStmt.getParent();
+        }
+        if(templateStmt instanceof AbraTemplateStmt){
+            for(AbraTypeStmt localTypeStmt:((AbraTemplateStmt)templateStmt).getTypeStmtList()){
+                if(myElement.getText().equals(localTypeStmt.getTypeName().getText())){
+                    return localTypeStmt.getTypeName();
+                }
+            }
+        }
+        return null;
+    }
     @NotNull
     @Override
     public Object[] getVariants() {
@@ -59,6 +75,7 @@ public class AbraTypePsiReferenceImpl  extends PsiReferenceBase implements PsiRe
                 return ((AbraTypeStmt)stmt.getPsi()).getTypeName();
             }
         }
+
         return null;
     }
 

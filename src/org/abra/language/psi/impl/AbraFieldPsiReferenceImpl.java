@@ -7,6 +7,7 @@ import com.intellij.psi.PsiFile;
 import com.intellij.psi.PsiReference;
 import com.intellij.psi.PsiReferenceBase;
 import com.intellij.psi.tree.TokenSet;
+import com.intellij.util.IncorrectOperationException;
 import org.abra.language.psi.*;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -27,7 +28,13 @@ public class AbraFieldPsiReferenceImpl   extends PsiReferenceBase implements Psi
         final int parent = 0;
         return new TextRange(parent, myElement.getTextLength() + parent);
     }
-    //TODO : handleRename
+    @Override
+    public PsiElement handleElementRename(String newElementName) throws IncorrectOperationException {
+        AbraFieldNameRef ref = AbraElementFactory.createAbraFieldNameReference(myElement.getProject(), newElementName);
+        ASTNode newKeyNode = ref.getFirstChild().getNode();
+        myElement.getNode().replaceChild(myElement.getFirstChild().getNode(), newKeyNode);
+        return ref;
+    }
 
     @Nullable
     @Override
@@ -46,10 +53,29 @@ public class AbraFieldPsiReferenceImpl   extends PsiReferenceBase implements Psi
     }
 
     private PsiElement resolveInFile(PsiFile aFile){
+        PsiElement resolved = resolveInTemplate();
+        if(resolved!=null)return resolved;
         for(ASTNode stmt:aFile.getNode().getChildren(TokenSet.create(AbraTypes.TYPE_STMT))){
             for(AbraFieldSpec fieldSpec:((AbraTypeStmt)stmt.getPsi()).getFieldSpecList()){
                 if(fieldSpec.getFieldName().getText().equals(myElement.getText())){
                     return fieldSpec.getFieldName();
+                }
+            }
+        }
+        return null;
+    }
+
+    private PsiElement resolveInTemplate(){
+        PsiElement templateStmt = myElement;
+        while(!(templateStmt instanceof AbraFile) && !(templateStmt instanceof AbraTemplateStmt)){
+            templateStmt = templateStmt.getParent();
+        }
+        if(templateStmt instanceof AbraTemplateStmt){
+            for(AbraTypeStmt localTypeStmt:((AbraTemplateStmt)templateStmt).getTypeStmtList()){
+                if(localTypeStmt.getFieldSpecList().size()>0){
+                    for(AbraFieldSpec fs:localTypeStmt.getFieldSpecList()){
+                        if(fs.getFieldName().getText().equals(myElement.getText()))return fs.getFieldName();
+                    }
                 }
             }
         }

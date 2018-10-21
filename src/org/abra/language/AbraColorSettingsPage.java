@@ -32,6 +32,11 @@ public class AbraColorSettingsPage implements ColorSettingsPage {
             new AttributesDescriptor("Expression assertion prefix", AbraSyntaxHighlighter.ABRA_EXPR_ASSERTION_PREFIX),
             new AttributesDescriptor("Expression assertion", AbraSyntaxHighlighter.ABRA_EXPR_ASSERTION),
             new AttributesDescriptor("State variable", AbraSyntaxHighlighter.ABRA_STATE_VAR_REFERENCE),
+            //new AttributesDescriptor("Environment expression", AbraSyntaxHighlighter.ENV_EXPR),
+            new AttributesDescriptor("Environment keywords", AbraSyntaxHighlighter.ENV_KEYWORD),
+            new AttributesDescriptor("Environment name", AbraSyntaxHighlighter.ENV_NAME),
+            new AttributesDescriptor("Environment attribute value", AbraSyntaxHighlighter.ENV_VALUE),
+
     };
 
     private static final Map<String,TextAttributesKey> ANNOTATOR_MAP = new HashMap();
@@ -57,16 +62,16 @@ public class AbraColorSettingsPage implements ColorSettingsPage {
     @Override
     public String getDemoText() {
         return "// This a comment\n" +
-                "<typedef>Trit</typedef> [1];  //size 1\n" +
-                "<typedef>Tryte</typedef> [3];\n" +
-                "<typedef>Trint</typedef> [9];\n" +
-                "<typedef>Int</typedef> [27];\n" +
-                "<typedef>Long</typedef> [81];\n" +
-                "<typedef>Hash</typedef> [243];\n" +
-                "<typedef>State</typedef> [<typeref>Hash</typeref> * 3];\n" +
+                "type <typedef>Trit</typedef> [1]  //size 1\n" +
+                "type <typedef>Tryte</typedef> [3]\n" +
+                "type <typedef>Trint</typedef> [9]\n" +
+                "type <typedef>Int</typedef> [27]\n" +
+                "type <typedef>Long</typedef> [81]\n" +
+                "type <typedef>Hash</typedef> [243]\n" +
+                "type <typedef>State</typedef> [<typeref>Hash</typeref> * 3]\n" +
                 "\n" +
                 "// Named structured trio vector\n" +
-                "<typedef>Transaction</typedef> {\n" +
+                "type <typedef>Transaction</typedef> {\n" +
                 "  <fielddef>signature</fielddef> [27 * <typeref>Hash</typeref>]\n" +
                 ", <fielddef>extradatadigest</fielddef> [<typeref>Hash</typeref>]\n" +
                 ", <fielddef>address</fielddef> [<typeref>Hash</typeref>]\n" +
@@ -82,49 +87,51 @@ public class AbraColorSettingsPage implements ColorSettingsPage {
                 ", <fielddef>attachmenttimestamplowerbound</fielddef> [<typeref>Int</typeref>]\n" +
                 ", <fielddef>attachmenttimestampupperbound</fielddef> [<typeref>Int</typeref>]\n" +
                 ", <fielddef>nonce</fielddef> [<typeref>Long</typeref>]\n" +
-                "};\n" +
+                "}\n" +
                 "\n" +
                 "\n" +
                 "// This a LUT (lookup table)\n" +
-                "<lutdef>not</lutdef> [\n" +
-                "  <trit>0</trit> = <trit>1</trit>;\n" +
-                "  <trit>1</trit> = <trit>0</trit>;\n" +
-                "];\n" +
+                "lut <lutdef>not</lutdef> [\n" +
+                "  <trit>0</trit> = <trit>1</trit>\n" +
+                "  <trit>1</trit> = <trit>0</trit>\n" +
+                "]\n" +
                 "//Following line is a unit test\n" +
                 "//? not[0]=1\n" +
                 "//Following line is an expression to evaluate and print the result on the console\n" +
                 "//= not[1]\n" +
                 "\n" +
-                "<funcdef>digest</funcdef>(stt [<typeref>State</typeref>]) =\n" +
+                "func <funcdef>digest</funcdef>(stt [<typeref>State</typeref>]) =\n" +
                 "  // single statement function\n" +
-                "  <local_var>stt</local_var>, transform(<local_var>state</local_var>, 81);\n" +
+                "  <local_var>stt</local_var>, transform(<local_var>state</local_var>, 81)\n" +
                 "\n" +
                 "// This a function\n" +
-                "<funcdef>nullOrTryte</funcdef>(<local_var>t</local_var> [Bool], <local_var>val</local_var> [<typeref>Tryte</typeref>]) = {\n" +
+                "func <funcdef>nullOrTryte</funcdef>(<local_var>t</local_var> [Bool], <local_var>val</local_var> [<typeref>Tryte</typeref>]) = {\n" +
                 "  // concatenate the 3 separate trits via the LUT\n" +
                 "  <lutdef>nullOrTrit</lutdef>[<local_var>t</local_var>, <local_var>val</local_var>[0]],\n" +
                 "  <lutdef>nullOrTrit</lutdef>[<local_var>t</local_var>, <local_var>val</local_var>[1]],\n" +
-                "  <lutdef>nullOrTrit</lutdef>[<local_var>t</local_var>, <local_var>val</local_var>[2]];\n" +
-                "};\n" +
+                "  <lutdef>nullOrTrit</lutdef>[<local_var>t</local_var>, <local_var>val</local_var>[2]]\n" +
+                "}\n" +
                 "//this is a template\n" +
                 "template <templatedef>addFunc</templatedef><T> <funcdef>add</funcdef><T> (<local_var>lhs</local_var> [T], <local_var>rhs</local_var> [T]) = {\n" +
                 "  // use full adder but don't return the carry trit\n" +
-                "  sum = <funcdef>fullAdd</funcdef><T>(<local_var>lhs</local_var>, <local_var>rhs</local_var>, 0);\n" +
-                "  return sum[1..];\n" +
-                "};" +
-                "" +
+                "  sum = <funcdef>fullAdd</funcdef><T>(<local_var>lhs</local_var>, <local_var>rhs</local_var>, 0)\n" +
+                "  return sum[1..]\n" +
+                "}\n" +
+                "\n" +
                 "//this is a use statement\n" +
-                "use <templatedef>addFunc</templatedef><<typeref>Trytes</typeref>>;" +
-                "" +
-                "<keyword>func</keyword> [<typeref>Transaction</typeref>] leaf (<local_var>param</local_var> [<typeref>TxCmd</typeref>]) = {\n" +
-                "  <keyword>state</keyword> <statevar>data</statevar> [<typeref>Transaction</typeref>];\n" +
-                "  <local_var>oldData</local_var> = <statevar>data</statevar>;\n" +
-                "  <local_var>set = <funcdef>nullOr</funcdef><<typeref>Transaction</typeref>>(<lutdef>equal</lutdef>[<trit>1</trit>, <local_var>param</local_var>.<fielddef>cmd</fielddef>], <local_var>param</local_var>.<fielddef>data</fielddef>);\n" +
-                "  <local_var>get = <funcdef>nullOr</funcdef><<typeref>Transaction</typeref>>(<lutdef>equal</lutdef>[<trit>0</trit>, <local_var>param</local_var>.<fielddef>cmd</fielddef>], <statevar>data</statevar>);\n" +
-                "  <local_var>del = <funcdef>nullOr</funcdef><<typeref>Transaction</typeref>>(<lutdef>equal</lutdef>[<trit>-</trit>, <local_var>param</local_var>.<fielddef>cmd</fielddef>], 0);\n" +
-                "  <statevar>data</statevar> = <local_var>set</local_var> \\ <local_var>get</local_var> \\ <local_var>del</local_var>;\n" +
-                "  <keyword>return</keyword> <local_var>oldData</local_var>;\n" +
-                "};";
+                "use <templatedef>addFunc</templatedef><<typeref>Trytes</typeref>>\n" +
+                "\n" +
+                "func [<typeref>Transaction</typeref>] leaf (<local_var>param</local_var> [<typeref>TxCmd</typeref>]) = {\n" +
+                "  <envexpr><envkeyword>join</envkeyword> <envname>myEnv</envname> <envkeyword>limit</envkeyword> <envvalue>10</envvalue></envexpr>\n" +
+                "  <envexpr><envkeyword>affect</envkeyword> <envname>myEnv</envname> <envkeyword>delay</envkeyword> <envvalue>200</envvalue></envexpr>\n" +
+                "  state <statevar>data</statevar> [<typeref>Transaction</typeref>]\n" +
+                "  <local_var>oldData</local_var> = <statevar>data</statevar>\n" +
+                "  <local_var>set = <funcdef>nullOr</funcdef><<typeref>Transaction</typeref>>(<lutdef>equal</lutdef>[<trit>1</trit>, <local_var>param</local_var>.<fielddef>cmd</fielddef>], <local_var>param</local_var>.<fielddef>data</fielddef>)\n" +
+                "  <local_var>get = <funcdef>nullOr</funcdef><<typeref>Transaction</typeref>>(<lutdef>equal</lutdef>[<trit>0</trit>, <local_var>param</local_var>.<fielddef>cmd</fielddef>], <statevar>data</statevar>)\n" +
+                "  <local_var>del = <funcdef>nullOr</funcdef><<typeref>Transaction</typeref>>(<lutdef>equal</lutdef>[<trit>-</trit>, <local_var>param</local_var>.<fielddef>cmd</fielddef>], 0)\n" +
+                "  <statevar>data</statevar> = <local_var>set</local_var> | <local_var>get</local_var> | <local_var>del</local_var>\n" +
+                "  return <local_var>oldData</local_var>\n" +
+                "}";
     }
 
     @Nullable
@@ -140,6 +147,10 @@ public class AbraColorSettingsPage implements ColorSettingsPage {
             ANNOTATOR_MAP.put("templatedef",AbraSyntaxHighlighter.ABRA_TEMPLATE_DECLARATION);
             ANNOTATOR_MAP.put("typeref",AbraSyntaxHighlighter.ABRA_TYPE_REFERENCE);
             ANNOTATOR_MAP.put("statevar",AbraSyntaxHighlighter.ABRA_STATE_VAR_REFERENCE);
+            ANNOTATOR_MAP.put("envkeyword",AbraSyntaxHighlighter.ENV_KEYWORD);
+            ANNOTATOR_MAP.put("envname",AbraSyntaxHighlighter.ENV_NAME);
+            ANNOTATOR_MAP.put("envexpr",AbraSyntaxHighlighter.ENV_EXPR);
+            ANNOTATOR_MAP.put("envvalue",AbraSyntaxHighlighter.ENV_VALUE);
         }
 
         return ANNOTATOR_MAP;
