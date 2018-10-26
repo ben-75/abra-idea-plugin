@@ -1022,6 +1022,18 @@ public class AbraPsiImplUtil {
         }
         return allRoots;
     }
+
+    public static AbraFile findFileForPath(Project project, String path){
+        AbraFile resp = null;
+        List<VirtualFile> allRoots = getAllSourceRoot(project);
+        for(VirtualFile vf:allRoots){
+            VirtualFile tmp = vf.findFileByRelativePath(path+".abra");
+            if(tmp!=null && tmp.exists()){
+                return (AbraFile) PsiManager.getInstance(project).findFile(tmp);
+            }
+        }
+        return null;
+    }
     //====================================================================
     //====================== FuncParams ==================================
     //====================================================================

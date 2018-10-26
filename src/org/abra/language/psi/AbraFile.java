@@ -127,4 +127,27 @@ public class AbraFile extends PsiFileBase {
         }
         return resp;
     }
+
+    public Iterable<AbraFuncStmt> getAllFuncStmts() {
+        return PsiTreeUtil.findChildrenOfAnyType(this,true,AbraFuncStmt.class);
+    }
+
+    public AbraTemplateStmt getTemplate(String name){
+        for (ASTNode stmt : getNode().getChildren(TokenSet.create(AbraTypes.TEMPLATE_STMT))) {
+            if(((AbraTemplateStmt)stmt.getPsi()).getTemplateName().getText().equals(name)){
+                return (AbraTemplateStmt)stmt.getPsi();
+            }
+        }
+        return null;
+    }
+
+    public AbraFuncStmt getStandaloneFunc(String name){
+        for (ASTNode stmt : getNode().getChildren(TokenSet.create(AbraTypes.FUNC_STMT))) {
+            if(((AbraFuncStmt)stmt.getPsi()).getFuncSignature().getFuncName().getText().equals(name)){
+                return (AbraFuncStmt)stmt.getPsi();
+            }
+        }
+        return null;
+    }
+
 }

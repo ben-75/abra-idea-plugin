@@ -8,6 +8,12 @@ import org.jetbrains.annotations.NotNull;
 import javax.swing.*;
 
 public class AbraInterpreterConfigurationType implements ConfigurationType {
+
+    private static AbraInterpreterConfigurationType instance = new AbraInterpreterConfigurationType();
+
+    public static AbraInterpreterConfigurationType getInstance(){
+        return instance;
+    }
     @Override
     public String getDisplayName() {
         return "Abra Interpreter";

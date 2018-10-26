@@ -16,6 +16,14 @@ public class TritUtils {
         return resp;
     }
 
+    public static String decimalValue(String s) {
+        DATA_FORMAT[] detected = detectFormat(s);
+        if(detected[0]==DATA_FORMAT.DECIMAL)return s;
+        if(detected[0]==DATA_FORMAT.TRYTE)return trit2Decimal(trytes2Trits(s))+"";
+        if(detected[0]==DATA_FORMAT.TRIT_FMT)return trit2Decimal(stringToTrits(s))+"";
+        return "";
+    }
+
     public enum DATA_FORMAT {
         TRIT_FMT, TRYTE, DECIMAL, INVALID
     }
