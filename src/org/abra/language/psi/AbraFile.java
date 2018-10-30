@@ -11,10 +11,7 @@ import org.abra.language.AbraFileType;
 import org.abra.language.AbraLanguage;
 import org.jetbrains.annotations.NotNull;
 import javax.swing.*;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 
 public class AbraFile extends PsiFileBase {
@@ -128,8 +125,12 @@ public class AbraFile extends PsiFileBase {
         return resp;
     }
 
-    public Iterable<AbraFuncStmt> getAllFuncStmts() {
+    public Collection<AbraFuncStmt> getAllFuncStmts() {
         return PsiTreeUtil.findChildrenOfAnyType(this,true,AbraFuncStmt.class);
+    }
+
+    public Collection<AbraLutStmt> getAllLutStmts() {
+        return PsiTreeUtil.findChildrenOfAnyType(this,true,AbraLutStmt.class);
     }
 
     public AbraTemplateStmt getTemplate(String name){
@@ -150,4 +151,22 @@ public class AbraFile extends PsiFileBase {
         return null;
     }
 
+    public Collection<AbraFuncStmt> findAllAccessibleFunc(){
+        ArrayList<AbraFuncStmt> resp = new ArrayList<>();
+        resp.addAll(getAllFuncStmts());
+        for(AbraFile imported:getImportTree(new ArrayList<AbraFile>())){
+            resp.addAll(imported.getAllFuncStmts());
+        }
+        return resp;
+    }
+
+
+    public Collection<AbraLutStmt> findAllAccessibleLut(){
+        ArrayList<AbraLutStmt> resp = new ArrayList<>();
+        resp.addAll(getAllLutStmts());
+        for(AbraFile imported:getImportTree(new ArrayList<AbraFile>())){
+            resp.addAll(imported.getAllLutStmts());
+        }
+        return resp;
+    }
 }

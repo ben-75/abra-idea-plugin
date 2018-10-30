@@ -1,5 +1,6 @@
 package org.abra.interpreter.runconfig;
 
+import b.j.b.A;
 import com.intellij.openapi.options.ConfigurationException;
 import com.intellij.openapi.options.SettingsEditor;
 import com.intellij.openapi.project.Project;
@@ -34,29 +35,33 @@ public class AbraInterpreterSettingsEditor extends SettingsEditor<AbraInterprete
 
 
     @Override
-    protected void resetEditorFrom(AbraInterpreterRunConfiguration abraInterpreterRunConfiguration) {
-        myPanel.modules.setModel(getModulesModel(abraInterpreterRunConfiguration.getProject()));
-        if(abraInterpreterRunConfiguration.getTargetModule()!=null){
+    protected void resetEditorFrom(AbraInterpreterRunConfiguration runConfig) {
+        myPanel.modules.setModel(getModulesModel(runConfig.getProject()));
+        if(runConfig.getTargetModule()!=null){
             for(int i=0;i<((ListComboBoxModel)myPanel.modules.getModel()).getSize();i++){
-                if(((AbraFileComboBoxItem)((ListComboBoxModel)myPanel.modules.getModel()).getElementAt(i)).getAbraFile().isEquivalentTo(abraInterpreterRunConfiguration.getTargetModule())){
+                if(((AbraFileComboBoxItem)((ListComboBoxModel)myPanel.modules.getModel()).getElementAt(i)).getAbraFile().isEquivalentTo(runConfig.getTargetModule())){
                     myPanel.modules.setSelectedIndex(i);
                     myPanel.functionsInSelectedModule.setModel(getFunctionsModel(((AbraFileComboBoxItem)((ListComboBoxModel)myPanel.modules.getModel()).getElementAt(i)).getAbraFile()));
-                    if(abraInterpreterRunConfiguration.getTargetFunc()!=null){
+                    if(runConfig.getTargetFunc()!=null){
                         for(int j=0;j<((ListComboBoxModel)myPanel.functionsInSelectedModule.getModel()).getSize();j++){
-                            if(((AbraFuncStmtComboBoxItem)((ListComboBoxModel)myPanel.functionsInSelectedModule.getModel()).getElementAt(j)).getFuncStmt().isEquivalentTo(abraInterpreterRunConfiguration.getTargetFunc())){
+                            if(((AbraFuncStmtComboBoxItem)((ListComboBoxModel)myPanel.functionsInSelectedModule.getModel()).getElementAt(j)).getFuncStmt().isEquivalentTo(runConfig.getTargetFunc())){
                                 myPanel.functionsInSelectedModule.setSelectedIndex(j);
-                                myPanel.targetTypeInstantiation.setModel(getTypeInstanciationListModel((AbraFuncStmt) abraInterpreterRunConfiguration.getTargetFunc()));
+                                myPanel.targetTypeInstantiation.setModel(getTypeInstanciationListModel((AbraFuncStmt) runConfig.getTargetFunc()));
+                                String typeLabel = runConfig.getTargetFunc().getFuncSignature().getText().substring(
+                                        runConfig.getTargetFunc().getFuncSignature().getOpenTag().getStartOffsetInParent(),
+                                        runConfig.getTargetFunc().getFuncSignature().getCloseTag().getStartOffsetInParent()+1);
+                                myPanel.typeInstLabel.setText("Mapping for "+typeLabel+" :");
                                 myPanel.typeInstLabel.setVisible(true);
                                 myPanel.targetTypeInstantiation.setVisible(true);
-                                if(abraInterpreterRunConfiguration.getTargetTypeInstantiation()!=null){
+                                if(runConfig.getTargetTypeInstantiation()!=null){
                                     for(int k=0;k<((ListComboBoxModel)myPanel.targetTypeInstantiation.getModel()).getSize();k++){
-                                        if(((AbraTypeInstComboBoxItem)((ListComboBoxModel)myPanel.targetTypeInstantiation.getModel()).getElementAt(k)).getTypeInstantiation().isEquivalentTo(abraInterpreterRunConfiguration.getTargetTypeInstantiation())){
+                                        if(((AbraTypeInstComboBoxItem)((ListComboBoxModel)myPanel.targetTypeInstantiation.getModel()).getElementAt(k)).getTypeInstantiation().isEquivalentTo(runConfig.getTargetTypeInstantiation())){
                                             myPanel.targetTypeInstantiation.setSelectedIndex(k);
                                             myPanel.typeInstLabel.setVisible(true);
                                             myPanel.targetTypeInstantiation.setVisible(true);
-                                            if(abraInterpreterRunConfiguration.getTargetTypeInstantiation()!=null){
+                                            if(runConfig.getTargetTypeInstantiation()!=null){
                                                 clearFuncParameters();
-                                                makeFuncParameters(abraInterpreterRunConfiguration.getTargetFunc(), Arrays.asList(abraInterpreterRunConfiguration.args));
+                                                makeFuncParameters(runConfig.getTargetFunc(), Arrays.asList(runConfig.args));
                                             }else{
                                                 clearFuncParameters();
                                             }
@@ -87,48 +92,48 @@ public class AbraInterpreterSettingsEditor extends SettingsEditor<AbraInterprete
             myPanel.modules.setSelectedItem(null);
             myPanel.functionsInSelectedModule.setSelectedItem(null);
         }
-        myPanel.runTestsCheckBox.setSelected(abraInterpreterRunConfiguration.isRunTest());
-        myPanel.runEvalCheckBox.setSelected(abraInterpreterRunConfiguration.isRunEval());
-        myPanel.checkTritCodeCheckBox.setSelected(abraInterpreterRunConfiguration.isCheckTrits());
-        myPanel.echoCheckBox.setSelected(abraInterpreterRunConfiguration.isEcho());
-        myPanel.verilogCheckBox.setSelected(abraInterpreterRunConfiguration.isFpga());
-        myPanel.emitCheckBox.setSelected(abraInterpreterRunConfiguration.isEmit());
-        myPanel.trimCheckBox.setSelected(abraInterpreterRunConfiguration.isTrim());
-        myPanel.treeCheckBox.setSelected(abraInterpreterRunConfiguration.isTree());
+        myPanel.runTestsCheckBox.setSelected(runConfig.isRunTest());
+        myPanel.runEvalCheckBox.setSelected(runConfig.isRunEval());
+        myPanel.checkTritCodeCheckBox.setSelected(runConfig.isCheckTrits());
+        myPanel.echoCheckBox.setSelected(runConfig.isEcho());
+        myPanel.verilogCheckBox.setSelected(runConfig.isFpga());
+        myPanel.emitCheckBox.setSelected(runConfig.isEmit());
+        myPanel.trimCheckBox.setSelected(runConfig.isTrim());
+        myPanel.treeCheckBox.setSelected(runConfig.isTree());
     }
 
     @Override
-    protected void applyEditorTo(AbraInterpreterRunConfiguration abraInterpreterRunConfiguration) throws ConfigurationException {
+    protected void applyEditorTo(AbraInterpreterRunConfiguration runCongig) throws ConfigurationException {
         if(myPanel.modules.getSelectedItem()!=null) {
-            abraInterpreterRunConfiguration.setTargetModule(((AbraFileComboBoxItem) myPanel.modules.getSelectedItem()).getAbraFile());
+            runCongig.setTargetModule(((AbraFileComboBoxItem) myPanel.modules.getSelectedItem()).getAbraFile());
             if (myPanel.functionsInSelectedModule.getSelectedItem() != null) {
-                abraInterpreterRunConfiguration.setTargetFunc(((AbraFuncStmtComboBoxItem) myPanel.functionsInSelectedModule.getSelectedItem()).getFuncStmt());
+                runCongig.setTargetFunc(((AbraFuncStmtComboBoxItem) myPanel.functionsInSelectedModule.getSelectedItem()).getFuncStmt());
                 if(myPanel.targetTypeInstantiation.getSelectedItem()!=null){
-                    abraInterpreterRunConfiguration.setTargetTypeInstantiation(((AbraTypeInstComboBoxItem)myPanel.targetTypeInstantiation.getSelectedItem()).getTypeInstantiation());
+                    runCongig.setTargetTypeInstantiation(((AbraTypeInstComboBoxItem)myPanel.targetTypeInstantiation.getSelectedItem()).getTypeInstantiation());
                 }else{
-                    abraInterpreterRunConfiguration.setTargetTypeInstantiation(null);
+                    runCongig.setTargetTypeInstantiation(null);
                 }
-                abraInterpreterRunConfiguration.args = new String[myPanel.argsContainer.getComponentCount()];
+                runCongig.args = new String[myPanel.argsContainer.getComponentCount()];
                 for(int i=0;i<myPanel.argsContainer.getComponentCount();i++){
-                    abraInterpreterRunConfiguration.args[i]=((InputTritPanel)myPanel.argsContainer.getComponent(i)).getUserInput();
+                    runCongig.args[i]=((InputTritPanel)myPanel.argsContainer.getComponent(i)).getUserInput();
                 }
             }else{
-                abraInterpreterRunConfiguration.setTargetFunc(null);
-                abraInterpreterRunConfiguration.setTargetTypeInstantiation(null);
+                runCongig.setTargetFunc(null);
+                runCongig.setTargetTypeInstantiation(null);
             }
         } else {
-            abraInterpreterRunConfiguration.setTargetModule(null);
-            abraInterpreterRunConfiguration.setTargetFunc(null);
-            abraInterpreterRunConfiguration.setTargetTypeInstantiation(null);
+            runCongig.setTargetModule(null);
+            runCongig.setTargetFunc(null);
+            runCongig.setTargetTypeInstantiation(null);
         }
-        abraInterpreterRunConfiguration.setRunTest(myPanel.runTestsCheckBox.isSelected());
-        abraInterpreterRunConfiguration.setRunEval(myPanel.runEvalCheckBox.isSelected());
-        abraInterpreterRunConfiguration.setCheckTrits(myPanel.checkTritCodeCheckBox.isSelected());
-        abraInterpreterRunConfiguration.setEcho(myPanel.echoCheckBox.isSelected());
-        abraInterpreterRunConfiguration.setFpga(myPanel.verilogCheckBox.isSelected());
-        abraInterpreterRunConfiguration.setEmit(myPanel.emitCheckBox.isSelected());
-        abraInterpreterRunConfiguration.setTree(myPanel.treeCheckBox.isSelected());
-        abraInterpreterRunConfiguration.setTrim(myPanel.trimCheckBox.isSelected());
+        runCongig.setRunTest(myPanel.runTestsCheckBox.isSelected());
+        runCongig.setRunEval(myPanel.runEvalCheckBox.isSelected());
+        runCongig.setCheckTrits(myPanel.checkTritCodeCheckBox.isSelected());
+        runCongig.setEcho(myPanel.echoCheckBox.isSelected());
+        runCongig.setFpga(myPanel.verilogCheckBox.isSelected());
+        runCongig.setEmit(myPanel.emitCheckBox.isSelected());
+        runCongig.setTree(myPanel.treeCheckBox.isSelected());
+        runCongig.setTrim(myPanel.trimCheckBox.isSelected());
     }
 
     @NotNull
@@ -191,8 +196,30 @@ public class AbraInterpreterSettingsEditor extends SettingsEditor<AbraInterprete
                 }
             }
         });
+        myPanel.emitCheckBox.addActionListener(forceTrits);
+        myPanel.treeCheckBox.addActionListener(forceTrits);
+        myPanel.verilogCheckBox.addActionListener(forceTrits);
+        myPanel.checkTritCodeCheckBox.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                if(!myPanel.checkTritCodeCheckBox.isSelected()){
+                    myPanel.emitCheckBox.setSelected(false);
+                    myPanel.treeCheckBox.setSelected(false);
+                    myPanel.verilogCheckBox.setSelected(false);
+                }
+            }
+        });
         return myPanel.rootConfigPane;
     }
+
+    private ActionListener forceTrits = new ActionListener() {
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            if(((JCheckBox)e.getSource()).isSelected()){
+                myPanel.checkTritCodeCheckBox.setSelected(true);
+            }
+        }
+    };
 
     private void makeFuncParameters(AbraFuncStmt funcStmt, List<String> args){
         int i=0;

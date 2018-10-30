@@ -4,6 +4,7 @@ import com.intellij.execution.ExecutionException;
 import com.intellij.execution.Executor;
 import com.intellij.execution.configurations.*;
 import com.intellij.execution.runners.ExecutionEnvironment;
+import com.intellij.ide.util.PropertiesComponent;
 import com.intellij.lang.ASTNode;
 import com.intellij.openapi.application.ApplicationManager;
 import com.intellij.openapi.options.SettingsEditor;
@@ -58,6 +59,12 @@ public class AbraInterpreterRunConfiguration extends LocatableConfigurationBase 
 
     @Override
     public void checkConfiguration() throws RuntimeConfigurationException {
+        if(PropertiesComponent.getInstance().getValue("org.abra.language.interpreterpath")==null){
+            throw new RuntimeConfigurationException("AbraInterpreter path is not defined (settings)");
+        }
+        if(PropertiesComponent.getInstance().getValue("org.abra.language.interpreterpath").length()==0){
+            throw new RuntimeConfigurationException("AbraInterpreter path is not defined (settings)");
+        }
         if (targetModule == null) throw new RuntimeConfigurationException("Module is not defined");
         if (targetFunc == null && !test && !eval && !trit) {
             throw new RuntimeConfigurationException("Execution target (eval, test, checkTrits or function) is not defined");

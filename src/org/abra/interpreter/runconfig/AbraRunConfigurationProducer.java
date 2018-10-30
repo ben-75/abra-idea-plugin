@@ -49,12 +49,13 @@ public class AbraRunConfigurationProducer extends RunConfigurationProducer<AbraI
 
     @Override
     public boolean isConfigurationFromContext(AbraInterpreterRunConfiguration configuration, ConfigurationContext context) {
-        AbraFuncStmt func = findFuncStmt(context.getPsiLocation());
-        return func!=null && func.isEquivalentTo(configuration.getTargetFunc());
+//        AbraFuncStmt func = findFuncStmt(context.getPsiLocation());
+//        return func!=null && func.isEquivalentTo(configuration.getTargetFunc());
+        return false;
     }
 
     private AbraFuncStmt findFuncStmt(PsiElement f){
-        while(! (f instanceof AbraFuncStmt) && ! (f instanceof AbraFile)){
+        while(! (f instanceof AbraFuncStmt) && ! (f instanceof AbraFile) && f!=null){
             f = f.getParent();
         }
         if(f instanceof AbraFile)return null;

@@ -3,6 +3,7 @@ package org.abra.interpreter.runconfig;
 import com.intellij.execution.configurations.ConfigurationFactory;
 import com.intellij.execution.configurations.ConfigurationType;
 import com.intellij.icons.AllIcons;
+import org.abra.language.AbraIcons;
 import org.jetbrains.annotations.NotNull;
 
 import javax.swing.*;
@@ -26,7 +27,7 @@ public class AbraInterpreterConfigurationType implements ConfigurationType {
 
     @Override
     public Icon getIcon() {
-        return AllIcons.General.Information;
+        return AbraIcons.RUN;
     }
 
     @NotNull

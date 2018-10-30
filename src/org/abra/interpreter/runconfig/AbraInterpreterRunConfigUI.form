@@ -77,24 +77,6 @@
           <toolTipText value="Execute embedded eval expresions"/>
         </properties>
       </component>
-      <component id="bc6ac" class="javax.swing.JCheckBox" binding="checkTritCodeCheckBox" default-binding="true">
-        <constraints>
-          <grid row="4" column="3" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
-        </constraints>
-        <properties>
-          <text value="Check trit code"/>
-          <toolTipText value="Generate trit code , regenrate abra from trit code and re-run tests and eval assertions"/>
-        </properties>
-      </component>
-      <component id="9b464" class="javax.swing.JCheckBox" binding="echoCheckBox" default-binding="true">
-        <constraints>
-          <grid row="4" column="4" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
-        </constraints>
-        <properties>
-          <text value="Echo"/>
-          <toolTipText value="Log parser steps"/>
-        </properties>
-      </component>
       <component id="b4340" class="javax.swing.JLabel" binding="typeInstLabel">
         <constraints>
           <grid row="2" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
@@ -130,36 +112,54 @@
         <border type="none"/>
         <children/>
       </grid>
-      <component id="670b5" class="javax.swing.JCheckBox" binding="verilogCheckBox" default-binding="true">
-        <constraints>
-          <grid row="5" column="1" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
-        </constraints>
-        <properties>
-          <text value="Verilog"/>
-        </properties>
-      </component>
-      <component id="314c6" class="javax.swing.JCheckBox" binding="emitCheckBox" default-binding="true">
-        <constraints>
-          <grid row="5" column="2" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
-        </constraints>
-        <properties>
-          <text value="Emit"/>
-        </properties>
-      </component>
-      <component id="f1bdc" class="javax.swing.JCheckBox" binding="trimCheckBox" default-binding="true">
-        <constraints>
-          <grid row="5" column="3" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
-        </constraints>
-        <properties>
-          <text value="Trim"/>
-        </properties>
-      </component>
       <component id="4ef7c" class="javax.swing.JCheckBox" binding="treeCheckBox" default-binding="true">
         <constraints>
           <grid row="5" column="4" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
         </constraints>
         <properties>
           <text value="Tree"/>
+        </properties>
+      </component>
+      <component id="9b464" class="javax.swing.JCheckBox" binding="echoCheckBox" default-binding="true">
+        <constraints>
+          <grid row="4" column="3" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
+        </constraints>
+        <properties>
+          <text value="Echo"/>
+          <toolTipText value="Log parser steps"/>
+        </properties>
+      </component>
+      <component id="f1bdc" class="javax.swing.JCheckBox" binding="trimCheckBox" default-binding="true">
+        <constraints>
+          <grid row="4" column="4" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
+        </constraints>
+        <properties>
+          <text value="Trim"/>
+        </properties>
+      </component>
+      <component id="314c6" class="javax.swing.JCheckBox" binding="emitCheckBox" default-binding="true">
+        <constraints>
+          <grid row="5" column="3" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
+        </constraints>
+        <properties>
+          <text value="Emit"/>
+        </properties>
+      </component>
+      <component id="670b5" class="javax.swing.JCheckBox" binding="verilogCheckBox" default-binding="true">
+        <constraints>
+          <grid row="5" column="2" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
+        </constraints>
+        <properties>
+          <text value="Verilog"/>
+        </properties>
+      </component>
+      <component id="bc6ac" class="javax.swing.JCheckBox" binding="checkTritCodeCheckBox" default-binding="true">
+        <constraints>
+          <grid row="5" column="1" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
+        </constraints>
+        <properties>
+          <text value="Check trit code"/>
+          <toolTipText value="Generate trit code , regenrate abra from trit code and re-run tests and eval assertions"/>
         </properties>
       </component>
     </children>

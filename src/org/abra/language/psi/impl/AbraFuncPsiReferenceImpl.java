@@ -68,7 +68,7 @@ public class AbraFuncPsiReferenceImpl extends PsiReferenceBase implements PsiPol
     @NotNull
     @Override
     public Object[] getVariants() {
-        return new Object[0];
+        return new Object[]{"hello"};
     }
 
     public List<ResolveResult> resolveInFile(PsiFile aFile){

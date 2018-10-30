@@ -19,6 +19,7 @@
       <li> Code folding
       <li> Braces matching
       <li> Check args count
+      <li> Integration with AbraInterpreter
       <li> ...
       </ul>
     ]]></description>

@@ -12,5 +12,6 @@ public class AbraIcons {
     public static final Icon VECTOR = IconLoader.getIcon("/org/abra/language/V.png");
     public static final Icon USE = IconLoader.getIcon("/org/abra/language/U.png");
     public static final Icon TEMPLATE = IconLoader.getIcon("/org/abra/language/Template.png");
+    public static final Icon RUN = IconLoader.getIcon("/org/abra/language/Run.png");
     public static final Icon FUNCTION_INSTANCIATION = IconLoader.getIcon("/org/abra/language/F.png");
 }
