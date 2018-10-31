@@ -198,6 +198,9 @@ public class AbraInterpreterRunConfiguration extends LocatableConfigurationBase 
         this.targetTypeInstantiation = targetTypeInstantiation;
     }
 
+    public boolean hasArgs(){
+        return args!=null && args.length>0;
+    }
     public List<String> getArgs() {
         return Arrays.asList(args);
     }
@@ -253,9 +256,9 @@ public class AbraInterpreterRunConfiguration extends LocatableConfigurationBase 
             }
             @Override
             public void run() {
-                test = attributeEquals("runTest","true");
-                eval = attributeEquals("runEval","true");
-                trit = attributeEquals("checkTrits","true");
+                test = attributeEquals("test","true");
+                eval = attributeEquals("eval","true");
+                trit = attributeEquals("trit","true");
                 echo = attributeEquals("echo","true");
                 emit = attributeEquals("emit","true");
                 fpga = attributeEquals("fpga","true");

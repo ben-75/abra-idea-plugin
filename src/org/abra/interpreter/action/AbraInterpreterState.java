@@ -53,10 +53,7 @@ public class AbraInterpreterState extends JavaCommandLineState {
                         runConfiguration.getTargetModule().getVirtualFile()).getPath());
         javaParameters.setMainClass("org.iota.abra.Main");
         StringBuilder sb = new StringBuilder();
-        for(String s:runConfiguration.getArgs()){
-            sb.append(TritUtils.decimalValue(s)).append(",");
-        }
-        String args = sb.substring(0,sb.length()-1);
+
         javaParameters.getProgramParametersList().add(runConfiguration.getTargetModule().getImportableFilePath());
 
         if(runConfiguration.isCheckTrits()){
@@ -87,7 +84,13 @@ public class AbraInterpreterState extends JavaCommandLineState {
         if(runConfiguration.getTargetTypeInstantiation()!=null){
             type=runConfiguration.getTargetTypeInstantiation().getText();
         }
-        javaParameters.getProgramParametersList().add(runConfiguration.getTargetFunc().getFuncSignature().getFuncName().getText()+type+"("+args+")");
+        if(runConfiguration.getTargetFunc()!=null && runConfiguration.hasArgs()) {
+            for (String s : runConfiguration.getArgs()) {
+                sb.append(TritUtils.decimalValue(s)).append(",");
+            }
+            String args = sb.substring(0,sb.length()-1);
+            javaParameters.getProgramParametersList().add(runConfiguration.getTargetFunc().getFuncSignature().getFuncName().getText() + type + "(" + args + ")");
+        }
         javaParameters.setJdk(ProjectRootManager.getInstance(runConfiguration.getProject()).getProjectSdk());
         javaParameters.getClassPath().add(new File(PropertiesComponent.getInstance().getValue("org.abra.language.interpreterpath")));
         return javaParameters;

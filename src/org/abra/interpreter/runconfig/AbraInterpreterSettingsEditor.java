@@ -46,35 +46,37 @@ public class AbraInterpreterSettingsEditor extends SettingsEditor<AbraInterprete
                         for(int j=0;j<((ListComboBoxModel)myPanel.functionsInSelectedModule.getModel()).getSize();j++){
                             if(((AbraFuncStmtComboBoxItem)((ListComboBoxModel)myPanel.functionsInSelectedModule.getModel()).getElementAt(j)).getFuncStmt().isEquivalentTo(runConfig.getTargetFunc())){
                                 myPanel.functionsInSelectedModule.setSelectedIndex(j);
-                                myPanel.targetTypeInstantiation.setModel(getTypeInstanciationListModel((AbraFuncStmt) runConfig.getTargetFunc()));
-                                String typeLabel = runConfig.getTargetFunc().getFuncSignature().getText().substring(
-                                        runConfig.getTargetFunc().getFuncSignature().getOpenTag().getStartOffsetInParent(),
-                                        runConfig.getTargetFunc().getFuncSignature().getCloseTag().getStartOffsetInParent()+1);
-                                myPanel.typeInstLabel.setText("Mapping for "+typeLabel+" :");
-                                myPanel.typeInstLabel.setVisible(true);
-                                myPanel.targetTypeInstantiation.setVisible(true);
-                                if(runConfig.getTargetTypeInstantiation()!=null){
-                                    for(int k=0;k<((ListComboBoxModel)myPanel.targetTypeInstantiation.getModel()).getSize();k++){
-                                        if(((AbraTypeInstComboBoxItem)((ListComboBoxModel)myPanel.targetTypeInstantiation.getModel()).getElementAt(k)).getTypeInstantiation().isEquivalentTo(runConfig.getTargetTypeInstantiation())){
-                                            myPanel.targetTypeInstantiation.setSelectedIndex(k);
-                                            myPanel.typeInstLabel.setVisible(true);
-                                            myPanel.targetTypeInstantiation.setVisible(true);
-                                            if(runConfig.getTargetTypeInstantiation()!=null){
-                                                clearFuncParameters();
-                                                makeFuncParameters(runConfig.getTargetFunc(), Arrays.asList(runConfig.args));
-                                            }else{
-                                                clearFuncParameters();
+                                if(runConfig.getTargetFunc().isInTemplate()) {
+                                    myPanel.targetTypeInstantiation.setModel(getTypeInstanciationListModel((AbraFuncStmt) runConfig.getTargetFunc()));
+                                    String typeLabel = runConfig.getTargetFunc().getFuncSignature().getText().substring(
+                                            runConfig.getTargetFunc().getFuncSignature().getOpenTag().getStartOffsetInParent(),
+                                            runConfig.getTargetFunc().getFuncSignature().getCloseTag().getStartOffsetInParent() + 1);
+                                    myPanel.typeInstLabel.setText("Mapping for " + typeLabel + " :");
+                                    myPanel.typeInstLabel.setVisible(true);
+                                    myPanel.targetTypeInstantiation.setVisible(true);
+                                    if (runConfig.getTargetTypeInstantiation() != null) {
+                                        for (int k = 0; k < ((ListComboBoxModel) myPanel.targetTypeInstantiation.getModel()).getSize(); k++) {
+                                            if (((AbraTypeInstComboBoxItem) ((ListComboBoxModel) myPanel.targetTypeInstantiation.getModel()).getElementAt(k)).getTypeInstantiation().isEquivalentTo(runConfig.getTargetTypeInstantiation())) {
+                                                myPanel.targetTypeInstantiation.setSelectedIndex(k);
+                                                myPanel.typeInstLabel.setVisible(true);
+                                                myPanel.targetTypeInstantiation.setVisible(true);
+                                                if (runConfig.getTargetTypeInstantiation() != null) {
+                                                    clearFuncParameters();
+                                                    makeFuncParameters(runConfig.getTargetFunc(), Arrays.asList(runConfig.args));
+                                                } else {
+                                                    clearFuncParameters();
+                                                }
+                                                break;
                                             }
-                                            break;
                                         }
+
+
+                                    } else {
+                                        myPanel.targetTypeInstantiation.setSelectedItem(null);
                                     }
-
-
-
-
-
                                 }else{
-                                    myPanel.targetTypeInstantiation.setSelectedItem(null);
+                                    myPanel.typeInstLabel.setVisible(false);
+                                    myPanel.targetTypeInstantiation.setVisible(false);
                                 }
                                 break;
                             }
