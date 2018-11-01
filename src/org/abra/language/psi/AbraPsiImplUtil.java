@@ -345,12 +345,12 @@ public class AbraPsiImplUtil {
             @NotNull
             @Override
             public String getLocationString() {
-                if(element.getFuncStmtList().size()==1) {
-                    AbraFuncSignature sig = element.getFuncStmtList().get(0).getFuncSignature();
-                    return sig.getFuncName().getText()+"<"+
-                            String.join(",",sig.getConstExprList().stream().map(expr->expr.getText()).collect(Collectors.toList()))
-                            +">" + " -> " + sig.getTypeSize().getText();
-                }
+//                if(element.getFuncStmtList().size()==1) {
+//                    AbraFuncSignature sig = element.getFuncStmtList().get(0).getFuncSignature();
+//                    return sig.getFuncName().getText()+"<"+
+//                            String.join(",",sig.getConstExprList().stream().map(expr->expr.getText()).collect(Collectors.toList()))
+//                            +">" + " -> " + sig.getTypeSize().getText();
+//                }
                 return "";
             }
 
@@ -964,25 +964,26 @@ public class AbraPsiImplUtil {
         VirtualFile srcRoot = importStmt.getSourceRoot();
         VirtualFile target = null;
         try{
-            target = LocalFileSystem.getInstance().findFileByIoFile(new File(srcRoot.getPath(),importStmt.getFilePath()));
+            target = LocalFileSystem.getInstance().findFileByIoFile(new File(srcRoot.getPath(),importStmt.getFilePath()+".abra"));
         }catch (NullPointerException e){
             //ignore : filename is not valid.
         }
-        if(target!=null){
-            VirtualFile[] children = target.getChildren();
-            for(VirtualFile child:children){
-                if(!child.isDirectory() && child.getFileType()==AbraFileType.INSTANCE){
-                    importedFiles.add(new AbraFileReferencePsiReferenceImpl(importStmt, child));
-                }
-            }
-        }else{
-            try{
-                target = LocalFileSystem.getInstance().findFileByIoFile(new File(srcRoot.getPath(),importStmt.getFilePath()+".abra"));
-            }catch (NullPointerException e){
+        if(target!=null) {
+            importedFiles.add(new AbraFileReferencePsiReferenceImpl(importStmt, target));
+        }else {
+
+            try {
+                target = LocalFileSystem.getInstance().findFileByIoFile(new File(srcRoot.getPath(), importStmt.getFilePath()));
+            } catch (NullPointerException e) {
                 //ignore : filename is not valid.
             }
-            if(target!=null) {
-                importedFiles.add(new AbraFileReferencePsiReferenceImpl(importStmt, target));
+            if (target != null) {
+                VirtualFile[] children = target.getChildren();
+                for (VirtualFile child : children) {
+                    if (!child.isDirectory() && child.getFileType() == AbraFileType.INSTANCE) {
+                        importedFiles.add(new AbraFileReferencePsiReferenceImpl(importStmt, child));
+                    }
+                }
             }
         }
         PsiReference[] arr = new PsiReference[importedFiles.size()];
@@ -990,13 +991,7 @@ public class AbraPsiImplUtil {
     }
 
     public static String getFilePath(AbraImportStmt importStmt){
-        StringBuilder sb = new StringBuilder();
-        List<AbraPathName> pathNames = importStmt.getPathNameList();
-        for(int i=0;i<pathNames.size();i++){
-            sb.append(pathNames.get(i).getText());
-            if(i+1<pathNames.size())sb.append("/");
-        }
-        return sb.toString();
+        return importStmt.getText().substring(7).trim();
     }
     public static VirtualFile getSourceRoot(AbraImportStmt importStmt){
         List<VirtualFile> allRoots = getAllSourceRoot(importStmt.getProject());
