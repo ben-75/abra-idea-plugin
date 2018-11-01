@@ -1,6 +1,5 @@
 package org.abra.language;
 
-import com.intellij.lang.ASTNode;
 import com.intellij.lang.annotation.AnnotationHolder;
 import com.intellij.lang.annotation.Annotator;
 import com.intellij.openapi.util.TextRange;
@@ -8,7 +7,6 @@ import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiPolyVariantReference;
 import com.intellij.psi.PsiReference;
 import com.intellij.psi.ResolveResult;
-import com.intellij.psi.tree.TokenSet;
 import org.abra.language.psi.*;
 import org.abra.language.psi.impl.*;
 import org.jetbrains.annotations.NotNull;
@@ -58,11 +56,6 @@ public class ReferenceValidatorAnnotator implements Annotator {
                         } else if (resolved instanceof AbraTypeOrPlaceHolderPsiReferenceImpl) {
                             resolved2 = ((AbraTypeOrPlaceHolderPsiReferenceImpl) element.getReference()).resolveFromImportTree(importTree);
                         }
-//                    else if(resolved instanceof AbraFuncPsiReferenceImpl){
-//                        List<ResolveResult> temp = ((AbraFuncPsiReferenceImpl)element.getReference()).resolveFromImportTree(importTree);
-//                        if(temp.size()>0)resolved2 = temp.get(0).getElement();
-//                    }
-
                         if (resolved2 != null) {
                             makeAmbiguousAnnotation(element, holder, resolved, resolved2);
                         }
