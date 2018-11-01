@@ -3,6 +3,7 @@ package org.abra.language.psi;
 import com.intellij.extapi.psi.PsiFileBase;
 import com.intellij.lang.ASTNode;
 import com.intellij.openapi.fileTypes.FileType;
+import com.intellij.openapi.util.Key;
 import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.psi.*;
 import com.intellij.psi.tree.TokenSet;
@@ -12,6 +13,7 @@ import org.abra.language.AbraLanguage;
 import org.jetbrains.annotations.NotNull;
 import javax.swing.*;
 import java.util.*;
+import java.util.stream.Collectors;
 
 
 public class AbraFile extends PsiFileBase {
@@ -46,14 +48,38 @@ public class AbraFile extends PsiFileBase {
         return getVirtualFile().getPath().substring(sourceRoot.getPath().length()+1,getVirtualFile().getPath().length()-5);
     }
 
+    private List<SmartPsiElementPointer<AbraFile>> cache;
     public List<AbraFile> getImportTree(List<AbraFile> importsTree){
+        if(cache!=null)return unwrap(cache);
+        cache = wrap(_getImportTree(importsTree));
+        //log.info("Caching "+cache.size()+" imported files for "+getName());
+        return importsTree;
+    }
+
+    private List<SmartPsiElementPointer<AbraFile>> wrap(List<AbraFile> l){
+        return l.stream()
+                .map( f -> SmartPointerManager.getInstance(getProject()).createSmartPsiElementPointer(f) )
+                .collect(Collectors.toList());
+    }
+    private List<AbraFile> unwrap(List<SmartPsiElementPointer<AbraFile>> l){
+        return l.stream()
+                .map( f -> f.getElement() )
+                .collect(Collectors.toList());
+    }
+
+    public static Key<Boolean> DUPLICATE_TRANSITIVE = new Key("DUPLICATE_TRANSITIVE");
+    public List<AbraFile> _getImportTree(List<AbraFile> importsTree){
         for(ASTNode stmt:getNode().getChildren(TokenSet.create(AbraTypes.IMPORT_STMT))){
-            PsiReference[] importedFiles = AbraPsiImplUtil.getReferences((AbraImportStmt) stmt.getPsi());
+            PsiReference[] importedFiles = ((AbraImportStmt) stmt.getPsi()).getReferences();
             for (PsiReference psiRef : importedFiles) {
                 AbraFile anAbraFile = (AbraFile)psiRef.resolve();
-                if(anAbraFile!=null && !importsTree.contains(anAbraFile)){
-                    importsTree.add(anAbraFile);
-                    anAbraFile.getImportTree(importsTree);
+                if(anAbraFile!=null){
+                    if(!importsTree.contains(anAbraFile)) {
+                        importsTree.add(anAbraFile);
+                        anAbraFile._getImportTree(importsTree);
+                    }
+                }else if(anAbraFile==null){
+                    System.out.println("Fail to resolve :"+psiRef.getCanonicalText());
                 }
             }
         }
@@ -151,22 +177,7 @@ public class AbraFile extends PsiFileBase {
         return null;
     }
 
-    public Collection<AbraFuncStmt> findAllAccessibleFunc(){
-        ArrayList<AbraFuncStmt> resp = new ArrayList<>();
-        resp.addAll(getAllFuncStmts());
-        for(AbraFile imported:getImportTree(new ArrayList<AbraFile>())){
-            resp.addAll(imported.getAllFuncStmts());
-        }
-        return resp;
-    }
-
-
-    public Collection<AbraLutStmt> findAllAccessibleLut(){
-        ArrayList<AbraLutStmt> resp = new ArrayList<>();
-        resp.addAll(getAllLutStmts());
-        for(AbraFile imported:getImportTree(new ArrayList<AbraFile>())){
-            resp.addAll(imported.getAllLutStmts());
-        }
-        return resp;
+    public void invalidateCache() {
+        cache = null;
     }
 }

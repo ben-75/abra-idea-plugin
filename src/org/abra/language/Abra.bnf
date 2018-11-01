@@ -60,7 +60,8 @@ private stmt        ::= (importStmt | typeStmt | lutStmt | funcStmt | templateSt
 
 importStmt          ::= IMPORT_KEYWORD ((pathName) ( SLASH pathName)*)
                     {
-                        methods=[getReferences getSourceRoot getFilePath]
+                        mixin="org.abra.language.psi.impl.ReferencesCache"
+                        methods=[getSourceRoot getFilePath]
                         pin=1
                     }
 
