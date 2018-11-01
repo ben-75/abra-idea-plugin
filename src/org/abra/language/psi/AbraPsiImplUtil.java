@@ -991,9 +991,10 @@ public class AbraPsiImplUtil {
 
     public static String getFilePath(AbraImportStmt importStmt){
         StringBuilder sb = new StringBuilder();
-        for(int i=0;i<importStmt.getPathNameList().size();i++){
-            sb.append(importStmt.getPathNameList().get(i).getText());
-            if(i+1<importStmt.getPathNameList().size())sb.append("/");
+        List<AbraPathName> pathNames = importStmt.getPathNameList();
+        for(int i=0;i<pathNames.size();i++){
+            sb.append(pathNames.get(i).getText());
+            if(i+1<pathNames.size())sb.append("/");
         }
         return sb.toString();
     }
