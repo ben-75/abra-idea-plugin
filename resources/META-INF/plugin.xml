@@ -1,7 +1,7 @@
 <idea-plugin>
   <id>org.abra.language</id>
   <name>Abra Plugin</name>
-  <version>0.0.20-pre-alpha</version>
+  <version>0.0.21-pre-alpha</version>
   <vendor url="https://github.com/ben-75/abra-idea-plugin"/>
 
   <description><![CDATA[
@@ -52,8 +52,8 @@
     <colorSettingsPage implementation="org.abra.language.AbraColorSettingsPage"/>
     <lang.psiStructureViewFactory language="Abra" implementationClass="org.abra.language.AbraStructureViewFactory"/>
     <lang.findUsagesProvider language="Abra" implementationClass="org.abra.language.AbraFindUsagesProvider"/>
-    <annotator language="Abra" implementationClass="org.abra.language.ReferenceValidatorAnnotator"/>
     <annotator language="Abra" implementationClass="org.abra.language.DeclarationAnnotator"/>
+    <annotator language="Abra" implementationClass="org.abra.language.ReferenceValidatorAnnotator"/>
     <annotator language="Abra" implementationClass="org.abra.language.MultiDeclarationAnnotator"/>
     <annotator language="Abra" implementationClass="org.abra.language.LutValidationAnnotator"/>
     <annotator language="Abra" implementationClass="org.abra.language.FuncArgsAnnotator"/>
