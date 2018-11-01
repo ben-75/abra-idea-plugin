@@ -56,9 +56,6 @@ public class AbraInterpreterState extends JavaCommandLineState {
 
         javaParameters.getProgramParametersList().add(runConfiguration.getTargetModule().getImportableFilePath());
 
-        if(runConfiguration.isCheckTrits()){
-            javaParameters.getProgramParametersList().add("-trit");
-        }
         if(runConfiguration.isEcho()){
             javaParameters.getProgramParametersList().add("-echo");
         }

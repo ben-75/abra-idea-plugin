@@ -116,15 +116,6 @@
         <border type="none"/>
         <children/>
       </grid>
-      <component id="4ef7c" class="javax.swing.JCheckBox" binding="treeCheckBox" default-binding="true">
-        <constraints>
-          <grid row="5" column="4" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
-        </constraints>
-        <properties>
-          <text value="tree"/>
-          <toolTipText value="Generates a textual representation of the code tree (requires -trit)"/>
-        </properties>
-      </component>
       <component id="9b464" class="javax.swing.JCheckBox" binding="echoCheckBox" default-binding="true">
         <constraints>
           <grid row="4" column="3" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
@@ -143,31 +134,31 @@
           <text value="Trim"/>
         </properties>
       </component>
-      <component id="314c6" class="javax.swing.JCheckBox" binding="emitCheckBox" default-binding="true">
-        <constraints>
-          <grid row="5" column="3" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
-        </constraints>
-        <properties>
-          <text value="emit"/>
-          <toolTipText value="Emits LLVM code from the code tree and executes it (requires -trit)"/>
-        </properties>
-      </component>
       <component id="670b5" class="javax.swing.JCheckBox" binding="verilogCheckBox" default-binding="true">
         <constraints>
-          <grid row="5" column="2" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
+          <grid row="5" column="1" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
         </constraints>
         <properties>
           <text value="fpga"/>
           <toolTipText value="Emits Verilog HDL for loading into FPGA as resources/Verilog.txt (requires -trit)"/>
         </properties>
       </component>
-      <component id="bc6ac" class="javax.swing.JCheckBox" binding="checkTritCodeCheckBox" default-binding="true">
+      <component id="314c6" class="javax.swing.JCheckBox" binding="emitCheckBox" default-binding="true">
         <constraints>
-          <grid row="5" column="1" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
+          <grid row="5" column="2" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
         </constraints>
         <properties>
-          <text value="trit"/>
-          <toolTipText value="Generates tricode from all loaded modules and reads the tritcode back in as a single module. Currently -emit, and -tree depend on this flag (will be fixed in the future)"/>
+          <text value="emit"/>
+          <toolTipText value="Emits LLVM code from the code tree and executes it (requires -trit)"/>
+        </properties>
+      </component>
+      <component id="4ef7c" class="javax.swing.JCheckBox" binding="treeCheckBox" default-binding="true">
+        <constraints>
+          <grid row="5" column="3" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
+        </constraints>
+        <properties>
+          <text value="tree"/>
+          <toolTipText value="Generates a textual representation of the code tree (requires -trit)"/>
         </properties>
       </component>
     </children>

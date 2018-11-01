@@ -34,7 +34,6 @@ public class AbraInterpreterRunConfiguration extends LocatableConfigurationBase 
 
     private boolean test = false;
     private boolean eval = false;
-    private boolean trit = false;
     private boolean echo = false;
     private boolean emit = false;
     private boolean trim = false;
@@ -66,8 +65,8 @@ public class AbraInterpreterRunConfiguration extends LocatableConfigurationBase 
             throw new RuntimeConfigurationException("AbraInterpreter path is not defined (settings)");
         }
         if (targetModule == null) throw new RuntimeConfigurationException("Module is not defined");
-        if (targetFunc == null && !test && !eval && !trit) {
-            throw new RuntimeConfigurationException("Execution target (eval, test, checkTrits or function) is not defined");
+        if (targetFunc == null && !test && !eval && !fpga && !tree ) {
+            throw new RuntimeConfigurationException("Execution target (eval, test, tree or function) is not defined");
         }
 
         if (targetFunc != null) {
@@ -124,14 +123,6 @@ public class AbraInterpreterRunConfiguration extends LocatableConfigurationBase 
 
     public void setRunEval(boolean eval) {
         this.eval = eval;
-    }
-
-    public boolean isCheckTrits() {
-        return trit;
-    }
-
-    public void setCheckTrits(boolean trit) {
-        this.trit = trit;
     }
 
     public boolean isEcho() {
@@ -216,7 +207,6 @@ public class AbraInterpreterRunConfiguration extends LocatableConfigurationBase 
             public void run() {
                 element.setAttribute("test",test?"true":"false");
                 element.setAttribute("eval",eval?"true":"false");
-                element.setAttribute("trit",trit?"true":"false");
                 element.setAttribute("echo",echo?"true":"false");
                 element.setAttribute("emit",emit?"true":"false");
                 element.setAttribute("fpga",fpga?"true":"false");
@@ -258,7 +248,6 @@ public class AbraInterpreterRunConfiguration extends LocatableConfigurationBase 
             public void run() {
                 test = attributeEquals("test","true");
                 eval = attributeEquals("eval","true");
-                trit = attributeEquals("trit","true");
                 echo = attributeEquals("echo","true");
                 emit = attributeEquals("emit","true");
                 fpga = attributeEquals("fpga","true");

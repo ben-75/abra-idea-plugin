@@ -11,7 +11,6 @@ public class AbraInterpreterRunConfigUI {
     JComboBox functionsInSelectedModule;
     JCheckBox runTestsCheckBox;
     JCheckBox runEvalCheckBox;
-    JCheckBox checkTritCodeCheckBox;
     JCheckBox echoCheckBox;
     JComboBox targetTypeInstantiation;
     JLabel typeInstLabel;

@@ -62,7 +62,7 @@ public class AbraInterpreterSettingsEditor extends SettingsEditor<AbraInterprete
                                                 myPanel.targetTypeInstantiation.setVisible(true);
                                                 if (runConfig.getTargetTypeInstantiation() != null) {
                                                     clearFuncParameters();
-                                                    makeFuncParameters(runConfig.getTargetFunc(), Arrays.asList(runConfig.args));
+                                                    makeFuncParameters(runConfig.getTargetFunc(), runConfig.args==null?new ArrayList<>():Arrays.asList(runConfig.args));
                                                 } else {
                                                     clearFuncParameters();
                                                 }
@@ -96,7 +96,6 @@ public class AbraInterpreterSettingsEditor extends SettingsEditor<AbraInterprete
         }
         myPanel.runTestsCheckBox.setSelected(runConfig.isRunTest());
         myPanel.runEvalCheckBox.setSelected(runConfig.isRunEval());
-        myPanel.checkTritCodeCheckBox.setSelected(runConfig.isCheckTrits());
         myPanel.echoCheckBox.setSelected(runConfig.isEcho());
         myPanel.verilogCheckBox.setSelected(runConfig.isFpga());
         myPanel.emitCheckBox.setSelected(runConfig.isEmit());
@@ -130,7 +129,6 @@ public class AbraInterpreterSettingsEditor extends SettingsEditor<AbraInterprete
         }
         runCongig.setRunTest(myPanel.runTestsCheckBox.isSelected());
         runCongig.setRunEval(myPanel.runEvalCheckBox.isSelected());
-        runCongig.setCheckTrits(myPanel.checkTritCodeCheckBox.isSelected());
         runCongig.setEcho(myPanel.echoCheckBox.isSelected());
         runCongig.setFpga(myPanel.verilogCheckBox.isSelected());
         runCongig.setEmit(myPanel.emitCheckBox.isSelected());
@@ -198,30 +196,8 @@ public class AbraInterpreterSettingsEditor extends SettingsEditor<AbraInterprete
                 }
             }
         });
-        myPanel.emitCheckBox.addActionListener(forceTrits);
-        myPanel.treeCheckBox.addActionListener(forceTrits);
-        myPanel.verilogCheckBox.addActionListener(forceTrits);
-        myPanel.checkTritCodeCheckBox.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                if(!myPanel.checkTritCodeCheckBox.isSelected()){
-                    myPanel.emitCheckBox.setSelected(false);
-                    myPanel.treeCheckBox.setSelected(false);
-                    myPanel.verilogCheckBox.setSelected(false);
-                }
-            }
-        });
         return myPanel.rootConfigPane;
     }
-
-    private ActionListener forceTrits = new ActionListener() {
-        @Override
-        public void actionPerformed(ActionEvent e) {
-            if(((JCheckBox)e.getSource()).isSelected()){
-                myPanel.checkTritCodeCheckBox.setSelected(true);
-            }
-        }
-    };
 
     private void makeFuncParameters(AbraFuncStmt funcStmt, List<String> args){
         int i=0;
