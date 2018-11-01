@@ -67,7 +67,6 @@ public class AbraFile extends PsiFileBase {
                 .collect(Collectors.toList());
     }
 
-    public static Key<Boolean> DUPLICATE_TRANSITIVE = new Key("DUPLICATE_TRANSITIVE");
     public List<AbraFile> _getImportTree(List<AbraFile> importsTree){
         for(ASTNode stmt:getNode().getChildren(TokenSet.create(AbraTypes.IMPORT_STMT))){
             PsiReference[] importedFiles = ((AbraImportStmt) stmt.getPsi()).getReferences();
