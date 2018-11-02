@@ -1073,6 +1073,13 @@ public class AbraPsiImplUtil {
         return getStatment(funcExpr) instanceof AbraFuncStmt;
     }
 
+    public static String getTypeLabelWithBrackets(AbraFuncSignature funcSignature){
+        if (funcSignature.getConstExprList().size()==0) return "";
+        return "<"+funcSignature.getText().substring(funcSignature.getConstExprList().get(0).getStartOffsetInParent(),
+                                                     funcSignature.getConstExprList().get(funcSignature.getConstExprList().size()-1).getStartOffsetInParent()+funcSignature.getConstExprList().get(funcSignature.getConstExprList().size()-1).getTextLength())
+                +">";
+    }
+
     //====================================================================
     //====================== AbraField ===================================
     //====================================================================

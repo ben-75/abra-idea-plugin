@@ -48,9 +48,7 @@ public class AbraInterpreterSettingsEditor extends SettingsEditor<AbraInterprete
                                 myPanel.functionsInSelectedModule.setSelectedIndex(j);
                                 if(runConfig.getTargetFunc().isInTemplate()) {
                                     myPanel.targetTypeInstantiation.setModel(getTypeInstanciationListModel(runConfig.getTargetFunc()));
-                                    String typeLabel = runConfig.getTargetFunc().getFuncSignature().getText().substring(
-                                            runConfig.getTargetFunc().getFuncSignature().getOpenTag().getStartOffsetInParent(),
-                                            runConfig.getTargetFunc().getFuncSignature().getCloseTag().getStartOffsetInParent() + 1);
+                                    String typeLabel = runConfig.getTargetFunc().getFuncSignature().getTypeLabelWithBrackets();
                                     myPanel.typeInstLabel.setText("Mapping for " + typeLabel + " :");
                                     myPanel.typeInstLabel.setVisible(true);
                                     myPanel.targetTypeInstantiation.setVisible(true);
@@ -163,6 +161,8 @@ public class AbraInterpreterSettingsEditor extends SettingsEditor<AbraInterprete
                     if(funcStmt.isInTemplate()){
                         myPanel.targetTypeInstantiation.setModel(getTypeInstanciationListModel(funcStmt));
                         myPanel.targetTypeInstantiation.setSelectedItem(null);
+                        String typeLabel = funcStmt.getFuncSignature().getTypeLabelWithBrackets();
+                        myPanel.typeInstLabel.setText("Mapping for " + typeLabel + " :");
                         myPanel.typeInstLabel.setVisible(true);
                         myPanel.targetTypeInstantiation.setVisible(true);
                     }else{

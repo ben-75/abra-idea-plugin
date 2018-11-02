@@ -127,7 +127,9 @@ lutEntry            ::= tritList ASSIGN tritList
 private lutEntryRecover ::= !(lutEntry | CLOSE_BRACKET)
 
 funcSignature       ::= typeSize funcName (OPEN_TAG constExpr (COMMA constExpr)* CLOSE_TAG)? OPEN_PAR (funcParameter(COMMA funcParameter)*) CLOSE_PAR
-
+                    {
+                        methods = [getTypeLabelWithBrackets]
+                    }
 funcParameter       ::= paramName typeSize
 
 funcBody            ::= mergeExpr | (OPEN_BRACE joinExpr* affectExpr * stateExpr* assignExpr* returnExpr CLOSE_BRACE)
