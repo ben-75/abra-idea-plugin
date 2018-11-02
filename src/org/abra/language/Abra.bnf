@@ -65,7 +65,7 @@ importStmt          ::= IMPORT_KEYWORD ((pathName) ( SLASH pathName)*)
                         pin=1
                     }
 
-typeStmt            ::= TYPE_KEYWORD typeName (typeSize | (OPEN_BRACE fieldSpec+ CLOSE_BRACE))
+typeStmt            ::= TYPE_KEYWORD typeName (typeSize | ('{' fieldSpec+ '}'))
                     {
                         mixin="org.abra.language.psi.impl.AbraDefinitionImpl"
                         implements="org.abra.language.psi.AbraDefinition"
@@ -80,7 +80,7 @@ fieldSpec           ::= fieldName typeSize
                         methods=[getPresentation getResolvedSize]
                     }
 
-lutStmt             ::= LUT_KEYWORD lutName OPEN_BRACKET lutEntry+ CLOSE_BRACKET
+lutStmt             ::= LUT_KEYWORD lutName '[' lutEntry+ ']'
                     {
                         mixin="org.abra.language.psi.impl.AbraDefinitionImpl"
                         implements="org.abra.language.psi.AbraDefinition"
@@ -96,7 +96,7 @@ funcStmt            ::= FUNC_KEYWORD funcSignature ASSIGN funcBody
                         pin=1
                     }
 
-templateStmt        ::= TEMPLATE_KEYWORD templateName OPEN_TAG (placeHolderTypeName (COMMA placeHolderTypeName)*) CLOSE_TAG (funcStmt | OPEN_BRACE typeStmt* funcStmt+ CLOSE_BRACE)
+templateStmt        ::= TEMPLATE_KEYWORD templateName '<' (placeHolderTypeName (COMMA placeHolderTypeName)*) '>' (funcStmt | '{' typeStmt* funcStmt+ '}')
                     {
                         mixin="org.abra.language.psi.impl.AbraDefinitionImpl"
                         implements="org.abra.language.psi.AbraDefinition"
@@ -112,7 +112,7 @@ useStmt             ::= USE_KEYWORD templateNameRef typeInstantiation (COMMA typ
                         pin=1
                     }
 
-typeInstantiation   ::= OPEN_TAG (typeNameRef (COMMA typeNameRef)*) CLOSE_TAG
+typeInstantiation   ::= '<' (typeNameRef (COMMA typeNameRef)*) '>'
                     {
                         mixin="org.abra.language.psi.impl.AbraDefinitionImpl"
                         implements="org.abra.language.psi.AbraDefinition"
@@ -124,15 +124,15 @@ lutEntry            ::= tritList ASSIGN tritList
                         methods = [getInputLength getOutputLength]
                         pin=2 recoverWhile=lutEntryRecover
                     }
-private lutEntryRecover ::= !(lutEntry | CLOSE_BRACKET)
+private lutEntryRecover ::= !(lutEntry | ']')
 
-funcSignature       ::= typeSize funcName (OPEN_TAG constExpr (COMMA constExpr)* CLOSE_TAG)? OPEN_PAR (funcParameter(COMMA funcParameter)*) CLOSE_PAR
+funcSignature       ::= typeSize funcName ('<' constExpr (COMMA constExpr)* '>')? '(' (funcParameter(COMMA funcParameter)*) ')'
                     {
                         methods = [getTypeLabelWithBrackets]
                     }
 funcParameter       ::= paramName typeSize
 
-funcBody            ::= mergeExpr | (OPEN_BRACE joinExpr* affectExpr * stateExpr* assignExpr* returnExpr CLOSE_BRACE)
+funcBody            ::= mergeExpr | ('{' joinExpr* affectExpr * stateExpr* assignExpr* returnExpr '}')
                     {
                         methods=[getFuncSignature]
                     }
@@ -167,15 +167,15 @@ returnExpr          ::= RETURN_KEYWORD mergeExpr
                     {
                         pin=1 recoverWhile=returnExprRecover
                     }
-private returnExprRecover ::= (typeExpr | !(CLOSE_BRACE))
+private returnExprRecover ::= (typeExpr | !('}'))
 
 mergeExpr           ::= concatExpr (MERGE_OPERATOR concatExpr)*
 
 concatExpr          ::= postfixExpr (AMP postfixExpr)*
 
-postfixExpr         ::= integer | funcExpr | lutExpr | lutOrSliceExpr | typeExpr | sliceExpr | (OPEN_PAR mergeExpr CLOSE_PAR)
+postfixExpr         ::= integer | funcExpr | lutExpr | lutOrSliceExpr | typeExpr | sliceExpr | ('(' mergeExpr ')')
 
-typeExpr            ::= typeNameRef OPEN_BRACE fieldAssignExpr+ CLOSE_BRACE
+typeExpr            ::= typeNameRef '{' fieldAssignExpr+ '}'
                     {
                         methods=[getResolvedSize ]
                     }
@@ -184,14 +184,14 @@ private fieldAssignExpr ::= fieldNameRef ASSIGN mergeExpr
                    {
                         pin=2 recoverWhile=returnFieldAssignExpr
                    }
-private returnFieldAssignExpr ::= !(fieldAssignExpr | CLOSE_BRACE)
+private returnFieldAssignExpr ::= !(fieldAssignExpr | '}')
 
-funcExpr            ::= funcNameRef (OPEN_TAG constExpr (COMMA constExpr)* CLOSE_TAG)? OPEN_PAR (mergeExpr (COMMA mergeExpr)*) CLOSE_PAR
+funcExpr            ::= funcNameRef ('<' constExpr (COMMA constExpr)* '>')? '(' (mergeExpr (COMMA mergeExpr)*) ')'
                     {
                         methods=[isInFuncStatement isInTemplateStatement getStatment getFuncStmt]
                     }
 
-lutExpr             ::= lutNameRef OPEN_BRACKET (mergeExpr (COMMA mergeExpr)+) CLOSE_BRACKET
+lutExpr             ::= lutNameRef '[' (mergeExpr (COMMA mergeExpr)+) ']'
                     {
                         methods=[getResolvedSize ]
                     }
@@ -201,12 +201,12 @@ sliceExpr           ::= paramOrVarNameRef (DOT fieldNameRef)* rangeExpr?
                         methods=[ hasRangeOperator hasOpenRange hasClosedRange hasSmartRange]
                     }
 
-lutOrSliceExpr      ::= lutOrParamOrVarNameRef OPEN_BRACKET ( mergeExpr | constExpr ) CLOSE_BRACKET
+lutOrSliceExpr      ::= lutOrParamOrVarNameRef '[' ( mergeExpr | constExpr ) ']'
                     {
                         methods=[getResolvedSize ]
                     }
 
-rangeExpr           ::= OPEN_BRACKET constExpr ((RANGE_OPERATOR constExpr?) | (SMART_RANGE_OPERATOR constExpr))? CLOSE_BRACKET
+rangeExpr           ::= '[' constExpr ((RANGE_OPERATOR constExpr?) | (SMART_RANGE_OPERATOR constExpr))? ']'
                     {
                         methods=[ hasRangeOperator hasOpenRange hasClosedRange hasSmartRange]
                     }
@@ -221,12 +221,12 @@ constTerm           ::= constFactor ((SLASH|TIMES|MODULO) constFactor)*
                         methods=[getResolvedSize ]
                     }
 
-constFactor         ::= number | typeOrPlaceHolderNameRef | (MINUS constFactor) | (OPEN_PAR constExpr CLOSE_PAR)
+constFactor         ::= number | typeOrPlaceHolderNameRef | (MINUS constFactor) | ('(' constExpr ')')
                     {
                         methods = [getResolvedSize ]
                     }
 
-typeSize            ::= OPEN_BRACKET constExpr CLOSE_BRACKET
+typeSize            ::= '[' constExpr ']'
                     {
                         methods=[getResolvedSize]
                     }
@@ -285,7 +285,7 @@ typeName            ::= IDENTIFIER
                         methods=[getName setName getNameIdentifier getResolvedSize]
                         pin=1 recoverWhile=typeNameRecover
                     }
-private typeNameRecover ::= !(OPEN_BRACKET|OPEN_BRACE)
+private typeNameRecover ::= !('['|'{')
 
 typeNameRef         ::= IDENTIFIER
                     {
@@ -313,7 +313,7 @@ lutName             ::= IDENTIFIER
                         methods = [getName setName getNameIdentifier]
                         pin=1 recoverWhile=lutNameRecover
                     }
-private lutNameRecover ::= !OPEN_BRACKET
+private lutNameRecover ::= !'['
 
 lutNameRef          ::= IDENTIFIER
                     {

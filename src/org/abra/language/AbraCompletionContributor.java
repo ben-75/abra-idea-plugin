@@ -54,18 +54,18 @@ public class AbraCompletionContributor extends CompletionContributor {
                                 resultSet.addElement(LookupElementBuilder.create("use"));
                                 resultSet.addElement(LookupElementBuilder.create("template"));
                             }else if (parent instanceof AbraFuncBody) {
-                                if(((AbraFuncBody) parent).getOpenBrace()!=null){
-                                    if(acceptJoinExpr(current)){
-                                        resultSet.addElement(LookupElementBuilder.create("join"));
-                                        resultSet.addElement(LookupElementBuilder.create("affect"));
-                                        resultSet.addElement(LookupElementBuilder.create("state"));
-                                    }else if(acceptAffectExpr(current)){
-                                        resultSet.addElement(LookupElementBuilder.create("affect"));
-                                        resultSet.addElement(LookupElementBuilder.create("state"));
-                                    }else if(acceptStateExpr(current)){
-                                        resultSet.addElement(LookupElementBuilder.create("state"));
-                                    }
-                                }
+//                                if(((AbraFuncBody) parent).getOpenBrace()!=null){
+//                                    if(acceptJoinExpr(current)){
+//                                        resultSet.addElement(LookupElementBuilder.create("join"));
+//                                        resultSet.addElement(LookupElementBuilder.create("affect"));
+//                                        resultSet.addElement(LookupElementBuilder.create("state"));
+//                                    }else if(acceptAffectExpr(current)){
+//                                        resultSet.addElement(LookupElementBuilder.create("affect"));
+//                                        resultSet.addElement(LookupElementBuilder.create("state"));
+//                                    }else if(acceptStateExpr(current)){
+//                                        resultSet.addElement(LookupElementBuilder.create("state"));
+//                                    }
+//                                }
                             }
                         }
 
