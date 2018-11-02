@@ -1267,8 +1267,6 @@ public class AbraPsiImplUtil {
         for(AbraTypeStmt typeStmt:templateStmt.getTypeStmtList()){
             if(typeStmt.getTypeSize()!=null) {
                 map.put(typeStmt.getTypeName().getText(), getResolvedSize2(typeStmt.getTypeSize().getConstExpr(), map, templateStmt));
-            }else{
-               // System.out.println("hum... ? what do I do here ???");  --> ignore
             }
         }
         return map;

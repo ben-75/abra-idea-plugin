@@ -42,8 +42,8 @@ public class AbraCompletionContributor extends CompletionContributor {
                                                ProcessingContext context,
                                                @NotNull CompletionResultSet resultSet) {
                         PsiElement current = parameters.getOriginalFile().findElementAt(parameters.getOffset());
-                        PsiElement parent = current.getParent();
                         if(current instanceof PsiWhiteSpace) {
+                            PsiElement parent = current.getParent();
                             if (parent instanceof AbraTemplateStmt) {
                                 resultSet.addElement(LookupElementBuilder.create("func"));
                                 resultSet.addElement(LookupElementBuilder.create("type"));

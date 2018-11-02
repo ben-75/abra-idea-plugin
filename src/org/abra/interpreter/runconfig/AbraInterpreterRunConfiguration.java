@@ -74,7 +74,7 @@ public class AbraInterpreterRunConfiguration extends LocatableConfigurationBase 
             if (targetFunc instanceof AbraUseStmt) {
                 funcName = ((AbraUseStmt) targetFunc).getTemplateNameRef().getText();
             } else if (targetFunc instanceof AbraFuncStmt) {
-                funcName = ((AbraFuncStmt) targetFunc).getFuncSignature().getFuncName().getText();
+                funcName = targetFunc.getFuncSignature().getFuncName().getText();
             }
             if (funcName == null) {
                 throw new RuntimeConfigurationException("Element " + targetFunc.getText() + " is not a valid evaluation target");

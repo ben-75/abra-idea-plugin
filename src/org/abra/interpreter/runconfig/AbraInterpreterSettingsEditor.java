@@ -35,19 +35,19 @@ public class AbraInterpreterSettingsEditor extends SettingsEditor<AbraInterprete
 
 
     @Override
-    protected void resetEditorFrom(AbraInterpreterRunConfiguration runConfig) {
+    protected void resetEditorFrom(@NotNull AbraInterpreterRunConfiguration runConfig) {
         myPanel.modules.setModel(getModulesModel(runConfig.getProject()));
         if(runConfig.getTargetModule()!=null){
-            for(int i=0;i<((ListComboBoxModel)myPanel.modules.getModel()).getSize();i++){
-                if(((AbraFileComboBoxItem)((ListComboBoxModel)myPanel.modules.getModel()).getElementAt(i)).getAbraFile().isEquivalentTo(runConfig.getTargetModule())){
+            for(int i = 0; i< myPanel.modules.getModel().getSize(); i++){
+                if(((AbraFileComboBoxItem) myPanel.modules.getModel().getElementAt(i)).getAbraFile().isEquivalentTo(runConfig.getTargetModule())){
                     myPanel.modules.setSelectedIndex(i);
-                    myPanel.functionsInSelectedModule.setModel(getFunctionsModel(((AbraFileComboBoxItem)((ListComboBoxModel)myPanel.modules.getModel()).getElementAt(i)).getAbraFile()));
+                    myPanel.functionsInSelectedModule.setModel(getFunctionsModel(((AbraFileComboBoxItem) myPanel.modules.getModel().getElementAt(i)).getAbraFile()));
                     if(runConfig.getTargetFunc()!=null){
-                        for(int j=0;j<((ListComboBoxModel)myPanel.functionsInSelectedModule.getModel()).getSize();j++){
-                            if(((AbraFuncStmtComboBoxItem)((ListComboBoxModel)myPanel.functionsInSelectedModule.getModel()).getElementAt(j)).getFuncStmt().isEquivalentTo(runConfig.getTargetFunc())){
+                        for(int j = 0; j< myPanel.functionsInSelectedModule.getModel().getSize(); j++){
+                            if(((AbraFuncStmtComboBoxItem) myPanel.functionsInSelectedModule.getModel().getElementAt(j)).getFuncStmt().isEquivalentTo(runConfig.getTargetFunc())){
                                 myPanel.functionsInSelectedModule.setSelectedIndex(j);
                                 if(runConfig.getTargetFunc().isInTemplate()) {
-                                    myPanel.targetTypeInstantiation.setModel(getTypeInstanciationListModel((AbraFuncStmt) runConfig.getTargetFunc()));
+                                    myPanel.targetTypeInstantiation.setModel(getTypeInstanciationListModel(runConfig.getTargetFunc()));
                                     String typeLabel = runConfig.getTargetFunc().getFuncSignature().getText().substring(
                                             runConfig.getTargetFunc().getFuncSignature().getOpenTag().getStartOffsetInParent(),
                                             runConfig.getTargetFunc().getFuncSignature().getCloseTag().getStartOffsetInParent() + 1);
@@ -55,8 +55,8 @@ public class AbraInterpreterSettingsEditor extends SettingsEditor<AbraInterprete
                                     myPanel.typeInstLabel.setVisible(true);
                                     myPanel.targetTypeInstantiation.setVisible(true);
                                     if (runConfig.getTargetTypeInstantiation() != null) {
-                                        for (int k = 0; k < ((ListComboBoxModel) myPanel.targetTypeInstantiation.getModel()).getSize(); k++) {
-                                            if (((AbraTypeInstComboBoxItem) ((ListComboBoxModel) myPanel.targetTypeInstantiation.getModel()).getElementAt(k)).getTypeInstantiation().isEquivalentTo(runConfig.getTargetTypeInstantiation())) {
+                                        for (int k = 0; k < myPanel.targetTypeInstantiation.getModel().getSize(); k++) {
+                                            if (((AbraTypeInstComboBoxItem) myPanel.targetTypeInstantiation.getModel().getElementAt(k)).getTypeInstantiation().isEquivalentTo(runConfig.getTargetTypeInstantiation())) {
                                                 myPanel.targetTypeInstantiation.setSelectedIndex(k);
                                                 myPanel.typeInstLabel.setVisible(true);
                                                 myPanel.targetTypeInstantiation.setVisible(true);
@@ -104,7 +104,7 @@ public class AbraInterpreterSettingsEditor extends SettingsEditor<AbraInterprete
     }
 
     @Override
-    protected void applyEditorTo(AbraInterpreterRunConfiguration runCongig) throws ConfigurationException {
+    protected void applyEditorTo(@NotNull AbraInterpreterRunConfiguration runCongig) throws ConfigurationException {
         if(myPanel.modules.getSelectedItem()!=null) {
             runCongig.setTargetModule(((AbraFileComboBoxItem) myPanel.modules.getSelectedItem()).getAbraFile());
             if (myPanel.functionsInSelectedModule.getSelectedItem() != null) {

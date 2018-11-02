@@ -66,7 +66,7 @@ public class AbraStructureViewElement implements StructureViewTreeElement, Sorta
             if(abraDeclarations!=null) {
                 List<TreeElement> treeElements = new ArrayList<TreeElement>(abraDeclarations.length);
                 for (AbraDefinition abraDeclaration : abraDeclarations) {
-                    treeElements.add(new AbraStructureViewElement((AbraDefinition) abraDeclaration));
+                    treeElements.add(new AbraStructureViewElement(abraDeclaration));
                 }
                 return treeElements.toArray(new TreeElement[treeElements.size()]);
             }

@@ -15,46 +15,15 @@ public class FuncArgsAnnotator  implements Annotator {
             PsiElement resolved =  funcExpr.getFuncNameRef().getReference().resolve();
             if(resolved!=null){
                 AbraFuncSignature funcSignature = resolved instanceof AbraFuncName ? (AbraFuncSignature) resolved.getParent() : getFuncSignatureForTemplateNameRef(funcExpr.getFuncNameRef().getText(),(AbraTemplateNameRef)resolved);
-//                if(resolved instanceof AbraTemplateNameRef){
-//                    AbraPsiImplUtil.ContextStack.INSTANCE.push(AbraPsiImplUtil.getTemplateContextMap((AbraUseStmt)resolved.getParent(), funcExpr.getConstExpr().getResolvedSize()));
-//                }
-                try {
-                    int  argsCount = funcExpr.getMergeExprList().size();
-                    int   startOffset = funcExpr.getMergeExprList().get(0).getTextRange().getStartOffset();
-                    int  endOffset = funcExpr.getMergeExprList().get(argsCount - 1).getTextRange().getEndOffset();
+                int  argsCount = funcExpr.getMergeExprList().size();
+                int   startOffset = funcExpr.getMergeExprList().get(0).getTextRange().getStartOffset();
+                int  endOffset = funcExpr.getMergeExprList().get(argsCount - 1).getTextRange().getEndOffset();
 
-                    int expectedArgsCount = funcSignature.getFuncParameterList().size();
+                int expectedArgsCount = funcSignature.getFuncParameterList().size();
 
-                    if (expectedArgsCount != argsCount) {
-                        TextRange range = new TextRange(startOffset, endOffset);
-                        holder.createErrorAnnotation(range, "Unexpected arguments count. Expecting : " + expectedArgsCount + " args, but found " + argsCount);
-                    } else if (((AbraFuncStmt)funcExpr.getStatment()).getFuncSignature().getConstExprList().size()==0) {
-//                        for (int i = 0; i < funcSignature.getFuncParameterList().size(); i++) {
-//                            try {
-//                                int expectedSize = funcSignature.getFuncParameterList().get(i).getTypeSize().getResolvedSize();
-//                                int effectiveSize = funcExpr.getMergeExprList().get(i).getResolvedSize();
-//
-//                                try{
-//                                    Integer.parseInt(funcExpr.getMergeExprList().get(i).getText());
-//                                    effectiveSize=-1;
-//                                }catch(NumberFormatException e){
-//
-//                                }
-//                                if (expectedSize != effectiveSize && effectiveSize>0) {
-//                                    int result = funcExpr.getMergeExprList().get(i).getResolvedSize(); //side effect throw UnresolvableTokenException
-//                                    TextRange range = funcExpr.getMergeExprList().get(i).getTextRange();
-//                                    holder.createErrorAnnotation(range, "Unexpected argument size. Expecting : " + expectedSize + "trits, but found " + effectiveSize + " trits");
-//                                }
-//                            }catch (UnresolvableTokenException e){
-//                                TextRange range = funcExpr.getMergeExprList().get(i).getTextRange();
-//                                holder.createErrorAnnotation(range, "Trit vector size cannot be computed");
-//                            }
-//                        }
-                    }
-                }finally {
-                    if(resolved instanceof AbraTemplateNameRef){
-                        AbraPsiImplUtil.ContextStack.INSTANCE.pop();
-                    }
+                if (expectedArgsCount != argsCount) {
+                    TextRange range = new TextRange(startOffset, endOffset);
+                    holder.createErrorAnnotation(range, "Unexpected arguments count. Expecting : " + expectedArgsCount + " args, but found " + argsCount);
                 }
             }
         }

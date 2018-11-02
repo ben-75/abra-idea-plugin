@@ -21,7 +21,7 @@ public class ImportAnnotator  implements Annotator {
             PsiReference[] references = element.getReferences();
             if(references.length==1) {
                 AbraFile rootImport = (AbraFile) references[0].resolve();
-                Set<PsiElement> resolvedReferences = refCache.get((AbraFile) element.getContainingFile());
+                Set<PsiElement> resolvedReferences = refCache.get(element.getContainingFile());
                 if (resolvedReferences == null) {
                     resolvedReferences = ((AbraFile) element.getContainingFile()).computeResolvedReferences();
                     refCache.put((AbraFile) element.getContainingFile(), resolvedReferences);

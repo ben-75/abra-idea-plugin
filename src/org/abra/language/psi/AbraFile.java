@@ -69,7 +69,7 @@ public class AbraFile extends PsiFileBase {
 
     public List<AbraFile> _getImportTree(List<AbraFile> importsTree){
         for(ASTNode stmt:getNode().getChildren(TokenSet.create(AbraTypes.IMPORT_STMT))){
-            PsiReference[] importedFiles = ((AbraImportStmt) stmt.getPsi()).getReferences();
+            PsiReference[] importedFiles = stmt.getPsi().getReferences();
             for (PsiReference psiRef : importedFiles) {
                 AbraFile anAbraFile = (AbraFile)psiRef.resolve();
                 if(anAbraFile!=null){
@@ -77,8 +77,6 @@ public class AbraFile extends PsiFileBase {
                         importsTree.add(anAbraFile);
                         anAbraFile._getImportTree(importsTree);
                     }
-                }else if(anAbraFile==null){
-                    System.out.println("Fail to resolve :"+psiRef.getCanonicalText());
                 }
             }
         }

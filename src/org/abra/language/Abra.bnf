@@ -155,9 +155,9 @@ stateExpr           ::= STATE_KEYWORD varName typeSize
                     }
 private stateExprRecover ::= !(stateExpr | assignExpr | returnExpr)
 
-assignExpr          ::= varName typeSize? ASSIGN mergeExpr
+assignExpr          ::= varName ASSIGN mergeExpr
                     {
-                        pin=3 recoverWhile=assignExprRecover
+                        pin=2 recoverWhile=assignExprRecover
                     }
 private assignExprRecover ::= !(assignExpr | returnExpr)
 

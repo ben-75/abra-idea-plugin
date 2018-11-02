@@ -99,7 +99,7 @@ public class InputTritPanel extends JPanel implements DocumentListener {
                 } else if (formats[0] == TritUtils.DATA_FORMAT.TRIT_FMT) {
                     trits = TritUtils.stringToTrits(s);
                     otherFormat1.setText(truncate("Decimal : " + TritUtils.trit2Decimal(trits)));
-                    otherFormat1.setText(truncate("Trytes  : " + TritUtils.trit2Trytes(trits)));
+                    otherFormat2.setText(truncate("Trytes  : " + TritUtils.trit2Trytes(trits)));
                 } else if (formats[0] == TritUtils.DATA_FORMAT.DECIMAL) {
                     trits = TritUtils.bigInt2Trits(new BigInteger(s, 10));
                     otherFormat1.setText(truncate("Trytes  : " + TritUtils.trit2Trytes(trits)));
