@@ -12,10 +12,13 @@ import com.intellij.execution.runners.ProgramRunner;
 import com.intellij.execution.ui.ConsoleView;
 import com.intellij.ide.util.PropertiesComponent;
 import com.intellij.openapi.roots.ProjectRootManager;
+import com.intellij.xdebugger.XDebuggerManager;
+import com.intellij.xdebugger.breakpoints.XBreakpointManager;
 import org.abra.interpreter.runconfig.AbraInterpreterRunConfiguration;
 import org.abra.language.psi.AbraPsiImplUtil;
 import org.abra.utils.TritUtils;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.debugger.BreakpointManager;
 
 import java.io.File;
 
@@ -48,10 +51,12 @@ public class AbraInterpreterState extends JavaCommandLineState {
     @Override
     protected JavaParameters createJavaParameters() throws ExecutionException {
         JavaParameters javaParameters = new JavaParameters();
+        javaParameters.getVMParametersList().add("-Dabra.tritcode=out/tritcode/build/tritcode");
         javaParameters.setWorkingDirectory(
                 AbraPsiImplUtil.getSourceRoot(runConfiguration.getProject(),
                         runConfiguration.getTargetModule().getVirtualFile()).getPath());
         javaParameters.setMainClass("org.iota.abra.Main");
+        //javaParameters.getVMParametersList()
         StringBuilder sb = new StringBuilder();
 
         javaParameters.getProgramParametersList().add(runConfiguration.getTargetModule().getImportableFilePath());
@@ -89,7 +94,11 @@ public class AbraInterpreterState extends JavaCommandLineState {
             javaParameters.getProgramParametersList().add(runConfiguration.getTargetFunc().getFuncSignature().getFuncName().getText() + type + "(" + args + ")");
         }
         javaParameters.setJdk(ProjectRootManager.getInstance(runConfiguration.getProject()).getProjectSdk());
-        javaParameters.getClassPath().add(new File(PropertiesComponent.getInstance().getValue("org.abra.language.interpreterpath")));
+        //javaParameters.getClassPath().add(new File(PropertiesComponent.getInstance().getValue("org.abra.language.interpreterpath")));
+        javaParameters.getClassPath().add(new File(runConfiguration.getProject().getBaseDir().getPath()+"/build/classes/java/main/"));
+
+        XBreakpointManager breakpointManager = XDebuggerManager.getInstance(runConfiguration.getProject()).getBreakpointManager();
+
         return javaParameters;
     }
 }

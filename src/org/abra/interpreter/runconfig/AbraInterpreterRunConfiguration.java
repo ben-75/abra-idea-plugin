@@ -2,6 +2,7 @@ package org.abra.interpreter.runconfig;
 
 import com.intellij.execution.ExecutionException;
 import com.intellij.execution.Executor;
+import com.intellij.execution.application.ApplicationConfiguration;
 import com.intellij.execution.configurations.*;
 import com.intellij.execution.runners.ExecutionEnvironment;
 import com.intellij.ide.util.PropertiesComponent;
@@ -30,7 +31,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-public class AbraInterpreterRunConfiguration extends LocatableConfigurationBase {
+public class AbraInterpreterRunConfiguration extends ApplicationConfiguration {
 
     private boolean test = false;
     private boolean eval = false;
@@ -46,7 +47,7 @@ public class AbraInterpreterRunConfiguration extends LocatableConfigurationBase 
     String[] args;
 
     protected AbraInterpreterRunConfiguration(Project project, ConfigurationFactory factory, String name) {
-        super(project, factory, name);
+        super(name, project, factory);//, new AbraInterpreterConfigurationFactory(AbraInterpreterConfigurationType.getInstance()));
 
     }
 
@@ -58,12 +59,12 @@ public class AbraInterpreterRunConfiguration extends LocatableConfigurationBase 
 
     @Override
     public void checkConfiguration() throws RuntimeConfigurationException {
-        if(PropertiesComponent.getInstance().getValue("org.abra.language.interpreterpath")==null){
-            throw new RuntimeConfigurationException("AbraInterpreter path is not defined (settings)");
-        }
-        if(PropertiesComponent.getInstance().getValue("org.abra.language.interpreterpath").length()==0){
-            throw new RuntimeConfigurationException("AbraInterpreter path is not defined (settings)");
-        }
+//        if(PropertiesComponent.getInstance().getValue("org.abra.language.interpreterpath")==null){
+//            throw new RuntimeConfigurationException("AbraInterpreter path is not defined (settings)");
+//        }
+//        if(PropertiesComponent.getInstance().getValue("org.abra.language.interpreterpath").length()==0){
+//            throw new RuntimeConfigurationException("AbraInterpreter path is not defined (settings)");
+//        }
         if (targetModule == null) throw new RuntimeConfigurationException("Module is not defined");
         if (targetFunc == null && !test && !eval && !fpga && !tree ) {
             throw new RuntimeConfigurationException("Execution target (eval, test, tree or function) is not defined");

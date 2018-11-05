@@ -28,6 +28,6 @@ public class AbraInterpreterProgramRunner extends DefaultJavaProgramRunner {
 
     @Override
     public boolean canRun(@NotNull String executorId, @NotNull RunProfile profile) {
-        return executorId.equals("Run") && profile instanceof AbraInterpreterRunConfiguration;
+        return /*executorId.equals("Run")*/ super.canRun(executorId, profile) && profile instanceof AbraInterpreterRunConfiguration;
     }
 }
