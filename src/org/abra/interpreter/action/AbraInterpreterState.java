@@ -11,7 +11,14 @@ import com.intellij.execution.runners.ExecutionEnvironment;
 import com.intellij.execution.runners.ProgramRunner;
 import com.intellij.execution.ui.ConsoleView;
 import com.intellij.ide.util.PropertiesComponent;
+import com.intellij.openapi.compiler.CompilerPaths;
+import com.intellij.openapi.module.JavaModuleType;
+import com.intellij.openapi.module.Module;
+import com.intellij.openapi.module.ModuleType;
+import com.intellij.openapi.module.ModuleUtil;
+import com.intellij.openapi.project.Project;
 import com.intellij.openapi.roots.ProjectRootManager;
+import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.xdebugger.XDebuggerManager;
 import com.intellij.xdebugger.breakpoints.XBreakpointManager;
 import org.abra.interpreter.runconfig.AbraInterpreterRunConfiguration;
@@ -21,6 +28,9 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.debugger.BreakpointManager;
 
 import java.io.File;
+import java.util.Collection;
+import java.util.LinkedList;
+import java.util.List;
 
 public class AbraInterpreterState extends JavaCommandLineState {
 
@@ -95,10 +105,50 @@ public class AbraInterpreterState extends JavaCommandLineState {
         }
         javaParameters.setJdk(ProjectRootManager.getInstance(runConfiguration.getProject()).getProjectSdk());
         //javaParameters.getClassPath().add(new File(PropertiesComponent.getInstance().getValue("org.abra.language.interpreterpath")));
-        javaParameters.getClassPath().add(new File(runConfiguration.getProject().getBaseDir().getPath()+"/build/classes/java/main/"));
+        //javaParameters.getClassPath().addAllFiles(findClasses(runConfiguration.getProject()));
+
+        Collection<Module> modules = ModuleUtil.getModulesOfType(runConfiguration.getProject(), JavaModuleType.getModuleType());
+
+        for (Module module : modules)
+        {
+            VirtualFile outputDirectory = CompilerPaths.getModuleOutputDirectory(module, false);
+            if(outputDirectory!=null)
+                javaParameters.getClassPath().add(new File(outputDirectory.getPath()));
+        }
 
         XBreakpointManager breakpointManager = XDebuggerManager.getInstance(runConfiguration.getProject()).getBreakpointManager();
 
         return javaParameters;
+    }
+
+    private File[] findClasses(Project project){
+        List<File> classes = new LinkedList();
+        Collection<Module> modules = ModuleUtil.getModulesOfType(project, JavaModuleType.getModuleType());
+
+        for (Module module : modules)
+        {
+            VirtualFile outputDirectory = CompilerPaths.getModuleOutputDirectory(module, false);
+            if(outputDirectory!=null)
+                classes.addAll(getAllChildren(outputDirectory, "class"));
+        }
+
+        return classes.toArray(new File[classes.size()]);
+    }
+
+    private List<File> getAllChildren(VirtualFile rootDir, String extension)
+    {
+        assert rootDir.isDirectory() : "rootDir isn't a directory";
+
+        List<File> children = new LinkedList();
+
+        for (VirtualFile entry : rootDir.getChildren())
+        {
+            if (entry.isDirectory())
+                children.addAll(getAllChildren(entry, extension));
+            else if (extension.equals(entry.getExtension()))
+                children.add(new File(entry.getPath()));
+        }
+
+        return children;
     }
 }
