@@ -17,6 +17,8 @@ import com.intellij.openapi.module.Module;
 import com.intellij.openapi.module.ModuleType;
 import com.intellij.openapi.module.ModuleUtil;
 import com.intellij.openapi.project.Project;
+import com.intellij.openapi.projectRoots.Sdk;
+import com.intellij.openapi.roots.OrderRootType;
 import com.intellij.openapi.roots.ProjectRootManager;
 import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.xdebugger.XDebuggerManager;
@@ -103,19 +105,26 @@ public class AbraInterpreterState extends JavaCommandLineState {
             String args = sb.substring(0,sb.length()-1);
             javaParameters.getProgramParametersList().add(runConfiguration.getTargetFunc().getFuncSignature().getFuncName().getText() + type + "(" + args + ")");
         }
-        javaParameters.setJdk(ProjectRootManager.getInstance(runConfiguration.getProject()).getProjectSdk());
-        //javaParameters.getClassPath().add(new File(PropertiesComponent.getInstance().getValue("org.abra.language.interpreterpath")));
+       //javaParameters.getClassPath().add(new File(PropertiesComponent.getInstance().getValue("org.abra.language.interpreterpath")));
         //javaParameters.getClassPath().addAllFiles(findClasses(runConfiguration.getProject()));
-
+        Sdk sdk = null;
+        try {
+            sdk = (Sdk)ProjectRootManager.getInstance(runConfiguration.getProject()).getProjectSdk().clone();
+        } catch (CloneNotSupportedException e) {
+            e.printStackTrace();
+        }
         Collection<Module> modules = ModuleUtil.getModulesOfType(runConfiguration.getProject(), JavaModuleType.getModuleType());
-
         for (Module module : modules)
         {
             VirtualFile outputDirectory = CompilerPaths.getModuleOutputDirectory(module, false);
-            if(outputDirectory!=null)
+            if(outputDirectory!=null) {
                 javaParameters.getClassPath().add(new File(outputDirectory.getPath()));
+                //sdk.getSdkModificator().addRoot(outputDirectory, OrderRootType.CLASSES);
+            }
         }
-
+        //sdk.getSdkModificator().commitChanges();
+        javaParameters.setJdk(sdk);
+        javaParameters.getClassPath().add(new File("C:\\Users\\bmangez\\IOTA\\abra\\build\\libs\\abra.jar"));
         XBreakpointManager breakpointManager = XDebuggerManager.getInstance(runConfiguration.getProject()).getBreakpointManager();
 
         return javaParameters;

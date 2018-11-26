@@ -65,7 +65,11 @@
     <configurationType implementation="org.abra.interpreter.runconfig.AbraInterpreterConfigurationType"/>
     <!--<applicationConfigurable groupId="build" instance="org.abra.AbraPluginConfigurable"/>-->
     <programRunner implementation="org.abra.interpreter.action.AbraInterpreterProgramRunner"/>
+    <programRunner implementation="org.abra.interpreter.debugger.AbraInterpreterDebugRunner"/>
     <runConfigurationProducer implementation="org.abra.interpreter.runconfig.AbraRunConfigurationProducer"/>
+    <xdebugger.breakpointType implementation="org.abra.interpreter.debugger.AbraBreakpointType"/>
+    <debugger.javaBreakpointHandlerFactory implementation="org.abra.interpreter.debugger.AbraBreakpointHandlerFactory"/>
+    <debugger.positionManagerFactory implementation="org.abra.interpreter.debugger.AbraPositionManagerFactory"/>
   </extensions>
 
   <actions>
