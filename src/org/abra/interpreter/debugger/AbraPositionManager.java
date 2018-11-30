@@ -58,11 +58,16 @@ public class AbraPositionManager /*extends PositionManagerImpl*/ implements Posi
         if(stackFrameProxy!=null) {
             try {
                 List<Value> args = stackFrameProxy.getArgumentValues();
-                if (args != null && args.size() == 1) {
+                if (args.size() == 1) {
                     Value expr = args.get(0);
                     if (expr instanceof ObjectReferenceImpl) {
-                        ReferenceTypeImpl abraExprType = (ReferenceTypeImpl) DebuggerUtils.getSuperType(expr.type(), "org.iota.abra.helper.AbraExpr");
-                        if(abraExprType!=null) {
+                        ReferenceTypeImpl abraExprType = null;
+                        if (expr.type().name().equals("java.util.ArrayList")) {
+                            ArrayReferenceImpl arrRef = (ArrayReferenceImpl) ((ObjectReferenceImpl) expr).getValue(((ClassTypeImpl) expr.type()).fieldByName("elementData"));
+                            expr = arrRef.getValue(0);
+                        }
+                        abraExprType = (ReferenceTypeImpl) DebuggerUtils.getSuperType(expr.type(), "org.iota.abra.helper.AbraExpr");
+                        if (abraExprType != null) {
                             Field originField = abraExprType.fieldByName("origin");
                             Field moduleField = abraExprType.fieldByName("module");
                             ObjectReferenceImpl token = (ObjectReferenceImpl) ((ObjectReferenceImpl) expr).getValue(originField);
@@ -77,7 +82,6 @@ public class AbraPositionManager /*extends PositionManagerImpl*/ implements Posi
                             return SourcePosition.createFromLine(file, lineNumber);
                         }
                     }
-
                 }
             } catch (EvaluateException e) {
                 e.printStackTrace();
@@ -225,13 +229,13 @@ public class AbraPositionManager /*extends PositionManagerImpl*/ implements Posi
             return null;
         if(element instanceof AbraFuncStmt){
             if(((AbraFuncStmt)element).getFuncBody().getMergeExpr()!=null){
-                return ((AbraFuncStmt)element).getFuncBody().getMergeExpr();
+                return getAbraPsiElement(((AbraFuncStmt)element).getFuncBody().getMergeExpr());
             }
         }
         return element;
     }
 
-    private boolean isEvaluable(PsiElement element) {
+    public static boolean isEvaluable(PsiElement element) {
          return (element instanceof AbraFuncExpr) || (element instanceof AbraConcatExpr)
                  || (element instanceof AbraAssignExpr) || (element instanceof AbraLutExpr)
                  || (element instanceof AbraMergeExpr) || (element instanceof AbraSliceExpr)

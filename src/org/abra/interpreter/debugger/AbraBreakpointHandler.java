@@ -5,7 +5,9 @@ import com.intellij.debugger.DebuggerManagerEx;
 import com.intellij.debugger.engine.DebugProcess;
 import com.intellij.debugger.engine.DebugProcessImpl;
 import com.intellij.debugger.engine.JavaBreakpointHandler;
+import com.intellij.debugger.engine.events.DebuggerCommandImpl;
 import com.intellij.debugger.impl.DebuggerManagerImpl;
+import com.intellij.debugger.impl.PrioritizedTask;
 import com.intellij.debugger.ui.breakpoints.*;
 import com.intellij.openapi.util.Key;
 import com.intellij.psi.*;
@@ -24,6 +26,8 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import javax.swing.*;
+
+import static org.abra.interpreter.debugger.AbraPositionManager.isEvaluable;
 
 public class AbraBreakpointHandler extends JavaBreakpointHandler {
 
@@ -70,21 +74,89 @@ public class AbraBreakpointHandler extends JavaBreakpointHandler {
         if(psiElement!=null){
             setCondition(psiElement,breakpoint);
         }
+
+        AbraLineBreakpoint abraLineBreakpoint = new AbraLineBreakpoint(((XLineBreakpointImpl) breakpoint).getProject(),breakpoint);
+        breakpoint.putUserData(Breakpoint.DATA_KEY, abraLineBreakpoint);
         //Breakpoint javaBreakpoint = BreakpointManager.getJavaBreakpoint(breakpoint);
-        super.registerBreakpoint(breakpoint);
+//        Breakpoint javaBreakpoint = BreakpointManager.getJavaBreakpoint(breakpoint);
+//        if (javaBreakpoint == null) {
+//            javaBreakpoint = createJavaBreakpoint(breakpoint);
+//            breakpoint.putUserData(Breakpoint.DATA_KEY, javaBreakpoint);
+//        }
+        if (abraLineBreakpoint != null) {
+            final Breakpoint bpt = abraLineBreakpoint;
+            BreakpointManager.addBreakpoint(bpt);
+            // use schedule not to block initBreakpoints
+            DebuggerCommandImpl cmd = new DebuggerCommandImpl(){
+                @Override
+                protected void action() throws Exception {
+                    bpt.createRequest(myProcess);
+                }
+
+                @Override
+                public Priority getPriority() {
+                    return PrioritizedTask.Priority.HIGH;
+                }
+            };
+            myProcess.getManagerThread().schedule(cmd);
+        }
     }
 
     @Override
     public void unregisterBreakpoint(@NotNull XBreakpoint breakpoint, boolean temporary) {
-        super.unregisterBreakpoint(breakpoint, temporary);
+        final Breakpoint javaBreakpoint = breakpoint.getUserData(Breakpoint.DATA_KEY);;
+        if (javaBreakpoint != null) {
+            // use schedule not to block initBreakpoints
+            DebuggerCommandImpl cmd = new DebuggerCommandImpl() {
+                @Override
+                protected void action() throws Exception {
+                    myProcess.getRequestsManager().deleteRequest(javaBreakpoint);
+                }
+
+                @Override
+                public Priority getPriority() {
+                    return PrioritizedTask.Priority.HIGH;
+                }
+            };
+            myProcess.getManagerThread().schedule(cmd);
+        }
     }
 
     private void setCondition(PsiElement element, XBreakpoint breakpoint){
-        if(element instanceof AbraAssignExpr){
-            String cond0 = breakpoint.getCondition();
-            String cond = ((cond0==null || cond0.length()==0)?"":cond0+"||")+"(assign.module.pathName.endsWith(\""+breakpoint.getSourcePosition().getFile().getName()+"\") && assign.origin.lineNr=="+breakpoint.getSourcePosition().getLine()+")";
-            breakpoint.setCondition(cond);
+        if(element instanceof AbraReturnExpr){
+            element = ((AbraReturnExpr)element).getMergeExpr();
+            while(element.getChildren().length==1 && isEvaluable(element.getChildren()[0])){
+                element = element.getChildren()[0];
+            }
         }
+        String newCond = null;
+        if(element instanceof AbraAssignExpr){
+            newCond = "(assign.module.pathName.endsWith(\""+breakpoint.getSourcePosition().getFile().getName()+"\") && assign.origin.lineNr=="+breakpoint.getSourcePosition().getLine()+")";
+        }else if(element instanceof AbraConcatExpr){
+            newCond = "(exprs.get(0).module.pathName.endsWith(\""+breakpoint.getSourcePosition().getFile().getName()+"\") && exprs.get(0).origin.lineNr=="+breakpoint.getSourcePosition().getLine()+")";
+        }else if(element instanceof AbraLutExpr){
+            newCond = "(lookup.module.pathName.endsWith(\""+breakpoint.getSourcePosition().getFile().getName()+"\") && lookup.origin.lineNr=="+breakpoint.getSourcePosition().getLine()+")";
+        }else if(element instanceof AbraMergeExpr){
+            newCond = "(merge.module.pathName.endsWith(\""+breakpoint.getSourcePosition().getFile().getName()+"\") && merge.origin.lineNr=="+breakpoint.getSourcePosition().getLine()+")";
+        }else if(element instanceof AbraSliceExpr){
+            newCond = "(slice.module.pathName.endsWith(\""+breakpoint.getSourcePosition().getFile().getName()+"\") && slice.origin.lineNr=="+breakpoint.getSourcePosition().getLine()+")";
+        }else if(element instanceof AbraInteger){
+            newCond = "(integer.module.pathName.endsWith(\""+breakpoint.getSourcePosition().getFile().getName()+"\") && integer.origin.lineNr=="+breakpoint.getSourcePosition().getLine()+")";
+        }
+
+        if(newCond!=null) {
+            String cond0 = breakpoint.getCondition();
+            if(cond0==null || cond0.length()==0){
+                breakpoint.setCondition(newCond);
+            }else{
+                if(cond0.indexOf(newCond)==-1){
+                    breakpoint.setCondition(cond0 + "||" + newCond);
+                }
+            }
+        }else{
+            breakpoint.setCondition("false");
+        }
+
     }
 
 
