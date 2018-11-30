@@ -66,6 +66,7 @@ DIGIT=[2-9]
 RANGE_OPERATOR=(\.\.)
 SMART_RANGE_OPERATOR=(:)
 ASSIGN=[=]
+QUESTION_MARK=(\?)
 
 %state WAIT_TEST_ASSERT
 %state WAIT_EXPR_ASSERT
@@ -114,6 +115,7 @@ ASSIGN=[=]
   {CLOSE_PAR}                 { return CLOSE_PAR; }
   {OPEN_TAG}                  { return OPEN_TAG; }
   {CLOSE_TAG}                 { return CLOSE_TAG; }
+  {QUESTION_MARK}             { return QUESTION_MARK; }
   {DIGIT}                     { return DIGIT; }
   {RANGE_OPERATOR}            { return RANGE_OPERATOR; }
   {SMART_RANGE_OPERATOR}      { return SMART_RANGE_OPERATOR; }

@@ -60,7 +60,7 @@ public class AbraElementFactory {
 
     public static AbraFuncNameRef createAbraFunctionReference(Project project, String name) {
         final AbraFile file = createFile(project, "func [1] f(p [1])={return "+name+"(1)}");
-        return ((AbraFuncStmt)file.getFirstChild()).getFuncBody().getReturnExpr().getMergeExpr().getConcatExprList().get(0).getPostfixExprList().get(0).getFuncExpr().getFuncNameRef();
+        return ((AbraFuncStmt)file.getFirstChild()).getFuncBody().getReturnExpr().getCondExpr().getMergeExprList().get(0).getConcatExprList().get(0).getPostfixExprList().get(0).getFuncExpr().getFuncNameRef();
     }
 
     public static AbraFuncNameRef createAbraFunctionReference(Project project, String name, AbraFile originalFile) {
@@ -69,7 +69,7 @@ public class AbraElementFactory {
             sb.append("import ").append(originalFile.getImportableFilePath()).append("\n");
         }
         final AbraFile file = createFile(project, sb.toString()+"func [1] f(p [1])={return "+name+"(1)}");
-        return ((AbraFuncStmt)file.getFirstChild().getNextSibling().getNextSibling()).getFuncBody().getReturnExpr().getMergeExpr().getConcatExprList().get(0).getPostfixExprList().get(0).getFuncExpr().getFuncNameRef();
+        return ((AbraFuncStmt)file.getFirstChild().getNextSibling().getNextSibling()).getFuncBody().getReturnExpr().getCondExpr().getMergeExprList().get(0).getConcatExprList().get(0).getPostfixExprList().get(0).getFuncExpr().getFuncNameRef();
     }
 
     public static AbraTypeNameRef createAbraTypeNameRef(Project project, String name) {
@@ -80,13 +80,13 @@ public class AbraElementFactory {
     public static AbraParamOrVarNameRef createAbraVarOrParamNameRef(Project project, String name) {
         final AbraFile file = createFile(project, "func [1] f(p [1])={a="+name+"[1..3]\nreturn a}");
         return ((AbraFuncStmt)file.getFirstChild()).getFuncBody()
-                .getAssignExprList().get(0).getMergeExpr().getConcatExprList().get(0).getPostfixExprList().get(0).getSliceExpr().getParamOrVarNameRef();
+                .getAssignExprList().get(0).getCondExpr().getMergeExprList().get(0).getConcatExprList().get(0).getPostfixExprList().get(0).getSliceExpr().getParamOrVarNameRef();
     }
 
     public static AbraLutOrParamOrVarNameRef createAbraLutOrParamOrVarRef(Project project, String name) {
         final AbraFile file = createFile(project, "func [1] f(p [1])={a="+name+"[1]\n return a}");
         return ((AbraFuncStmt)file.getFirstChild()).getFuncBody()
-                .getAssignExprList().get(0).getMergeExpr().getConcatExprList().get(0).getPostfixExprList().get(0).getLutOrSliceExpr().getLutOrParamOrVarNameRef();
+                .getAssignExprList().get(0).getCondExpr().getMergeExprList().get(0).getConcatExprList().get(0).getPostfixExprList().get(0).getLutOrSliceExpr().getLutOrParamOrVarNameRef();
     }
 
 
@@ -117,12 +117,12 @@ public class AbraElementFactory {
 
     public static AbraLutNameRef createAbraLutNameRef(Project project, String name) {
         final AbraFile file = createFile(project, "func [1] f(a[1])={b="+name+"[1,1]\nreturn b}");
-        return ((AbraFuncStmt)file.getFirstChild()).getFuncBody().getAssignExprList().get(0).getMergeExpr().getConcatExprList().get(0).getPostfixExprList().get(0).getLutExpr().getLutNameRef();
+        return ((AbraFuncStmt)file.getFirstChild()).getFuncBody().getAssignExprList().get(0).getCondExpr().getMergeExprList().get(0).getConcatExprList().get(0).getPostfixExprList().get(0).getLutExpr().getLutNameRef();
     }
 
     public static AbraFieldNameRef createAbraFieldNameReference(Project project, String name) {
         final AbraFile file = createFile(project, "func [1] f(a [1])=f(p."+name+")");
-        return ((AbraFuncStmt)file.getFirstChild()).getFuncBody().getMergeExpr().getConcatExprList().get(0).getPostfixExprList().get(0)
+        return ((AbraFuncStmt)file.getFirstChild()).getFuncBody().getCondExpr().getMergeExprList().get(0).getConcatExprList().get(0).getPostfixExprList().get(0)
                 .getFuncExpr().getMergeExprList().get(0).getConcatExprList().get(0).getPostfixExprList().get(0).
                         getSliceExpr().getFieldNameRefList().get(0);
     }
