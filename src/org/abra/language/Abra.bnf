@@ -132,7 +132,7 @@ funcSignature       ::= typeSize funcName ('<' constExpr (COMMA constExpr)* '>')
                     }
 funcParameter       ::= paramName typeSize
 
-funcBody            ::= mergeExpr | ('{' joinExpr* affectExpr * stateExpr* assignExpr* returnExpr '}')
+funcBody            ::= condExpr | ('{' joinExpr* affectExpr * stateExpr* assignExpr* returnExpr '}')
                     {
                         methods=[getFuncSignature]
                     }
@@ -157,17 +157,19 @@ stateExpr           ::= STATE_KEYWORD varName typeSize
                     }
 private stateExprRecover ::= !(stateExpr | assignExpr | returnExpr)
 
-assignExpr          ::= varName ASSIGN mergeExpr
+assignExpr          ::= varName ASSIGN condExpr
                     {
                         pin=2 recoverWhile=assignExprRecover
                     }
 private assignExprRecover ::= !(assignExpr | returnExpr)
 
-returnExpr          ::= RETURN_KEYWORD mergeExpr
+returnExpr          ::= RETURN_KEYWORD condExpr
                     {
                         pin=1 recoverWhile=returnExprRecover
                     }
 private returnExprRecover ::= (typeExpr | !('}'))
+
+condExpr            ::= mergeExpr (QUESTION_MARK mergeExpr ':' condExpr)*
 
 mergeExpr           ::= concatExpr (MERGE_OPERATOR concatExpr)*
 
