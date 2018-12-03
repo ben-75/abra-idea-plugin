@@ -15,7 +15,7 @@ import java.util.Map;
 public class AbraToJavaMapper {
 
     private final Project project;
-    private Map<String,JavaBreakpointInfo> breakpointInfos = new HashMap<>();
+    private Map<String, JavaBreakpointInfo> breakpointInfos = new HashMap<>();
 
     public AbraToJavaMapper(Project project) {
         this.project = project;
@@ -23,23 +23,24 @@ public class AbraToJavaMapper {
         PsiFile evalContextFile = allEvalContext[0];
         Visitor visitor = new Visitor();
         evalContextFile.accept(visitor);
-        for(PsiMethod method:visitor.psiMethods){
+        for (PsiMethod method : visitor.psiMethods) {
             //System.out.println(method.getName());
-            if(method.getName().startsWith("eval"))
-                breakpointInfos.put(method.getName(),new JavaBreakpointInfo(method));
+            if (method.getName().startsWith("eval"))
+                breakpointInfos.put(method.getName(), new JavaBreakpointInfo(method));
         }
     }
+
     public static class JavaBreakpointInfo {
-            final PsiMethod method;
-            final int lineNumber;
-            final PsiElement evalFirstLine;
+        final PsiMethod method;
+        final int lineNumber;
+        final PsiElement evalFirstLine;
 
         public JavaBreakpointInfo(PsiMethod method) {
             this.method = method;
             PsiElement e = method.getBody().getFirstBodyElement();
-            while(e instanceof PsiWhiteSpace && e!=null)e = e.getNextSibling();
+            while (e instanceof PsiWhiteSpace && e != null) e = e.getNextSibling();
             this.evalFirstLine = e;
-            this.lineNumber = getLineNum(evalFirstLine)+1;
+            this.lineNumber = getLineNum(evalFirstLine) + 1;
         }
 
         public PsiMethod getMethod() {
@@ -55,7 +56,7 @@ public class AbraToJavaMapper {
         }
     }
 
-    public static int getLineNum(PsiElement element){
+    public static int getLineNum(PsiElement element) {
         PsiFile containingFile = element.getContainingFile();
         Project project = containingFile.getProject();
         PsiDocumentManager psiDocumentManager = PsiDocumentManager.getInstance(project);
@@ -64,43 +65,47 @@ public class AbraToJavaMapper {
         return document.getLineNumber(textOffset);
     }
 
-    public JavaBreakpointInfo getEvalMethod(PsiElement abraElement){
-        if(abraElement instanceof AbraPostfixExpr){
+    public JavaBreakpointInfo getEvalMethod(PsiElement abraElement) {
+        if (abraElement instanceof AbraPostfixExpr) {
             return getEvalMethod(abraElement.getFirstChild());
         }
-        if(abraElement instanceof AbraAssignExpr){
+        if (abraElement instanceof AbraAssignExpr) {
             return breakpointInfos.get("evalAssign");
         }
-        if(abraElement instanceof AbraConcatExpr){
+        if (abraElement instanceof AbraConcatExpr) {
             return breakpointInfos.get("evalConcat");
         }
-        if(abraElement instanceof AbraLutExpr){
+        if (abraElement instanceof AbraLutExpr) {
             return breakpointInfos.get("evalLutLookup");
         }
-        if(abraElement instanceof AbraMergeExpr){
+        if (abraElement instanceof AbraMergeExpr) {
             return breakpointInfos.get("evalMerge");
         }
-        if(abraElement instanceof AbraSliceExpr){
+        if (abraElement instanceof AbraSliceExpr) {
             return breakpointInfos.get("evalSlice");
         }
-        if(abraElement instanceof AbraStateExpr){
+        if (abraElement instanceof AbraStateExpr) {
             return breakpointInfos.get("evalState");
         }
-        if(abraElement instanceof AbraFuncExpr){
+        if (abraElement instanceof AbraFuncExpr) {
             return breakpointInfos.get("evalFuncCall");
         }
-        if(abraElement instanceof AbraInteger){
+        if (abraElement instanceof AbraInteger) {
             return breakpointInfos.get("evalVector");
         }
-        if(abraElement instanceof AbraReturnExpr){
-            return getEvalMethod(((AbraReturnExpr)abraElement).getMergeExpr());
+        if (abraElement instanceof AbraCondExpr) {
+            return breakpointInfos.get("evalConditional");
         }
-        if(abraElement!=null)
-           System.out.println("No eval method for "+abraElement.getText()+"   "+abraElement.getClass());
+        if (abraElement instanceof AbraReturnExpr) {
+            return getEvalMethod(((AbraReturnExpr) abraElement).getCondExpr());
+        }
+        if (abraElement != null)
+            System.out.println("No eval method for " + abraElement + "   " + abraElement.getClass());
         else
             System.out.println("No eval method for null");
         return null;
     }
+
     private class Visitor extends PsiRecursiveElementVisitor {
 
         private List<PsiMethod> psiMethods = new ArrayList<PsiMethod>();

@@ -8,7 +8,10 @@ import com.intellij.debugger.engine.DebugProcessImpl;
 import com.intellij.debugger.engine.requests.RequestManagerImpl;
 import com.intellij.debugger.impl.DebuggerUtilsEx;
 import com.intellij.debugger.jdi.MethodBytecodeUtil;
-import com.intellij.debugger.ui.breakpoints.*;
+import com.intellij.debugger.ui.breakpoints.BreakpointCategory;
+import com.intellij.debugger.ui.breakpoints.BreakpointManager;
+import com.intellij.debugger.ui.breakpoints.BreakpointWithHighlighter;
+import com.intellij.debugger.ui.breakpoints.FilteredRequestor;
 import com.intellij.icons.AllIcons;
 import com.intellij.openapi.application.ReadAction;
 import com.intellij.openapi.diagnostic.Logger;
@@ -28,7 +31,7 @@ import com.intellij.ui.LayeredIcon;
 import com.intellij.util.containers.ContainerUtil;
 import com.intellij.xdebugger.XDebuggerUtil;
 import com.intellij.xdebugger.breakpoints.XBreakpoint;
-import com.intellij.xdebugger.breakpoints.XBreakpointType;
+import com.intellij.xdebugger.breakpoints.XLineBreakpoint;
 import com.intellij.xdebugger.impl.XDebuggerUtilImpl;
 import com.sun.jdi.*;
 import com.sun.jdi.event.LocatableEvent;
@@ -37,7 +40,6 @@ import one.util.streamex.StreamEx;
 import org.jetbrains.annotations.NonNls;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import org.jetbrains.java.debugger.breakpoints.properties.JavaBreakpointProperties;
 import org.jetbrains.jps.model.java.JavaModuleSourceRootTypes;
 
 import javax.swing.*;
@@ -49,8 +51,10 @@ import java.util.regex.Pattern;
 public class AbraLineBreakpoint<P extends AbraBreakpointProperties> extends BreakpointWithHighlighter<P> {
     static final Logger LOG = Logger.getInstance(AbraLineBreakpoint.class);
 
-    public static final @NonNls Key<AbraLineBreakpoint> CATEGORY = BreakpointCategory.lookup("line_breakpoints");
+    public static final @NonNls
+    Key<AbraLineBreakpoint> CATEGORY = BreakpointCategory.lookup("line_breakpoints");
     private final XBreakpoint myXBreakpoint;
+
     protected AbraLineBreakpoint(Project project, XBreakpoint xBreakpoint) {
         super(project, xBreakpoint);
         myXBreakpoint = xBreakpoint;
@@ -87,7 +91,7 @@ public class AbraLineBreakpoint<P extends AbraBreakpointProperties> extends Brea
         }
     }
 
-//    @Override
+    //    @Override
     protected void createRequestForPreparedClass(final DebugProcessImpl debugProcess, final ReferenceType classType) {
         if (!ReadAction.compute(() -> isInScopeOf(debugProcess, classType.name()))) {
             if (LOG.isDebugEnabled()) {
@@ -113,16 +117,14 @@ public class AbraLineBreakpoint<P extends AbraBreakpointProperties> extends Brea
                         LOG.debug("Created breakpoint request for reference type " + classType.name() + " at line " + getLineIndex() + "; codeIndex=" + loc.codeIndex());
                     }
                 }
-            }
-            else if (DebuggerUtilsEx.allLineLocations(classType) == null) {
+            } else if (DebuggerUtilsEx.allLineLocations(classType) == null) {
                 // there's no line info in this class
                 debugProcess.getRequestsManager()
                         .setInvalid(this, DebuggerBundle.message("error.invalid.breakpoint.no.line.info", classType.name()));
                 if (LOG.isDebugEnabled()) {
                     LOG.debug("No line number info in " + classType.name());
                 }
-            }
-            else {
+            } else {
                 // there's no executable code in this class
                 debugProcess.getRequestsManager().setInvalid(this, DebuggerBundle.message(
                         "error.invalid.breakpoint.no.executable.code", (getLineIndex() + 1), classType.name())
@@ -131,20 +133,17 @@ public class AbraLineBreakpoint<P extends AbraBreakpointProperties> extends Brea
                     LOG.debug("No locations of type " + classType.name() + " found at line " + getLineIndex());
                 }
             }
-        }
-        catch (ClassNotPreparedException ex) {
+        } catch (ClassNotPreparedException ex) {
             if (LOG.isDebugEnabled()) {
                 LOG.debug("ClassNotPreparedException: " + ex.getMessage());
             }
             // there's a chance to add a breakpoint when the class is prepared
-        }
-        catch (ObjectCollectedException ex) {
+        } catch (ObjectCollectedException ex) {
             if (LOG.isDebugEnabled()) {
                 LOG.debug("ObjectCollectedException: " + ex.getMessage());
             }
             // there's a chance to add a breakpoint when the class is prepared
-        }
-        catch(Exception ex) {
+        } catch (Exception ex) {
             LOG.info(ex);
         }
         updateUI();
@@ -164,6 +163,7 @@ public class AbraLineBreakpoint<P extends AbraBreakpointProperties> extends Brea
     }
 
     private static final Pattern ourAnonymousPattern = Pattern.compile(".*\\$\\d*$");
+
     private static boolean isAnonymousClass(ReferenceType classType) {
         if (classType instanceof ClassType) {
             return ourAnonymousPattern.matcher(classType.name()).matches();
@@ -205,7 +205,7 @@ public class AbraLineBreakpoint<P extends AbraBreakpointProperties> extends Brea
                 // apply filtering to breakpoints from content sources only, not for sources attached to libraries
                 final Collection<VirtualFile> candidates = findClassCandidatesInSourceContent(className, debugProcess.getSearchScope(), fileIndex);
                 if (LOG.isDebugEnabled()) {
-                    LOG.debug("Found "+ (candidates == null? "null" : candidates.size()) + " candidate containing files for class " + className);
+                    LOG.debug("Found " + (candidates == null ? "null" : candidates.size()) + " candidate containing files for class " + className);
                 }
                 if (candidates == null) {
                     // If no candidates are found in scope then assume that class is loaded dynamically and allow breakpoint
@@ -238,7 +238,7 @@ public class AbraLineBreakpoint<P extends AbraBreakpointProperties> extends Brea
                             "; contains=" + contains +
                             "; contentRoot=" + contentRoot +
                             "; module = " + module +
-                            "; all files in index are: " + files+
+                            "; all files in index are: " + files +
                             "; all possible files are: " + allFiles
                     );
                 }
@@ -252,11 +252,11 @@ public class AbraLineBreakpoint<P extends AbraBreakpointProperties> extends Brea
     @Nullable
     private Collection<VirtualFile> findClassCandidatesInSourceContent(final String className, final GlobalSearchScope scope, final ProjectFileIndex fileIndex) {
         final int dollarIndex = className.indexOf("$");
-        final String topLevelClassName = dollarIndex >= 0? className.substring(0, dollarIndex) : className;
+        final String topLevelClassName = dollarIndex >= 0 ? className.substring(0, dollarIndex) : className;
         return ReadAction.compute(() -> {
             final PsiClass[] classes = JavaPsiFacade.getInstance(myProject).findClasses(topLevelClassName, scope);
             if (LOG.isDebugEnabled()) {
-                LOG.debug("Found "+ classes.length + " classes " + topLevelClassName + " in scope "+scope);
+                LOG.debug("Found " + classes.length + " classes " + topLevelClassName + " in scope " + scope);
             }
             if (classes.length == 0) {
                 return null;
@@ -303,51 +303,10 @@ public class AbraLineBreakpoint<P extends AbraBreakpointProperties> extends Brea
     }
 
     private String getDisplayInfoInternal(boolean showPackageInfo, int totalTextLength) {
-        if(isValid()) {
+        if (isValid()) {
             final int lineNumber = getLineIndex() + 1;
-            String className = getClassName();
-            final boolean hasClassInfo = className != null && className.length() > 0;
-            final String methodName = getMethodName();
-            final String displayName = methodName != null? methodName + "()" : null;
-            final boolean hasMethodInfo = displayName != null && displayName.length() > 0;
-            if (hasClassInfo || hasMethodInfo) {
-                final StringBuilder info = new StringBuilder();
-                boolean isFile = getFileName().equals(className);
-                String packageName = null;
-                if (hasClassInfo) {
-                    final int dotIndex = className.lastIndexOf(".");
-                    if (dotIndex >= 0 && !isFile) {
-                        packageName = className.substring(0, dotIndex);
-                        className = className.substring(dotIndex + 1);
-                    }
-
-                    if (totalTextLength != -1) {
-                        if (className.length() + (hasMethodInfo ? displayName.length() : 0) > totalTextLength + 3) {
-                            int offset = totalTextLength - (hasMethodInfo ? displayName.length() : 0);
-                            if (offset > 0 && offset < className.length()) {
-                                className = className.substring(className.length() - offset);
-                                info.append("...");
-                            }
-                        }
-                    }
-
-                    info.append(className);
-                }
-                if(hasMethodInfo) {
-                    if (isFile) {
-                        info.append(":");
-                    }
-                    else if (hasClassInfo) {
-                        info.append(".");
-                    }
-                    info.append(displayName);
-                }
-                if (showPackageInfo && packageName != null) {
-                    info.append(" (").append(packageName).append(")");
-                }
-                return DebuggerBundle.message("line.breakpoint.display.name.with.class.or.method", lineNumber, info.toString());
-            }
-            return DebuggerBundle.message("line.breakpoint.display.name", lineNumber);
+            final String info = ((XLineBreakpoint) myXBreakpoint).getPresentableFilePath();
+            return DebuggerBundle.message("line.breakpoint.display.name.with.class.or.method", lineNumber, info);
         }
         return DebuggerBundle.message("status.breakpoint.invalid");
     }
@@ -360,7 +319,7 @@ public class AbraLineBreakpoint<P extends AbraBreakpointProperties> extends Brea
         if (file instanceof PsiClassOwner) {
             return ReadAction.compute(() -> {
                 PsiMethod method = DebuggerUtilsEx.findPsiMethod(file, offset);
-                return method != null? method.getName() : null;
+                return method != null ? method.getName() : null;
             });
         }
         return null;
@@ -386,7 +345,7 @@ public class AbraLineBreakpoint<P extends AbraBreakpointProperties> extends Brea
 
     public static AbraLineBreakpoint create(@NotNull Project project, XBreakpoint xBreakpoint) {
         AbraLineBreakpoint breakpoint = new AbraLineBreakpoint(project, xBreakpoint);
-        return (AbraLineBreakpoint)breakpoint.init();
+        return (AbraLineBreakpoint) breakpoint.init();
     }
 
     //@Override
@@ -403,7 +362,7 @@ public class AbraLineBreakpoint<P extends AbraBreakpointProperties> extends Brea
             return false;
         }
         final BreakpointManager breakpointManager = DebuggerManagerEx.getInstanceEx(project).getBreakpointManager();
-        final AbraLineBreakpoint breakpointAtLine = breakpointManager.findBreakpoint( document, document.getLineStartOffset(lineIndex), CATEGORY);
+        final AbraLineBreakpoint breakpointAtLine = breakpointManager.findBreakpoint(document, document.getLineStartOffset(lineIndex), CATEGORY);
         if (breakpointAtLine != null) {
             // there already exists a line breakpoint at this line
             return false;
@@ -416,7 +375,7 @@ public class AbraLineBreakpoint<P extends AbraBreakpointProperties> extends Brea
                 return true;
             }
             PsiElement child = element;
-            while(element != null) {
+            while (element != null) {
 
                 final int offset = element.getTextOffset();
                 if (offset >= 0) {
@@ -428,17 +387,15 @@ public class AbraLineBreakpoint<P extends AbraBreakpointProperties> extends Brea
                 element = element.getParent();
             }
 
-            if(child instanceof PsiMethod && child.getTextRange().getEndOffset() >= document.getLineEndOffset(lineIndex)) {
-                PsiCodeBlock body = ((PsiMethod)child).getBody();
-                if(body == null) {
+            if (child instanceof PsiMethod && child.getTextRange().getEndOffset() >= document.getLineEndOffset(lineIndex)) {
+                PsiCodeBlock body = ((PsiMethod) child).getBody();
+                if (body == null) {
                     canAdd[0] = false;
-                }
-                else {
+                } else {
                     PsiStatement[] statements = body.getStatements();
                     canAdd[0] = statements.length > 0 && document.getLineNumber(statements[0].getTextOffset()) == lineIndex;
                 }
-            }
-            else {
+            } else {
                 canAdd[0] = true;
             }
             return false;
@@ -455,4 +412,11 @@ public class AbraLineBreakpoint<P extends AbraBreakpointProperties> extends Brea
         }
         return null;
     }
+
+    @Override
+    protected String getStackTrace(LocatableEvent event) {
+        return super.getStackTrace(event);
+    }
+
+
 }

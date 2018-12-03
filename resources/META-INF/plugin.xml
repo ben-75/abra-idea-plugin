@@ -63,7 +63,6 @@
     <additionalTextAttributes scheme="Darcula" file="colors/AbraDarcula.xml"/>
     <renamePsiElementProcessor implementation="org.abra.language.RenameFuncNameProcessor"/>
     <configurationType implementation="org.abra.interpreter.runconfig.AbraInterpreterConfigurationType"/>
-    <!--<applicationConfigurable groupId="build" instance="org.abra.AbraPluginConfigurable"/>-->
     <programRunner implementation="org.abra.interpreter.action.AbraInterpreterProgramRunner"/>
     <programRunner implementation="org.abra.interpreter.debugger.AbraInterpreterDebugRunner"/>
     <runConfigurationProducer implementation="org.abra.interpreter.runconfig.AbraRunConfigurationProducer"/>
