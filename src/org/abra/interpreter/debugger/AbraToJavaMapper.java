@@ -24,7 +24,6 @@ public class AbraToJavaMapper {
         Visitor visitor = new Visitor();
         evalContextFile.accept(visitor);
         for (PsiMethod method : visitor.psiMethods) {
-            //System.out.println(method.getName());
             if (method.getName().startsWith("eval"))
                 breakpointInfos.put(method.getName(), new JavaBreakpointInfo(method));
         }
@@ -120,8 +119,5 @@ public class AbraToJavaMapper {
             super.visitElement(element);
         }
 
-        public List<PsiMethod> getPsiMethods() {
-            return psiMethods;
-        }
     }
 }

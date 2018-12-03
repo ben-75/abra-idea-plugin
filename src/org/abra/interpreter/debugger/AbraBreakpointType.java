@@ -13,7 +13,7 @@ import com.intellij.xdebugger.breakpoints.XBreakpoint;
 import org.jetbrains.annotations.NotNull;
 
 public class AbraBreakpointType extends JavaLineBreakpointType {
-    //public class AbraBreakpointType<P extends AbraBreakpointProperties> extends XLineBreakpointType<P> {
+
     public static final String ID = "org.abra.breakpoint";
 
     public static final AbraBreakpointType INSTANCE = new AbraBreakpointType();
@@ -25,9 +25,7 @@ public class AbraBreakpointType extends JavaLineBreakpointType {
     @NotNull
     @Override
     public Breakpoint createJavaBreakpoint(Project project, XBreakpoint xBreakpoint) {
-        if (true) return AbraLineBreakpoint.create(project, xBreakpoint);
-        Breakpoint breakpoint = super.createJavaBreakpoint(project, xBreakpoint);
-        return breakpoint;
+        return AbraLineBreakpoint.create(project, xBreakpoint);
     }
 
 

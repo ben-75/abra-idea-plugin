@@ -26,7 +26,6 @@ public class AbraBreakpointHandler extends JavaBreakpointHandler {
     private final AbraToJavaMapper abraToJavaMapper;
 
     public AbraBreakpointHandler(DebugProcessImpl process, AbraToJavaMapper abraToJavaMapper) {
-//        super(AbraBreakpointType.class, process);
         super(AbraBreakpointType.class, process);
         this.abraToJavaMapper = abraToJavaMapper;
     }

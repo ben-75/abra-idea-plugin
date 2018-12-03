@@ -181,11 +181,6 @@ public class AbraLineBreakpoint<P extends AbraBreakpointProperties> extends Brea
         SourcePosition position = debugProcess.getPositionManager().getSourcePosition(loc);
         if (position == null) return false;
         return true;
-//        return ReadAction.compute(() -> {
-//            AbraBreakpointType type = getXBreakpointType();
-//            if (type == null) return true;
-//            return type.matchesPosition(this, position);
-//        });
     }
 
     @Nullable
@@ -212,15 +207,6 @@ public class AbraLineBreakpoint<P extends AbraBreakpointProperties> extends Brea
                     return true;
                 }
 
-                // breakpointFile is not in scope here and there are some candidates in scope
-                //for (VirtualFile classFile : candidates) {
-                //  if (LOG.isDebugEnabled()) {
-                //    LOG.debug("Breakpoint file: " + breakpointFile.getPath()+ "; candidate file: " + classFile.getPath());
-                //  }
-                //  if (breakpointFile.equals(classFile)) {
-                //    return true;
-                //  }
-                //}
                 if (LOG.isDebugEnabled()) {
                     final GlobalSearchScope scope = debugProcess.getSearchScope();
                     final boolean contains = scope.contains(breakpointFile);
@@ -347,15 +333,6 @@ public class AbraLineBreakpoint<P extends AbraBreakpointProperties> extends Brea
         AbraLineBreakpoint breakpoint = new AbraLineBreakpoint(project, xBreakpoint);
         return (AbraLineBreakpoint) breakpoint.init();
     }
-
-    //@Override
-    //public boolean canMoveTo(SourcePosition position) {
-    //  if (!super.canMoveTo(position)) {
-    //    return false;
-    //  }
-    //  final Document document = PsiDocumentManager.getInstance(getProject()).getDocument(position.getFile());
-    //  return canAddLineBreakpoint(myProject, document, position.getLine());
-    //}
 
     public static boolean canAddLineBreakpoint(Project project, final Document document, final int lineIndex) {
         if (lineIndex < 0 || lineIndex >= document.getLineCount()) {
