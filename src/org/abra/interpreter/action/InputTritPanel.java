@@ -3,6 +3,8 @@ package org.abra.interpreter.action;
 import com.intellij.openapi.ui.VerticalFlowLayout;
 import com.intellij.ui.JBColor;
 import com.intellij.util.ui.JBFont;
+import org.abra.interpreter.runconfig.AbraInterpreterSettingsEditor;
+import org.abra.language.psi.*;
 import org.abra.utils.TRIT;
 import org.abra.utils.TritUtils;
 
@@ -10,6 +12,7 @@ import javax.swing.*;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 import java.awt.*;
+import java.math.BigDecimal;
 import java.math.BigInteger;
 
 public class InputTritPanel extends JPanel implements DocumentListener {
@@ -19,13 +22,15 @@ public class InputTritPanel extends JPanel implements DocumentListener {
     JPanel otherFormats;
     private static Font SMALL_FONT = new Font(JBFont.MONOSPACED, Font.PLAIN, 11);
     int charWidth;
+    AbraFuncParameter param;
     private TRIT[] trits;
-
-    public InputTritPanel(String paramName, int preferredWidth){
+    private JComboBox targetTypeInst;
+    public InputTritPanel(AbraFuncParameter param, int preferredWidth, JComboBox targetTypeInst){
         super(new VerticalFlowLayout(VerticalFlowLayout.TOP,5,1,true,false));
-
+        this.param = param;
+        this.targetTypeInst = targetTypeInst;
         JLabel paramLabel = new JLabel();
-        paramLabel.setText(paramName+" :");
+        paramLabel.setText(param.getParamName().getText()+" :");
         paramLabel.setMaximumSize(new Dimension(preferredWidth, paramLabel.getPreferredSize().height));
 
         textField = new JTextField();
@@ -102,6 +107,19 @@ public class InputTritPanel extends JPanel implements DocumentListener {
                     otherFormat2.setText(truncate("Trytes  : " + TritUtils.trit2Trytes(trits)));
                 } else if (formats[0] == TritUtils.DATA_FORMAT.DECIMAL) {
                     trits = TritUtils.bigInt2Trits(new BigInteger(s, 10));
+                    otherFormat1.setText(truncate("Trytes  : " + TritUtils.trit2Trytes(trits)));
+                    otherFormat2.setText(truncate("Trits   : " + TritUtils.trit2String(trits)));
+                } else if (formats[0] == TritUtils.DATA_FORMAT.FLOAT_FMT) {
+                    int manSize = 9;
+                    int expSize = 3;
+                    if(targetTypeInst!=null && targetTypeInst.getSelectedItem() instanceof AbraInterpreterSettingsEditor.AbraTypeInstComboBoxItem){
+                        AbraTypeInstantiation typeInstantiation = ((AbraInterpreterSettingsEditor.AbraTypeInstComboBoxItem)targetTypeInst.getSelectedItem()).getTypeInstantiation();
+                        if(typeInstantiation.getTypeNameRefList().size()==2){
+                            manSize = (AbraPsiImplUtil.getResolvedSize((AbraTypeStmt) typeInstantiation.getTypeNameRefList().get(0).getReference().resolve().getParent()));
+                            expSize = (AbraPsiImplUtil.getResolvedSize((AbraTypeStmt) typeInstantiation.getTypeNameRefList().get(1).getReference().resolve().getParent()));
+                        }
+                    }
+                    trits = TritUtils.floatToTrits(new BigDecimal(s),manSize, expSize);
                     otherFormat1.setText(truncate("Trytes  : " + TritUtils.trit2Trytes(trits)));
                     otherFormat2.setText(truncate("Trits   : " + TritUtils.trit2String(trits)));
                 }

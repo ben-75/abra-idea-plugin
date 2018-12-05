@@ -1,5 +1,6 @@
 package org.abra.utils;
 
+import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.regex.Pattern;
@@ -19,19 +20,21 @@ public class TritUtils {
     public static String decimalValue(String s) {
         DATA_FORMAT[] detected = detectFormat(s);
         if(detected[0]==DATA_FORMAT.DECIMAL)return s;
+        if(detected[0]==DATA_FORMAT.FLOAT_FMT)return s;
         if(detected[0]==DATA_FORMAT.TRYTE)return trit2Decimal(trytes2Trits(s))+"";
         if(detected[0]==DATA_FORMAT.TRIT_FMT)return trit2Decimal(stringToTrits(s))+"";
         return "";
     }
 
     public enum DATA_FORMAT {
-        TRIT_FMT, TRYTE, DECIMAL, INVALID
+        TRIT_FMT, TRYTE, DECIMAL, INVALID, FLOAT_FMT
     }
 
     private static final DATA_FORMAT[] TRIT_OR_DECIMAL = new DATA_FORMAT[]{DATA_FORMAT.TRIT_FMT,DATA_FORMAT.DECIMAL};
     private static final DATA_FORMAT[] TRYTE_OR_DECIMAL = new DATA_FORMAT[]{DATA_FORMAT.TRYTE,DATA_FORMAT.DECIMAL};
     private static final DATA_FORMAT[] INVALID = new DATA_FORMAT[]{DATA_FORMAT.INVALID};
     private static final DATA_FORMAT[] TRIT_FMT = new DATA_FORMAT[]{DATA_FORMAT.TRIT_FMT};
+    private static final DATA_FORMAT[] FLOAT_FMT = new DATA_FORMAT[]{DATA_FORMAT.FLOAT_FMT};
     private static final DATA_FORMAT[] TRYTE = new DATA_FORMAT[]{DATA_FORMAT.TRYTE};
     private static final DATA_FORMAT[] DECIMAL = new DATA_FORMAT[]{DATA_FORMAT.DECIMAL};
 
@@ -39,9 +42,11 @@ public class TritUtils {
     private static final Pattern ambiguousDecimalTrytePattern = Pattern.compile("[9]*");
     private static final Pattern tritPattern = Pattern.compile("[\\-0-1]*");
     private static final Pattern decimalPattern = Pattern.compile("[0-9]*");
+    private static final Pattern floatPattern = Pattern.compile("[0-9]+\\.[0-9]+");
     private static final Pattern trytePattern = Pattern.compile("[9A-Z]*");
 
     public static DATA_FORMAT[] detectFormat(String input){
+        if(floatPattern.matcher(input).matches())return FLOAT_FMT;
         if(ambiguousTritDecimalPattern.matcher(input).matches())return TRIT_OR_DECIMAL;
         if(ambiguousDecimalTrytePattern.matcher(input).matches())return TRYTE_OR_DECIMAL;
         if(tritPattern.matcher(input).matches())return TRIT_FMT;
@@ -283,4 +288,149 @@ public class TritUtils {
         }
         return sb.toString();
     }
+
+    /**
+     * multiply the value by 3 as long as the result don't overflow mantissa.
+     * truncate to result to bigInteger
+     * convert bigInteger to trits to get mantissa.
+     * set the exponent equals to the number of times we multiply by 3 (negate).
+     * @param value
+     * @param manSize
+     * @param expSize
+     * @return
+     */
+    public static TRIT[] floatToTrits(final BigDecimal value, final int manSize, final int expSize)
+    {
+        if(value.intValue()==0){
+            TRIT[] response = new TRIT[manSize+expSize];
+            for(int k=0;k<response.length;k++)response[k]=TRIT.Z;
+            return response;
+        }
+        BigInteger integerPart = value.toBigInteger();
+        BigInteger fractionPart = extractFractionPart(value);
+
+        TRIT[] integerPartTrits = bigInt2Trits(integerPart);
+
+        int shiftToNormilize = computeShiftToNormilize(integerPartTrits, manSize);
+        TRIT[] exp = bigInt2Trits(new BigInteger(String.valueOf(shiftToNormilize)).negate());
+
+        if(fractionPart.intValue()==0){
+            TRIT[] response = new TRIT[manSize+expSize];
+            for(int i=0;i<response.length;i++)response[i]=TRIT.Z;
+            int j = 0;
+            for(int i=shiftToNormilize;i<manSize;i++){
+                response[i]=integerPartTrits[j];
+                j++;
+            }
+            System.arraycopy(exp,0,response,manSize,exp.length);
+            return response;
+        }
+
+        BigDecimal max = new BigDecimal(0);
+        for(int i=0;i<manSize;i++){
+            max = max.add(new BigDecimal(Math.pow(3,i)));
+        }
+        max = max.max(new BigDecimal(0.5));
+        int e=0;
+        BigDecimal Big3 = new BigDecimal(3);
+        BigDecimal value2 = value;
+        while(max.compareTo(value2.multiply(Big3).abs())>=0 && bigInt2Trits(new BigInteger(""+e)).length<=expSize){
+            e--;
+            value2 = value2.multiply(Big3);
+        }
+        TRIT[] m = bigInt2Trits(value2.toBigInteger());
+        TRIT[] expPart = bigInt2Trits(new BigInteger(e+""));
+        if(m.length>manSize){
+            TRIT[] tmp = new TRIT[manSize];
+            System.arraycopy(m,m.length-manSize,tmp,0,manSize);
+            m = tmp;
+        }
+        TRIT[] response = new TRIT[manSize+expSize];
+        for(int k=0;k<response.length;k++)response[k]=TRIT.Z;
+        System.arraycopy(m,0,response,manSize-m.length,m.length);
+        System.arraycopy(expPart,0,response,m.length,expPart.length);
+        return response;
+    }
+
+    public static TRIT[] normalize(TRIT[] v, int size){
+        TRIT[] resp = new TRIT[size];
+        for(int i=0;i<size;i++)resp[i]=TRIT.Z;
+        int k=0;
+        for(int j=size-(v.length);j<size;j++){
+            resp[j]=v[k];
+            k++;
+        }
+        return resp;
+    }
+    private static BigInteger extractFractionPart(BigDecimal v){
+        if(v.toString().indexOf(".")<0)return BigInteger.ZERO;
+        return new BigInteger(v.toString().substring(v.toString().indexOf(".")+1));
+    }
+
+    private static int computeShiftToNormilize(TRIT[] trits, int manSize){
+        return manSize-trits.length;
+    }
+
+    private static TRIT[] doSum(TRIT[] a, TRIT[] b){
+        TRIT[] resp = new TRIT[Math.max(a.length,b.length)+2];
+        TRIT carry = TRIT.Z;
+        for(int i=0;i<resp.length;i++){
+            TRIT[] res = lut(i>=a.length?TRIT.Z:a[i],i>=b.length?TRIT.Z:b[i],carry);
+            resp[i] = res[0];
+            carry = res[1];
+        }
+        return resp;
+    }
+
+    private static TRIT[] lut(TRIT a, TRIT b, TRIT carry){
+        if(a==TRIT.Z){
+            if(b==TRIT.Z){
+                return new TRIT[]{carry, TRIT.Z};
+                /*
+                0,0,- = -,0
+                0,0,0 = 0,0
+                0,0,1 = 1,0
+                 */
+            }
+            if(b==TRIT.O){
+                if(carry==TRIT.Z)return new TRIT[]{TRIT.O, TRIT.Z}; //0,1,0 = 1,0
+                if(carry==TRIT.O)return new TRIT[]{TRIT.M, TRIT.O}; //0,1,1 = -,1
+                return new TRIT[]{TRIT.Z, TRIT.Z}; //0,1,- = 0,0
+            }
+            if(carry==TRIT.Z)return new TRIT[]{TRIT.M, TRIT.Z}; //0,-,0 = -,0
+            if(carry==TRIT.O)return new TRIT[]{TRIT.Z, TRIT.Z}; //0,-,1 = 0,0
+            return new TRIT[]{TRIT.O, TRIT.M}; //0,-,- = 1,-
+        }
+        if(a==TRIT.O){
+            if(b==TRIT.Z){
+                if(carry==TRIT.Z)return new TRIT[]{TRIT.O, TRIT.Z}; //1,0,0 = 1,0
+                if(carry==TRIT.O)return new TRIT[]{TRIT.M, TRIT.O}; //1,0,1 = -,1
+                return new TRIT[]{TRIT.Z, TRIT.Z}; //1,0,- = 0,0
+            }
+            if(b==TRIT.O){
+                if(carry==TRIT.Z)return new TRIT[]{TRIT.M, TRIT.O};//1,1,0 = -,1
+                if(carry==TRIT.O)return new TRIT[]{TRIT.Z, TRIT.O};//1,1,1 = 0,1
+                return new TRIT[]{TRIT.O, TRIT.Z}; //1,1,- = 1,0
+            }
+            if(carry==TRIT.Z)return new TRIT[]{TRIT.Z, TRIT.Z}; //1,-,0 = 0,0
+            if(carry==TRIT.O)return new TRIT[]{TRIT.O, TRIT.Z}; //1,-,1 = 1,0
+            return new TRIT[]{TRIT.M, TRIT.Z}; //1,-,- = -,0
+        }
+
+        if(b==TRIT.Z){
+            if(carry==TRIT.Z)return new TRIT[]{TRIT.M, TRIT.Z}; //-,0,0 = -,0
+            if(carry==TRIT.O)return new TRIT[]{TRIT.Z, TRIT.Z}; //-,0,1 = 0,0
+            return new TRIT[]{TRIT.O, TRIT.M}; //-,0,- = 1,-
+        }
+        if(b==TRIT.O){
+            if(carry==TRIT.Z)return new TRIT[]{TRIT.Z, TRIT.Z}; //-,1,0 = 0,0
+            if(carry==TRIT.O)return new TRIT[]{TRIT.O, TRIT.Z}; //-,1,1 = 1,0
+            return new TRIT[]{TRIT.M, TRIT.Z}; //-,1,- = -,0
+        }
+        if(carry==TRIT.Z)return new TRIT[]{TRIT.O, TRIT.M}; //-,-,0 = 1,-
+        if(carry==TRIT.O)return new TRIT[]{TRIT.M, TRIT.Z}; //-,-,1 = -,0
+        return new TRIT[]{TRIT.Z, TRIT.M};  //-,-,- = 0,-
+    }
+
+
 }

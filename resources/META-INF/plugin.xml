@@ -1,7 +1,7 @@
 <idea-plugin>
   <id>org.abra.language</id>
   <name>Abra Plugin</name>
-  <version>0.0.24-pre-alpha</version>
+  <version>0.0.25-pre-alpha</version>
   <vendor url="https://github.com/ben-75/abra-idea-plugin"/>
 
   <description><![CDATA[
