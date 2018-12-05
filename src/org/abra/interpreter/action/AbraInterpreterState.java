@@ -1,8 +1,6 @@
 package org.abra.interpreter.action;
 
 import com.intellij.execution.*;
-import com.intellij.execution.configurations.CommandLineState;
-import com.intellij.execution.configurations.GeneralCommandLine;
 import com.intellij.execution.configurations.JavaCommandLineState;
 import com.intellij.execution.configurations.JavaParameters;
 import com.intellij.execution.process.OSProcessHandler;
@@ -10,11 +8,9 @@ import com.intellij.execution.process.ProcessHandler;
 import com.intellij.execution.runners.ExecutionEnvironment;
 import com.intellij.execution.runners.ProgramRunner;
 import com.intellij.execution.ui.ConsoleView;
-import com.intellij.ide.util.PropertiesComponent;
 import com.intellij.openapi.compiler.CompilerPaths;
 import com.intellij.openapi.module.JavaModuleType;
 import com.intellij.openapi.module.Module;
-import com.intellij.openapi.module.ModuleType;
 import com.intellij.openapi.module.ModuleUtil;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.projectRoots.Sdk;
@@ -27,7 +23,6 @@ import org.abra.interpreter.runconfig.AbraInterpreterRunConfiguration;
 import org.abra.language.psi.AbraPsiImplUtil;
 import org.abra.utils.TritUtils;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.debugger.BreakpointManager;
 
 import java.io.File;
 import java.util.Collection;

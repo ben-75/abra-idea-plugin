@@ -175,7 +175,9 @@ mergeExpr           ::= concatExpr (MERGE_OPERATOR concatExpr)*
 
 concatExpr          ::= postfixExpr (AMP postfixExpr)*
 
-postfixExpr         ::= integer | funcExpr | lutExpr | lutOrSliceExpr | typeExpr | sliceExpr | ('(' mergeExpr ')')
+postfixExpr         ::= valueExpr | funcExpr | lutExpr | lutOrSliceExpr | typeExpr | sliceExpr | ('(' mergeExpr ')')
+
+valueExpr           ::= trit | integer | float
 
 typeExpr            ::= typeNameRef '{' fieldAssignExpr+ '}'
                     {
@@ -362,3 +364,5 @@ integer             ::= MINUS | ZERO | ONE | number | (MINUS number)
                     {
                         methods = [getResolvedSize ]
                     }
+
+float ::= (MINUS)? number '.' number

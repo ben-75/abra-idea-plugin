@@ -198,7 +198,7 @@ public class AbraInterpreterSettingsEditor extends SettingsEditor<AbraInterprete
     private void makeFuncParameters(AbraFuncStmt funcStmt, List<String> args){
         int i=0;
         for(AbraFuncParameter funcParameter:funcStmt.getFuncSignature().getFuncParameterList()){
-            InputTritPanel inputTritPanel = new InputTritPanel(funcParameter.getParamName().getText(),300);
+            InputTritPanel inputTritPanel = new InputTritPanel(funcParameter,300, myPanel.targetTypeInstantiation);
             myPanel.argsContainer.add(inputTritPanel);
             if(args!=null && args.size()>=i+1 && args.get(i)!=null){
                 inputTritPanel.setUserInput(args.get(i));
