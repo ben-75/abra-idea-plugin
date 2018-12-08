@@ -68,7 +68,10 @@ public class AbraFuncPsiReferenceImpl extends PsiReferenceBase implements PsiPol
     @NotNull
     @Override
     public Object[] getVariants() {
-        return new Object[]{"hello"};
+        AbraFile startingFile = (AbraFile) myElement.getContainingFile();
+        List<AbraFile> files = startingFile.getAbraFileScope();
+        List<AbraFuncName> allRefs = AbraPsiImplUtil.findAllFuncName(myElement.getProject(), null, files.size() == 1 ? null : files);
+        return allRefs.toArray();
     }
 
     public List<ResolveResult> resolveInFile(PsiFile aFile){

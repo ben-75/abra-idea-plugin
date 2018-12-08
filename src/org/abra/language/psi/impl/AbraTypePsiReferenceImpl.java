@@ -66,7 +66,10 @@ public class AbraTypePsiReferenceImpl  extends PsiReferenceBase implements PsiRe
     @NotNull
     @Override
     public Object[] getVariants() {
-        return new Object[0];
+        AbraFile startingFile = (AbraFile) myElement.getContainingFile();
+        List<AbraFile> files = startingFile.getAbraFileScope();
+        List<AbraTypeName> allRefs = AbraPsiImplUtil.findAllTypeName(myElement.getProject(), null, files.size() == 1 ? null : files);
+        return allRefs.toArray();
     }
 
     private AbraTypeName resolveInFile(PsiFile aFile){

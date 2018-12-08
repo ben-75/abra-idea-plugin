@@ -10,6 +10,9 @@ import org.abra.language.psi.*;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class AbraVarOrParamPsiReferenceImpl extends PsiReferenceBase implements PsiReference {
 
 
@@ -41,7 +44,37 @@ public class AbraVarOrParamPsiReferenceImpl extends PsiReferenceBase implements 
     @NotNull
     @Override
     public Object[] getVariants() {
-        return new Object[0];
+        PsiElement funcBody = myElement;
+        PsiElement myExpression = null;
+        while(!(funcBody instanceof AbraFuncBody)){
+            if(funcBody.getParent() instanceof AbraFuncBody){
+                myExpression = funcBody;
+            }
+            funcBody = funcBody.getParent();
+        }
+        List<PsiElement> allRefs = new ArrayList<>();
+
+        //look in state vars
+        if(((AbraFuncBody)funcBody).getStateExprList()!=null) {
+            for (AbraStateExpr stateExpr : ((AbraFuncBody) funcBody).getStateExprList()){
+                if(stateExpr.equals(myExpression))break;
+                allRefs.add(stateExpr.getVarName());
+            }
+        }
+
+        //look in local vars
+        if(((AbraFuncBody)funcBody).getAssignExprList()!=null) {
+            for (AbraAssignExpr assignExpr : ((AbraFuncBody) funcBody).getAssignExprList()){
+                if(assignExpr.equals(myExpression))break;
+                allRefs.add(assignExpr.getVarName());
+
+            }
+        }
+        //look in function parameters
+        for(AbraFuncParameter p:((AbraFuncBody)funcBody).getFuncSignature().getFuncParameterList()){
+            allRefs.add(p.getParamName());
+        }
+        return allRefs.toArray();
     }
 
     private PsiElement resolveLocally(){

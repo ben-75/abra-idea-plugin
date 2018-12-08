@@ -61,7 +61,7 @@ private stmt        ::= (importStmt | typeStmt | lutStmt | funcStmt | templateSt
 importStmt          ::= IMPORT_KEYWORD ((pathName) ( SLASH pathName)*)
                     {
                         mixin="org.abra.language.psi.impl.ReferencesCache"
-                        methods=[getSourceRoot getFilePath]
+                        methods=[getSourceRoot getFilePath getReferencedFiles]
                         pin=1
                     }
 
@@ -301,7 +301,7 @@ funcName            ::= IDENTIFIER
                     {
                         mixin="org.abra.language.psi.impl.AbraNamedElementImpl"
                         implements="org.abra.language.psi.AbraNamedElement"
-                        methods=[getName setName getNameIdentifier]
+                        methods=[getName setName getNameIdentifier getPresentation]
                     }
 
 funcNameRef         ::= IDENTIFIER
@@ -314,7 +314,7 @@ lutName             ::= IDENTIFIER
                     {
                         mixin="org.abra.language.psi.impl.AbraNamedElementImpl"
                         implements="org.abra.language.psi.AbraNamedElement"
-                        methods = [getName setName getNameIdentifier]
+                        methods = [getName setName getNameIdentifier getPresentation]
                         pin=1 recoverWhile=lutNameRecover
                     }
 private lutNameRecover ::= !'['
