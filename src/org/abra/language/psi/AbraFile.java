@@ -11,6 +11,7 @@ import com.intellij.psi.util.PsiTreeUtil;
 import org.abra.language.AbraFileType;
 import org.abra.language.AbraLanguage;
 import org.jetbrains.annotations.NotNull;
+
 import javax.swing.*;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -50,6 +51,10 @@ public class AbraFile extends PsiFileBase {
 
     private List<SmartPsiElementPointer<AbraFile>> cache;
     public List<AbraFile> getImportTree(List<AbraFile> importsTree){
+        if(true){
+            List<AbraFile> scope = getAbraFileScope();
+            return scope.subList(1,scope.size());
+        }
         if(cache!=null)return unwrap(cache);
         cache = wrap(_getImportTree(importsTree));
         //log.info("Caching "+cache.size()+" imported files for "+getName());
@@ -119,10 +124,31 @@ public class AbraFile extends PsiFileBase {
         return resp;
     }
 
-    public List<AbraFuncNameRef> findAllFuncNameRef(String name){
+    public List<AbraFuncNameRef> findAllFuncNameRef(String name) {
         ArrayList<AbraFuncNameRef> resp = new ArrayList<>();
-        for(AbraFuncNameRef ref:PsiTreeUtil.findChildrenOfAnyType(this,true,AbraFuncNameRef.class)){
-            if(ref.getText().equals(name)){
+        for (AbraFuncNameRef ref : PsiTreeUtil.findChildrenOfAnyType(this, true, AbraFuncNameRef.class)) {
+            if (name == null || ref.getText().equals(name)) {
+                resp.add(ref);
+            }
+        }
+        return resp;
+    }
+
+    public List<AbraFuncName> findAllFuncName(String name) {
+        ArrayList<AbraFuncName> resp = new ArrayList<>();
+        for (AbraFuncName ref : PsiTreeUtil.findChildrenOfAnyType(this, true, AbraFuncName.class)) {
+            if (name == null || ref.getText().equals(name)) {
+                resp.add(ref);
+            }
+        }
+        return resp;
+    }
+
+
+    public List<AbraTypeName> findAllTypeName(String name) {
+        ArrayList<AbraTypeName> resp = new ArrayList<>();
+        for (AbraTypeName ref : PsiTreeUtil.findChildrenOfAnyType(this, true, AbraTypeName.class)) {
+            if (name == null || ref.getText().equals(name)) {
                 resp.add(ref);
             }
         }
@@ -176,5 +202,47 @@ public class AbraFile extends PsiFileBase {
 
     public void invalidateCache() {
         cache = null;
+    }
+
+
+    private static final Key KEY_ABRA_SCOPE = new Key("AbraScope");
+
+    public synchronized List<AbraFile> getAbraFileScope() {
+//        ArrayList<AbraFile> resp = (ArrayList<AbraFile>) getUserData(KEY_ABRA_SCOPE);
+//        if (resp == null) {
+            ArrayList<AbraFile> resp = new ArrayList<>();
+            int analysed = 0;
+            resp.add(this);
+            while (analysed < resp.size()) {
+                AbraFile item = resp.get(analysed);
+                for (ASTNode stmt : item.getNode().getChildren(TokenSet.create(AbraTypes.IMPORT_STMT))) {
+                    List<AbraFile> importedFiles = AbraPsiImplUtil.getReferencedFiles((AbraImportStmt) stmt.getPsi());//.getReferencedFiles();
+//                    List<AbraFile> importedFiles = ((AbraImportStmt) stmt.getPsi()).getReferencedFiles();//.getReferencedFiles();
+                    if (importedFiles != null) {
+                        for (AbraFile f : importedFiles) {
+                            if (!resp.contains(f)) {
+                                resp.add(f);
+                            }
+                        }
+                    }
+                }
+                analysed++;
+            }
+
+//            putUserData(KEY_ABRA_SCOPE, resp);
+//        }
+
+//        StringBuilder sb = new StringBuilder("Scope for " + getShortName());
+//        for (AbraFile f : resp) {
+//            sb.append(",").append(f.getShortName());
+//        }
+//
+//        System.out.println(sb);
+
+        return resp;
+    }
+
+    private String getShortName() {
+        return getImportableFilePath();
     }
 }

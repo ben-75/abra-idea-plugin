@@ -1,11 +1,14 @@
 package org.abra.language.psi;
 
 import com.intellij.lang.ASTNode;
+import com.intellij.navigation.ColoredItemPresentation;
 import com.intellij.navigation.ItemPresentation;
+import com.intellij.openapi.editor.colors.TextAttributesKey;
 import com.intellij.openapi.module.Module;
 import com.intellij.openapi.module.ModuleManager;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.roots.ModuleRootManager;
+import com.intellij.openapi.util.Key;
 import com.intellij.openapi.vfs.LocalFileSystem;
 import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.psi.PsiElement;
@@ -18,15 +21,15 @@ import com.intellij.psi.tree.TokenSet;
 import com.intellij.util.indexing.FileBasedIndex;
 import org.abra.language.AbraFileType;
 import org.abra.language.AbraIcons;
+import org.abra.language.AbraSyntaxHighlighter;
 import org.abra.language.UnresolvableTokenException;
 import org.abra.language.psi.impl.*;
-import org.abra.utils.TRIT;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import javax.swing.*;
 import java.io.File;
 import java.util.*;
-import java.util.stream.Collectors;
 
 public class AbraPsiImplUtil {
 
@@ -122,6 +125,34 @@ public class AbraPsiImplUtil {
     public static int getResolvedSize(AbraTypeName element){
         return ((AbraTypeStmt)element.getParent()).getResolvedSize();
     }
+
+    public static ItemPresentation getPresentation(AbraTypeName typeName) {
+        return new ColoredItemPresentation() {
+            @Nullable
+            @Override
+            public TextAttributesKey getTextAttributesKey() {
+                return AbraSyntaxHighlighter.ABRA_TYPE_DECLARATION;
+            }
+
+            @Nullable
+            @Override
+            public String getPresentableText() {
+                return typeName.getText();
+            }
+
+            @Nullable
+            @Override
+            public String getLocationString() {
+                return ((AbraTypeStmt) typeName.getParent()).getPresentation().getLocationString();
+            }
+
+            @Nullable
+            @Override
+            public Icon getIcon(boolean unused) {
+                return AbraIcons.TYPE;
+            }
+        };
+    }
     //====================================================================
     //====================== AbraLutStmt =================================
     //====================================================================
@@ -186,7 +217,33 @@ public class AbraPsiImplUtil {
         return element;
     }
 
+    public static ItemPresentation getPresentation(AbraLutName lutName) {
+        return new ColoredItemPresentation() {
+            @Nullable
+            @Override
+            public TextAttributesKey getTextAttributesKey() {
+                return AbraSyntaxHighlighter.ABRA_FCT_DECLARATION;
+            }
 
+            @Nullable
+            @Override
+            public String getPresentableText() {
+                return lutName.getText();
+            }
+
+            @Nullable
+            @Override
+            public String getLocationString() {
+                return ((AbraLutStmt) lutName.getParent()).getPresentation().getLocationString();
+            }
+
+            @Nullable
+            @Override
+            public Icon getIcon(boolean unused) {
+                return AbraIcons.LUT;
+            }
+        };
+    }
     //====================================================================
     //====================== AbraFieldSpec ===============================
     //====================================================================
@@ -310,6 +367,42 @@ public class AbraPsiImplUtil {
 
     public static PsiElement getNameIdentifier(AbraFuncName element) {
         return element;
+    }
+
+
+    public static ItemPresentation getPresentation(AbraFuncName funcName) {
+
+        return new ColoredItemPresentation() {
+            @Nullable
+            @Override
+            public TextAttributesKey getTextAttributesKey() {
+                return AbraSyntaxHighlighter.ABRA_FCT_DECLARATION;
+            }
+
+            @Nullable
+            @Override
+            public String getPresentableText() {
+                return funcName.getText();
+            }
+
+            @Nullable
+            @Override
+            public String getLocationString() {
+                if (((AbraFuncStmt) funcName.getParent().getParent()).isInTemplate()) {
+                    return "(template: " + ((AbraTemplateStmt) ((AbraFuncStmt) funcName.getParent().getParent()).getParent()).getTemplateName().getText() + ")";
+                }
+                return "";
+            }
+
+            @Nullable
+            @Override
+            public Icon getIcon(boolean unused) {
+                if (((AbraFuncStmt) funcName.getParent().getParent()).isInTemplate()) {
+                    return AbraIcons.TEMPLATE;
+                }
+                return AbraIcons.FUNCTION;
+            }
+        };
     }
 
     public static AbraDefinition getStatement(AbraFuncNameRef element){
@@ -990,6 +1083,26 @@ public class AbraPsiImplUtil {
         return importedFiles.toArray(arr);
     }
 
+    public static final Key REF_FILES_KEY = new Key("RefFilesKey");
+
+    public static List<AbraFile> getReferencedFiles(AbraImportStmt importStmt) {
+            List<AbraFile> resp = (List<AbraFile>) importStmt.getUserData(REF_FILES_KEY);
+            if (resp == null) {
+                resp = new ArrayList<>();
+                PsiReference[] importedFiles = AbraPsiImplUtil.getReferences(importStmt);
+                ;//importStmt.getReferences();
+                for (PsiReference psiRef : importedFiles) {
+                    AbraFile anAbraFile = (AbraFile) psiRef.resolve();
+                    if (anAbraFile != null) {
+                        resp.add(anAbraFile);
+                    }
+                }
+                importStmt.putUserData(REF_FILES_KEY, resp);
+            }
+            return resp;
+    }
+
+
     public static String getFilePath(AbraImportStmt importStmt){
         return importStmt.getText().substring(7).trim();
     }
@@ -1328,4 +1441,44 @@ public class AbraPsiImplUtil {
         }
         return resp;
     }
+
+    public static List<AbraFuncName> findAllFuncName(Project project, String name, List<AbraFile> files) {
+        ArrayList<AbraFuncName> resp = new ArrayList<>();
+        if (files == null) {
+            Collection<VirtualFile> virtualFiles = FileBasedIndex.getInstance().getContainingFiles(
+                    FileTypeIndex.NAME, AbraFileType.INSTANCE, GlobalSearchScope.allScope(project));
+            for (VirtualFile virtualFile : virtualFiles) {
+                AbraFile abraFile = (AbraFile) PsiManager.getInstance(project).findFile(virtualFile);
+                if (abraFile != null) {
+                    resp.addAll(abraFile.findAllFuncName(name));
+                }
+            }
+        } else {
+            for (AbraFile f : files) {
+                resp.addAll(f.findAllFuncName(name));
+            }
+        }
+        return resp;
+    }
+
+    public static List<AbraTypeName> findAllTypeName(Project project, String name, List<AbraFile> files) {
+        ArrayList<AbraTypeName> resp = new ArrayList<>();
+        if (files == null) {
+            Collection<VirtualFile> virtualFiles = FileBasedIndex.getInstance().getContainingFiles(
+                    FileTypeIndex.NAME, AbraFileType.INSTANCE, GlobalSearchScope.allScope(project));
+            for (VirtualFile virtualFile : virtualFiles) {
+                AbraFile abraFile = (AbraFile) PsiManager.getInstance(project).findFile(virtualFile);
+                if (abraFile != null) {
+                    resp.addAll(abraFile.findAllTypeName(name));
+                }
+            }
+        } else {
+            for (AbraFile f : files) {
+                resp.addAll(f.findAllTypeName(name));
+            }
+        }
+        return resp;
+    }
+
+
 }
