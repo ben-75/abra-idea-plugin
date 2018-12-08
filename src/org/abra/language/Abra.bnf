@@ -247,14 +247,14 @@ varName             ::= IDENTIFIER
                     {
                         mixin="org.abra.language.psi.impl.AbraNamedElementImpl"
                         implements="org.abra.language.psi.AbraNamedElement"
-                        methods=[getName setName getNameIdentifier getReference]
+                        methods=[getName setName getNameIdentifier getReference getPresentation]
                     }
 
 paramName           ::= IDENTIFIER
                     {
                         mixin="org.abra.language.psi.impl.AbraNamedElementImpl"
                         implements="org.abra.language.psi.AbraNamedElement"
-                        methods=[getName setName getNameIdentifier getResolvedSize ]
+                        methods=[getName setName getNameIdentifier getResolvedSize getPresentation]
                     }
 
 paramOrVarNameRef   ::= IDENTIFIER
@@ -286,7 +286,7 @@ typeName            ::= IDENTIFIER
                     {
                         mixin="org.abra.language.psi.impl.AbraNamedElementImpl"
                         implements="org.abra.language.psi.AbraNamedElement"
-                        methods=[getName setName getNameIdentifier getResolvedSize]
+                        methods=[getName setName getNameIdentifier getResolvedSize getPresentation]
                         pin=1 recoverWhile=typeNameRecover
                     }
 private typeNameRecover ::= !('['|'{')

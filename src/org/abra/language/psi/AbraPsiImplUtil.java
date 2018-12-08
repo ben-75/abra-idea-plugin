@@ -153,6 +153,66 @@ public class AbraPsiImplUtil {
             }
         };
     }
+
+
+    public static ItemPresentation getPresentation(AbraVarName varName) {
+        return new ColoredItemPresentation() {
+            @Nullable
+            @Override
+            public TextAttributesKey getTextAttributesKey() {
+                return AbraSyntaxHighlighter.ABRA_LOCAL_VAR;
+            }
+
+            @Nullable
+            @Override
+            public String getPresentableText() {
+                return varName.getText();
+            }
+
+            @Nullable
+            @Override
+            public String getLocationString() {
+                return "(local variable)";
+            }
+
+            @Nullable
+            @Override
+            public Icon getIcon(boolean unused) {
+                return AbraIcons.VECTOR;
+            }
+        };
+    }
+
+
+
+    public static ItemPresentation getPresentation(AbraParamName paramName) {
+        return new ColoredItemPresentation() {
+            @Nullable
+            @Override
+            public TextAttributesKey getTextAttributesKey() {
+                return AbraSyntaxHighlighter.ABRA_LOCAL_VAR;
+            }
+
+            @Nullable
+            @Override
+            public String getPresentableText() {
+                return paramName.getText();
+            }
+
+            @Nullable
+            @Override
+            public String getLocationString() {
+                return "(function parameter)";
+            }
+
+            @Nullable
+            @Override
+            public Icon getIcon(boolean unused) {
+                return AbraIcons.VECTOR;
+            }
+        };
+    }
+
     //====================================================================
     //====================== AbraLutStmt =================================
     //====================================================================
