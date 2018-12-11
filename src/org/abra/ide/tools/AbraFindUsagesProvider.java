@@ -1,4 +1,4 @@
-package org.abra.language;
+package org.abra.ide.tools;
 
 import com.intellij.lang.HelpID;
 import com.intellij.lang.cacheBuilder.DefaultWordsScanner;
@@ -7,6 +7,7 @@ import com.intellij.lang.findUsages.FindUsagesProvider;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiNamedElement;
 import com.intellij.psi.tree.TokenSet;
+import org.abra.language.AbraLexerAdapter;
 import org.abra.language.psi.AbraTokenType;
 import org.abra.language.psi.AbraTypes;
 import org.jetbrains.annotations.NotNull;
