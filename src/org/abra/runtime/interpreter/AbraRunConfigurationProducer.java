@@ -1,4 +1,4 @@
-package org.abra.runtime.runconfig;
+package org.abra.runtime.interpreter;
 
 import com.intellij.execution.actions.ConfigurationContext;
 import com.intellij.execution.actions.RunConfigurationProducer;
