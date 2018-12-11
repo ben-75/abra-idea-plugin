@@ -1,4 +1,4 @@
-package org.abra.interpreter.runconfig;
+package org.abra.runtime.runconfig;
 
 import com.intellij.execution.configurations.ConfigurationFactory;
 import com.intellij.execution.configurations.ConfigurationType;

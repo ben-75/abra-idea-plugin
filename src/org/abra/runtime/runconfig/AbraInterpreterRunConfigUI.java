@@ -1,6 +1,5 @@
-package org.abra.interpreter.runconfig;
+package org.abra.runtime.runconfig;
 
-import com.intellij.uiDesigner.core.GridLayoutManager;
 import org.jdesktop.swingx.VerticalLayout;
 
 import javax.swing.*;

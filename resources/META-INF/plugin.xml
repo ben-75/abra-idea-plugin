@@ -1,10 +1,10 @@
 <idea-plugin>
-  <id>org.abra.language</id>
-  <name>Abra Plugin</name>
-  <version>0.0.25-pre-alpha</version>
-  <vendor url="https://github.com/ben-75/abra-idea-plugin"/>
+    <id>org.abra.language</id>
+    <name>Abra Plugin</name>
+    <version>0.0.25-pre-alpha</version>
+    <vendor url="https://github.com/ben-75/abra-idea-plugin"/>
 
-  <description><![CDATA[
+    <description><![CDATA[
       [Experimental] support for Abra language
 
       <h3>Features</h3>
@@ -24,56 +24,56 @@
       </ul>
     ]]></description>
 
-  <change-notes><![CDATA[
+    <change-notes><![CDATA[
         <ul>
         <li>Keywords are now mandatory
         <li>Known regression regarding ability to recover from syntax errors
         </ul>
     ]]>
-  </change-notes>
+    </change-notes>
 
 
-  <!-- please see http://www.jetbrains.org/intellij/sdk/docs/basics/getting_started/build_number_ranges.html for description -->
-  <idea-version since-build="171.0"/>
+    <!-- please see http://www.jetbrains.org/intellij/sdk/docs/basics/getting_started/build_number_ranges.html for description -->
+    <idea-version since-build="171.0"/>
 
-  <!-- please see http://www.jetbrains.org/intellij/sdk/docs/basics/getting_started/plugin_compatibility.html
-       on how to target different products -->
-  <!-- uncomment to enable plugin in all products
-  <depends>com.intellij.modules.lang</depends>
-  -->
+    <!-- please see http://www.jetbrains.org/intellij/sdk/docs/basics/getting_started/plugin_compatibility.html
+         on how to target different products -->
+    <!-- uncomment to enable plugin in all products
+    <depends>com.intellij.modules.lang</depends>
+    -->
 
-  <extensions defaultExtensionNs="com.intellij">
-    <fileTypeFactory implementation="org.abra.language.AbraFileTypeFactory"/>
-    <lang.parserDefinition language="Abra" implementationClass="org.abra.language.AbraParserDefinition"/>
-    <lang.syntaxHighlighterFactory language="Abra" implementationClass="org.abra.ide.highlighter.AbraSyntaxHighlighterFactory"/>
-    <lang.braceMatcher language="Abra" implementationClass="org.abra.ide.tools.AbraBraceMatcher"/>
-    <lang.commenter language="Abra" implementationClass="org.abra.ide.tools.AbraCommenter"/>
-    <lang.foldingBuilder language="Abra" implementationClass="org.abra.ide.tools.AbraFoldingBuilder"/>
-    <colorSettingsPage implementation="org.abra.ide.highlighter.AbraColorSettingsPage"/>
-    <lang.psiStructureViewFactory language="Abra" implementationClass="org.abra.ide.ui.structureview.AbraStructureViewFactory"/>
-    <lang.findUsagesProvider language="Abra" implementationClass="org.abra.language.AbraFindUsagesProvider"/>
-    <annotator language="Abra" implementationClass="org.abra.ide.highlighter.DeclarationAnnotator"/>
-    <annotator language="Abra" implementationClass="org.abra.ide.highlighter.ReferenceValidatorAnnotator"/>
-    <annotator language="Abra" implementationClass="org.abra.ide.highlighter.MultiDeclarationAnnotator"/>
-    <annotator language="Abra" implementationClass="org.abra.ide.highlighter.LutValidationAnnotator"/>
-    <annotator language="Abra" implementationClass="org.abra.ide.highlighter.FuncArgsAnnotator"/>
-    <annotator language="Abra" implementationClass="org.abra.ide.highlighter.ImportAnnotator"/>
-    <completion.contributor language="Abra" implementationClass="org.abra.ide.tools.AbraCompletionContributor"/>
-    <additionalTextAttributes scheme="Default" file="colors/AbraDefault.xml"/>
-    <additionalTextAttributes scheme="Darcula" file="colors/AbraDarcula.xml"/>
-    <renamePsiElementProcessor implementation="org.abra.ide.tools.RenameFuncNameProcessor"/>
-    <configurationType implementation="org.abra.interpreter.runconfig.AbraInterpreterConfigurationType"/>
-    <programRunner implementation="org.abra.interpreter.action.AbraInterpreterProgramRunner"/>
-    <programRunner implementation="org.abra.interpreter.debugger.AbraInterpreterDebugRunner"/>
-    <runConfigurationProducer implementation="org.abra.interpreter.runconfig.AbraRunConfigurationProducer"/>
-    <xdebugger.breakpointType implementation="org.abra.interpreter.debugger.AbraBreakpointType"/>
-    <debugger.javaBreakpointHandlerFactory implementation="org.abra.interpreter.debugger.AbraBreakpointHandlerFactory"/>
-    <debugger.positionManagerFactory implementation="org.abra.interpreter.debugger.AbraPositionManagerFactory"/>
-  </extensions>
+    <extensions defaultExtensionNs="com.intellij">
+        <fileTypeFactory implementation="org.abra.language.AbraFileTypeFactory"/>
+        <lang.parserDefinition language="Abra" implementationClass="org.abra.language.AbraParserDefinition"/>
+        <lang.syntaxHighlighterFactory language="Abra" implementationClass="org.abra.ide.highlighter.AbraSyntaxHighlighterFactory"/>
+        <lang.braceMatcher language="Abra" implementationClass="org.abra.ide.tools.AbraBraceMatcher"/>
+        <lang.commenter language="Abra" implementationClass="org.abra.ide.tools.AbraCommenter"/>
+        <lang.foldingBuilder language="Abra" implementationClass="org.abra.ide.tools.AbraFoldingBuilder"/>
+        <colorSettingsPage implementation="org.abra.ide.highlighter.AbraColorSettingsPage"/>
+        <lang.psiStructureViewFactory language="Abra" implementationClass="org.abra.ide.ui.structureview.AbraStructureViewFactory"/>
+        <lang.findUsagesProvider language="Abra" implementationClass="org.abra.language.AbraFindUsagesProvider"/>
+        <annotator language="Abra" implementationClass="org.abra.ide.highlighter.DeclarationAnnotator"/>
+        <annotator language="Abra" implementationClass="org.abra.ide.highlighter.ReferenceValidatorAnnotator"/>
+        <annotator language="Abra" implementationClass="org.abra.ide.highlighter.MultiDeclarationAnnotator"/>
+        <annotator language="Abra" implementationClass="org.abra.ide.highlighter.LutValidationAnnotator"/>
+        <annotator language="Abra" implementationClass="org.abra.ide.highlighter.FuncArgsAnnotator"/>
+        <annotator language="Abra" implementationClass="org.abra.ide.highlighter.ImportAnnotator"/>
+        <completion.contributor language="Abra" implementationClass="org.abra.ide.tools.AbraCompletionContributor"/>
+        <additionalTextAttributes scheme="Default" file="colors/AbraDefault.xml"/>
+        <additionalTextAttributes scheme="Darcula" file="colors/AbraDarcula.xml"/>
+        <renamePsiElementProcessor implementation="org.abra.ide.tools.RenameFuncNameProcessor"/>
+        <configurationType implementation="org.abra.runtime.runconfig.AbraInterpreterConfigurationType"/>
+        <programRunner implementation="org.abra.runtime.action.AbraInterpreterProgramRunner"/>
+        <programRunner implementation="org.abra.runtime.debugger.AbraInterpreterDebugRunner"/>
+        <runConfigurationProducer implementation="org.abra.runtime.runconfig.AbraRunConfigurationProducer"/>
+        <xdebugger.breakpointType implementation="org.abra.runtime.debugger.AbraBreakpointType"/>
+        <debugger.javaBreakpointHandlerFactory implementation="org.abra.interpreter.debugger.AbraBreakpointHandlerFactory"/>
+        <debugger.positionManagerFactory implementation="org.abra.runtime.debugger.AbraPositionManagerFactory"/>
+    </extensions>
 
-  <actions>
-    <!-- Add your actions here -->
+    <actions>
+        <!-- Add your actions here -->
 
-  </actions>
+    </actions>
 
 </idea-plugin>

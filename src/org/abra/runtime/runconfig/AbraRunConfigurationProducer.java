@@ -1,7 +1,6 @@
-package org.abra.interpreter.runconfig;
+package org.abra.runtime.runconfig;
 
 import com.intellij.execution.actions.ConfigurationContext;
-import com.intellij.execution.actions.ConfigurationFromContext;
 import com.intellij.execution.actions.RunConfigurationProducer;
 import com.intellij.execution.configurations.ConfigurationFactory;
 import com.intellij.execution.configurations.ConfigurationType;
@@ -9,7 +8,6 @@ import com.intellij.openapi.util.Ref;
 import com.intellij.psi.PsiElement;
 import org.abra.language.psi.AbraFile;
 import org.abra.language.psi.AbraFuncStmt;
-import org.jetbrains.annotations.NotNull;
 
 public class AbraRunConfigurationProducer extends RunConfigurationProducer<AbraInterpreterRunConfiguration> {
 
