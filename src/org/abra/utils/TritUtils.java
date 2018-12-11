@@ -3,6 +3,7 @@ package org.abra.utils;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.regex.Pattern;
 
 public class TritUtils {
@@ -149,6 +150,11 @@ public class TritUtils {
         if (carry!=0) {
             resp.add(1);
         }
+        return integersToTRIT(resp,negative);
+    }
+
+
+    private static TRIT[] integersToTRIT(List<Integer> resp, boolean negative){
         TRIT[] response = new TRIT[resp.size()];
         for (int i = 0; i < resp.size(); i++) {
             if(negative){
@@ -213,24 +219,7 @@ public class TritUtils {
         if (carry.compareTo(BigInteger.ZERO)!=0) {
             resp.add(1);
         }
-        TRIT[] response = new TRIT[resp.size()];
-        for (int i = 0; i < resp.size(); i++) {
-            if(negative){
-                switch(resp.get(i)){
-                    case 1:response[i]=TRIT.M;break;
-                    case 0:response[i]=TRIT.Z;break;
-                    case -1:response[i]=TRIT.O;break;
-                }
-            }else{
-                switch(resp.get(i)){
-                    case 1:response[i]=TRIT.O;break;
-                    case 0:response[i]=TRIT.Z;break;
-                    case -1:response[i]=TRIT.M;break;
-                }
-            }
-        }
-        return response;
-
+        return integersToTRIT(resp,negative);
     }
 
     public static String trit2String(TRIT[] input) {
@@ -294,10 +283,10 @@ public class TritUtils {
      * truncate to result to bigInteger
      * convert bigInteger to trits to get mantissa.
      * set the exponent equals to the number of times we multiply by 3 (negate).
-     * @param value
-     * @param manSize
-     * @param expSize
-     * @return
+     * @param value number to encode into float trits
+     * @param manSize mantissa trit length
+     * @param expSize exponent trit length
+     * @return the trits
      */
     public static TRIT[] floatToTrits(final BigDecimal value, final int manSize, final int expSize)
     {
@@ -352,34 +341,13 @@ public class TritUtils {
         return response;
     }
 
-    public static TRIT[] normalize(TRIT[] v, int size){
-        TRIT[] resp = new TRIT[size];
-        for(int i=0;i<size;i++)resp[i]=TRIT.Z;
-        int k=0;
-        for(int j=size-(v.length);j<size;j++){
-            resp[j]=v[k];
-            k++;
-        }
-        return resp;
-    }
     private static BigInteger extractFractionPart(BigDecimal v){
-        if(v.toString().indexOf(".")<0)return BigInteger.ZERO;
+        if(!v.toString().contains("."))return BigInteger.ZERO;
         return new BigInteger(v.toString().substring(v.toString().indexOf(".")+1));
     }
 
     private static int computeShiftToNormilize(TRIT[] trits, int manSize){
         return manSize-trits.length;
-    }
-
-    private static TRIT[] doSum(TRIT[] a, TRIT[] b){
-        TRIT[] resp = new TRIT[Math.max(a.length,b.length)+2];
-        TRIT carry = TRIT.Z;
-        for(int i=0;i<resp.length;i++){
-            TRIT[] res = lut(i>=a.length?TRIT.Z:a[i],i>=b.length?TRIT.Z:b[i],carry);
-            resp[i] = res[0];
-            carry = res[1];
-        }
-        return resp;
     }
 
     private static TRIT[] lut(TRIT a, TRIT b, TRIT carry){

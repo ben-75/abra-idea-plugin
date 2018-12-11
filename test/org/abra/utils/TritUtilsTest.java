@@ -149,12 +149,6 @@ public class TritUtilsTest {
         printFloat("0.0",TritUtils.floatToTrits(new BigDecimal("0.0"),manSize,expSize),manSize);
     }
 
-    @Test
-    public void normalizeTest(){
-        Assert.assertArrayEquals(new TRIT[]{TRIT.Z,TRIT.Z,TRIT.O},TritUtils.normalize(new TRIT[]{TRIT.Z,TRIT.Z,TRIT.O},3));
-        Assert.assertArrayEquals(new TRIT[]{TRIT.Z,TRIT.Z,TRIT.O},TritUtils.normalize(new TRIT[]{TRIT.O},3));
-    }
-
     private void printFloat(String val, TRIT[] trits, int manSize){
         TRIT[] m = new TRIT[manSize];
         TRIT[] e = new TRIT[trits.length-manSize];
