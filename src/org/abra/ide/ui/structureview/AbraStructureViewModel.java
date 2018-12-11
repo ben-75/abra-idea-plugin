@@ -1,4 +1,4 @@
-package org.abra.language;
+package org.abra.ide.ui.structureview;
 
 import com.intellij.ide.structureView.StructureViewModel;
 import com.intellij.ide.structureView.StructureViewModelBase;

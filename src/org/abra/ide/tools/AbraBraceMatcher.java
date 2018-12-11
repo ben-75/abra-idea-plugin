@@ -1,10 +1,9 @@
-package org.abra.language;
+package org.abra.ide.tools;
 
 import com.intellij.lang.BracePair;
 import com.intellij.lang.PairedBraceMatcher;
 import com.intellij.psi.PsiFile;
 import com.intellij.psi.tree.IElementType;
-import org.abra.language.psi.AbraTokenType;
 import org.abra.language.psi.AbraTypes;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;

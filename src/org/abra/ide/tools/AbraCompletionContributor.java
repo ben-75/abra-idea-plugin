@@ -1,18 +1,14 @@
-package org.abra.language;
+package org.abra.ide.tools;
 
 import com.intellij.codeInsight.completion.*;
 import com.intellij.codeInsight.lookup.LookupElementBuilder;
-import com.intellij.lang.ASTNode;
-import com.intellij.navigation.ItemPresentation;
 import com.intellij.patterns.PlatformPatterns;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiWhiteSpace;
-import com.intellij.psi.tree.TokenSet;
 import com.intellij.util.ProcessingContext;
+import org.abra.language.AbraLanguage;
 import org.abra.language.psi.*;
 import org.jetbrains.annotations.NotNull;
-
-import java.util.Collection;
 
 public class AbraCompletionContributor extends CompletionContributor {
     public AbraCompletionContributor() {

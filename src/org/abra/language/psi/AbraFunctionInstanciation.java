@@ -3,7 +3,7 @@ package org.abra.language.psi;
 import com.intellij.ide.structureView.StructureViewTreeElement;
 import com.intellij.ide.util.treeView.smartTree.TreeElement;
 import com.intellij.navigation.ItemPresentation;
-import org.abra.language.AbraIcons;
+import org.abra.ide.ui.AbraIcons;
 import org.abra.language.UnresolvableTokenException;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;

@@ -45,25 +45,24 @@
   <extensions defaultExtensionNs="com.intellij">
     <fileTypeFactory implementation="org.abra.language.AbraFileTypeFactory"/>
     <lang.parserDefinition language="Abra" implementationClass="org.abra.language.AbraParserDefinition"/>
-    <lang.syntaxHighlighterFactory language="Abra" implementationClass="org.abra.language.AbraSyntaxHighlighterFactory"/>
-    <lang.braceMatcher language="Abra" implementationClass="org.abra.language.AbraBraceMatcher"/>
-    <lang.commenter language="Abra" implementationClass="org.abra.language.AbraCommenter"/>
-    <lang.foldingBuilder language="Abra" implementationClass="org.abra.language.AbraFoldingBuilder"/>
-    <colorSettingsPage implementation="org.abra.language.AbraColorSettingsPage"/>
-    <lang.psiStructureViewFactory language="Abra" implementationClass="org.abra.language.AbraStructureViewFactory"/>
+    <lang.syntaxHighlighterFactory language="Abra" implementationClass="org.abra.ide.highlighter.AbraSyntaxHighlighterFactory"/>
+    <lang.braceMatcher language="Abra" implementationClass="org.abra.ide.tools.AbraBraceMatcher"/>
+    <lang.commenter language="Abra" implementationClass="org.abra.ide.tools.AbraCommenter"/>
+    <lang.foldingBuilder language="Abra" implementationClass="org.abra.ide.tools.AbraFoldingBuilder"/>
+    <colorSettingsPage implementation="org.abra.ide.highlighter.AbraColorSettingsPage"/>
+    <lang.psiStructureViewFactory language="Abra" implementationClass="org.abra.ide.ui.structureview.AbraStructureViewFactory"/>
     <lang.findUsagesProvider language="Abra" implementationClass="org.abra.language.AbraFindUsagesProvider"/>
-    <annotator language="Abra" implementationClass="org.abra.language.DeclarationAnnotator"/>
-    <annotator language="Abra" implementationClass="org.abra.language.ReferenceValidatorAnnotator"/>
-    <annotator language="Abra" implementationClass="org.abra.language.MultiDeclarationAnnotator"/>
-    <annotator language="Abra" implementationClass="org.abra.language.LutValidationAnnotator"/>
-    <annotator language="Abra" implementationClass="org.abra.language.FuncArgsAnnotator"/>
-    <annotator language="Abra" implementationClass="org.abra.language.ImportAnnotator"/>
-    <completion.contributor language="Abra" implementationClass="org.abra.language.AbraCompletionContributor"/>
+    <annotator language="Abra" implementationClass="org.abra.ide.highlighter.DeclarationAnnotator"/>
+    <annotator language="Abra" implementationClass="org.abra.ide.highlighter.ReferenceValidatorAnnotator"/>
+    <annotator language="Abra" implementationClass="org.abra.ide.highlighter.MultiDeclarationAnnotator"/>
+    <annotator language="Abra" implementationClass="org.abra.ide.highlighter.LutValidationAnnotator"/>
+    <annotator language="Abra" implementationClass="org.abra.ide.highlighter.FuncArgsAnnotator"/>
+    <annotator language="Abra" implementationClass="org.abra.ide.highlighter.ImportAnnotator"/>
+    <completion.contributor language="Abra" implementationClass="org.abra.ide.tools.AbraCompletionContributor"/>
     <additionalTextAttributes scheme="Default" file="colors/AbraDefault.xml"/>
     <additionalTextAttributes scheme="Darcula" file="colors/AbraDarcula.xml"/>
-    <renamePsiElementProcessor implementation="org.abra.language.RenameFuncNameProcessor"/>
+    <renamePsiElementProcessor implementation="org.abra.ide.tools.RenameFuncNameProcessor"/>
     <configurationType implementation="org.abra.interpreter.runconfig.AbraInterpreterConfigurationType"/>
-    <!--<applicationConfigurable groupId="build" instance="org.abra.AbraPluginConfigurable"/>-->
     <programRunner implementation="org.abra.interpreter.action.AbraInterpreterProgramRunner"/>
     <runConfigurationProducer implementation="org.abra.interpreter.runconfig.AbraRunConfigurationProducer"/>
   </extensions>

@@ -1,4 +1,4 @@
-package org.abra.language;
+package org.abra.ide.tools;
 
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiReference;
