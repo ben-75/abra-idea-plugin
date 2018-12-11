@@ -9,6 +9,9 @@ import com.intellij.psi.PsiFile;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+/**
+ * Extension enabling structure view for Abra file
+ */
 public class AbraStructureViewFactory implements PsiStructureViewFactory {
     @Nullable
     @Override

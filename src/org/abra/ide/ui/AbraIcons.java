@@ -5,6 +5,7 @@ import com.intellij.openapi.util.IconLoader;
 import javax.swing.*;
 
 public class AbraIcons {
+
     public static final Icon FILE = IconLoader.getIcon("/org/abra/ide/ui/q-file.png");
     public static final Icon TYPE = IconLoader.getIcon("/org/abra/ide/ui/T.png");
     public static final Icon LUT = IconLoader.getIcon("/org/abra/ide/ui/L.png");
@@ -15,4 +16,5 @@ public class AbraIcons {
     public static final Icon TEMPLATE = IconLoader.getIcon("/org/abra/ide/ui/Template.png");
     public static final Icon RUN = IconLoader.getIcon("/org/abra/ide/ui/Run.png");
     public static final Icon FUNCTION_INSTANCIATION = IconLoader.getIcon("/org/abra/ide/ui/F.png");
+
 }

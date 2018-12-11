@@ -13,13 +13,18 @@ import org.jetbrains.annotations.NotNull;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Compute the structure view for focused Abra file
+ */
 public class AbraStructureViewElement implements StructureViewTreeElement, SortableTreeElement {
+
     private final NavigatablePsiElement element;
     private final String typeName;
 
     public AbraStructureViewElement(NavigatablePsiElement element) {
         this(element,null);
     }
+
     public AbraStructureViewElement(NavigatablePsiElement element, String typeName) {
         this.element = element;
         this.typeName = typeName;
