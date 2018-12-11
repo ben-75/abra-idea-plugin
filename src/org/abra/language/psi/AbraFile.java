@@ -57,7 +57,6 @@ public class AbraFile extends PsiFileBase {
         }
         if(cache!=null)return unwrap(cache);
         cache = wrap(_getImportTree(importsTree));
-        //log.info("Caching "+cache.size()+" imported files for "+getName());
         return importsTree;
     }
 
@@ -205,44 +204,25 @@ public class AbraFile extends PsiFileBase {
     }
 
 
-    private static final Key KEY_ABRA_SCOPE = new Key("AbraScope");
-
     public synchronized List<AbraFile> getAbraFileScope() {
-//        ArrayList<AbraFile> resp = (ArrayList<AbraFile>) getUserData(KEY_ABRA_SCOPE);
-//        if (resp == null) {
-            ArrayList<AbraFile> resp = new ArrayList<>();
-            int analysed = 0;
-            resp.add(this);
-            while (analysed < resp.size()) {
-                AbraFile item = resp.get(analysed);
-                for (ASTNode stmt : item.getNode().getChildren(TokenSet.create(AbraTypes.IMPORT_STMT))) {
-                    List<AbraFile> importedFiles = AbraPsiImplUtil.getReferencedFiles((AbraImportStmt) stmt.getPsi());//.getReferencedFiles();
-//                    List<AbraFile> importedFiles = ((AbraImportStmt) stmt.getPsi()).getReferencedFiles();//.getReferencedFiles();
-                    if (importedFiles != null) {
-                        for (AbraFile f : importedFiles) {
-                            if (!resp.contains(f)) {
-                                resp.add(f);
-                            }
+        ArrayList<AbraFile> resp = new ArrayList<>();
+        int analysed = 0;
+        resp.add(this);
+        while (analysed < resp.size()) {
+            AbraFile item = resp.get(analysed);
+            for (ASTNode stmt : item.getNode().getChildren(TokenSet.create(AbraTypes.IMPORT_STMT))) {
+                List<AbraFile> importedFiles = AbraPsiImplUtil.getReferencedFiles((AbraImportStmt) stmt.getPsi());//.getReferencedFiles();
+                if (importedFiles != null) {
+                    for (AbraFile f : importedFiles) {
+                        if (!resp.contains(f)) {
+                            resp.add(f);
                         }
                     }
                 }
-                analysed++;
             }
-
-//            putUserData(KEY_ABRA_SCOPE, resp);
-//        }
-
-//        StringBuilder sb = new StringBuilder("Scope for " + getShortName());
-//        for (AbraFile f : resp) {
-//            sb.append(",").append(f.getShortName());
-//        }
-//
-//        System.out.println(sb);
-
+            analysed++;
+        }
         return resp;
     }
 
-    private String getShortName() {
-        return getImportableFilePath();
-    }
 }

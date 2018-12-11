@@ -7,6 +7,7 @@ import org.jetbrains.annotations.*;
 import javax.swing.*;
 
 public class AbraFileType extends LanguageFileType {
+
     public static final AbraFileType INSTANCE = new AbraFileType();
 
     private AbraFileType() {

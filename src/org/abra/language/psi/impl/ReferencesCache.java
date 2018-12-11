@@ -24,7 +24,6 @@ public abstract class ReferencesCache extends ASTWrapperPsiElement implements Ab
             }
         }
         return references;
-//    return AbraPsiImplUtil.getReferences(this);
     }
 
     @Override
@@ -34,8 +33,6 @@ public abstract class ReferencesCache extends ASTWrapperPsiElement implements Ab
             references = null;
             ((AbraFile)getNode().getPsi().getContainingFile()).invalidateCache();
         }
-//        if(getProject().getUserData(ImportCache.KEY)!=null) {
-//            getProject().getUserData(ImportCache.KEY).invalidate();
-//        }
     }
+
 }

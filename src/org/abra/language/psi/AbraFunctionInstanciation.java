@@ -18,6 +18,7 @@ public class AbraFunctionInstanciation implements StructureViewTreeElement {
     private final AbraTemplateStmt templateStmt;
     private final String name;
     private final String locationString;
+
     public AbraFunctionInstanciation(AbraFuncStmt funcStmt, AbraTypeInstantiation typeInstantiation, AbraTemplateStmt templateStmt) {
         this.funcStmt = funcStmt;
         this.typeInstantiation = typeInstantiation;

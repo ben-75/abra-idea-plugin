@@ -11,8 +11,8 @@ import org.abra.language.psi.AbraTypes;
 import org.jetbrains.annotations.NotNull;
 
 public class AbraParserDefinition implements ParserDefinition {
+
     public static final TokenSet WHITE_SPACES = TokenSet.create(TokenType.WHITE_SPACE);
-//    public static final TokenSet COMMENTS = TokenSet.create(AbraTypes.COMMENT,AbraTypes.TEST_COMMENT,AbraTypes.TEST_ASSERTION,AbraTypes.EXPR_COMMENT,AbraTypes.EXPR_ASSERTION);
     public static final TokenSet COMMENTS = TokenSet.create(AbraTypes.COMMENT);
 
     public static final IFileElementType FILE = new IFileElementType(AbraLanguage.INSTANCE);

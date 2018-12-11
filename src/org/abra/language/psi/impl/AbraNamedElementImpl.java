@@ -6,7 +6,9 @@ import org.abra.language.psi.AbraNamedElement;
 import org.jetbrains.annotations.NotNull;
 
 public abstract class AbraNamedElementImpl extends ASTWrapperPsiElement implements AbraNamedElement {
+
     public AbraNamedElementImpl(@NotNull ASTNode node) {
         super(node);
     }
+
 }

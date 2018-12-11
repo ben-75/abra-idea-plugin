@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
+//TODO : check real usage of this
+
 public class SizesInstantiation {
 
     private List<Integer> sizes = new ArrayList<>();
