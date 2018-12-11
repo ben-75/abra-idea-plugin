@@ -11,6 +11,14 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.*;
 
+/**
+ * Check that import statement are used.
+ * This can produce 2 kinds of warning :
+ * 1. import is not used at all
+ * 2. import is not used directly (but due to the recusive imports in Abra : some code imported recursively is used)
+ *
+ * Note that wildcard import statement aren't checked.
+ */
 public class ImportAnnotator  implements Annotator {
 
     private Map<AbraFile, Set<PsiElement>> refCache = new HashMap<>();

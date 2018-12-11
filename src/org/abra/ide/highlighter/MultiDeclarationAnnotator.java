@@ -6,10 +6,14 @@ import com.intellij.psi.PsiElement;
 import org.abra.language.psi.*;
 import org.jetbrains.annotations.NotNull;
 
+/**
+ * //TODO : check that the same function name isn't imported more than one time (from different files)
+ *          idea is to detect ambiguous definitions
+ */
 public class MultiDeclarationAnnotator implements Annotator {
     @Override
     public void annotate(@NotNull final PsiElement element, @NotNull AnnotationHolder holder) {
-        AbraFuncNameRef functionReference = null;
+//        AbraFuncNameRef functionReference = null;
 //        AbraConstExpr constExpr = null;
 //        if (element instanceof AbraFuncStmt) {
 //            functionReference = AbraElementFactory.createAbraFunctionReference(element.getProject(),((AbraFuncStmt)element).getFuncSignature().getFuncName().getText(),(AbraFile) element.getContainingFile().getContainingFile());

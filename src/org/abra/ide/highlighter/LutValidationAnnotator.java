@@ -9,6 +9,12 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.HashSet;
 
+/**
+ * Perform simple validation of LUT statements. It check that :
+ * 1. all left member have the same length
+ * 2. all right members have the same length
+ * 3. no duplicate entry
+ */
 public class LutValidationAnnotator implements Annotator {
     @Override
     public void annotate(@NotNull final PsiElement element, @NotNull AnnotationHolder holder) {

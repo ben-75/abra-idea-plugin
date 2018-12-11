@@ -7,6 +7,10 @@ import com.intellij.psi.PsiElement;
 import org.abra.language.psi.*;
 import org.jetbrains.annotations.NotNull;
 
+/**
+ * Check that the number of args in a function call match the number of args in the function definition
+ */
+
 public class FuncArgsAnnotator  implements Annotator {
     @Override
     public void annotate(@NotNull final PsiElement element, @NotNull AnnotationHolder holder) {
@@ -32,7 +36,6 @@ public class FuncArgsAnnotator  implements Annotator {
     private AbraFuncSignature getFuncSignatureForTemplateNameRef(String funcName, AbraTemplateNameRef templateNameRef) {
         AbraTemplateName templateName = (AbraTemplateName) templateNameRef.getReference().resolve();
         if(templateName!=null) {
-            //((AbraTemplateStmt)useStmt.getTemplateNameRef().getReference().resolve().getParent()).getFuncStmtList().get(0).getFuncSignature().getFuncName().getText()
             AbraFuncStmt funcStmt = AbraPsiImplUtil.getFuncWithNameInTemplate(funcName, (AbraTemplateStmt) templateName.getParent());
             if (funcStmt!=null) {
                 return funcStmt.getFuncSignature();

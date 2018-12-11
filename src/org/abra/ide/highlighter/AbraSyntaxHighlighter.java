@@ -14,6 +14,10 @@ import org.jetbrains.annotations.NotNull;
 import static com.intellij.openapi.editor.DefaultLanguageHighlighterColors.KEYWORD;
 import static com.intellij.openapi.editor.colors.TextAttributesKey.createTextAttributesKey;
 
+/**
+ * Responsible for highlighting tokens found by the lexer. (mainly abra keywords, comments and illegal characters)
+ * For functional highlighting : @see {@link DeclarationAnnotator}
+ */
 public class AbraSyntaxHighlighter extends SyntaxHighlighterBase  {
 
     public static final TextAttributesKey COMMENT =
@@ -68,7 +72,6 @@ public class AbraSyntaxHighlighter extends SyntaxHighlighterBase  {
     private static final TextAttributesKey[] EXPR_ASSERT_KEYS = new TextAttributesKey[]{ABRA_EXPR_ASSERTION};
     private static final TextAttributesKey[] KEYWORD_KEYS = new TextAttributesKey[]{KEYWORD};
     private static final TextAttributesKey[] ENV_KEYWORD_KEYS = new TextAttributesKey[]{ENV_KEYWORD};
-    private static final TextAttributesKey[] TRIT_KEYS = new TextAttributesKey[]{ABRA_TRIT};
 
     @NotNull
     @Override

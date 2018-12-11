@@ -15,6 +15,9 @@ import org.jetbrains.annotations.NotNull;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Check that all "resolvable" token are effectively resolved.
+ */
 public class ReferenceValidatorAnnotator implements Annotator {
 
     @Override

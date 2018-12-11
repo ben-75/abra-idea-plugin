@@ -16,7 +16,11 @@ import java.util.Map;
 
 import static com.intellij.openapi.editor.DefaultLanguageHighlighterColors.KEYWORD;
 
+/**
+ * Define the panel to display in IDE color settings for Abra language.
+ */
 public class AbraColorSettingsPage implements ColorSettingsPage {
+
     private static final AttributesDescriptor[] DESCRIPTORS = new AttributesDescriptor[]{
             new AttributesDescriptor("Comments", AbraSyntaxHighlighter.COMMENT),
             new AttributesDescriptor("Keywords", KEYWORD),
@@ -33,7 +37,6 @@ public class AbraColorSettingsPage implements ColorSettingsPage {
             new AttributesDescriptor("Expression assertion prefix", AbraSyntaxHighlighter.ABRA_EXPR_ASSERTION_PREFIX),
             new AttributesDescriptor("Expression assertion", AbraSyntaxHighlighter.ABRA_EXPR_ASSERTION),
             new AttributesDescriptor("State variable", AbraSyntaxHighlighter.ABRA_STATE_VAR_REFERENCE),
-            //new AttributesDescriptor("Environment expression", AbraSyntaxHighlighter.ENV_EXPR),
             new AttributesDescriptor("Environment keywords", AbraSyntaxHighlighter.ENV_KEYWORD),
             new AttributesDescriptor("Environment name", AbraSyntaxHighlighter.ENV_NAME),
             new AttributesDescriptor("Environment attribute value", AbraSyntaxHighlighter.ENV_VALUE),
@@ -41,6 +44,7 @@ public class AbraColorSettingsPage implements ColorSettingsPage {
     };
 
     private static final Map<String,TextAttributesKey> ANNOTATOR_MAP = new HashMap();
+
     @Nullable
     @Override
     public Map<String, ColorKey> getAdditionalHighlightingTagToColorKeyMap() {
