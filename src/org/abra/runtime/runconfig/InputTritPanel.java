@@ -1,4 +1,4 @@
-package org.abra.runtime.action;
+package org.abra.runtime.runconfig;
 
 import com.intellij.openapi.ui.VerticalFlowLayout;
 import com.intellij.ui.JBColor;
