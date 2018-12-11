@@ -12,7 +12,6 @@ import com.intellij.openapi.project.Project;
 import com.intellij.openapi.util.InvalidDataException;
 import com.intellij.openapi.util.WriteExternalException;
 import com.intellij.psi.tree.TokenSet;
-import org.abra.runtime.action.AbraInterpreterState;
 import org.abra.language.psi.*;
 import org.jdom.Attribute;
 import org.jdom.Element;

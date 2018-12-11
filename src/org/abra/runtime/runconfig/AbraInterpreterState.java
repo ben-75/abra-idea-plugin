@@ -1,4 +1,4 @@
-package org.abra.runtime.action;
+package org.abra.runtime.runconfig;
 
 import com.intellij.execution.*;
 import com.intellij.execution.configurations.JavaCommandLineState;
