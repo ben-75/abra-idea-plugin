@@ -15,6 +15,9 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 
+/**
+ * Presence of this extension enable abra code folding in editor
+ */
 public class AbraFoldingBuilder implements FoldingBuilder {
     @Override
     @NotNull

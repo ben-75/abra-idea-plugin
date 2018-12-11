@@ -3,6 +3,9 @@ package org.abra.ide.tools;
 import com.intellij.lang.Commenter;
 import org.jetbrains.annotations.Nullable;
 
+/**
+ * Presence of this extension enable ide default action : comment and uncomment
+ */
 public class AbraCommenter implements Commenter {
 
     @Nullable

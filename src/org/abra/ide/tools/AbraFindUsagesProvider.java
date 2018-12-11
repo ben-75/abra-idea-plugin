@@ -8,10 +8,12 @@ import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiNamedElement;
 import com.intellij.psi.tree.TokenSet;
 import org.abra.language.AbraLexerAdapter;
-import org.abra.language.psi.AbraTokenType;
 import org.abra.language.psi.AbraTypes;
 import org.jetbrains.annotations.NotNull;
 
+/**
+ * Extension for the "Find Usages..." action.
+ */
 public class AbraFindUsagesProvider implements FindUsagesProvider {
     public boolean canFindUsagesFor(@NotNull PsiElement psiElement) {
         return psiElement instanceof PsiNamedElement;

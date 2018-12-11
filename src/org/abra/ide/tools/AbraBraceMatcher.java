@@ -8,6 +8,9 @@ import org.abra.language.psi.AbraTypes;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+/**
+ * Highlight matching brace, bracket or parenthesis in editor
+ */
 public class AbraBraceMatcher implements PairedBraceMatcher {
 
     private static final BracePair[] PAIRS = {

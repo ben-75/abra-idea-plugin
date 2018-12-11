@@ -8,8 +8,17 @@ import com.intellij.psi.PsiWhiteSpace;
 import com.intellij.util.ProcessingContext;
 import org.abra.language.AbraLanguage;
 import org.abra.language.psi.*;
+import org.abra.language.psi.impl.AbraFuncPsiReferenceImpl;
+import org.abra.language.psi.impl.AbraTypePsiReferenceImpl;
 import org.jetbrains.annotations.NotNull;
 
+/**
+ * Provide basic code completion for Abra language.
+ * Currently it support only keyword suggestions.
+ * TODO : add more code completion capabilities
+ *
+ * For auto completion in context of a reference see : {@link AbraFuncPsiReferenceImpl#getVariants()} {@link AbraTypePsiReferenceImpl#getVariants()}
+ */
 public class AbraCompletionContributor extends CompletionContributor {
     public AbraCompletionContributor() {
 //        extend(CompletionType.BASIC,

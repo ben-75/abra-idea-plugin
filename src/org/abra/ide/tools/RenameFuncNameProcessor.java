@@ -13,6 +13,10 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Map;
 
+/**
+ * Extension to handle function renaming.
+ * TODO : is it still useful ?
+ */
 public class RenameFuncNameProcessor extends RenamePsiElementProcessor {
 
     @Override
@@ -25,9 +29,6 @@ public class RenameFuncNameProcessor extends RenamePsiElementProcessor {
         for(AbraFuncStmt funcStmt: AbraPsiImplUtil.findAllFuncStmt(element.getProject(),element.getText())){
             allRenames.put(funcStmt.getFuncSignature().getFuncName(),newName);
         }
-//        for(AbraFuncNameRef funcNameRef: AbraPsiImplUtil.findAllFuncNameRef(element.getProject(),element.getText())){
-//            allRenames.put(funcNameRef,newName);
-//        }
         super.prepareRenaming(element,newName,allRenames);
     }
 
