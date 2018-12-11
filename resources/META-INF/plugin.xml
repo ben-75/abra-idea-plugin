@@ -51,7 +51,7 @@
     <lang.foldingBuilder language="Abra" implementationClass="org.abra.ide.tools.AbraFoldingBuilder"/>
     <colorSettingsPage implementation="org.abra.ide.highlighter.AbraColorSettingsPage"/>
     <lang.psiStructureViewFactory language="Abra" implementationClass="org.abra.ide.ui.structureview.AbraStructureViewFactory"/>
-    <lang.findUsagesProvider language="Abra" implementationClass="org.abra.language.AbraFindUsagesProvider"/>
+    <lang.findUsagesProvider language="Abra" implementationClass="org.abra.ide.tools.AbraFindUsagesProvider"/>
     <annotator language="Abra" implementationClass="org.abra.ide.highlighter.DeclarationAnnotator"/>
     <annotator language="Abra" implementationClass="org.abra.ide.highlighter.ReferenceValidatorAnnotator"/>
     <annotator language="Abra" implementationClass="org.abra.ide.highlighter.MultiDeclarationAnnotator"/>
