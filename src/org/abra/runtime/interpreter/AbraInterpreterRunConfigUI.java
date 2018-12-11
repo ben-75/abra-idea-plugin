@@ -1,4 +1,4 @@
-package org.abra.runtime.runconfig;
+package org.abra.runtime.interpreter;
 
 import org.jdesktop.swingx.VerticalLayout;
 

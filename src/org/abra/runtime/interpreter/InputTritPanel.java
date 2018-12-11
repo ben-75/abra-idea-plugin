@@ -1,9 +1,8 @@
-package org.abra.runtime.runconfig;
+package org.abra.runtime.interpreter;
 
 import com.intellij.openapi.ui.VerticalFlowLayout;
 import com.intellij.ui.JBColor;
 import com.intellij.util.ui.JBFont;
-import org.abra.runtime.runconfig.AbraInterpreterSettingsEditor;
 import org.abra.language.psi.*;
 import org.abra.utils.TRIT;
 import org.abra.utils.TritUtils;

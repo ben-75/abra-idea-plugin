@@ -1,11 +1,10 @@
-package org.abra.runtime.runconfig;
+package org.abra.runtime.interpreter;
 
 import com.intellij.execution.ExecutionException;
 import com.intellij.execution.configurations.RunProfile;
 import com.intellij.execution.configurations.RunProfileState;
 import com.intellij.execution.impl.DefaultJavaProgramRunner;
 import com.intellij.execution.runners.ExecutionEnvironment;
-import org.abra.runtime.runconfig.AbraInterpreterRunConfiguration;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 

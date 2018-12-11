@@ -62,9 +62,9 @@
     <additionalTextAttributes scheme="Default" file="colors/AbraDefault.xml"/>
     <additionalTextAttributes scheme="Darcula" file="colors/AbraDarcula.xml"/>
     <renamePsiElementProcessor implementation="org.abra.ide.tools.RenameFuncNameProcessor"/>
-    <configurationType implementation="org.abra.runtime.runconfig.AbraInterpreterConfigurationType"/>
-    <programRunner implementation="org.abra.runtime.runconfig.AbraInterpreterProgramRunner"/>
-    <runConfigurationProducer implementation="org.abra.runtime.runconfig.AbraRunConfigurationProducer"/>
+    <configurationType implementation="org.abra.runtime.interpreter.AbraInterpreterConfigurationType"/>
+    <programRunner implementation="org.abra.runtime.interpreter.AbraInterpreterProgramRunner"/>
+    <runConfigurationProducer implementation="org.abra.runtime.interpreter.AbraRunConfigurationProducer"/>
   </extensions>
 
   <actions>
