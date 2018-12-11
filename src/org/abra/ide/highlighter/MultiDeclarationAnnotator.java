@@ -1,11 +1,9 @@
-package org.abra.language;
+package org.abra.ide.highlighter;
 
 import com.intellij.lang.annotation.AnnotationHolder;
 import com.intellij.lang.annotation.Annotator;
-import com.intellij.openapi.util.TextRange;
 import com.intellij.psi.PsiElement;
 import org.abra.language.psi.*;
-import org.abra.language.psi.impl.AbraFuncPsiReferenceImpl;
 import org.jetbrains.annotations.NotNull;
 
 public class MultiDeclarationAnnotator implements Annotator {

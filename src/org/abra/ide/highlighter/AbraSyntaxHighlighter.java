@@ -1,4 +1,4 @@
-package org.abra.language;
+package org.abra.ide.highlighter;
 
 import com.intellij.lexer.Lexer;
 import com.intellij.openapi.editor.DefaultLanguageHighlighterColors;
@@ -7,6 +7,7 @@ import com.intellij.openapi.editor.colors.TextAttributesKey;
 import com.intellij.openapi.fileTypes.SyntaxHighlighterBase;
 import com.intellij.psi.TokenType;
 import com.intellij.psi.tree.IElementType;
+import org.abra.language.AbraLexerAdapter;
 import org.abra.language.psi.AbraTypes;
 import org.jetbrains.annotations.NotNull;
 

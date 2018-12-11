@@ -20,10 +20,10 @@ import com.intellij.psi.search.GlobalSearchScope;
 import com.intellij.psi.tree.TokenSet;
 import com.intellij.util.indexing.FileBasedIndex;
 import org.abra.language.AbraFileType;
-import org.abra.language.AbraIcons;
-import org.abra.language.AbraSyntaxHighlighter;
 import org.abra.language.UnresolvableTokenException;
 import org.abra.language.psi.impl.*;
+import org.abra.ide.highlighter.AbraSyntaxHighlighter;
+import org.abra.ide.ui.AbraIcons;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 

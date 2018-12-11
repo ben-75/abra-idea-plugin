@@ -1,6 +1,7 @@
 package org.abra.language;
 
 import com.intellij.openapi.fileTypes.LanguageFileType;
+import org.abra.ide.ui.AbraIcons;
 import org.jetbrains.annotations.*;
 
 import javax.swing.*;

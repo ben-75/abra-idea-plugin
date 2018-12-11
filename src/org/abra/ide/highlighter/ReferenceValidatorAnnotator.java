@@ -1,4 +1,4 @@
-package org.abra.language;
+package org.abra.ide.highlighter;
 
 import com.intellij.lang.annotation.AnnotationHolder;
 import com.intellij.lang.annotation.Annotator;
@@ -7,12 +7,12 @@ import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiPolyVariantReference;
 import com.intellij.psi.PsiReference;
 import com.intellij.psi.ResolveResult;
+import org.abra.language.UnresolvableTokenException;
 import org.abra.language.psi.*;
 import org.abra.language.psi.impl.*;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
 
 public class ReferenceValidatorAnnotator implements Annotator {

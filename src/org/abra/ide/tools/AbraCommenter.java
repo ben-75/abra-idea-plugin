@@ -1,4 +1,4 @@
-package org.abra.language;
+package org.abra.ide.tools;
 
 import com.intellij.lang.Commenter;
 import org.jetbrains.annotations.Nullable;

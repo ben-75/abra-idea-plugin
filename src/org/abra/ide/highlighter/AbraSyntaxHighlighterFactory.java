@@ -1,4 +1,4 @@
-package org.abra.language;
+package org.abra.ide.highlighter;
 
 import com.intellij.openapi.fileTypes.SyntaxHighlighter;
 import com.intellij.openapi.fileTypes.SyntaxHighlighterFactory;

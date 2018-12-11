@@ -2,8 +2,7 @@ package org.abra.interpreter.runconfig;
 
 import com.intellij.execution.configurations.ConfigurationFactory;
 import com.intellij.execution.configurations.ConfigurationType;
-import com.intellij.icons.AllIcons;
-import org.abra.language.AbraIcons;
+import org.abra.ide.ui.AbraIcons;
 import org.jetbrains.annotations.NotNull;
 
 import javax.swing.*;

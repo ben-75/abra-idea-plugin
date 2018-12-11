@@ -1,4 +1,4 @@
-package org.abra.language;
+package org.abra.ide.highlighter;
 
 import com.intellij.lang.annotation.AnnotationHolder;
 import com.intellij.lang.annotation.Annotator;
