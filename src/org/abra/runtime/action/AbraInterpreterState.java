@@ -1,4 +1,4 @@
-package org.abra.interpreter.action;
+package org.abra.runtime.action;
 
 import com.intellij.execution.*;
 import com.intellij.execution.configurations.JavaCommandLineState;
@@ -17,7 +17,7 @@ import com.intellij.openapi.roots.ProjectRootManager;
 import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.xdebugger.XDebuggerManager;
 import com.intellij.xdebugger.breakpoints.XBreakpointManager;
-import org.abra.interpreter.runconfig.AbraInterpreterRunConfiguration;
+import org.abra.runtime.runconfig.AbraInterpreterRunConfiguration;
 import org.abra.language.psi.AbraPsiImplUtil;
 import org.abra.utils.TritUtils;
 import org.jetbrains.annotations.NotNull;

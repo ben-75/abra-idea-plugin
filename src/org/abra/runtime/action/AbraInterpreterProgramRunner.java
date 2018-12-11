@@ -1,13 +1,11 @@
-package org.abra.interpreter.action;
+package org.abra.runtime.action;
 
 import com.intellij.execution.ExecutionException;
 import com.intellij.execution.configurations.RunProfile;
 import com.intellij.execution.configurations.RunProfileState;
 import com.intellij.execution.impl.DefaultJavaProgramRunner;
-import com.intellij.execution.runners.BaseProgramRunner;
 import com.intellij.execution.runners.ExecutionEnvironment;
-import com.intellij.execution.runners.GenericProgramRunner;
-import org.abra.interpreter.runconfig.AbraInterpreterRunConfiguration;
+import org.abra.runtime.runconfig.AbraInterpreterRunConfiguration;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -23,7 +21,7 @@ public class AbraInterpreterProgramRunner extends DefaultJavaProgramRunner {
     @NotNull
     @Override
     public String getRunnerId() {
-        return "org.abra.interpreter.java";
+        return "org.abra.runtime.java";
     }
 
     @Override
