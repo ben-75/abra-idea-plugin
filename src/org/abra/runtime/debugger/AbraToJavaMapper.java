@@ -1,4 +1,4 @@
-package org.abra.interpreter.debugger;
+package org.abra.runtime.debugger;
 
 import com.intellij.openapi.editor.Document;
 import com.intellij.openapi.project.Project;

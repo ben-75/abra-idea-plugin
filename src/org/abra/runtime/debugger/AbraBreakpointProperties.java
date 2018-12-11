@@ -1,4 +1,4 @@
-package org.abra.interpreter.debugger;
+package org.abra.runtime.debugger;
 
 import com.intellij.xdebugger.breakpoints.XBreakpointProperties;
 import org.jetbrains.annotations.NotNull;

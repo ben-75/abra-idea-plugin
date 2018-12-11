@@ -1,4 +1,4 @@
-package org.abra.interpreter.action;
+package org.abra.runtime.action;
 
 import com.intellij.execution.ExecutionException;
 import com.intellij.execution.configurations.RunProfile;

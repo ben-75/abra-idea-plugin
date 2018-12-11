@@ -1,4 +1,4 @@
-package org.abra.interpreter.debugger;
+package org.abra.runtime.debugger;
 
 import com.intellij.debugger.DebuggerBundle;
 import com.intellij.debugger.DebuggerManagerEx;

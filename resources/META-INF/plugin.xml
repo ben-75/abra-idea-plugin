@@ -67,7 +67,7 @@
         <programRunner implementation="org.abra.runtime.debugger.AbraInterpreterDebugRunner"/>
         <runConfigurationProducer implementation="org.abra.runtime.runconfig.AbraRunConfigurationProducer"/>
         <xdebugger.breakpointType implementation="org.abra.runtime.debugger.AbraBreakpointType"/>
-        <debugger.javaBreakpointHandlerFactory implementation="org.abra.interpreter.debugger.AbraBreakpointHandlerFactory"/>
+        <debugger.javaBreakpointHandlerFactory implementation="org.abra.runtime.debugger.AbraBreakpointHandlerFactory"/>
         <debugger.positionManagerFactory implementation="org.abra.runtime.debugger.AbraPositionManagerFactory"/>
     </extensions>
 
