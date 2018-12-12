@@ -1,5 +1,6 @@
 package org.abra.runtime.debugger;
 
+import com.intellij.debugger.MultiRequestPositionManager;
 import com.intellij.debugger.NoDataException;
 import com.intellij.debugger.PositionManager;
 import com.intellij.debugger.SourcePosition;
@@ -30,7 +31,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-public class AbraPositionManager implements PositionManager {
+public class AbraPositionManager implements MultiRequestPositionManager {
 
     private final DebugProcess debugProcess;
     private PsiClass evalContextClass;
@@ -123,15 +124,7 @@ public class AbraPositionManager implements PositionManager {
     @Nullable
     @Override
     public ClassPrepareRequest createPrepareRequest(@NotNull ClassPrepareRequestor requestor, @NotNull SourcePosition position) throws NoDataException {
-        if (position.getFile().getFileType() == AbraFileType.INSTANCE) {
-            List<ClassPrepareRequest> res = new ArrayList<>();
-            if (evalContextClass != null) {
-                ClassPrepareRequestor prepareRequestor = requestor;
-                ClassPrepareRequest request = debugProcess.getRequestsManager().createClassPrepareRequest(prepareRequestor, classPattern);
-                return request;
-            }
-        }
-        throw NoDataException.INSTANCE;
+        throw new IllegalStateException("This class implements MultiRequestPositionManager, corresponding createPrepareRequests version should be used");
     }
 
     @NotNull
@@ -149,6 +142,6 @@ public class AbraPositionManager implements PositionManager {
             }
             return res;
         }
-        return null;
+        throw NoDataException.INSTANCE;
     }
 }
