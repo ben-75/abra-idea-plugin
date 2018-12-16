@@ -177,7 +177,7 @@ concatExpr          ::= postfixExpr (AMP postfixExpr)*
 
 postfixExpr         ::= valueExpr | funcExpr | lutExpr | lutOrSliceExpr | typeExpr | sliceExpr | ('(' mergeExpr ')')
 
-valueExpr           ::= trit | integer | float
+valueExpr           ::= float | trit | number
 
 typeExpr            ::= typeNameRef '{' fieldAssignExpr+ '}'
                     {
@@ -225,7 +225,7 @@ constTerm           ::= constFactor ((SLASH|TIMES|MODULO) constFactor)*
                         methods=[getResolvedSize ]
                     }
 
-constFactor         ::= number | typeOrPlaceHolderNameRef | (MINUS constFactor) | ('(' constExpr ')')
+constFactor         ::= float | number | typeOrPlaceHolderNameRef | (MINUS constFactor) | ('(' constExpr ')')
                     {
                         methods = [getResolvedSize ]
                     }
@@ -365,4 +365,4 @@ integer             ::= MINUS | ZERO | ONE | number | (MINUS number)
                         methods = [getResolvedSize ]
                     }
 
-float ::= (MINUS)? number '.' number
+float ::= (MINUS)? number+ DOT number+
