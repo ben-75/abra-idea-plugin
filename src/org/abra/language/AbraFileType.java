@@ -16,19 +16,19 @@ public class AbraFileType extends LanguageFileType {
     @NotNull
     @Override
     public String getName() {
-        return "Àbra file";
+        return "Qupla file";
     }
 
     @NotNull
     @Override
     public String getDescription() {
-        return "Abra language file";
+        return "Qupla language file";
     }
 
     @NotNull
     @Override
     public String getDefaultExtension() {
-        return "abra";
+        return "qpl";
     }
 
     @Nullable

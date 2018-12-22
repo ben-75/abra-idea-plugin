@@ -1,11 +1,11 @@
 <idea-plugin>
   <id>org.abra.language</id>
-  <name>Abra Plugin</name>
+  <name>Qupla Plugin</name>
   <version>0.0.26-pre-alpha</version>
   <vendor url="https://github.com/ben-75/abra-idea-plugin"/>
 
   <description><![CDATA[
-      [Experimental] support for Abra language
+      [Experimental] support for Qupla language
 
       <h3>Features</h3>
       <ul>
@@ -26,8 +26,7 @@
 
   <change-notes><![CDATA[
         <ul>
-        <li>Keywords are now mandatory
-        <li>Known regression regarding ability to recover from syntax errors
+        <li>Move from Abra to Qupla
         </ul>
     ]]>
   </change-notes>
@@ -44,21 +43,21 @@
 
   <extensions defaultExtensionNs="com.intellij">
     <fileTypeFactory implementation="org.abra.language.AbraFileTypeFactory"/>
-    <lang.parserDefinition language="Abra" implementationClass="org.abra.language.AbraParserDefinition"/>
-    <lang.syntaxHighlighterFactory language="Abra" implementationClass="org.abra.ide.highlighter.AbraSyntaxHighlighterFactory"/>
-    <lang.braceMatcher language="Abra" implementationClass="org.abra.ide.tools.AbraBraceMatcher"/>
-    <lang.commenter language="Abra" implementationClass="org.abra.ide.tools.AbraCommenter"/>
-    <lang.foldingBuilder language="Abra" implementationClass="org.abra.ide.tools.AbraFoldingBuilder"/>
+    <lang.parserDefinition language="Qupla" implementationClass="org.abra.language.AbraParserDefinition"/>
+    <lang.syntaxHighlighterFactory language="Qupla" implementationClass="org.abra.ide.highlighter.AbraSyntaxHighlighterFactory"/>
+    <lang.braceMatcher language="Qupla" implementationClass="org.abra.ide.tools.AbraBraceMatcher"/>
+    <lang.commenter language="Qupla" implementationClass="org.abra.ide.tools.AbraCommenter"/>
+    <lang.foldingBuilder language="Qupla" implementationClass="org.abra.ide.tools.AbraFoldingBuilder"/>
     <colorSettingsPage implementation="org.abra.ide.highlighter.AbraColorSettingsPage"/>
-    <lang.psiStructureViewFactory language="Abra" implementationClass="org.abra.ide.ui.structureview.AbraStructureViewFactory"/>
-    <lang.findUsagesProvider language="Abra" implementationClass="org.abra.ide.tools.AbraFindUsagesProvider"/>
-    <annotator language="Abra" implementationClass="org.abra.ide.highlighter.DeclarationAnnotator"/>
-    <annotator language="Abra" implementationClass="org.abra.ide.highlighter.ReferenceValidatorAnnotator"/>
-    <annotator language="Abra" implementationClass="org.abra.ide.highlighter.MultiDeclarationAnnotator"/>
-    <annotator language="Abra" implementationClass="org.abra.ide.highlighter.LutValidationAnnotator"/>
-    <annotator language="Abra" implementationClass="org.abra.ide.highlighter.FuncArgsAnnotator"/>
-    <annotator language="Abra" implementationClass="org.abra.ide.highlighter.ImportAnnotator"/>
-    <completion.contributor language="Abra" implementationClass="org.abra.ide.tools.AbraCompletionContributor"/>
+    <lang.psiStructureViewFactory language="Qupla" implementationClass="org.abra.ide.ui.structureview.AbraStructureViewFactory"/>
+    <lang.findUsagesProvider language="Qupla" implementationClass="org.abra.ide.tools.AbraFindUsagesProvider"/>
+    <annotator language="Qupla" implementationClass="org.abra.ide.highlighter.DeclarationAnnotator"/>
+    <annotator language="Qupla" implementationClass="org.abra.ide.highlighter.ReferenceValidatorAnnotator"/>
+    <annotator language="Qupla" implementationClass="org.abra.ide.highlighter.MultiDeclarationAnnotator"/>
+    <annotator language="Qupla" implementationClass="org.abra.ide.highlighter.LutValidationAnnotator"/>
+    <annotator language="Qupla" implementationClass="org.abra.ide.highlighter.FuncArgsAnnotator"/>
+    <annotator language="Qupla" implementationClass="org.abra.ide.highlighter.ImportAnnotator"/>
+    <completion.contributor language="Qupla" implementationClass="org.abra.ide.tools.AbraCompletionContributor"/>
     <additionalTextAttributes scheme="Default" file="colors/AbraDefault.xml"/>
     <additionalTextAttributes scheme="Darcula" file="colors/AbraDarcula.xml"/>
     <renamePsiElementProcessor implementation="org.abra.ide.tools.RenameFuncNameProcessor"/>

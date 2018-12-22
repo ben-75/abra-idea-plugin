@@ -80,7 +80,7 @@ fieldSpec           ::= fieldName typeSize
                         methods=[getPresentation getResolvedSize]
                     }
 
-lutStmt             ::= LUT_KEYWORD lutName '[' lutEntry+ ']'
+lutStmt             ::= LUT_KEYWORD lutName '{' lutEntry+ '}'
                     {
                         mixin="org.abra.language.psi.impl.AbraDefinitionImpl"
                         implements="org.abra.language.psi.AbraDefinition"
@@ -124,7 +124,7 @@ lutEntry            ::= tritList ASSIGN tritList
                         methods = [getInputLength getOutputLength]
                         pin=2 recoverWhile=lutEntryRecover
                     }
-private lutEntryRecover ::= !(lutEntry | ']')
+private lutEntryRecover ::= !(lutEntry | '}')
 
 funcSignature       ::= typeSize funcName ('<' constExpr (COMMA constExpr)* '>')? '(' (funcParameter(COMMA funcParameter)*) ')'
                     {
@@ -317,7 +317,7 @@ lutName             ::= IDENTIFIER
                         methods = [getName setName getNameIdentifier getPresentation]
                         pin=1 recoverWhile=lutNameRecover
                     }
-private lutNameRecover ::= !'['
+private lutNameRecover ::= !'{'
 
 lutNameRef          ::= IDENTIFIER
                     {

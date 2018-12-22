@@ -1452,7 +1452,7 @@ public class AbraPsiImplUtil {
         return map;
     }
     public static AbraTypeInstantiation[] getAllTypeInstantiation(AbraTemplateStmt templateStmt){
-        Collection<VirtualFile> allAbraFiles = FilenameIndex.getAllFilesByExt(templateStmt.getProject(),"abra");
+        Collection<VirtualFile> allAbraFiles = FilenameIndex.getAllFilesByExt(templateStmt.getProject(),"qpl");
         ArrayList<AbraTypeInstantiation> allTypeInstantiation = new ArrayList<>();
         for(VirtualFile virtualFile:allAbraFiles){
             AbraFile abraFile = (AbraFile) PsiManager.getInstance(templateStmt.getProject()).findFile(virtualFile);

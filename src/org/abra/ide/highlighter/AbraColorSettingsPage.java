@@ -172,6 +172,6 @@ public class AbraColorSettingsPage implements ColorSettingsPage {
     @NotNull
     @Override
     public String getDisplayName() {
-        return "Abra";
+        return "Qupla";
     }
 }
