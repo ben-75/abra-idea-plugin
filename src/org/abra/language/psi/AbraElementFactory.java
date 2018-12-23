@@ -97,7 +97,7 @@ public class AbraElementFactory {
 
     public static AbraTypeOrPlaceHolderNameRef createAbraTypeOrPlaceHolderNameRef(Project project, String name) {
         final AbraFile file = createFile(project, "template incFunc<T> func [1] inc<"+name+"> (a[1]) = {return 1}");
-        return ((AbraTemplateStmt)file.getFirstChild()).getFuncStmtList().get(0).getFuncSignature().getConstExprList().get(0).getConstTermList().get(0).getConstFactorList().get(0).getTypeOrPlaceHolderNameRef();
+        return ((AbraTemplateStmt)file.getFirstChild()).getFuncStmtList().get(0).getFuncSignature().getTypeOrPlaceHolderNameRefList().get(0);
     }
 
     private static AbraFile createFile(Project project, String text) {
@@ -106,14 +106,6 @@ public class AbraElementFactory {
                 createFileFromText(name, AbraFileType.INSTANCE, text);
     }
 
-    public static AbraConstExpr createAbraConstExpr(Project project, String s) {
-        final AbraFile file = createFile(project, "func [1] f(a["+s+"])={a}");
-        try{
-            return ((AbraFuncStmt)file.getFirstChild()).getFuncSignature().getFuncParameterList().get(0).getTypeSize().getConstExpr();
-        }catch (ClassCastException e){
-            throw new RuntimeException("Invalid syntax:"+s, e);
-        }
-    }
 
     public static AbraLutNameRef createAbraLutNameRef(Project project, String name) {
         final AbraFile file = createFile(project, "func [1] f(a[1])={b="+name+"[1,1]\nreturn b}");

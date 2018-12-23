@@ -53,6 +53,8 @@ JOIN_KEYWORD=(join)
 LIMIT_KEYWORD=(limit)
 AFFECT_KEYWORD=(affect)
 DELAY_KEYWORD=(delay)
+TEST_KEYWORD=(test)
+EVAL_KEYWORD=(eval)
 IDENTIFIER=([A-Za-z_])([A-Za-z0-9_])*
 OPEN_BRACKET=(\[)
 CLOSE_BRACKET=(\])
@@ -68,18 +70,11 @@ SMART_RANGE_OPERATOR=(:)
 ASSIGN=[=]
 QUESTION_MARK=(\?)
 
-%state WAIT_TEST_ASSERT
-%state WAIT_EXPR_ASSERT
-
 %%
   {WHITE_SPACE}               { return WHITE_SPACE; }
   {CRLF}                      { return CRLF; }
 
-  {TEST_CMT}        { yybegin(WAIT_TEST_ASSERT);zzMarkedPos=zzStartRead+3; return TEST_COMMENT;}
-<WAIT_TEST_ASSERT> {NO_CRLF}  { yybegin(YYINITIAL); return TEST_ASSERTION;}
-  {EXPR_CMT}        { yybegin(WAIT_EXPR_ASSERT);zzMarkedPos=zzStartRead+3; return EXPR_COMMENT;}
-<WAIT_EXPR_ASSERT> {NO_CRLF}  { yybegin(YYINITIAL); return EXPR_ASSERTION;}
-  {COMMENT}             { return COMMENT; }
+  {COMMENT}                   { return COMMENT; }
 
   {OPEN_BRACE}                { return OPEN_BRACE; }
 
@@ -107,6 +102,8 @@ QUESTION_MARK=(\?)
   {LIMIT_KEYWORD}             { return LIMIT_KEYWORD; }
   {AFFECT_KEYWORD}            { return AFFECT_KEYWORD; }
   {DELAY_KEYWORD}             { return DELAY_KEYWORD; }
+  {TEST_KEYWORD}              { return TEST_KEYWORD; }
+  {EVAL_KEYWORD}              { return EVAL_KEYWORD; }
   {IDENTIFIER}                { return IDENTIFIER; }
   {OPEN_BRACKET}              { return OPEN_BRACKET; }
   {CLOSE_BRACKET}             { return CLOSE_BRACKET; }

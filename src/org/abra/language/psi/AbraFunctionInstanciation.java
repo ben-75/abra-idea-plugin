@@ -37,8 +37,8 @@ public class AbraFunctionInstanciation implements StructureViewTreeElement {
             int i=0;
             for(AbraFuncParameter p:funcStmt.getFuncSignature().getFuncParameterList()){
                 try{
-                    int sz = AbraPsiImplUtil.getResolvedSize2(p.getTypeSize().getConstExpr(),map,templateStmt);
-                    sb.append(sz<=0?p.getTypeSize().getConstExpr().getText():sz);
+                    int sz = AbraPsiImplUtil.getResolvedSize2(p.getTypeOrPlaceHolderNameRef(),map,templateStmt);
+                    sb.append(sz<=0?p.getTypeOrPlaceHolderNameRef().getText():sz);
                 }catch (UnresolvableTokenException e){
                     sb.append("[?]");
                 }
@@ -46,10 +46,10 @@ public class AbraFunctionInstanciation implements StructureViewTreeElement {
                 if(i<funcStmt.getFuncSignature().getFuncParameterList().size())sb.append(" , ");
             }
             sb.append(" ) -> ");
-            if(funcStmt.getFuncSignature().getTypeSize()!=null){
+            if(funcStmt.getFuncSignature().getTypeOrPlaceHolderNameRefList().size()>0){
                 try{
-                    int sz = AbraPsiImplUtil.getResolvedSize2(funcStmt.getFuncSignature().getTypeSize().getConstExpr(),map,templateStmt);
-                    sb.append(sz<=0?funcStmt.getFuncSignature().getTypeSize().getConstExpr().getText():sz);
+                    int sz = AbraPsiImplUtil.getResolvedSize2(funcStmt.getFuncSignature().getTypeOrPlaceHolderNameRefList().get(0),map,templateStmt);
+                    sb.append(sz<=0?funcStmt.getFuncSignature().getTypeOrPlaceHolderNameRefList().get(0).getText():sz);
                 }catch (UnresolvableTokenException e){
                     sb.append("[?]");
                 }

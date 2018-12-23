@@ -105,14 +105,10 @@ public class AbraSyntaxHighlighter extends SyntaxHighlighterBase  {
             return ENV_KEYWORD_KEYS;
         }else if (tokenType.equals(AbraTypes.COMMENT)) {
             return COMMENT_KEYS;
-        }else if (tokenType.equals(AbraTypes.TEST_COMMENT)) {
-            return TEST_COMMENT_KEYS;
-        }else if (tokenType.equals(AbraTypes.EXPR_COMMENT)) {
-            return EXPR_COMMENT_KEYS;
-        }else if (tokenType.equals(AbraTypes.TEST_ASSERTION)) {
+        }else if (tokenType.equals(AbraTypes.TEST_KEYWORD)) {
             return TEST_ASSERT_KEYS;
-        }else if (tokenType.equals(AbraTypes.EXPR_ASSERTION)) {
-            return EXPR_ASSERT_KEYS;
+        }else if (tokenType.equals(AbraTypes.EVAL_KEYWORD)) {
+            return TEST_ASSERT_KEYS;
         }else if (tokenType.equals(TokenType.BAD_CHARACTER)) {
             return BAD_CHAR_KEYS;
         } else {

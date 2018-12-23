@@ -55,8 +55,8 @@
   ]
 }
 
-abra                ::= (stmt|TEST_COMMENT TEST_ASSERTION|EXPR_COMMENT EXPR_ASSERTION|COMMENT|CRLF)*
-private stmt        ::= (importStmt | typeStmt | lutStmt | funcStmt | templateStmt | useStmt)
+abra                ::= (stmt|COMMENT|CRLF)*
+private stmt        ::= (importStmt | typeStmt | lutStmt | funcStmt | templateStmt | useStmt | testStmt | evalStmt)
 
 importStmt          ::= IMPORT_KEYWORD ((pathName) ( SLASH pathName)*)
                     {
@@ -69,6 +69,7 @@ typeStmt            ::= TYPE_KEYWORD typeName (typeSize | ('{' fieldSpec+ '}'))
                     {
                         mixin="org.abra.language.psi.impl.AbraDefinitionImpl"
                         implements="org.abra.language.psi.AbraDefinition"
+
                         methods=[getPresentation getName setName getNameIdentifier getResolvedSize ]
                         pin=1
                     }
@@ -112,6 +113,10 @@ useStmt             ::= USE_KEYWORD templateNameRef typeInstantiation (COMMA typ
                         pin=1
                     }
 
+evalStmt            ::= EVAL_KEYWORD funcExpr
+
+testStmt            ::= TEST_KEYWORD valueExpr '=' funcExpr
+
 typeInstantiation   ::= '<' (typeNameRef (COMMA typeNameRef)*) '>'
                     {
                         mixin="org.abra.language.psi.impl.AbraDefinitionImpl"
@@ -126,11 +131,11 @@ lutEntry            ::= tritList ASSIGN tritList
                     }
 private lutEntryRecover ::= !(lutEntry | '}')
 
-funcSignature       ::= typeSize funcName ('<' constExpr (COMMA constExpr)* '>')? '(' (funcParameter(COMMA funcParameter)*) ')'
+funcSignature       ::= typeOrPlaceHolderNameRef funcName ('<' typeOrPlaceHolderNameRef (COMMA typeOrPlaceHolderNameRef)* '>')? '(' (funcParameter(COMMA funcParameter)*) ')'
                     {
                         methods = [getTypeLabelWithBrackets]
                     }
-funcParameter       ::= paramName typeSize
+funcParameter       ::= typeOrPlaceHolderNameRef paramName
 
 funcBody            ::= condExpr | ('{' joinExpr* affectExpr * stateExpr* assignExpr* returnExpr '}')
                     {
@@ -190,9 +195,9 @@ private fieldAssignExpr ::= fieldNameRef ASSIGN mergeExpr
                    }
 private returnFieldAssignExpr ::= !(fieldAssignExpr | '}')
 
-funcExpr            ::= funcNameRef ('<' constExpr (COMMA constExpr)* '>')? '(' (mergeExpr (COMMA mergeExpr)*) ')'
+funcExpr            ::= funcNameRef ('<' typeOrPlaceHolderNameRef (COMMA typeOrPlaceHolderNameRef)* '>')? '(' (mergeExpr (COMMA mergeExpr)*) ')'
                     {
-                        methods=[isInFuncStatement isInTemplateStatement getStatment getFuncStmt]
+                        methods=[isInFuncStatement isInTemplateStatement getStatment getFuncStmt isInTemplate]
                     }
 
 lutExpr             ::= lutNameRef '[' (mergeExpr (COMMA mergeExpr)+) ']'
@@ -348,7 +353,7 @@ placeHolderTypeName ::= IDENTIFIER
 typeOrPlaceHolderNameRef ::= IDENTIFIER
                     {
                         implements="org.abra.language.psi.AbraResolvable"
-                        methods = [getReference ]
+                        methods = [getReference getResolvedSize]
                     }
 
 pathName            ::= IDENTIFIER

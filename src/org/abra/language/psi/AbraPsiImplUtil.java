@@ -347,6 +347,13 @@ public class AbraPsiImplUtil {
     //====================== AbraFuncStmt ================================
     //====================================================================
 
+    public static int getResolvedSize(AbraTypeOrPlaceHolderNameRef typeOrPlaceHolderNameRef){
+        PsiElement resolved = typeOrPlaceHolderNameRef.getReference().resolve();
+        if(resolved instanceof AbraTypeName){
+            return ((AbraTypeName)resolved).getResolvedSize();
+        }
+        return -1;
+    }
     @NotNull
     public static ItemPresentation getPresentation(AbraFuncStmt element) {
         return new ItemPresentation() {
@@ -363,8 +370,8 @@ public class AbraPsiImplUtil {
                 int i=0;
                 for(AbraFuncParameter p:element.getFuncSignature().getFuncParameterList()){
                     try{
-                        int sz = p.getTypeSize().getConstExpr().getResolvedSize();
-                        sb.append(sz<=0?p.getTypeSize().getConstExpr().getText():sz);
+                        int sz = p.getTypeOrPlaceHolderNameRef().getResolvedSize();
+                        sb.append(sz<=0?p.getTypeOrPlaceHolderNameRef().getText():sz);
                     }catch (UnresolvableTokenException e){
                         sb.append("[?]");
                     }
@@ -372,10 +379,10 @@ public class AbraPsiImplUtil {
                     if(i<element.getFuncSignature().getFuncParameterList().size())sb.append(" , ");
                 }
                 sb.append(" ) -> ");
-                if(element.getFuncSignature().getTypeSize()!=null){
+                if(element.getFuncSignature().getTypeOrPlaceHolderNameRefList().size()>0){
                     try{
-                        int sz = element.getFuncSignature().getTypeSize().getConstExpr().getResolvedSize();
-                        sb.append(sz<=0?element.getFuncSignature().getTypeSize().getConstExpr().getText():sz);
+                        int sz = element.getFuncSignature().getTypeOrPlaceHolderNameRefList().get(0).getResolvedSize();
+                        sb.append(sz<=0?element.getFuncSignature().getTypeOrPlaceHolderNameRefList().get(0).getText():sz);
                     }catch (UnresolvableTokenException e){
                         sb.append("[?]");
                     }
@@ -729,36 +736,6 @@ public class AbraPsiImplUtil {
     }
 
 
-//    public static int getResolvedSize(AbraParamOrVarNameRef paramOrVarNameRef){
-//        PsiElement resolved = paramOrVarNameRef.getReference().resolve();
-//        if(resolved instanceof AbraVarName){
-//            return ((AbraVarName)resolved).getResolvedSize();
-//        }
-//        if(resolved instanceof AbraParamName){
-//            return ((AbraParamName)resolved).getResolvedSize();
-//        }
-//        throw new UnresolvableTokenException(paramOrVarNameRef.getText());
-//    }
-
-    public static int getVirtualFunctionResolvedSize(AbraUseStmt useStatement,String funcName,int size){
-        for(AbraTypeInstantiation typeInstantiation:useStatement.getTypeInstantiationList()){
-            AbraTypeName typeName = (AbraTypeName) typeInstantiation.getTypeNameRefList().get(0).getReference().resolve();
-            if(typeName!=null && ((AbraTypeStmt)typeName.getParent()).getResolvedSize()==size){
-                AbraTemplateName templateName = (AbraTemplateName) useStatement.getTemplateNameRef().getReference().resolve();
-                if(templateName!=null){
-                    AbraTemplateStmt templateStmt = (AbraTemplateStmt) templateName.getParent();
-                    AbraFuncStmt templateFunction = getFuncWithNameInTemplate(funcName, templateStmt);
-                    Map<Integer, AbraTypeNameRef> resolutionMap = new HashMap<>();
-                    resolutionMap.put(size,typeInstantiation.getTypeNameRefList().get(0));
-                    for(AbraTypeStmt typeStmt:templateStmt.getTypeStmtList()){
-                        resolutionMap.put(getResolvedSize(typeStmt.getTypeSize().getConstExpr(),resolutionMap,templateStmt),AbraElementFactory.createAbraTypeNameRef(templateStmt.getProject(),typeStmt.getTypeName().getText()));
-                    }
-                    return getResolvedSize(templateFunction.getFuncSignature().getTypeSize().getConstExpr(),resolutionMap,(AbraTemplateStmt) templateName.getParent());
-                }
-            }
-        }
-        return -1;
-    }
 
     public static int getResolvedSize(AbraInteger integer){
         return Integer.valueOf(integer.getText());
@@ -785,7 +762,7 @@ public class AbraPsiImplUtil {
     }
 
     public static int getResolvedSize(AbraParamName paramName){
-        return ((AbraFuncParameter)paramName.getParent()).getTypeSize().getResolvedSize();
+        return ((AbraFuncParameter)paramName.getParent()).getTypeOrPlaceHolderNameRef().getResolvedSize();
     }
 
     public static int getResolvedSize(AbraLutName lutName){
@@ -972,6 +949,13 @@ public class AbraPsiImplUtil {
         throw new UnresolvableTokenException(element.getText());
     }
 
+
+    public static int getResolvedSize2(AbraTypeOrPlaceHolderNameRef element, Map<String, Integer> resolutionMap, AbraTemplateStmt templateStmt){
+        if(!resolutionMap.containsKey(element.getText())){
+            return -1;
+        }
+        return resolutionMap.get(element.getText());
+    }
 
     public static int getResolvedSize2(AbraConstExpr element, Map<String, Integer> resolutionMap, AbraTemplateStmt templateStmt){
         if(element.getConstTermList().size()==1){
@@ -1247,9 +1231,9 @@ public class AbraPsiImplUtil {
     }
 
     public static String getTypeLabelWithBrackets(AbraFuncSignature funcSignature){
-        if (funcSignature.getConstExprList().size()==0) return "";
-        return "<"+funcSignature.getText().substring(funcSignature.getConstExprList().get(0).getStartOffsetInParent(),
-                                                     funcSignature.getConstExprList().get(funcSignature.getConstExprList().size()-1).getStartOffsetInParent()+funcSignature.getConstExprList().get(funcSignature.getConstExprList().size()-1).getTextLength())
+        if (funcSignature.getTypeOrPlaceHolderNameRefList().size()==0) return "";
+        return "<"+funcSignature.getText().substring(funcSignature.getTypeOrPlaceHolderNameRefList().get(0).getStartOffsetInParent(),
+                                                     funcSignature.getTypeOrPlaceHolderNameRefList().get(funcSignature.getTypeOrPlaceHolderNameRefList().size()-1).getStartOffsetInParent()+funcSignature.getTypeOrPlaceHolderNameRefList().get(funcSignature.getTypeOrPlaceHolderNameRefList().size()-1).getTextLength())
                 +">";
     }
 
@@ -1372,8 +1356,8 @@ public class AbraPsiImplUtil {
             return null;
         }
         List<SizesInstantiation> resp = new ArrayList<>();
-        if(funcExpr.getConstExprList().size()==0){
-            if(funcStmt.getFuncSignature().getConstExprList().size()==0){
+        if(funcExpr.getTypeOrPlaceHolderNameRefList().size()==0){
+            if(funcStmt.getFuncSignature().getTypeOrPlaceHolderNameRefList().size()==0){
                 return resp;
             }
             return null;
@@ -1381,10 +1365,10 @@ public class AbraPsiImplUtil {
         List<SizesInstantiation> funcStmtSizesInst = null;
         if(funcStmt.getParent() instanceof AbraTemplateStmt) {
             funcStmtSizesInst = typesToSizesInstantiations(
-                    funcStmt.getFuncSignature().getConstExprList(), (AbraTemplateStmt) funcStmt.getParent(), funcStmt.getAllTypeInstantiation());
+                    funcStmt.getFuncSignature().getTypeOrPlaceHolderNameRefList(), (AbraTemplateStmt) funcStmt.getParent(), funcStmt.getAllTypeInstantiation());
         }else{
             SizesInstantiation sizesInstantiation = new SizesInstantiation();
-            for(AbraConstExpr constExpr:funcStmt.getFuncSignature().getConstExprList()){
+            for(AbraTypeOrPlaceHolderNameRef constExpr:funcStmt.getFuncSignature().getTypeOrPlaceHolderNameRefList()){
                 sizesInstantiation.add(constExpr.getResolvedSize());
             }
             return Collections.singletonList(sizesInstantiation);
@@ -1403,29 +1387,38 @@ public class AbraPsiImplUtil {
     }
 
     public static List<SizesInstantiation> getAllSizesInstantiation(AbraFuncExpr funcExpr){
-        if(funcExpr.getConstExprList().size()==0){
+        if(funcExpr.getTypeOrPlaceHolderNameRefList().size()==0){
             return new ArrayList<>();
         }
-        if(!funcExpr.getFuncStmt().isInTemplate()){
+        if(!funcExpr.isInTemplate()){
             SizesInstantiation sizesInstantiation = new SizesInstantiation();
-            for(AbraConstExpr constExpr:funcExpr.getConstExprList()){
-                sizesInstantiation.add(constExpr.getResolvedSize());
+            for(AbraTypeOrPlaceHolderNameRef typeOrPlaceHolderNameRef:funcExpr.getTypeOrPlaceHolderNameRefList()){
+                sizesInstantiation.add(typeOrPlaceHolderNameRef.getResolvedSize());
             }
             return Collections.singletonList(sizesInstantiation);
         }
         AbraTemplateStmt templateStmt = (AbraTemplateStmt) funcExpr.getFuncStmt().getParent();
         AbraTypeInstantiation[] allTemplateInstantiations = templateStmt.getAllTypeInstantiation();
-        ArrayList<SizesInstantiation> resp = typesToSizesInstantiations(funcExpr.getConstExprList(), templateStmt, allTemplateInstantiations);
+        ArrayList<SizesInstantiation> resp = typesToSizesInstantiations(funcExpr.getTypeOrPlaceHolderNameRefList(), templateStmt, allTemplateInstantiations);
         return resp;
     }
 
+    public static boolean isInTemplate(AbraFuncExpr funcExpr){
+        PsiElement e = funcExpr.getParent();
+        while(! ((e instanceof AbraFuncStmt)||(e instanceof AbraTestStmt)))
+            e = e.getParent();
+        if(e instanceof AbraTestStmt) return false;
+        if(e instanceof AbraFuncStmt) return isInTemplate((AbraFuncStmt)e);
+        return false;
+
+    }
     @NotNull
-    public static ArrayList<SizesInstantiation> typesToSizesInstantiations(List<AbraConstExpr> constExprList, AbraTemplateStmt templateStmt, AbraTypeInstantiation[] allTemplateInstantiations) {
+    public static ArrayList<SizesInstantiation> typesToSizesInstantiations(List<AbraTypeOrPlaceHolderNameRef> typeOrPlaceHolderNameRefs, AbraTemplateStmt templateStmt, AbraTypeInstantiation[] allTemplateInstantiations) {
         ArrayList<SizesInstantiation> resp = new ArrayList<>();
         for(AbraTypeInstantiation typeInstantiation:allTemplateInstantiations){
             SizesInstantiation sizesInstantiation = new SizesInstantiation();
-            for(AbraConstExpr constExpr:constExprList){
-                sizesInstantiation.add(getResolvedSize2(constExpr,getResolutionMap(templateStmt,typeInstantiation),templateStmt));
+            for(AbraTypeOrPlaceHolderNameRef typeOrPlaceHolderNameRef:typeOrPlaceHolderNameRefs){
+                sizesInstantiation.add(getResolvedSize2(typeOrPlaceHolderNameRef,getResolutionMap(templateStmt,typeInstantiation),templateStmt));
             }
             resp.add(sizesInstantiation);
         }
