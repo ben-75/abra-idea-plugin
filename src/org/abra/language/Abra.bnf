@@ -165,7 +165,7 @@ private environmentRecover ::= !(affectExpr  | stateExpr | assignExpr | returnEx
 
 envValue            ::= number
 
-stateExpr           ::= STATE_KEYWORD typeNameRef varName
+stateExpr           ::= STATE_KEYWORD typeOrPlaceHolderNameRef varName
                     {
                         pin=1 recoverWhile=stateExprRecover
                     }
