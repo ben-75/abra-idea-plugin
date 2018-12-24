@@ -10,6 +10,7 @@ import com.intellij.psi.tree.TokenSet;
 import com.intellij.psi.util.PsiTreeUtil;
 import org.abra.language.AbraFileType;
 import org.abra.language.AbraLanguage;
+import org.abra.language.module.QuplaModuleManager;
 import org.jetbrains.annotations.NotNull;
 
 import javax.swing.*;
@@ -49,47 +50,17 @@ public class AbraFile extends PsiFileBase {
         return getVirtualFile().getPath().substring(sourceRoot.getPath().length()+1,getVirtualFile().getPath().length()-5);
     }
 
-    private List<SmartPsiElementPointer<AbraFile>> cache;
-    public List<AbraFile> getImportTree(List<AbraFile> importsTree){
-        if(true){
-            List<AbraFile> scope = getAbraFileScope();
-            return scope.subList(1,scope.size());
+    public List<AbraFile> getImportTree(){
+        QuplaModuleManager quplaModuleManager = getProject().getComponent(QuplaModuleManager.class);
+        ArrayList<AbraFile> resp = new ArrayList<>();
+        for(AbraFile f:quplaModuleManager.getAllVisibleFiles(this)){
+            if(!this.equals(f))resp.add(f);
         }
-        if(cache!=null)return unwrap(cache);
-        cache = wrap(_getImportTree(importsTree));
-        //log.info("Caching "+cache.size()+" imported files for "+getName());
-        return importsTree;
-    }
-
-    private List<SmartPsiElementPointer<AbraFile>> wrap(List<AbraFile> l){
-        return l.stream()
-                .map( f -> SmartPointerManager.getInstance(getProject()).createSmartPsiElementPointer(f) )
-                .collect(Collectors.toList());
-    }
-    private List<AbraFile> unwrap(List<SmartPsiElementPointer<AbraFile>> l){
-        return l.stream()
-                .map( f -> f.getElement() )
-                .collect(Collectors.toList());
-    }
-
-    public List<AbraFile> _getImportTree(List<AbraFile> importsTree){
-        for(ASTNode stmt:getNode().getChildren(TokenSet.create(AbraTypes.IMPORT_STMT))){
-            PsiReference[] importedFiles = stmt.getPsi().getReferences();
-            for (PsiReference psiRef : importedFiles) {
-                AbraFile anAbraFile = (AbraFile)psiRef.resolve();
-                if(anAbraFile!=null){
-                    if(!importsTree.contains(anAbraFile)) {
-                        importsTree.add(anAbraFile);
-                        anAbraFile._getImportTree(importsTree);
-                    }
-                }
-            }
-        }
-        return importsTree;
+        return resp;
     }
 
     public boolean isImporting(AbraFile anotherFile) {
-        return getImportTree(new ArrayList<>()).contains(anotherFile);
+        return getImportTree().contains(anotherFile);
     }
 
     public List<AbraFuncStmt> findAllFuncStmt(){
@@ -200,49 +171,29 @@ public class AbraFile extends PsiFileBase {
         return null;
     }
 
-    public void invalidateCache() {
-        cache = null;
-    }
-
-
-    private static final Key KEY_ABRA_SCOPE = new Key("AbraScope");
-
     public synchronized List<AbraFile> getAbraFileScope() {
-//        ArrayList<AbraFile> resp = (ArrayList<AbraFile>) getUserData(KEY_ABRA_SCOPE);
-//        if (resp == null) {
-            ArrayList<AbraFile> resp = new ArrayList<>();
-            int analysed = 0;
-            resp.add(this);
-            while (analysed < resp.size()) {
-                AbraFile item = resp.get(analysed);
-                for (ASTNode stmt : item.getNode().getChildren(TokenSet.create(AbraTypes.IMPORT_STMT))) {
-                    List<AbraFile> importedFiles = AbraPsiImplUtil.getReferencedFiles((AbraImportStmt) stmt.getPsi());//.getReferencedFiles();
-//                    List<AbraFile> importedFiles = ((AbraImportStmt) stmt.getPsi()).getReferencedFiles();//.getReferencedFiles();
-                    if (importedFiles != null) {
-                        for (AbraFile f : importedFiles) {
-                            if (!resp.contains(f)) {
-                                resp.add(f);
-                            }
+        ArrayList<AbraFile> resp = new ArrayList<>();
+        int analysed = 0;
+        resp.add(this);
+        while (analysed < resp.size()) {
+            AbraFile item = resp.get(analysed);
+            for (ASTNode stmt : item.getNode().getChildren(TokenSet.create(AbraTypes.IMPORT_STMT))) {
+                List<AbraFile> importedFiles = AbraPsiImplUtil.getReferencedFiles((AbraImportStmt) stmt.getPsi());
+                if (importedFiles != null) {
+                    for (AbraFile f : importedFiles) {
+                        if (!resp.contains(f)) {
+                            resp.add(f);
                         }
                     }
                 }
-                analysed++;
             }
-
-//            putUserData(KEY_ABRA_SCOPE, resp);
-//        }
-
-//        StringBuilder sb = new StringBuilder("Scope for " + getShortName());
-//        for (AbraFile f : resp) {
-//            sb.append(",").append(f.getShortName());
-//        }
-//
-//        System.out.println(sb);
+            analysed++;
+        }
 
         return resp;
     }
 
-    private String getShortName() {
-        return getImportableFilePath();
+    public Collection<AbraImportStmt> getImportStmts() {
+        return PsiTreeUtil.findChildrenOfAnyType(this,true,AbraImportStmt.class);
     }
 }

@@ -58,7 +58,7 @@
 abra                ::= (stmt|COMMENT|CRLF)*
 private stmt        ::= (importStmt | typeStmt | lutStmt | funcStmt | templateStmt | useStmt | testStmt | evalStmt)
 
-importStmt          ::= IMPORT_KEYWORD ((pathName) ( SLASH pathName)*)
+importStmt          ::= IMPORT_KEYWORD pathName
                     {
                         mixin="org.abra.language.psi.impl.ReferencesCache"
                         methods=[getSourceRoot getFilePath getReferencedFiles]
@@ -89,7 +89,7 @@ lutStmt             ::= LUT_KEYWORD lutName '{' lutEntry+ '}'
                         pin=1
                     }
 
-funcStmt            ::= FUNC_KEYWORD funcSignature ASSIGN funcBody
+funcStmt            ::= FUNC_KEYWORD funcSignature funcBody
                     {
                         mixin="org.abra.language.psi.impl.AbraDefinitionImpl"
                         implements="org.abra.language.psi.AbraDefinition"
@@ -97,7 +97,7 @@ funcStmt            ::= FUNC_KEYWORD funcSignature ASSIGN funcBody
                         pin=1
                     }
 
-templateStmt        ::= TEMPLATE_KEYWORD templateName '<' (placeHolderTypeName (COMMA placeHolderTypeName)*) '>' (funcStmt | '{' typeStmt* funcStmt+ '}')
+templateStmt        ::= TEMPLATE_KEYWORD templateName '<' (placeHolderTypeName (COMMA placeHolderTypeName)*) '>' ('{' typeStmt* funcStmt+ '}')
                     {
                         mixin="org.abra.language.psi.impl.AbraDefinitionImpl"
                         implements="org.abra.language.psi.AbraDefinition"
@@ -114,8 +114,18 @@ useStmt             ::= USE_KEYWORD templateNameRef typeInstantiation (COMMA typ
                     }
 
 evalStmt            ::= EVAL_KEYWORD funcExpr
+                    {
+                        pin=1
+                        recoverWhile=evalRecover
+                    }
+private evalRecover ::= !(stmt)
 
 testStmt            ::= TEST_KEYWORD valueExpr '=' funcExpr
+                    {
+                        pin=1
+                        recoverWhile=testRecover
+                    }
+private testRecover ::= !(stmt)
 
 typeInstantiation   ::= '<' (typeNameRef (COMMA typeNameRef)*) '>'
                     {
@@ -137,7 +147,7 @@ funcSignature       ::= typeOrPlaceHolderNameRef funcName ('<' typeOrPlaceHolder
                     }
 funcParameter       ::= typeOrPlaceHolderNameRef paramName
 
-funcBody            ::= condExpr | ('{' joinExpr* affectExpr * stateExpr* assignExpr* returnExpr '}')
+funcBody            ::= '{' joinExpr* affectExpr * stateExpr* assignExpr* returnExpr '}'
                     {
                         methods=[getFuncSignature]
                     }
@@ -156,7 +166,7 @@ private environmentRecover ::= !(affectExpr  | stateExpr | assignExpr | returnEx
 
 envValue            ::= number
 
-stateExpr           ::= STATE_KEYWORD varName typeSize
+stateExpr           ::= STATE_KEYWORD typeNameRef varName
                     {
                         pin=1 recoverWhile=stateExprRecover
                     }
@@ -174,7 +184,7 @@ returnExpr          ::= RETURN_KEYWORD condExpr
                     }
 private returnExprRecover ::= (typeExpr | !('}'))
 
-condExpr            ::= mergeExpr (QUESTION_MARK mergeExpr ':' condExpr)*
+condExpr            ::= mergeExpr (QUESTION_MARK mergeExpr ':' (NULL_KEYWORD | condExpr))*
 
 mergeExpr           ::= concatExpr (MERGE_OPERATOR concatExpr)*
 
@@ -182,7 +192,7 @@ concatExpr          ::= postfixExpr (AMP postfixExpr)*
 
 postfixExpr         ::= valueExpr | funcExpr | lutExpr | lutOrSliceExpr | typeExpr | sliceExpr | ('(' mergeExpr ')')
 
-valueExpr           ::= float | trit | number
+valueExpr           ::= float | trit | MINUS? number
 
 typeExpr            ::= typeNameRef '{' fieldAssignExpr+ '}'
                     {

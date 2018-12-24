@@ -79,7 +79,7 @@ public class AbraTemplatePsiReferenceImpl extends PsiReferenceBase implements Ps
 //    }
 
     private PsiElement resolveFromImports(PsiFile startingFile){
-        List<AbraFile> importsTree = (((AbraFile)startingFile).getImportTree(new ArrayList<>()));
+        List<AbraFile> importsTree = (((AbraFile)startingFile).getImportTree());
         return resolveFromImportTree(importsTree);
     }
 

@@ -44,7 +44,7 @@ public class ReferenceValidatorAnnotator implements Annotator {
                     if (!resolved.getContainingFile().equals(element.getContainingFile())) {
                         //was resolved from import
 
-                        List<AbraFile> importTree = ((AbraFile) element.getContainingFile()).getImportTree(new ArrayList<>());
+                        List<AbraFile> importTree = ((AbraFile) element.getContainingFile()).getImportTree();
                         importTree.remove(resolved.getContainingFile());
                         PsiElement resolved2 = null;
                         if (psiReference instanceof AbraLutOrVarOrParamPsiReferenceImpl) {

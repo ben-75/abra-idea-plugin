@@ -55,6 +55,7 @@ AFFECT_KEYWORD=(affect)
 DELAY_KEYWORD=(delay)
 TEST_KEYWORD=(test)
 EVAL_KEYWORD=(eval)
+NULL_KEYWORD=(null)
 IDENTIFIER=([A-Za-z_])([A-Za-z0-9_])*
 OPEN_BRACKET=(\[)
 CLOSE_BRACKET=(\])
@@ -104,6 +105,7 @@ QUESTION_MARK=(\?)
   {DELAY_KEYWORD}             { return DELAY_KEYWORD; }
   {TEST_KEYWORD}              { return TEST_KEYWORD; }
   {EVAL_KEYWORD}              { return EVAL_KEYWORD; }
+  {NULL_KEYWORD}              { return NULL_KEYWORD; }
   {IDENTIFIER}                { return IDENTIFIER; }
   {OPEN_BRACKET}              { return OPEN_BRACKET; }
   {CLOSE_BRACKET}             { return CLOSE_BRACKET; }

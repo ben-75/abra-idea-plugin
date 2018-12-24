@@ -28,7 +28,7 @@ public class ImportAnnotator  implements Annotator {
                 }
                 boolean usedImport = false;
                 boolean rootImportUsed = false;
-                List<AbraFile> importTree = ((AbraFile) element.getContainingFile()).getImportTree(new ArrayList<>());
+                List<AbraFile> importTree = ((AbraFile) element.getContainingFile()).getImportTree();
                 for (PsiElement e : resolvedReferences) {
                     if (importTree.contains(e.getContainingFile())) {
                         usedImport = true;

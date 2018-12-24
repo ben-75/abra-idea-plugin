@@ -1,7 +1,7 @@
 <idea-plugin>
   <id>org.abra.language</id>
   <name>Qupla Plugin</name>
-  <version>0.0.26-pre-alpha</version>
+  <version>0.0.27-pre-alpha</version>
   <vendor url="https://github.com/ben-75/abra-idea-plugin"/>
 
   <description><![CDATA[
@@ -66,6 +66,14 @@
     <runConfigurationProducer implementation="org.abra.runtime.interpreter.AbraRunConfigurationProducer"/>
   </extensions>
 
+  <project-components>
+    <component>
+      <interface-class>org.abra.language.module.QuplaModuleManager</interface-class>
+      <implementation-class>org.abra.language.module.QuplaModuleManagerImpl</implementation-class>
+      <option name="workspace" value="true" />
+      <loadForDefaultProject/>
+    </component>
+  </project-components>
   <actions>
     <!-- Add your actions here -->
 

@@ -110,7 +110,7 @@ public class AbraLutOrVarOrParamPsiReferenceImpl extends PsiReferenceBase implem
 //    }
 
     private PsiElement resolveFromImports(PsiFile startingFile){
-        List<AbraFile> importsTree = (((AbraFile)startingFile).getImportTree(new ArrayList<>()));
+        List<AbraFile> importsTree = (((AbraFile)startingFile).getImportTree());
         return resolveFromImportTree(importsTree);
     }
 

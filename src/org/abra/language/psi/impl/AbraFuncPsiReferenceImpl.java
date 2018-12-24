@@ -76,19 +76,9 @@ public class AbraFuncPsiReferenceImpl extends PsiReferenceBase implements PsiPol
 
     public List<ResolveResult> resolveInFile(PsiFile aFile){
         List<ResolveResult> resolveResults = new ArrayList<>();
-        AbraFuncExpr funcExpr = (AbraFuncExpr) myElement.getParent();
-        for (ASTNode stmt : aFile.getNode().getChildren(TokenSet.create(AbraTypes.FUNC_STMT, AbraTypes.TEMPLATE_STMT))) {
-            if(stmt.getElementType()==AbraTypes.FUNC_STMT) {
-                if (AbraPsiImplUtil.match(funcExpr, (AbraFuncStmt) stmt.getPsi()) != null) {
-                    resolveResults.add(buildResolvedResult(((AbraFuncStmt) stmt.getPsi()).getFuncSignature().getFuncName()));
-                }
-            }else{
-                for (ASTNode f_stmt : stmt.getChildren(TokenSet.create(AbraTypes.FUNC_STMT))) {
-                    if (AbraPsiImplUtil.match(funcExpr, (AbraFuncStmt) f_stmt.getPsi()) != null) {
-                        resolveResults.add(buildResolvedResult(((AbraFuncStmt) f_stmt.getPsi()).getFuncSignature().getFuncName()));
-                    }
-                }
-            }
+        List<AbraFuncName> all = ((AbraFile)aFile).findAllFuncName(myElement.getText());
+        for(AbraFuncName funcName:all){
+            resolveResults.add(buildResolvedResult(funcName));
         }
         return resolveResults;
     }
@@ -98,7 +88,7 @@ public class AbraFuncPsiReferenceImpl extends PsiReferenceBase implements PsiPol
     }
 
     private List<ResolveResult> resolveFromImports(PsiFile startingFile){
-        List<AbraFile> importsTree = (((AbraFile)startingFile).getImportTree(new ArrayList<>()));
+        List<AbraFile> importsTree = (((AbraFile)startingFile).getImportTree());
        return resolveFromImportTree(importsTree);
     }
 
