@@ -8,6 +8,7 @@ import org.abra.language.psi.AbraImportStmt;
 import org.abra.language.psi.AbraPsiImplUtil;
 import org.jetbrains.annotations.NotNull;
 
+@Deprecated
 public abstract class ReferencesCache extends ASTWrapperPsiElement implements AbraImportStmt {
 
     public ReferencesCache(@NotNull ASTNode node) {
@@ -27,15 +28,5 @@ public abstract class ReferencesCache extends ASTWrapperPsiElement implements Ab
 //    return AbraPsiImplUtil.getReferences(this);
     }
 
-    @Override
-    public void subtreeChanged() {
-        super.subtreeChanged();
-        synchronized (stateLock){
-            references = null;
-            ((AbraFile)getNode().getPsi().getContainingFile()).invalidateCache();
-        }
-//        if(getProject().getUserData(ImportCache.KEY)!=null) {
-//            getProject().getUserData(ImportCache.KEY).invalidate();
-//        }
-    }
+
 }

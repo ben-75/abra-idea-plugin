@@ -23,15 +23,9 @@ import static org.abra.language.psi.AbraTypes.*;
 %unicode
 
 WHITE_SPACE=\s+
-NO_CRLF=(.)+[^\r\n]*
-CRLF=[\r\n]+
-TEST_CMT=("//?")[^\r\n]*
-EXPR_CMT=("//=")[^\r\n]*
 COMMENT=("//")[^\r\n]*
 WHITE_SPACE=(\r|[ \t\n\x0B\f\r]+)+
 
-ZERO=(0)
-ONE=(1)
 MINUS=(-)
 PLUS=(\+)
 SLASH=("/")
@@ -65,22 +59,27 @@ OPEN_PAR=(\()
 CLOSE_PAR=(\))
 OPEN_TAG=(<)
 CLOSE_TAG=(>)
-DIGIT=[2-9]
+DIGIT=[0-9]
+TRIT=[-01]
 RANGE_OPERATOR=(\.\.)
 SMART_RANGE_OPERATOR=(:)
 ASSIGN=[=]
 QUESTION_MARK=(\?)
 
+%state LUT_BODY
+
 %%
   {WHITE_SPACE}               { return WHITE_SPACE; }
-  {CRLF}                      { return CRLF; }
 
   {COMMENT}                   { return COMMENT; }
 
   {OPEN_BRACE}                { return OPEN_BRACE; }
+  {OPEN_BRACKET}              { return OPEN_BRACKET; }
 
-  {ZERO}                      { return ZERO; }
-  {ONE}                       { return ONE; }
+<LUT_BODY> {TRIT}             { return TRIT; }
+<LUT_BODY> {CLOSE_BRACE}      { yybegin(YYINITIAL); return CLOSE_BRACE; }
+//  {ZERO}                      { return ZERO; }
+//  {ONE}                       { return ONE; }
   {MINUS}                     { return MINUS; }
   {PLUS}                      { return PLUS; }
   {TIMES}                     { return TIMES; }
@@ -93,7 +92,7 @@ QUESTION_MARK=(\?)
   {COMMA}                     { return COMMA; }
   {IMPORT_KEYWORD}            { return IMPORT_KEYWORD; }
   {TYPE_KEYWORD}              { return TYPE_KEYWORD; }
-  {LUT_KEYWORD}               { return LUT_KEYWORD; }
+  {LUT_KEYWORD}               { yybegin(LUT_BODY); return LUT_KEYWORD; }
   {FUNC_KEYWORD}              { return FUNC_KEYWORD; }
   {TEMPLATE_KEYWORD}          { return TEMPLATE_KEYWORD; }
   {USE_KEYWORD}               { return USE_KEYWORD; }
@@ -107,7 +106,6 @@ QUESTION_MARK=(\?)
   {EVAL_KEYWORD}              { return EVAL_KEYWORD; }
   {NULL_KEYWORD}              { return NULL_KEYWORD; }
   {IDENTIFIER}                { return IDENTIFIER; }
-  {OPEN_BRACKET}              { return OPEN_BRACKET; }
   {CLOSE_BRACKET}             { return CLOSE_BRACKET; }
   {CLOSE_BRACE}               { return CLOSE_BRACE; }
   {OPEN_PAR}                  { return OPEN_PAR; }
@@ -116,6 +114,7 @@ QUESTION_MARK=(\?)
   {CLOSE_TAG}                 { return CLOSE_TAG; }
   {QUESTION_MARK}             { return QUESTION_MARK; }
   {DIGIT}                     { return DIGIT; }
+  {TRIT}                      { return TRIT; }
   {RANGE_OPERATOR}            { return RANGE_OPERATOR; }
   {SMART_RANGE_OPERATOR}      { return SMART_RANGE_OPERATOR; }
   {ASSIGN}                    { return ASSIGN; }

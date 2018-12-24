@@ -15,9 +15,9 @@ public class FuncArgsAnnotator  implements Annotator {
             PsiElement resolved =  funcExpr.getFuncNameRef().getReference().resolve();
             if(resolved!=null){
                 AbraFuncSignature funcSignature = resolved instanceof AbraFuncName ? (AbraFuncSignature) resolved.getParent() : getFuncSignatureForTemplateNameRef(funcExpr.getFuncNameRef().getText(),(AbraTemplateNameRef)resolved);
-                int  argsCount = funcExpr.getMergeExprList().size();
-                int   startOffset = funcExpr.getMergeExprList().get(0).getTextRange().getStartOffset();
-                int  endOffset = funcExpr.getMergeExprList().get(argsCount - 1).getTextRange().getEndOffset();
+                int  argsCount = funcExpr.getCondExprList().size();
+                int   startOffset = funcExpr.getCondExprList().get(0).getTextRange().getStartOffset();
+                int  endOffset = funcExpr.getCondExprList().get(argsCount - 1).getTextRange().getEndOffset();
 
                 int expectedArgsCount = funcSignature.getFuncParameterList().size();
 

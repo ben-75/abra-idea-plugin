@@ -60,7 +60,6 @@ private stmt        ::= (importStmt | typeStmt | lutStmt | funcStmt | templateSt
 
 importStmt          ::= IMPORT_KEYWORD pathName
                     {
-                        mixin="org.abra.language.psi.impl.ReferencesCache"
                         methods=[getSourceRoot getFilePath getReferencedFiles]
                         pin=1
                     }
@@ -184,28 +183,32 @@ returnExpr          ::= RETURN_KEYWORD condExpr
                     }
 private returnExprRecover ::= (typeExpr | !('}'))
 
-condExpr            ::= mergeExpr (QUESTION_MARK mergeExpr ':' (NULL_KEYWORD | condExpr))*
+condExpr            ::= mergeExpr (QUESTION_MARK trueBranch ':' falseBranch)*
+
+private trueBranch  ::= mergeExpr
+
+private falseBranch ::= NULL_KEYWORD | condExpr
 
 mergeExpr           ::= concatExpr (MERGE_OPERATOR concatExpr)*
 
 concatExpr          ::= postfixExpr (AMP postfixExpr)*
 
-postfixExpr         ::= valueExpr | funcExpr | lutExpr | lutOrSliceExpr | typeExpr | sliceExpr | ('(' mergeExpr ')')
+postfixExpr         ::= valueExpr | funcExpr | lutExpr | lutOrSliceExpr | typeExpr | sliceExpr | ('(' condExpr ')')
 
-valueExpr           ::= float | trit | MINUS? number
+valueExpr           ::= float | integer | trit
 
 typeExpr            ::= typeNameRef '{' fieldAssignExpr+ '}'
                     {
                         methods=[getResolvedSize ]
                     }
 
-private fieldAssignExpr ::= fieldNameRef ASSIGN mergeExpr
+private fieldAssignExpr ::= fieldNameRef ASSIGN condExpr
                    {
                         pin=2 recoverWhile=returnFieldAssignExpr
                    }
 private returnFieldAssignExpr ::= !(fieldAssignExpr | '}')
 
-funcExpr            ::= funcNameRef ('<' typeOrPlaceHolderNameRef (COMMA typeOrPlaceHolderNameRef)* '>')? '(' (mergeExpr (COMMA mergeExpr)*) ')'
+funcExpr            ::= funcNameRef ('<' typeOrPlaceHolderNameRef (COMMA typeOrPlaceHolderNameRef)* '>')? '(' (condExpr (COMMA condExpr)*) ')'
                     {
                         methods=[isInFuncStatement isInTemplateStatement getStatment getFuncStmt isInTemplate]
                     }
@@ -240,7 +243,7 @@ constTerm           ::= constFactor ((SLASH|TIMES|MODULO) constFactor)*
                         methods=[getResolvedSize ]
                     }
 
-constFactor         ::= float | number | typeOrPlaceHolderNameRef | (MINUS constFactor) | ('(' constExpr ')')
+constFactor         ::= number | typeOrPlaceHolderNameRef | (MINUS constFactor) | ('(' constExpr ')')
                     {
                         methods = [getResolvedSize ]
                     }
@@ -256,7 +259,6 @@ tritList            ::= trit (COMMA trit)*
                     }
 
 
-private trit        ::= ZERO|ONE|MINUS
 
 varName             ::= IDENTIFIER
                     {
@@ -370,14 +372,16 @@ pathName            ::= IDENTIFIER
 
 environmentName     ::= IDENTIFIER
 
-number              ::= (ZERO|ONE|DIGIT)+
+private trit        ::= MINUS|TRIT
+
+number              ::= DIGIT+
                     {
                         methods = [getResolvedSize ]
                     }
 
-integer             ::= MINUS | ZERO | ONE | number | (MINUS number)
+integer             ::= MINUS? number
                     {
                         methods = [getResolvedSize ]
                     }
 
-float ::= (MINUS)? number+ DOT number+
+float               ::= integer DOT number
