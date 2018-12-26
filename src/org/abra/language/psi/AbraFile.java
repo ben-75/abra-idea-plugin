@@ -47,7 +47,7 @@ public class AbraFile extends PsiFileBase {
 
     public String getImportableFilePath(){
         VirtualFile sourceRoot = AbraPsiImplUtil.getSourceRoot(getProject(),getVirtualFile());
-        return getVirtualFile().getPath().substring(sourceRoot.getPath().length()+1,getVirtualFile().getPath().length()-5);
+        return getVirtualFile().getPath().substring(sourceRoot.getPath().length()+1,getVirtualFile().getPath().length()-4);
     }
 
     public List<AbraFile> getImportTree(){

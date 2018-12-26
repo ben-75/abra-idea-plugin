@@ -1,8 +1,8 @@
 
 # Abra plugin  
-Intellij plugin for the Abra language.  
+Intellij plugin for the Qupla language.  
   
-The Abra language is not completely defined yet, so consider this plugin as highly experimental.  
+The Qupla language is not completely defined yet, so consider this plugin as highly experimental.  
 The plugin should be compatible with any IntelliJ based platform (minimal build : 171.0)  
   
   ## Getting started
@@ -12,26 +12,26 @@ The plugin should be compatible with any IntelliJ based platform (minimal build 
  - Start IntelliJ (or any other Jetbrains IDE) and install the Abra Plugin ([details here](#installation))
  - After plugin installation it is recommended to restart IntelliJ
  - Create a new "Empty project" and copy the `AbraLib/` and `Examples/` at the root of the project (todo : add Link)
- - Start writing Abra code
+ - Start writing Qupla code
  
-  ![Abra Plugin in Action](https://github.com/ben-75/abra-idea-plugin/blob/master/doc/ready.png?raw=true)
+  ![Qupla Plugin in Action](https://github.com/ben-75/qupla-idea-plugin/blob/master/doc/ready.png?raw=true)
   
   ## Installation
   
-  The Abra plugin can be installed either from Jetbrains plugin repository, either manually, or it can be build from sources.
+  The Qupla plugin can be installed either from Jetbrains plugin repository, either manually, or it can be build from sources.
   
   ### Install from plugins repository
   
  - Open Settings from the menu File (Ctrl+Alt+S)
  - Select "Plugins" on the left pane
- - Search "Abra" in the search box
- - Click "Search in repositories" and install `Abra Plugin`
+ - Search "Qupla" in the search box
+ - Click "Search in repositories" and install `Qupla Plugin`
  - Restart IntelliJ
   
   ### Manual Install    
 
- - Copy the [latest release](https://github.com/ben-75/abra-idea-plugin/releases) 
- in &lt;INTELLIJ_INSTALL&gt;/plugins/abra-language/lib/ 
+ - Copy the [latest release](https://github.com/ben-75/qupla-idea-plugin/releases) 
+ in &lt;INTELLIJ_INSTALL&gt;/plugins/qupla-language/lib/ 
  - Restart IntelliJ  
 
   ### Building from sources  

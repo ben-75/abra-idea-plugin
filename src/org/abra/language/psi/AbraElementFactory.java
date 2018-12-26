@@ -63,15 +63,6 @@ public class AbraElementFactory {
         return ((AbraFuncStmt)file.getFirstChild()).getFuncBody().getReturnExpr().getCondExpr().getMergeExprList().get(0).getConcatExprList().get(0).getPostfixExprList().get(0).getFuncExpr().getFuncNameRef();
     }
 
-    public static AbraFuncNameRef createAbraFunctionReference(Project project, String name, AbraFile originalFile) {
-        StringBuilder sb = new StringBuilder();
-        if(originalFile!=null){
-            sb.append("import ").append(originalFile.getImportableFilePath()).append("\n");
-        }
-        final AbraFile file = createFile(project, sb.toString()+"func Trit f(Trit p){return "+name+"(1)}");
-        return ((AbraFuncStmt)file.getFirstChild().getNextSibling().getNextSibling()).getFuncBody().getReturnExpr().getCondExpr().getMergeExprList().get(0).getConcatExprList().get(0).getPostfixExprList().get(0).getFuncExpr().getFuncNameRef();
-    }
-
     public static AbraTypeNameRef createAbraTypeNameRef(Project project, String name) {
         final AbraFile file = createFile(project, "use f<"+name+">");
         return ((AbraUseStmt)file.getFirstChild()).getTypeInstantiationList().get(0).getTypeNameRefList().get(0);

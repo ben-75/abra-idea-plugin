@@ -62,8 +62,8 @@ public class AbraInterpreterState extends JavaCommandLineState {
         javaParameters.setMainClass("org.iota.qupla.Qupla");
         //javaParameters.getVMParametersList()
         StringBuilder sb = new StringBuilder();
-
-        javaParameters.getProgramParametersList().add(runConfiguration.getTargetModule().getImportableFilePath());
+        String filePath = runConfiguration.getTargetModule().getImportableFilePath();
+        javaParameters.getProgramParametersList().add(filePath.substring(0,filePath.indexOf("/")));
 
         if(runConfiguration.isEcho()){
             javaParameters.getProgramParametersList().add("-echo");

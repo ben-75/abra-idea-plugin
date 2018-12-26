@@ -27,7 +27,7 @@
         </constraints>
         <properties>
           <labelFor value="96e3c"/>
-          <text value="Module:"/>
+          <text value="File:"/>
         </properties>
       </component>
       <component id="ccab6" class="javax.swing.JComboBox" binding="functionsInSelectedModule">
