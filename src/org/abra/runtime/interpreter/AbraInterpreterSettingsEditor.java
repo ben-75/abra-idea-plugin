@@ -3,7 +3,6 @@ package org.abra.runtime.interpreter;
 import com.intellij.openapi.options.ConfigurationException;
 import com.intellij.openapi.options.SettingsEditor;
 import com.intellij.openapi.project.Project;
-import com.intellij.openapi.roots.ProjectRootManager;
 import com.intellij.openapi.ui.ComponentWithBrowseButton;
 import com.intellij.openapi.ui.LabeledComponent;
 import com.intellij.openapi.ui.TextFieldWithBrowseButton;
@@ -11,6 +10,8 @@ import com.intellij.openapi.vfs.VfsUtilCore;
 import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.openapi.vfs.VirtualFileFilter;
 import com.intellij.psi.PsiManager;
+import org.abra.language.module.QuplaModule;
+import org.abra.language.module.QuplaModuleManager;
 import org.abra.language.psi.*;
 import org.jdesktop.swingx.combobox.ListComboBoxModel;
 import org.jetbrains.annotations.NotNull;
@@ -18,10 +19,7 @@ import org.jetbrains.annotations.NotNull;
 import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Comparator;
-import java.util.List;
+import java.util.*;
 
 public class AbraInterpreterSettingsEditor extends SettingsEditor<AbraInterpreterRunConfiguration> {
     private AbraInterpreterRunConfigUI myPanel;
@@ -222,18 +220,12 @@ public class AbraInterpreterSettingsEditor extends SettingsEditor<AbraInterprete
 
 
     private static ComboBoxModel getModulesModel(Project project){
-        VirtualFile[] roots = ProjectRootManager.getInstance(project).getContentSourceRoots();
-        if(roots.length==0){
-            roots = ProjectRootManager.getInstance(project).getContentRoots();
-        }
+        QuplaModuleManager quplaModuleManager = project.getComponent(QuplaModuleManager.class);
+        Collection<QuplaModule> modules = quplaModuleManager.allModules();
         List<AbraFileComboBoxItem> abraFiles = new ArrayList<>();
-        for(VirtualFile f:roots){
-            VfsUtilCore.iterateChildrenRecursively(f, abraFileFilter, fileOrDir -> {
-                if(!fileOrDir.isDirectory()){
-                    abraFiles.add(new AbraFileComboBoxItem((AbraFile)PsiManager.getInstance(project).findFile(fileOrDir)));
-                }
-                return true;
-            });
+        for(QuplaModule module:modules){
+            for(AbraFile f:module.getModuleFiles())
+                abraFiles.add(new AbraFileComboBoxItem(f));
         }
         abraFiles.sort(new Comparator<AbraFileComboBoxItem>() {
             @Override

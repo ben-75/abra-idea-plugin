@@ -1,7 +1,7 @@
 <idea-plugin>
   <id>org.abra.language</id>
   <name>Qupla Plugin</name>
-  <version>0.0.27-pre-alpha</version>
+  <version>0.0.28-pre-alpha</version>
   <vendor url="https://github.com/ben-75/abra-idea-plugin"/>
 
   <description><![CDATA[
@@ -63,6 +63,7 @@
     <configurationType implementation="org.abra.runtime.interpreter.AbraInterpreterConfigurationType"/>
     <programRunner implementation="org.abra.runtime.interpreter.AbraInterpreterProgramRunner"/>
     <runConfigurationProducer implementation="org.abra.runtime.interpreter.AbraRunConfigurationProducer"/>
+    <iconLayerProvider implementation="org.abra.ide.ui.QuplaIconProvider" order="last"/>
   </extensions>
 
   <project-components>
@@ -76,6 +77,11 @@
   <actions>
     <!-- Add your actions here -->
 
+    <action id="org.abra.ide.ui.action.MarkAsQuplaSourceRoot"
+            class="org.abra.ide.ui.action.MarkAsQuplaSourceRoot"
+            text="Mark as Qupla Sources Root" description="This directory contains Qupla modu!es">
+      <add-to-group group-id="MarkRootGroup" anchor="first"/>
+    </action>
   </actions>
 
 </idea-plugin>

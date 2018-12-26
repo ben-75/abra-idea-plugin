@@ -59,7 +59,7 @@ public class AbraInterpreterState extends JavaCommandLineState {
         javaParameters.setWorkingDirectory(
                 AbraPsiImplUtil.getSourceRoot(runConfiguration.getProject(),
                         runConfiguration.getTargetModule().getVirtualFile()).getPath());
-        javaParameters.setMainClass("org.iota.abra.Main");
+        javaParameters.setMainClass("org.iota.qupla.Qupla");
         //javaParameters.getVMParametersList()
         StringBuilder sb = new StringBuilder();
 

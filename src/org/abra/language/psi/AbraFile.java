@@ -54,7 +54,7 @@ public class AbraFile extends PsiFileBase {
         QuplaModuleManager quplaModuleManager = getProject().getComponent(QuplaModuleManager.class);
         ArrayList<AbraFile> resp = new ArrayList<>();
         for(AbraFile f:quplaModuleManager.getAllVisibleFiles(this)){
-            if(!this.equals(f))resp.add(f);
+            if(f!=null && !this.equals(f))resp.add(f);
         }
         return resp;
     }
