@@ -133,7 +133,7 @@ typeInstantiation   ::= '<' (typeNameRef (COMMA typeNameRef)*) '>'
                         methods=[getPresentation]
                     }
 
-entityAlias         ::= ASSIGN entityName '@' moduleName
+entityAlias         ::= ASSIGN entityName '@' moduleNameRef
 
 lutEntry            ::= tritList ASSIGN tritList
                     {
@@ -375,6 +375,7 @@ typeOrPlaceHolderNameRef ::= IDENTIFIER
                     }
 
 moduleName          ::= IDENTIFIER
+moduleNameRef       ::= IDENTIFIER
 
 entityName          ::= IDENTIFIER
 
