@@ -14,7 +14,7 @@ The plugin should be compatible with any IntelliJ based platform (minimal build 
  - Create a new "Empty project" and copy the `AbraLib/` and `Examples/` at the root of the project (todo : add Link)
  - Start writing Qupla code
  
-  ![Qupla Plugin in Action](https://github.com/ben-75/qupla-idea-plugin/blob/master/doc/ready.png?raw=true)
+  ![Qupla Plugin in Action](https://github.com/ben-75/qupla-idea-plugin/blob/interpreter/doc/ready.png?raw=true)
   
   ## Installation
   
