@@ -17,6 +17,7 @@ import com.intellij.openapi.roots.ProjectRootManager;
 import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.xdebugger.XDebuggerManager;
 import com.intellij.xdebugger.breakpoints.XBreakpointManager;
+import org.abra.language.module.QuplaModuleManager;
 import org.abra.language.psi.AbraPsiImplUtil;
 import org.abra.utils.TritUtils;
 import org.jetbrains.annotations.NotNull;
@@ -56,9 +57,8 @@ public class AbraInterpreterState extends JavaCommandLineState {
     protected JavaParameters createJavaParameters() throws ExecutionException {
         JavaParameters javaParameters = new JavaParameters();
         javaParameters.getVMParametersList().add("-Dabra.tritcode=out/tritcode/build/tritcode");
-        javaParameters.setWorkingDirectory(
-                AbraPsiImplUtil.getSourceRoot(runConfiguration.getProject(),
-                        runConfiguration.getTargetModule().getVirtualFile()).getPath());
+        javaParameters.setWorkingDirectory(runConfiguration.getProject().getComponent(QuplaModuleManager.class).getFullQuplaSourceRootPath());
+
         javaParameters.setMainClass("org.iota.qupla.Qupla");
         //javaParameters.getVMParametersList()
         StringBuilder sb = new StringBuilder();

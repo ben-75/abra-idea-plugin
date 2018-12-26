@@ -21,6 +21,7 @@ import com.intellij.psi.tree.TokenSet;
 import com.intellij.util.indexing.FileBasedIndex;
 import org.abra.language.AbraFileType;
 import org.abra.language.UnresolvableTokenException;
+import org.abra.language.module.QuplaModuleManager;
 import org.abra.language.psi.impl.*;
 import org.abra.ide.highlighter.AbraSyntaxHighlighter;
 import org.abra.ide.ui.AbraIcons;
@@ -1180,7 +1181,7 @@ public class AbraPsiImplUtil {
         AbraFile resp = null;
         List<VirtualFile> allRoots = getAllSourceRoot(project);
         for(VirtualFile vf:allRoots){
-            VirtualFile tmp = vf.findFileByRelativePath(path+".abra");
+            VirtualFile tmp = vf.findFileByRelativePath(path+".qpl");
             if(tmp!=null && tmp.exists()){
                 return (AbraFile) PsiManager.getInstance(project).findFile(tmp);
             }
@@ -1445,10 +1446,9 @@ public class AbraPsiImplUtil {
         return map;
     }
     public static AbraTypeInstantiation[] getAllTypeInstantiation(AbraTemplateStmt templateStmt){
-        Collection<VirtualFile> allAbraFiles = FilenameIndex.getAllFilesByExt(templateStmt.getProject(),"qpl");
+        Collection<AbraFile> allAbraFiles = templateStmt.getProject().getComponent(QuplaModuleManager.class).getAllVisibleFiles((AbraFile) templateStmt.getContainingFile());
         ArrayList<AbraTypeInstantiation> allTypeInstantiation = new ArrayList<>();
-        for(VirtualFile virtualFile:allAbraFiles){
-            AbraFile abraFile = (AbraFile) PsiManager.getInstance(templateStmt.getProject()).findFile(virtualFile);
+        for(AbraFile abraFile:allAbraFiles){
             if(abraFile.equals(templateStmt.getContainingFile()) || abraFile.isImporting((AbraFile) templateStmt.getContainingFile())){
                 for (ASTNode stmt : abraFile.getNode().getChildren(TokenSet.create(AbraTypes.USE_STMT))) {
                         if (((AbraUseStmt) stmt.getPsi()).getTemplateNameRef().getText().equals(templateStmt.getTemplateName().getText())) {
