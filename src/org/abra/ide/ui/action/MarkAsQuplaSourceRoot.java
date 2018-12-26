@@ -1,10 +1,12 @@
 package org.abra.ide.ui.action;
 
+import com.intellij.ide.projectView.ProjectView;
 import com.intellij.openapi.actionSystem.AnAction;
 import com.intellij.openapi.actionSystem.AnActionEvent;
 import com.intellij.openapi.actionSystem.CommonDataKeys;
 import com.intellij.pom.Navigatable;
 import com.intellij.psi.PsiDirectory;
+import com.intellij.tasks.context.ProjectViewContextProvider;
 import org.abra.ide.ui.AbraIcons;
 import org.abra.language.module.QuplaModuleManager;
 
@@ -23,6 +25,7 @@ public class MarkAsQuplaSourceRoot extends AnAction {
             String projectPath = e.getProject().getBasePath();
             String subPath = fullPath.substring(projectPath.length()+1);
             e.getProject().getComponent(QuplaModuleManager.class).setQuplaSourceRootPath(subPath);
+            ProjectView.getInstance(e.getProject()).refresh();
         }
     }
 

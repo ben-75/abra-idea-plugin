@@ -79,8 +79,8 @@
 
     <action id="org.abra.ide.ui.action.MarkAsQuplaSourceRoot"
             class="org.abra.ide.ui.action.MarkAsQuplaSourceRoot"
-            text="Mark as Qupla Sources Root" description="This directory contains Qupla modu!es">
-      <add-to-group group-id="MarkRootGroup" anchor="first"/>
+            text="Mark as Qupla Sources Root" description="This directory contains Qupla modules">
+      <add-to-group group-id="ProjectViewPopupMenu" anchor="last"/>
     </action>
   </actions>
 
