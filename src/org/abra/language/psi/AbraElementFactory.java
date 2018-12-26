@@ -110,9 +110,9 @@ public class AbraElementFactory {
                         getSliceExpr().getFieldNameRefList().get(0);
     }
 
-    public static AbraPathName createAbraPathName(Project project, String name) {
+    public static AbraModuleName createAbraModuleName(Project project, String name) {
         final AbraFile file = createFile(project, "import "+name);
-        return ((AbraImportStmt)file.getFirstChild()).getPathName();
+        return ((AbraImportStmt)file.getFirstChild()).getModuleName();
     }
 
 

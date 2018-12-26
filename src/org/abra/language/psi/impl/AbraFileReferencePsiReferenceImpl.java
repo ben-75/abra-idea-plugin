@@ -29,10 +29,10 @@ public class AbraFileReferencePsiReferenceImpl extends PsiReferenceBase implemen
 
     @Override
     public PsiElement handleElementRename(String newElementName) throws IncorrectOperationException {
-        AbraPathName pathName = AbraElementFactory.createAbraPathName(myElement.getProject(), newElementName);
-        ASTNode newKeyNode = pathName.getFirstChild().getNode();
+        AbraModuleName moduleName = AbraElementFactory.createAbraModuleName(myElement.getProject(), newElementName);
+        ASTNode newKeyNode = moduleName.getFirstChild().getNode();
         myElement.getNode().replaceChild(myElement.getLastChild().getNode(), newKeyNode);
-        return pathName;
+        return moduleName;
     }
 
     @Nullable

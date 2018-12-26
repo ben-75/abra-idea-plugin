@@ -58,7 +58,7 @@
 abra                ::= (stmt|COMMENT|CRLF)*
 private stmt        ::= (importStmt | typeStmt | lutStmt | funcStmt | templateStmt | useStmt | testStmt | evalStmt)
 
-importStmt          ::= IMPORT_KEYWORD pathName
+importStmt          ::= IMPORT_KEYWORD moduleName
                     {
                         methods=[getSourceRoot getFilePath getReferencedFiles]
                         pin=1
@@ -132,6 +132,8 @@ typeInstantiation   ::= '<' (typeNameRef (COMMA typeNameRef)*) '>'
                         implements="org.abra.language.psi.AbraDefinition"
                         methods=[getPresentation]
                     }
+
+entityAlias         ::= ASSIGN entityName '@' moduleName
 
 lutEntry            ::= tritList ASSIGN tritList
                     {
@@ -372,7 +374,9 @@ typeOrPlaceHolderNameRef ::= IDENTIFIER
                         methods = [getReference getResolvedSize]
                     }
 
-pathName            ::= IDENTIFIER
+moduleName          ::= IDENTIFIER
+
+entityName          ::= IDENTIFIER
 
 environmentName     ::= IDENTIFIER
 

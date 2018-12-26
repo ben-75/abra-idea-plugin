@@ -33,7 +33,7 @@ public class QuplaModule {
                     if(abraFile!=null){
                         files.add(abraFile);
                         Collection<AbraImportStmt> imports = abraFile.getImportStmts();
-                        for(AbraImportStmt stmt:imports)importedModuleNames.add(stmt.getPathName().getText());
+                        for(AbraImportStmt stmt:imports)importedModuleNames.add(stmt.getModuleName().getText());
                     }
                 }
                 abraFiles = wrap(files);
