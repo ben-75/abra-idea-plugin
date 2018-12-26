@@ -15,7 +15,7 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 
-public class AbraFoldingBuilder implements FoldingBuilder {
+public class QuplaFoldingBuilder implements FoldingBuilder {
     @Override
     @NotNull
     public FoldingDescriptor[] buildFoldRegions(@NotNull ASTNode node, @NotNull Document document) {

@@ -8,10 +8,10 @@ import com.intellij.psi.PsiFile;
 import org.abra.language.psi.AbraFile;
 import org.jetbrains.annotations.NotNull;
 
-public class AbraStructureViewModel extends StructureViewModelBase implements
+public class QuplaStructureViewModel extends StructureViewModelBase implements
         StructureViewModel.ElementInfoProvider {
-    public AbraStructureViewModel(PsiFile psiFile) {
-        super(psiFile, new AbraStructureViewElement(psiFile));
+    public QuplaStructureViewModel(PsiFile psiFile) {
+        super(psiFile, new QuplaStructureViewElement(psiFile));
     }
 
     @NotNull

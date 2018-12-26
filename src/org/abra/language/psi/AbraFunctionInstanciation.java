@@ -3,7 +3,7 @@ package org.abra.language.psi;
 import com.intellij.ide.structureView.StructureViewTreeElement;
 import com.intellij.ide.util.treeView.smartTree.TreeElement;
 import com.intellij.navigation.ItemPresentation;
-import org.abra.ide.ui.AbraIcons;
+import org.abra.ide.ui.QuplaIcons;
 import org.abra.language.UnresolvableTokenException;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -81,7 +81,7 @@ public class AbraFunctionInstanciation implements StructureViewTreeElement {
             @Nullable
             @Override
             public Icon getIcon(boolean unused) {
-                return AbraIcons.FUNCTION;
+                return QuplaIcons.FUNCTION;
             }
         };
     }

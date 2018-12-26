@@ -6,15 +6,14 @@ import com.intellij.openapi.actionSystem.AnActionEvent;
 import com.intellij.openapi.actionSystem.CommonDataKeys;
 import com.intellij.pom.Navigatable;
 import com.intellij.psi.PsiDirectory;
-import com.intellij.tasks.context.ProjectViewContextProvider;
-import org.abra.ide.ui.AbraIcons;
+import org.abra.ide.ui.QuplaIcons;
 import org.abra.language.module.QuplaModuleManager;
 
 public class MarkAsQuplaSourceRoot extends AnAction {
 
 
     public MarkAsQuplaSourceRoot() {
-        super(AbraIcons.QUPLA_MODULE_FOLDER);
+        super(QuplaIcons.QUPLA_MODULE_FOLDER);
     }
 
     @Override

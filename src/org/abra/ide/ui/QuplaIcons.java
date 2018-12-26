@@ -4,7 +4,7 @@ import com.intellij.openapi.util.IconLoader;
 
 import javax.swing.*;
 
-public class AbraIcons {
+public class QuplaIcons {
     public static final Icon FILE = IconLoader.getIcon("/org/abra/ide/ui/q-file.png");
     public static final Icon TYPE = IconLoader.getIcon("/org/abra/ide/ui/T.png");
     public static final Icon LUT = IconLoader.getIcon("/org/abra/ide/ui/L.png");

@@ -1,7 +1,7 @@
 package org.abra.language;
 
 import com.intellij.openapi.fileTypes.LanguageFileType;
-import org.abra.ide.ui.AbraIcons;
+import org.abra.ide.ui.QuplaIcons;
 import org.jetbrains.annotations.*;
 
 import javax.swing.*;
@@ -34,6 +34,6 @@ public class AbraFileType extends LanguageFileType {
     @Nullable
     @Override
     public Icon getIcon() {
-        return AbraIcons.FILE;
+        return QuplaIcons.FILE;
     }
 }

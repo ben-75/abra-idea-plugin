@@ -9,7 +9,7 @@ import com.intellij.psi.PsiFile;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-public class AbraStructureViewFactory implements PsiStructureViewFactory {
+public class QuplaStructureViewFactory implements PsiStructureViewFactory {
     @Nullable
     @Override
     public StructureViewBuilder getStructureViewBuilder(@NotNull final PsiFile psiFile) {
@@ -17,7 +17,7 @@ public class AbraStructureViewFactory implements PsiStructureViewFactory {
             @NotNull
             @Override
             public StructureViewModel createStructureViewModel(@Nullable Editor editor) {
-                return new AbraStructureViewModel(psiFile);
+                return new QuplaStructureViewModel(psiFile);
             }
         };
     }

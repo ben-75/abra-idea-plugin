@@ -13,14 +13,14 @@ import org.jetbrains.annotations.NotNull;
 import java.util.ArrayList;
 import java.util.List;
 
-public class AbraStructureViewElement implements StructureViewTreeElement, SortableTreeElement {
+public class QuplaStructureViewElement implements StructureViewTreeElement, SortableTreeElement {
     private final NavigatablePsiElement element;
     private final String typeName;
 
-    public AbraStructureViewElement(NavigatablePsiElement element) {
+    public QuplaStructureViewElement(NavigatablePsiElement element) {
         this(element,null);
     }
-    public AbraStructureViewElement(NavigatablePsiElement element, String typeName) {
+    public QuplaStructureViewElement(NavigatablePsiElement element, String typeName) {
         this.element = element;
         this.typeName = typeName;
     }
@@ -66,23 +66,23 @@ public class AbraStructureViewElement implements StructureViewTreeElement, Sorta
             if(abraDeclarations!=null) {
                 List<TreeElement> treeElements = new ArrayList<TreeElement>(abraDeclarations.length);
                 for (AbraDefinition abraDeclaration : abraDeclarations) {
-                    treeElements.add(new AbraStructureViewElement(abraDeclaration));
+                    treeElements.add(new QuplaStructureViewElement(abraDeclaration));
                 }
                 return treeElements.toArray(new TreeElement[treeElements.size()]);
             }
         } else if (element instanceof AbraTypeStmt && ((AbraTypeStmt)element).getFieldSpecList().size()>0) {
                 List<TreeElement> treeElements = new ArrayList<TreeElement>(((AbraTypeStmt)element).getFieldSpecList().size());
                 for(AbraFieldSpec field : ((AbraTypeStmt)element).getFieldSpecList()){
-                    treeElements.add(new AbraStructureViewElement(field));
+                    treeElements.add(new QuplaStructureViewElement(field));
                 }
                 return treeElements.toArray(new TreeElement[treeElements.size()]);
         } else if (element instanceof AbraTemplateStmt && ((AbraTemplateStmt)element).getTypeStmtList().size()+((AbraTemplateStmt)element).getFuncStmtList().size()>0) {
             List<TreeElement> treeElements = new ArrayList<TreeElement>(((AbraTemplateStmt)element).getTypeStmtList().size()+((AbraTemplateStmt)element).getFuncStmtList().size());
             for(AbraTypeStmt typeStmt : ((AbraTemplateStmt)element).getTypeStmtList()){
-                treeElements.add(new AbraStructureViewElement(typeStmt));
+                treeElements.add(new QuplaStructureViewElement(typeStmt));
             }
             for(AbraFuncStmt funcStmt : ((AbraTemplateStmt)element).getFuncStmtList()){
-                treeElements.add(new AbraStructureViewElement(funcStmt));
+                treeElements.add(new QuplaStructureViewElement(funcStmt));
             }
             return treeElements.toArray(new TreeElement[treeElements.size()]);
         } else if (element instanceof AbraUseStmt && ((AbraUseStmt)element).getTypeInstantiationList().size()>0) {
@@ -92,7 +92,7 @@ public class AbraStructureViewElement implements StructureViewTreeElement, Sorta
                 int childCount = ((AbraUseStmt) element).getTypeInstantiationList().size();
                 List<TreeElement> treeElements = new ArrayList<TreeElement>(childCount);
                 for (AbraTypeInstantiation typeInstanciation : ((AbraUseStmt) element).getTypeInstantiationList()) {
-                    treeElements.add(new AbraStructureViewElement(typeInstanciation));
+                    treeElements.add(new QuplaStructureViewElement(typeInstanciation));
                 }
                 return treeElements.toArray(new TreeElement[treeElements.size()]);
             }

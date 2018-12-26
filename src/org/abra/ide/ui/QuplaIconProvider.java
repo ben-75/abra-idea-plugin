@@ -18,12 +18,12 @@ public class QuplaIconProvider implements IconLayerProvider {
         if(element instanceof PsiDirectory) {
             QuplaModuleManager quplaModuleManager = ((PsiDirectory) element).getProject().getComponent(QuplaModuleManager.class);
             if (((PsiDirectory) element).getVirtualFile().getPath().endsWith(quplaModuleManager.getQuplaSourceRootPath())) {
-                return AbraIcons.QUPLA_FOLDER_ROOT;
+                return QuplaIcons.QUPLA_FOLDER_ROOT;
             }else {
                 String fullPath = quplaModuleManager.getFullQuplaSourceRootPath();
                 if(fullPath!=null)
                     if(((PsiDirectory) element).getVirtualFile().getPath().startsWith(fullPath) && quplaModuleManager.getModule(((PsiDirectory) element).getName())!=null)
-                        return AbraIcons.QUPLA_MODULE_FOLDER;
+                        return QuplaIcons.QUPLA_MODULE_FOLDER;
             }
         }
         return null;
@@ -39,7 +39,7 @@ public class QuplaIconProvider implements IconLayerProvider {
 //    @Override
 //    public Icon getIcon(@NotNull VirtualFile file, int flags, @Nullable Project project) {
 //        if(file.getPath().endsWith(project.getComponent(QuplaModuleManager.class).getQuplaSourceRootPath())){
-//            return AbraIcons.QUPLA_MODULE_FOLDER;
+//            return QuplaIcons.QUPLA_MODULE_FOLDER;
 //        }
 //        return null;
 //    }
