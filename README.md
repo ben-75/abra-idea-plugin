@@ -9,10 +9,10 @@ The plugin should be compatible with any IntelliJ based platform (minimal build 
  
  - If you don't already an IDE based on IntelliJ platform installed on your computer, you can download and install 
  IntelliJ Community from [Jetbrains website](https://www.jetbrains.com/idea/download/)
- - Start IntelliJ (or any other Jetbrains IDE) and install the Abra Plugin ([details here](#installation))
+ - Start IntelliJ (or any other Jetbrains IDE) and install the Qupla Plugin ([details here](#installation))
  - After plugin installation it is recommended to restart IntelliJ
- - Create a new "Empty project" and copy the `AbraLib/` and `Examples/` at the root of the project (todo : add Link)
- - Start writing Qupla code
+ - Checkout the qupla repository: https://github.com/iotaledger/qupla and open it as a gradle project.
+ - Start exploring qupla, base library and samples can be found under src/main/resources
  
   ![Qupla Plugin in Action](https://github.com/ben-75/qupla-idea-plugin/blob/interpreter/doc/ready.png?raw=true)
   

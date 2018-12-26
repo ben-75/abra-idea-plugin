@@ -153,6 +153,14 @@ public class AbraFile extends PsiFileBase {
         return PsiTreeUtil.findChildrenOfAnyType(this,true,AbraLutStmt.class);
     }
 
+    public Collection<AbraTypeStmt> getAllTypeStmts() {
+        ArrayList<AbraTypeStmt> typeStmts = new ArrayList<>();
+        for (ASTNode stmt : getNode().getChildren(TokenSet.create(AbraTypes.TYPE_STMT))) {
+           typeStmts.add ((AbraTypeStmt)stmt.getPsi());
+        }
+        return typeStmts;
+    }
+
     public AbraTemplateStmt getTemplate(String name){
         for (ASTNode stmt : getNode().getChildren(TokenSet.create(AbraTypes.TEMPLATE_STMT))) {
             if(((AbraTemplateStmt)stmt.getPsi()).getTemplateName().getText().equals(name)){

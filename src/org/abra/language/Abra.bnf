@@ -145,6 +145,10 @@ funcSignature       ::= typeOrPlaceHolderNameRef funcName ('<' typeOrPlaceHolder
                         methods = [getTypeLabelWithBrackets]
                     }
 funcParameter       ::= typeOrPlaceHolderNameRef paramName
+                    {
+                        pin=0 recoverWhile=funcParameterRecover
+                    }
+private funcParameterRecover ::=!(COMMA | CLOSE_PAR)
 
 funcBody            ::= '{' joinExpr* affectExpr * stateExpr* assignExpr* returnExpr '}'
                     {

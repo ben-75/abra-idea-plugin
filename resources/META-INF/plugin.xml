@@ -1,7 +1,7 @@
 <idea-plugin>
   <id>org.abra.language</id>
   <name>Qupla Plugin</name>
-  <version>0.0.28-pre-alpha</version>
+  <version>0.0.29-pre-alpha</version>
   <vendor url="https://github.com/ben-75/abra-idea-plugin"/>
 
   <description><![CDATA[
@@ -56,7 +56,7 @@
     <annotator language="Qupla" implementationClass="org.abra.ide.highlighter.LutValidationAnnotator"/>
     <annotator language="Qupla" implementationClass="org.abra.ide.highlighter.FuncArgsAnnotator"/>
     <annotator language="Qupla" implementationClass="org.abra.ide.highlighter.ImportAnnotator"/>
-    <completion.contributor language="Qupla" implementationClass="org.abra.ide.tools.AbraCompletionContributor"/>
+    <completion.contributor language="Qupla" implementationClass="org.abra.ide.tools.completion.AbraCompletionContributor"/>
     <additionalTextAttributes scheme="Default" file="colors/AbraDefault.xml"/>
     <additionalTextAttributes scheme="Darcula" file="colors/AbraDarcula.xml"/>
     <renamePsiElementProcessor implementation="org.abra.ide.tools.RenameFuncNameProcessor"/>

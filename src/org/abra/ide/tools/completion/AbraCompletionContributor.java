@@ -1,16 +1,29 @@
-package org.abra.ide.tools;
+package org.abra.ide.tools.completion;
 
 import com.intellij.codeInsight.completion.*;
 import com.intellij.codeInsight.lookup.LookupElementBuilder;
+import com.intellij.patterns.CharPattern;
+import com.intellij.patterns.ElementPattern;
 import com.intellij.patterns.PlatformPatterns;
+import com.intellij.patterns.StandardPatterns;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiWhiteSpace;
 import com.intellij.util.ProcessingContext;
+import org.abra.ide.tools.completion.QuplaTypeNameCompletionProvider;
 import org.abra.language.AbraLanguage;
 import org.abra.language.psi.*;
 import org.jetbrains.annotations.NotNull;
 
+import static com.intellij.patterns.PlatformPatterns.psiElement;
+
 public class AbraCompletionContributor extends CompletionContributor {
+
+    static final ElementPattern WHITE_SPACE = psiElement().whitespace();
+    static final ElementPattern<PsiElement> AFTER_FUNC_KEYWORD = psiElement().withLanguage(AbraLanguage.INSTANCE).afterLeaf("func");
+    static final ElementPattern<PsiElement> FIRST_FUNC_PARAM_TYPE = psiElement().withLanguage(AbraLanguage.INSTANCE).afterSiblingSkipping(WHITE_SPACE,psiElement().withText("(")).withSuperParent(2,AbraFuncParameter.class);
+    static final ElementPattern<PsiElement> FUNC_PARAM_TYPE = psiElement().withLanguage(AbraLanguage.INSTANCE).afterSiblingSkipping(WHITE_SPACE,psiElement().withText(",")).withSuperParent(2,AbraFuncParameter.class);
+
+
     public AbraCompletionContributor() {
 //        extend(CompletionType.BASIC,
 //                PlatformPatterns.psiElement(AbraTypes.IDENTIFIER).withLanguage(AbraLanguage.INSTANCE),
@@ -31,6 +44,9 @@ public class AbraCompletionContributor extends CompletionContributor {
 //                    }
 //                }
 //        );
+        extend(CompletionType.BASIC, AFTER_FUNC_KEYWORD,new QuplaTypeNameCompletionProvider());
+        extend(CompletionType.BASIC, FIRST_FUNC_PARAM_TYPE,new QuplaTypeNameCompletionProvider());
+        extend(CompletionType.BASIC, FUNC_PARAM_TYPE,new QuplaTypeNameCompletionProvider());
         extend(CompletionType.BASIC,
                 PlatformPatterns.psiElement().withLanguage(AbraLanguage.INSTANCE),
                 new CompletionProvider<CompletionParameters>() {
