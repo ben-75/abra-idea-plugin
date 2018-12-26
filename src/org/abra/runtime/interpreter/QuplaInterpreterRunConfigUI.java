@@ -4,7 +4,7 @@ import org.jdesktop.swingx.VerticalLayout;
 
 import javax.swing.*;
 
-public class AbraInterpreterRunConfigUI {
+public class QuplaInterpreterRunConfigUI {
     public JPanel rootConfigPane;
     JComboBox modules;
     JComboBox functionsInSelectedModule;

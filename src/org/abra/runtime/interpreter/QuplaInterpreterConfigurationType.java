@@ -7,11 +7,11 @@ import org.jetbrains.annotations.NotNull;
 
 import javax.swing.*;
 
-public class AbraInterpreterConfigurationType implements ConfigurationType {
+public class QuplaInterpreterConfigurationType implements ConfigurationType {
 
-    private static AbraInterpreterConfigurationType instance = new AbraInterpreterConfigurationType();
+    private static QuplaInterpreterConfigurationType instance = new QuplaInterpreterConfigurationType();
 
-    public static AbraInterpreterConfigurationType getInstance(){
+    public static QuplaInterpreterConfigurationType getInstance(){
         return instance;
     }
     @Override
@@ -37,6 +37,6 @@ public class AbraInterpreterConfigurationType implements ConfigurationType {
 
     @Override
     public ConfigurationFactory[] getConfigurationFactories() {
-        return new ConfigurationFactory[]{new AbraInterpreterConfigurationFactory(this)};
+        return new ConfigurationFactory[]{new QuplaInterpreterConfigurationFactory(this)};
     }
 }

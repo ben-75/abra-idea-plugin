@@ -9,31 +9,31 @@ import com.intellij.psi.PsiElement;
 import org.abra.language.psi.AbraFile;
 import org.abra.language.psi.AbraFuncStmt;
 
-public class AbraRunConfigurationProducer extends RunConfigurationProducer<AbraInterpreterRunConfiguration> {
+public class QuplaRunConfigurationProducer extends RunConfigurationProducer<QuplaInterpreterRunConfiguration> {
 
-    public AbraRunConfigurationProducer() {
-        super(AbraInterpreterConfigurationType.getInstance());
+    public QuplaRunConfigurationProducer() {
+        super(QuplaInterpreterConfigurationType.getInstance());
     }
 
-    public AbraRunConfigurationProducer(ConfigurationFactory configurationFactory) {
+    public QuplaRunConfigurationProducer(ConfigurationFactory configurationFactory) {
         super(configurationFactory);
     }
 
-    public AbraRunConfigurationProducer(ConfigurationType configurationType) {
+    public QuplaRunConfigurationProducer(ConfigurationType configurationType) {
         super(configurationType);
 
     }
 
 //    @Override
 //    public void onFirstRun(@NotNull ConfigurationFromContext configuration, @NotNull ConfigurationContext context, @NotNull Runnable startRunnable) {
-//        AbraInterpreterSettingsEditor settingsEditor = new AbraInterpreterSettingsEditor();
-//        settingsEditor.resetFrom((AbraInterpreterRunConfiguration) configuration.getConfiguration());
+//        QuplaInterpreterSettingsEditor settingsEditor = new QuplaInterpreterSettingsEditor();
+//        settingsEditor.resetFrom((QuplaInterpreterRunConfiguration) configuration.getConfiguration());
 //
 //        settingsEditor.super.onFirstRun(configuration, context, startRunnable);
 //    }
 
     @Override
-    protected boolean setupConfigurationFromContext(AbraInterpreterRunConfiguration configuration, ConfigurationContext context, Ref<PsiElement> sourceElement) {
+    protected boolean setupConfigurationFromContext(QuplaInterpreterRunConfiguration configuration, ConfigurationContext context, Ref<PsiElement> sourceElement) {
         if(sourceElement.get().getContainingFile() instanceof AbraFile){
             AbraFuncStmt func = findFuncStmt(sourceElement.get());
             if(func==null)return false;
@@ -46,7 +46,7 @@ public class AbraRunConfigurationProducer extends RunConfigurationProducer<AbraI
     }
 
     @Override
-    public boolean isConfigurationFromContext(AbraInterpreterRunConfiguration configuration, ConfigurationContext context) {
+    public boolean isConfigurationFromContext(QuplaInterpreterRunConfiguration configuration, ConfigurationContext context) {
 //        AbraFuncStmt func = findFuncStmt(context.getPsiLocation());
 //        return func!=null && func.isEquivalentTo(configuration.getTargetFunc());
         return false;

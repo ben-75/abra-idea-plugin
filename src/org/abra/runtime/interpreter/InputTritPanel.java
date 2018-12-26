@@ -111,8 +111,8 @@ public class InputTritPanel extends JPanel implements DocumentListener {
                 } else if (formats[0] == TritUtils.DATA_FORMAT.FLOAT_FMT) {
                     int manSize = 9;
                     int expSize = 3;
-                    if(targetTypeInst!=null && targetTypeInst.getSelectedItem() instanceof AbraInterpreterSettingsEditor.AbraTypeInstComboBoxItem){
-                        AbraTypeInstantiation typeInstantiation = ((AbraInterpreterSettingsEditor.AbraTypeInstComboBoxItem)targetTypeInst.getSelectedItem()).getTypeInstantiation();
+                    if(targetTypeInst!=null && targetTypeInst.getSelectedItem() instanceof QuplaInterpreterSettingsEditor.AbraTypeInstComboBoxItem){
+                        AbraTypeInstantiation typeInstantiation = ((QuplaInterpreterSettingsEditor.AbraTypeInstComboBoxItem)targetTypeInst.getSelectedItem()).getTypeInstantiation();
                         if(typeInstantiation.getTypeNameRefList().size()==2){
                             manSize = (AbraPsiImplUtil.getResolvedSize((AbraTypeStmt) typeInstantiation.getTypeNameRefList().get(0).getReference().resolve().getParent()));
                             expSize = (AbraPsiImplUtil.getResolvedSize((AbraTypeStmt) typeInstantiation.getTypeNameRefList().get(1).getReference().resolve().getParent()));

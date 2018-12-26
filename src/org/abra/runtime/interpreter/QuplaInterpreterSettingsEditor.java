@@ -6,10 +6,7 @@ import com.intellij.openapi.project.Project;
 import com.intellij.openapi.ui.ComponentWithBrowseButton;
 import com.intellij.openapi.ui.LabeledComponent;
 import com.intellij.openapi.ui.TextFieldWithBrowseButton;
-import com.intellij.openapi.vfs.VfsUtilCore;
-import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.openapi.vfs.VirtualFileFilter;
-import com.intellij.psi.PsiManager;
 import org.abra.language.module.QuplaModule;
 import org.abra.language.module.QuplaModuleManager;
 import org.abra.language.psi.*;
@@ -21,14 +18,14 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.*;
 
-public class AbraInterpreterSettingsEditor extends SettingsEditor<AbraInterpreterRunConfiguration> {
-    private AbraInterpreterRunConfigUI myPanel;
+public class QuplaInterpreterSettingsEditor extends SettingsEditor<QuplaInterpreterRunConfiguration> {
+    private QuplaInterpreterRunConfigUI myPanel;
     private LabeledComponent<ComponentWithBrowseButton> myMainClass;
     private static VirtualFileFilter abraFileFilter = file -> file.isDirectory() || file.getName().endsWith(".abra");
 
 
     @Override
-    protected void resetEditorFrom(@NotNull AbraInterpreterRunConfiguration runConfig) {
+    protected void resetEditorFrom(@NotNull QuplaInterpreterRunConfiguration runConfig) {
         myPanel.modules.setModel(getModulesModel(runConfig.getProject()));
         if(runConfig.getTargetModule()!=null){
             for(int i = 0; i< myPanel.modules.getModel().getSize(); i++){
@@ -95,7 +92,7 @@ public class AbraInterpreterSettingsEditor extends SettingsEditor<AbraInterprete
     }
 
     @Override
-    protected void applyEditorTo(@NotNull AbraInterpreterRunConfiguration runCongig) throws ConfigurationException {
+    protected void applyEditorTo(@NotNull QuplaInterpreterRunConfiguration runCongig) throws ConfigurationException {
         if(myPanel.modules.getSelectedItem()!=null) {
             runCongig.setTargetModule(((AbraFileComboBoxItem) myPanel.modules.getSelectedItem()).getAbraFile());
             if (myPanel.functionsInSelectedModule.getSelectedItem() != null) {
@@ -130,7 +127,7 @@ public class AbraInterpreterSettingsEditor extends SettingsEditor<AbraInterprete
     @NotNull
     @Override
     protected JComponent createEditor() {
-        myPanel = new AbraInterpreterRunConfigUI();
+        myPanel = new QuplaInterpreterRunConfigUI();
         myPanel.modules.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {

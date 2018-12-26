@@ -18,7 +18,6 @@ import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.xdebugger.XDebuggerManager;
 import com.intellij.xdebugger.breakpoints.XBreakpointManager;
 import org.abra.language.module.QuplaModuleManager;
-import org.abra.language.psi.AbraPsiImplUtil;
 import org.abra.utils.TritUtils;
 import org.jetbrains.annotations.NotNull;
 
@@ -27,11 +26,11 @@ import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
 
-public class AbraInterpreterState extends JavaCommandLineState {
+public class QuplaInterpreterState extends JavaCommandLineState {
 
-    private AbraInterpreterRunConfiguration runConfiguration;
+    private QuplaInterpreterRunConfiguration runConfiguration;
 
-    public AbraInterpreterState(ExecutionEnvironment environment, AbraInterpreterRunConfiguration runConfig) {
+    public QuplaInterpreterState(ExecutionEnvironment environment, QuplaInterpreterRunConfiguration runConfig) {
         super(environment);
         runConfiguration = runConfig;
     }

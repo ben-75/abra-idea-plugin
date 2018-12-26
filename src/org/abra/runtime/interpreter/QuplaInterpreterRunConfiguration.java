@@ -21,7 +21,7 @@ import org.jetbrains.annotations.Nullable;
 import java.util.Arrays;
 import java.util.List;
 
-public class AbraInterpreterRunConfiguration extends ApplicationConfiguration {
+public class QuplaInterpreterRunConfiguration extends ApplicationConfiguration {
 
     private boolean test = false;
     private boolean eval = false;
@@ -36,15 +36,15 @@ public class AbraInterpreterRunConfiguration extends ApplicationConfiguration {
     private AbraTypeInstantiation targetTypeInstantiation = null;
     String[] args;
 
-    protected AbraInterpreterRunConfiguration(Project project, ConfigurationFactory factory, String name) {
-        super(name, project, factory);//, new AbraInterpreterConfigurationFactory(AbraInterpreterConfigurationType.getInstance()));
+    protected QuplaInterpreterRunConfiguration(Project project, ConfigurationFactory factory, String name) {
+        super(name, project, factory);//, new QuplaInterpreterConfigurationFactory(QuplaInterpreterConfigurationType.getInstance()));
 
     }
 
     @NotNull
     @Override
     public SettingsEditor<? extends RunConfiguration> getConfigurationEditor() {
-        return new AbraInterpreterSettingsEditor();
+        return new QuplaInterpreterSettingsEditor();
     }
 
     @Override
@@ -97,7 +97,7 @@ public class AbraInterpreterRunConfiguration extends ApplicationConfiguration {
     @Nullable
     @Override
     public RunProfileState getState(@NotNull Executor executor, @NotNull ExecutionEnvironment executionEnvironment) throws ExecutionException {
-        return new AbraInterpreterState(executionEnvironment, this);
+        return new QuplaInterpreterState(executionEnvironment, this);
     }
 
     public boolean isRunTest() {
