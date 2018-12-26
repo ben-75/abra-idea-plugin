@@ -8,7 +8,7 @@ import org.abra.language.psi.AbraTypes;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-public class AbraBraceMatcher implements PairedBraceMatcher {
+public class QuplaBraceMatcher implements PairedBraceMatcher {
 
     private static final BracePair[] PAIRS = {
             new BracePair(AbraTypes.OPEN_BRACE, AbraTypes.CLOSE_BRACE, true),

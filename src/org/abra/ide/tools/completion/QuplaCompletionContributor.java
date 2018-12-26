@@ -16,7 +16,7 @@ import org.jetbrains.annotations.NotNull;
 
 import static com.intellij.patterns.PlatformPatterns.psiElement;
 
-public class AbraCompletionContributor extends CompletionContributor {
+public class QuplaCompletionContributor extends CompletionContributor {
 
     static final ElementPattern WHITE_SPACE = psiElement().whitespace();
     static final ElementPattern<PsiElement> AFTER_FUNC_KEYWORD = psiElement().withLanguage(AbraLanguage.INSTANCE).afterLeaf("func");
@@ -24,7 +24,7 @@ public class AbraCompletionContributor extends CompletionContributor {
     static final ElementPattern<PsiElement> FUNC_PARAM_TYPE = psiElement().withLanguage(AbraLanguage.INSTANCE).afterSiblingSkipping(WHITE_SPACE,psiElement().withText(",")).withSuperParent(2,AbraFuncParameter.class);
 
 
-    public AbraCompletionContributor() {
+    public QuplaCompletionContributor() {
 //        extend(CompletionType.BASIC,
 //                PlatformPatterns.psiElement(AbraTypes.IDENTIFIER).withLanguage(AbraLanguage.INSTANCE),
 //                new CompletionProvider<CompletionParameters>() {

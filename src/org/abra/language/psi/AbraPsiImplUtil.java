@@ -15,16 +15,15 @@ import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiManager;
 import com.intellij.psi.PsiReference;
 import com.intellij.psi.search.FileTypeIndex;
-import com.intellij.psi.search.FilenameIndex;
 import com.intellij.psi.search.GlobalSearchScope;
 import com.intellij.psi.tree.TokenSet;
 import com.intellij.util.indexing.FileBasedIndex;
+import org.abra.ide.ui.QuplaIcons;
 import org.abra.language.AbraFileType;
 import org.abra.language.UnresolvableTokenException;
 import org.abra.language.module.QuplaModuleManager;
 import org.abra.language.psi.impl.*;
-import org.abra.ide.highlighter.AbraSyntaxHighlighter;
-import org.abra.ide.ui.AbraIcons;
+import org.abra.ide.highlighter.QuplaSyntaxHighlighter;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -71,7 +70,7 @@ public class AbraPsiImplUtil {
             @NotNull
             @Override
             public Icon getIcon(boolean unused) {
-                return AbraIcons.TYPE;
+                return QuplaIcons.TYPE;
             }
         };
     }
@@ -132,7 +131,7 @@ public class AbraPsiImplUtil {
             @Nullable
             @Override
             public TextAttributesKey getTextAttributesKey() {
-                return AbraSyntaxHighlighter.ABRA_TYPE_DECLARATION;
+                return QuplaSyntaxHighlighter.ABRA_TYPE_DECLARATION;
             }
 
             @Nullable
@@ -150,7 +149,7 @@ public class AbraPsiImplUtil {
             @Nullable
             @Override
             public Icon getIcon(boolean unused) {
-                return AbraIcons.TYPE;
+                return QuplaIcons.TYPE;
             }
         };
     }
@@ -161,7 +160,7 @@ public class AbraPsiImplUtil {
             @Nullable
             @Override
             public TextAttributesKey getTextAttributesKey() {
-                return AbraSyntaxHighlighter.ABRA_LOCAL_VAR;
+                return QuplaSyntaxHighlighter.ABRA_LOCAL_VAR;
             }
 
             @Nullable
@@ -179,7 +178,7 @@ public class AbraPsiImplUtil {
             @Nullable
             @Override
             public Icon getIcon(boolean unused) {
-                return AbraIcons.VECTOR;
+                return QuplaIcons.VECTOR;
             }
         };
     }
@@ -191,7 +190,7 @@ public class AbraPsiImplUtil {
             @Nullable
             @Override
             public TextAttributesKey getTextAttributesKey() {
-                return AbraSyntaxHighlighter.ABRA_LOCAL_VAR;
+                return QuplaSyntaxHighlighter.ABRA_LOCAL_VAR;
             }
 
             @Nullable
@@ -209,7 +208,7 @@ public class AbraPsiImplUtil {
             @Nullable
             @Override
             public Icon getIcon(boolean unused) {
-                return AbraIcons.VECTOR;
+                return QuplaIcons.VECTOR;
             }
         };
     }
@@ -237,7 +236,7 @@ public class AbraPsiImplUtil {
             @NotNull
             @Override
             public Icon getIcon(boolean unused) {
-                return AbraIcons.LUT;
+                return QuplaIcons.LUT;
             }
         };
     }
@@ -283,7 +282,7 @@ public class AbraPsiImplUtil {
             @Nullable
             @Override
             public TextAttributesKey getTextAttributesKey() {
-                return AbraSyntaxHighlighter.ABRA_FCT_DECLARATION;
+                return QuplaSyntaxHighlighter.ABRA_FCT_DECLARATION;
             }
 
             @Nullable
@@ -301,7 +300,7 @@ public class AbraPsiImplUtil {
             @Nullable
             @Override
             public Icon getIcon(boolean unused) {
-                return AbraIcons.LUT;
+                return QuplaIcons.LUT;
             }
         };
     }
@@ -335,7 +334,7 @@ public class AbraPsiImplUtil {
             @NotNull
             @Override
             public Icon getIcon(boolean unused) {
-                return AbraIcons.VECTOR;
+                return QuplaIcons.VECTOR;
             }
         };
     }
@@ -396,7 +395,7 @@ public class AbraPsiImplUtil {
             @NotNull
             @Override
             public Icon getIcon(boolean unused) {
-                return AbraIcons.FUNCTION;
+                return QuplaIcons.FUNCTION;
             }
         };
     }
@@ -444,7 +443,7 @@ public class AbraPsiImplUtil {
             @Nullable
             @Override
             public TextAttributesKey getTextAttributesKey() {
-                return AbraSyntaxHighlighter.ABRA_FCT_DECLARATION;
+                return QuplaSyntaxHighlighter.ABRA_FCT_DECLARATION;
             }
 
             @Nullable
@@ -466,9 +465,9 @@ public class AbraPsiImplUtil {
             @Override
             public Icon getIcon(boolean unused) {
                 if (((AbraFuncStmt) funcName.getParent().getParent()).isInTemplate()) {
-                    return AbraIcons.TEMPLATE;
+                    return QuplaIcons.TEMPLATE;
                 }
-                return AbraIcons.FUNCTION;
+                return QuplaIcons.FUNCTION;
             }
         };
     }
@@ -518,7 +517,7 @@ public class AbraPsiImplUtil {
             @NotNull
             @Override
             public Icon getIcon(boolean unused) {
-                return AbraIcons.TEMPLATE;
+                return QuplaIcons.TEMPLATE;
             }
         };
     }
@@ -582,7 +581,7 @@ public class AbraPsiImplUtil {
             @NotNull
             @Override
             public Icon getIcon(boolean unused) {
-                return AbraIcons.USE;
+                return QuplaIcons.USE;
             }
         };
     }
@@ -654,7 +653,7 @@ public class AbraPsiImplUtil {
             @NotNull
             @Override
             public Icon getIcon(boolean unused) {
-                return AbraIcons.TEMPLATE;
+                return QuplaIcons.TEMPLATE;
             }
         };
     }

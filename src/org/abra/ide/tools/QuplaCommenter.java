@@ -3,7 +3,7 @@ package org.abra.ide.tools;
 import com.intellij.lang.Commenter;
 import org.jetbrains.annotations.Nullable;
 
-public class AbraCommenter implements Commenter {
+public class QuplaCommenter implements Commenter {
 
     @Nullable
     @Override

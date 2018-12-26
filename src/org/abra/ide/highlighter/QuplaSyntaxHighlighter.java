@@ -14,7 +14,7 @@ import org.jetbrains.annotations.NotNull;
 import static com.intellij.openapi.editor.DefaultLanguageHighlighterColors.KEYWORD;
 import static com.intellij.openapi.editor.colors.TextAttributesKey.createTextAttributesKey;
 
-public class AbraSyntaxHighlighter extends SyntaxHighlighterBase  {
+public class QuplaSyntaxHighlighter extends SyntaxHighlighterBase  {
 
     public static final TextAttributesKey COMMENT =
             createTextAttributesKey("SIMPLE_COMMENT", DefaultLanguageHighlighterColors.LINE_COMMENT);

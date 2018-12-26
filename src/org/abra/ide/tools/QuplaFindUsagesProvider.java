@@ -12,7 +12,7 @@ import org.abra.language.psi.AbraTokenType;
 import org.abra.language.psi.AbraTypes;
 import org.jetbrains.annotations.NotNull;
 
-public class AbraFindUsagesProvider implements FindUsagesProvider {
+public class QuplaFindUsagesProvider implements FindUsagesProvider {
     public boolean canFindUsagesFor(@NotNull PsiElement psiElement) {
         return psiElement instanceof PsiNamedElement;
     }

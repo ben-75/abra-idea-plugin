@@ -43,20 +43,20 @@
   <extensions defaultExtensionNs="com.intellij">
     <fileTypeFactory implementation="org.abra.language.AbraFileTypeFactory"/>
     <lang.parserDefinition language="Qupla" implementationClass="org.abra.language.AbraParserDefinition"/>
-    <lang.syntaxHighlighterFactory language="Qupla" implementationClass="org.abra.ide.highlighter.AbraSyntaxHighlighterFactory"/>
-    <lang.braceMatcher language="Qupla" implementationClass="org.abra.ide.tools.AbraBraceMatcher"/>
-    <lang.commenter language="Qupla" implementationClass="org.abra.ide.tools.AbraCommenter"/>
-    <lang.foldingBuilder language="Qupla" implementationClass="org.abra.ide.tools.AbraFoldingBuilder"/>
-    <colorSettingsPage implementation="org.abra.ide.highlighter.AbraColorSettingsPage"/>
-    <lang.psiStructureViewFactory language="Qupla" implementationClass="org.abra.ide.ui.structureview.AbraStructureViewFactory"/>
-    <lang.findUsagesProvider language="Qupla" implementationClass="org.abra.ide.tools.AbraFindUsagesProvider"/>
+    <lang.syntaxHighlighterFactory language="Qupla" implementationClass="org.abra.ide.highlighter.QuplaSyntaxHighlighterFactory"/>
+    <lang.braceMatcher language="Qupla" implementationClass="org.abra.ide.tools.QuplaBraceMatcher"/>
+    <lang.commenter language="Qupla" implementationClass="org.abra.ide.tools.QuplaCommenter"/>
+    <lang.foldingBuilder language="Qupla" implementationClass="org.abra.ide.tools.QuplaFoldingBuilder"/>
+    <colorSettingsPage implementation="org.abra.ide.highlighter.QuplaColorSettingsPage"/>
+    <lang.psiStructureViewFactory language="Qupla" implementationClass="org.abra.ide.ui.structureview.QuplaStructureViewFactory"/>
+    <lang.findUsagesProvider language="Qupla" implementationClass="org.abra.ide.tools.QuplaFindUsagesProvider"/>
     <annotator language="Qupla" implementationClass="org.abra.ide.highlighter.DeclarationAnnotator"/>
     <annotator language="Qupla" implementationClass="org.abra.ide.highlighter.ReferenceValidatorAnnotator"/>
     <annotator language="Qupla" implementationClass="org.abra.ide.highlighter.MultiDeclarationAnnotator"/>
     <annotator language="Qupla" implementationClass="org.abra.ide.highlighter.LutValidationAnnotator"/>
     <annotator language="Qupla" implementationClass="org.abra.ide.highlighter.FuncArgsAnnotator"/>
     <annotator language="Qupla" implementationClass="org.abra.ide.highlighter.ImportAnnotator"/>
-    <completion.contributor language="Qupla" implementationClass="org.abra.ide.tools.completion.AbraCompletionContributor"/>
+    <completion.contributor language="Qupla" implementationClass="org.abra.ide.tools.completion.QuplaCompletionContributor"/>
     <additionalTextAttributes scheme="Default" file="colors/AbraDefault.xml"/>
     <additionalTextAttributes scheme="Darcula" file="colors/AbraDarcula.xml"/>
     <renamePsiElementProcessor implementation="org.abra.ide.tools.RenameFuncNameProcessor"/>
