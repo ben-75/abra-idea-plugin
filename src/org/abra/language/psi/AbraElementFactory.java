@@ -24,32 +24,32 @@ public class AbraElementFactory {
     }
 
     public static AbraFuncName createAbraFuncName(Project project, String name) {
-        final AbraFile file = createFile(project, "func [1] "+name+"(param [1])=param");
+        final AbraFile file = createFile(project, "func Trit "+name+"(Trit param){return a}");
         return ((AbraFuncStmt) file.getFirstChild()).getFuncSignature().getFuncName();
     }
 
     public static AbraParamName createAbraParamName(Project project, String name) {
-        final AbraFile file = createFile(project, "func [1] f("+name+" [1])=param");
+        final AbraFile file = createFile(project, "func Trit f(Trit "+name+"){return param}");
         return ((AbraFuncStmt) file.getFirstChild()).getFuncSignature().getFuncParameterList().get(0).getParamName();
     }
 
     public static AbraVarName createAbraVarName(Project project, String name) {
-        final AbraFile file = createFile(project, "func [1] f(param [1])={"+name+"=param\n return a}");
+        final AbraFile file = createFile(project, "func Trit f(Trit param){"+name+"=param\n return a}");
         return ((AbraFuncStmt) file.getFirstChild()).getFuncBody().getAssignExprList().get(0).getVarName();
     }
 
     public static AbraLutName createAbraLutName(Project project, String name) {
-        final AbraFile file = createFile(project, "lut "+name+"[0,0=0]");
+        final AbraFile file = createFile(project, "lut "+name+"{0,0=0}");
         return ((AbraLutStmt) file.getFirstChild()).getLutName();
     }
 
     public static AbraTemplateName createAbraTemplateName(Project project, String name) {
-        final AbraFile file = createFile(project, "template "+name+"<T> func [1] f<T>(c [T]) = {return 1}");
+        final AbraFile file = createFile(project, "template "+name+"<T> func Trit f<T>(Trit c) {return 1}");
         return ((AbraTemplateStmt) file.getFirstChild()).getTemplateName();
     }
 
     public static AbraPlaceHolderTypeName createAbraPlaceHolderName(Project project, String name) {
-        final AbraFile file = createFile(project, "template t<"+name+"> func [1] f<T>(c [T]) = {return 1}");
+        final AbraFile file = createFile(project, "template t<"+name+"> func Trit f<T>(Trit c) {return 1}");
         return ((AbraTemplateStmt) file.getFirstChild()).getPlaceHolderTypeNameList().get(0);
     }
 
@@ -59,7 +59,7 @@ public class AbraElementFactory {
 
 
     public static AbraFuncNameRef createAbraFunctionReference(Project project, String name) {
-        final AbraFile file = createFile(project, "func [1] f(p [1])={return "+name+"(1)}");
+        final AbraFile file = createFile(project, "func Trit f(Trit p){return "+name+"(1)}");
         return ((AbraFuncStmt)file.getFirstChild()).getFuncBody().getReturnExpr().getCondExpr().getMergeExprList().get(0).getConcatExprList().get(0).getPostfixExprList().get(0).getFuncExpr().getFuncNameRef();
     }
 
@@ -68,7 +68,7 @@ public class AbraElementFactory {
         if(originalFile!=null){
             sb.append("import ").append(originalFile.getImportableFilePath()).append("\n");
         }
-        final AbraFile file = createFile(project, sb.toString()+"func [1] f(p [1])={return "+name+"(1)}");
+        final AbraFile file = createFile(project, sb.toString()+"func Trit f(Trit p){return "+name+"(1)}");
         return ((AbraFuncStmt)file.getFirstChild().getNextSibling().getNextSibling()).getFuncBody().getReturnExpr().getCondExpr().getMergeExprList().get(0).getConcatExprList().get(0).getPostfixExprList().get(0).getFuncExpr().getFuncNameRef();
     }
 
@@ -78,13 +78,13 @@ public class AbraElementFactory {
     }
 
     public static AbraParamOrVarNameRef createAbraVarOrParamNameRef(Project project, String name) {
-        final AbraFile file = createFile(project, "func [1] f(p [1])={a="+name+"[1..3]\nreturn a}");
+        final AbraFile file = createFile(project, "func Trit f(Trit p){a="+name+"[1..3]\nreturn a}");
         return ((AbraFuncStmt)file.getFirstChild()).getFuncBody()
                 .getAssignExprList().get(0).getCondExpr().getMergeExprList().get(0).getConcatExprList().get(0).getPostfixExprList().get(0).getSliceExpr().getParamOrVarNameRef();
     }
 
     public static AbraLutOrParamOrVarNameRef createAbraLutOrParamOrVarRef(Project project, String name) {
-        final AbraFile file = createFile(project, "func [1] f(p [1])={a="+name+"[1]\n return a}");
+        final AbraFile file = createFile(project, "func Trit f(Trit p){a="+name+"[1]\n return a}");
         return ((AbraFuncStmt)file.getFirstChild()).getFuncBody()
                 .getAssignExprList().get(0).getCondExpr().getMergeExprList().get(0).getConcatExprList().get(0).getPostfixExprList().get(0).getLutOrSliceExpr().getLutOrParamOrVarNameRef();
     }
@@ -96,7 +96,7 @@ public class AbraElementFactory {
     }
 
     public static AbraTypeOrPlaceHolderNameRef createAbraTypeOrPlaceHolderNameRef(Project project, String name) {
-        final AbraFile file = createFile(project, "template incFunc<T> func [1] inc<"+name+"> (a[1]) = {return 1}");
+        final AbraFile file = createFile(project, "template incFunc<T> {func "+name+" inc<"+name+"> (Trit a) {return 1}}");
         return ((AbraTemplateStmt)file.getFirstChild()).getFuncStmtList().get(0).getFuncSignature().getTypeOrPlaceHolderNameRefList().get(0);
     }
 
@@ -108,12 +108,12 @@ public class AbraElementFactory {
 
 
     public static AbraLutNameRef createAbraLutNameRef(Project project, String name) {
-        final AbraFile file = createFile(project, "func [1] f(a[1])={b="+name+"[1,1]\nreturn b}");
+        final AbraFile file = createFile(project, "func Trit f(Trit a){b="+name+"[1,1]\nreturn b}");
         return ((AbraFuncStmt)file.getFirstChild()).getFuncBody().getAssignExprList().get(0).getCondExpr().getMergeExprList().get(0).getConcatExprList().get(0).getPostfixExprList().get(0).getLutExpr().getLutNameRef();
     }
 
     public static AbraFieldNameRef createAbraFieldNameReference(Project project, String name) {
-        final AbraFile file = createFile(project, "func [1] f(a [1]){return f(p."+name+")}");
+        final AbraFile file = createFile(project, "func Trit f(Trit a){return f(p."+name+")}");
         return ((AbraFuncStmt)file.getFirstChild()).getFuncBody().getReturnExpr().getCondExpr().getMergeExprList().get(0)
                 .getConcatExprList().get(0).getPostfixExprList().get(0).
                         getSliceExpr().getFieldNameRefList().get(0);
