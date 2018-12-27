@@ -12,7 +12,6 @@ import org.abra.language.psi.*;
 import org.abra.language.psi.impl.*;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class ReferenceValidatorAnnotator implements Annotator {

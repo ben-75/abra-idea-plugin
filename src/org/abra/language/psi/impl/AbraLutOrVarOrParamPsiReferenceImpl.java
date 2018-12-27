@@ -12,7 +12,6 @@ import org.abra.language.psi.*;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class AbraLutOrVarOrParamPsiReferenceImpl extends PsiReferenceBase implements PsiReference {
@@ -65,12 +64,10 @@ public class AbraLutOrVarOrParamPsiReferenceImpl extends PsiReferenceBase implem
             funcBody = funcBody.getParent();
         }
         //look in local vars
-        if(((AbraFuncBody)funcBody).getAssignExprList()!=null) {
-            for (AbraAssignExpr assignExpr : ((AbraFuncBody) funcBody).getAssignExprList()){
-                if(assignExpr.equals(myExpression))break;
-                if(assignExpr.getVarName().getText().equals(myElement.getText())){
-                    return assignExpr.getVarName();
-                }
+        for (AbraAssignExpr assignExpr : ((AbraFuncBody) funcBody).getAssignExprList()){
+            if(assignExpr.equals(myExpression))break;
+            if(assignExpr.getVarName().getText().equals(myElement.getText())){
+                return assignExpr.getVarName();
             }
         }
 

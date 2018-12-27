@@ -4,11 +4,8 @@ import com.intellij.notification.Notification;
 import com.intellij.notification.NotificationType;
 import com.intellij.openapi.components.PersistentStateComponent;
 import com.intellij.openapi.components.State;
-import com.intellij.openapi.components.Storage;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.vfs.*;
-import com.intellij.util.xmlb.XmlSerializerUtil;
-import com.intellij.util.xmlb.annotations.Text;
 import org.abra.language.AbraFileType;
 import org.abra.language.psi.AbraFile;
 import org.jetbrains.annotations.NotNull;
@@ -50,6 +47,16 @@ public class QuplaModuleManagerImpl implements QuplaModuleManager, PersistentSta
     public synchronized Collection<AbraFile> getAllVisibleFiles(AbraFile file){
         checkValidity();
         return getAllVisibleFiles(findModule(file));
+    }
+
+    @Override
+    public synchronized Collection<AbraFile> getAllAbraFiles(){
+        checkValidity();
+        ArrayList<AbraFile> resp = new ArrayList<>();
+        for(QuplaModule module:modules.values()){
+            resp.addAll(module.getModuleFiles());
+        }
+        return resp;
     }
 
     @Override

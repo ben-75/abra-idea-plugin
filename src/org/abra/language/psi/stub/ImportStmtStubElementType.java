@@ -9,7 +9,6 @@ import com.intellij.util.CharTable;
 import org.abra.language.AbraLanguage;
 import org.abra.language.psi.AbraImportStmt;
 import org.abra.language.psi.AbraTypes;
-import org.abra.language.psi.impl.AbraImportStmtImpl;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.IOException;

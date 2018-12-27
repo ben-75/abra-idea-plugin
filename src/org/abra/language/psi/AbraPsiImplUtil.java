@@ -128,7 +128,7 @@ public class AbraPsiImplUtil {
 
     public static ItemPresentation getPresentation(AbraTypeName typeName) {
         return new ColoredItemPresentation() {
-            @Nullable
+            @NotNull
             @Override
             public TextAttributesKey getTextAttributesKey() {
                 return QuplaSyntaxHighlighter.ABRA_TYPE_DECLARATION;
@@ -1134,7 +1134,6 @@ public class AbraPsiImplUtil {
             if (resp == null) {
                 resp = new ArrayList<>();
                 PsiReference[] importedFiles = AbraPsiImplUtil.getReferences(importStmt);
-                ;//importStmt.getReferences();
                 for (PsiReference psiRef : importedFiles) {
                     AbraFile anAbraFile = (AbraFile) psiRef.resolve();
                     if (anAbraFile != null) {
@@ -1470,26 +1469,16 @@ public class AbraPsiImplUtil {
 
     public static List<AbraFuncStmt> findAllFuncStmt(Project project, String name){
         ArrayList<AbraFuncStmt> resp = new ArrayList<>();
-        Collection<VirtualFile> virtualFiles =FileBasedIndex.getInstance().getContainingFiles(
-                FileTypeIndex.NAME, AbraFileType.INSTANCE, GlobalSearchScope.allScope(project));
-        for (VirtualFile virtualFile : virtualFiles) {
-            AbraFile abraFile = (AbraFile) PsiManager.getInstance(project).findFile(virtualFile);
-            if (abraFile != null) {
-                resp.addAll(abraFile.findAllFuncStmt(name));
-            }
+        for(AbraFile abraFile:project.getComponent(QuplaModuleManager.class).getAllAbraFiles()){
+            resp.addAll(abraFile.findAllFuncStmt(name));
         }
         return resp;
     }
 
     public static List<AbraFuncNameRef> findAllFuncNameRef(Project project, String name){
         ArrayList<AbraFuncNameRef> resp = new ArrayList<>();
-        Collection<VirtualFile> virtualFiles =FileBasedIndex.getInstance().getContainingFiles(
-                FileTypeIndex.NAME, AbraFileType.INSTANCE, GlobalSearchScope.allScope(project));
-        for (VirtualFile virtualFile : virtualFiles) {
-            AbraFile abraFile = (AbraFile) PsiManager.getInstance(project).findFile(virtualFile);
-            if (abraFile != null) {
-                resp.addAll(abraFile.findAllFuncNameRef(name));
-            }
+        for(AbraFile abraFile:project.getComponent(QuplaModuleManager.class).getAllAbraFiles()){
+            resp.addAll(abraFile.findAllFuncNameRef(name));
         }
         return resp;
     }
@@ -1497,13 +1486,8 @@ public class AbraPsiImplUtil {
     public static List<AbraFuncName> findAllFuncName(Project project, String name, List<AbraFile> files) {
         ArrayList<AbraFuncName> resp = new ArrayList<>();
         if (files == null) {
-            Collection<VirtualFile> virtualFiles = FileBasedIndex.getInstance().getContainingFiles(
-                    FileTypeIndex.NAME, AbraFileType.INSTANCE, GlobalSearchScope.allScope(project));
-            for (VirtualFile virtualFile : virtualFiles) {
-                AbraFile abraFile = (AbraFile) PsiManager.getInstance(project).findFile(virtualFile);
-                if (abraFile != null) {
-                    resp.addAll(abraFile.findAllFuncName(name));
-                }
+            for(AbraFile abraFile:project.getComponent(QuplaModuleManager.class).getAllAbraFiles()){
+                resp.addAll(abraFile.findAllFuncName(name));
             }
         } else {
             for (AbraFile f : files) {
@@ -1516,20 +1500,15 @@ public class AbraPsiImplUtil {
     public static List<AbraTypeName> findAllTypeName(Project project, String name, List<AbraFile> files) {
         ArrayList<AbraTypeName> resp = new ArrayList<>();
         if (files == null) {
-            Collection<VirtualFile> virtualFiles = FileBasedIndex.getInstance().getContainingFiles(
-                    FileTypeIndex.NAME, AbraFileType.INSTANCE, GlobalSearchScope.allScope(project));
-            for (VirtualFile virtualFile : virtualFiles) {
-                AbraFile abraFile = (AbraFile) PsiManager.getInstance(project).findFile(virtualFile);
-                if (abraFile != null) {
-                    resp.addAll(abraFile.findAllTypeName(name));
-                }
+            for(AbraFile abraFile:project.getComponent(QuplaModuleManager.class).getAllAbraFiles()){
+                resp.addAll(abraFile.findAllTypeName(name));
             }
         } else {
             for (AbraFile f : files) {
                 resp.addAll(f.findAllTypeName(name));
             }
         }
-        return resp;
+       return resp;
     }
 
 

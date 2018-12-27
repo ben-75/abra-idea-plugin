@@ -12,7 +12,6 @@ import org.abra.language.psi.*;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class AbraFieldPsiReferenceImpl   extends PsiReferenceBase implements PsiReference {

@@ -6,11 +6,8 @@ import com.intellij.codeInsight.completion.CompletionResultSet;
 import com.intellij.codeInsight.lookup.LookupElementBuilder;
 import com.intellij.psi.PsiElement;
 import com.intellij.util.ProcessingContext;
-import org.abra.language.module.QuplaModuleManager;
 import org.abra.language.psi.AbraFile;
-import org.abra.language.psi.AbraPlaceHolderTypeName;
 import org.abra.language.psi.AbraTemplateStmt;
-import org.abra.language.psi.AbraTypeStmt;
 import org.jetbrains.annotations.NotNull;
 
 public class QuplaKeywordCompletionProvider extends CompletionProvider<CompletionParameters> {

@@ -3,7 +3,6 @@ package org.abra.language.psi.impl;
 import com.intellij.extapi.psi.ASTWrapperPsiElement;
 import com.intellij.lang.ASTNode;
 import com.intellij.psi.PsiReference;
-import org.abra.language.psi.AbraFile;
 import org.abra.language.psi.AbraImportStmt;
 import org.abra.language.psi.AbraPsiImplUtil;
 import org.jetbrains.annotations.NotNull;

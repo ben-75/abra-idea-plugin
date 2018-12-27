@@ -1,10 +1,8 @@
 package org.abra.language.module;
 
-import com.intellij.openapi.components.PersistentStateComponent;
 import org.abra.language.psi.AbraFile;
 
 import java.util.Collection;
-import java.util.Set;
 
 public interface QuplaModuleManager {
 
@@ -20,4 +18,6 @@ public interface QuplaModuleManager {
     void invalidate();
 
     QuplaModule getModule(String name);
+
+    Collection<AbraFile> getAllAbraFiles();
 }
