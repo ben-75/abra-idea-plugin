@@ -29,12 +29,12 @@ public class QuplaInterpreterSettingsEditor extends SettingsEditor<QuplaInterpre
         myPanel.modules.setModel(getModulesModel(runConfig.getProject()));
         if(runConfig.getTargetModule()!=null){
             for(int i = 0; i< myPanel.modules.getModel().getSize(); i++){
-                if(((AbraFileComboBoxItem) myPanel.modules.getModel().getElementAt(i)).getAbraFile().isEquivalentTo(runConfig.getTargetModule())){
+                if(((QuplaFileComboBoxItem) myPanel.modules.getModel().getElementAt(i)).getQuplaFile().isEquivalentTo(runConfig.getTargetModule())){
                     myPanel.modules.setSelectedIndex(i);
-                    myPanel.functionsInSelectedModule.setModel(getFunctionsModel(((AbraFileComboBoxItem) myPanel.modules.getModel().getElementAt(i)).getAbraFile()));
+                    myPanel.functionsInSelectedModule.setModel(getFunctionsModel(((QuplaFileComboBoxItem) myPanel.modules.getModel().getElementAt(i)).getQuplaFile()));
                     if(runConfig.getTargetFunc()!=null){
                         for(int j = 0; j< myPanel.functionsInSelectedModule.getModel().getSize(); j++){
-                            if(((AbraFuncStmtComboBoxItem) myPanel.functionsInSelectedModule.getModel().getElementAt(j)).getFuncStmt().isEquivalentTo(runConfig.getTargetFunc())){
+                            if(((QuplaFuncStmtComboBoxItem) myPanel.functionsInSelectedModule.getModel().getElementAt(j)).getFuncStmt().isEquivalentTo(runConfig.getTargetFunc())){
                                 myPanel.functionsInSelectedModule.setSelectedIndex(j);
                                 if(runConfig.getTargetFunc().isInTemplate()) {
                                     myPanel.targetTypeInstantiation.setModel(getTypeInstanciationListModel(runConfig.getTargetFunc()));
@@ -44,7 +44,7 @@ public class QuplaInterpreterSettingsEditor extends SettingsEditor<QuplaInterpre
                                     myPanel.targetTypeInstantiation.setVisible(true);
                                     if (runConfig.getTargetTypeInstantiation() != null) {
                                         for (int k = 0; k < myPanel.targetTypeInstantiation.getModel().getSize(); k++) {
-                                            if (((AbraTypeInstComboBoxItem) myPanel.targetTypeInstantiation.getModel().getElementAt(k)).getTypeInstantiation().isEquivalentTo(runConfig.getTargetTypeInstantiation())) {
+                                            if (((QuplaTypeInstComboBoxItem) myPanel.targetTypeInstantiation.getModel().getElementAt(k)).getTypeInstantiation().isEquivalentTo(runConfig.getTargetTypeInstantiation())) {
                                                 myPanel.targetTypeInstantiation.setSelectedIndex(k);
                                                 myPanel.typeInstLabel.setVisible(true);
                                                 myPanel.targetTypeInstantiation.setVisible(true);
@@ -94,11 +94,11 @@ public class QuplaInterpreterSettingsEditor extends SettingsEditor<QuplaInterpre
     @Override
     protected void applyEditorTo(@NotNull QuplaInterpreterRunConfiguration runCongig) throws ConfigurationException {
         if(myPanel.modules.getSelectedItem()!=null) {
-            runCongig.setTargetModule(((AbraFileComboBoxItem) myPanel.modules.getSelectedItem()).getAbraFile());
+            runCongig.setTargetModule(((QuplaFileComboBoxItem) myPanel.modules.getSelectedItem()).getQuplaFile());
             if (myPanel.functionsInSelectedModule.getSelectedItem() != null) {
-                runCongig.setTargetFunc(((AbraFuncStmtComboBoxItem) myPanel.functionsInSelectedModule.getSelectedItem()).getFuncStmt());
+                runCongig.setTargetFunc(((QuplaFuncStmtComboBoxItem) myPanel.functionsInSelectedModule.getSelectedItem()).getFuncStmt());
                 if(myPanel.targetTypeInstantiation.getSelectedItem()!=null){
-                    runCongig.setTargetTypeInstantiation(((AbraTypeInstComboBoxItem)myPanel.targetTypeInstantiation.getSelectedItem()).getTypeInstantiation());
+                    runCongig.setTargetTypeInstantiation(((QuplaTypeInstComboBoxItem)myPanel.targetTypeInstantiation.getSelectedItem()).getTypeInstantiation());
                 }else{
                     runCongig.setTargetTypeInstantiation(null);
                 }
@@ -132,11 +132,11 @@ public class QuplaInterpreterSettingsEditor extends SettingsEditor<QuplaInterpre
             @Override
             public void actionPerformed(ActionEvent e) {
                 if(myPanel.modules.getSelectedItem()!=null) {
-                    myPanel.functionsInSelectedModule.setModel(getFunctionsModel(((AbraFileComboBoxItem) myPanel.modules.getSelectedItem()).getAbraFile()));
+                    myPanel.functionsInSelectedModule.setModel(getFunctionsModel(((QuplaFileComboBoxItem) myPanel.modules.getSelectedItem()).getQuplaFile()));
                     myPanel.functionsInSelectedModule.setEnabled(true);
                     myPanel.functionsInSelectedModule.setSelectedItem(null);
                 }else{
-                    myPanel.functionsInSelectedModule.setModel(new ListComboBoxModel(new ArrayList<AbraFileComboBoxItem>()));
+                    myPanel.functionsInSelectedModule.setModel(new ListComboBoxModel(new ArrayList<QuplaFileComboBoxItem>()));
                     myPanel.functionsInSelectedModule.setEnabled(false);
                     myPanel.typeInstLabel.setVisible(false);
                     myPanel.targetTypeInstantiation.setVisible(false);
@@ -147,7 +147,7 @@ public class QuplaInterpreterSettingsEditor extends SettingsEditor<QuplaInterpre
             @Override
             public void actionPerformed(ActionEvent e) {
                 if(myPanel.functionsInSelectedModule.getSelectedItem()!=null) {
-                    AbraFuncStmt funcStmt = ((AbraFuncStmtComboBoxItem)myPanel.functionsInSelectedModule.getSelectedItem()).getFuncStmt();
+                    QuplaFuncStmt funcStmt = ((QuplaFuncStmtComboBoxItem)myPanel.functionsInSelectedModule.getSelectedItem()).getFuncStmt();
                     if(funcStmt.isInTemplate()){
                         myPanel.targetTypeInstantiation.setModel(getTypeInstanciationListModel(funcStmt));
                         myPanel.targetTypeInstantiation.setSelectedItem(null);
@@ -182,16 +182,16 @@ public class QuplaInterpreterSettingsEditor extends SettingsEditor<QuplaInterpre
                     clearFuncParameters();
                 }else{
                     List<String> previousArgs = clearFuncParameters();
-                    makeFuncParameters(((AbraFuncStmtComboBoxItem)myPanel.functionsInSelectedModule.getSelectedItem()).getFuncStmt(),previousArgs);
+                    makeFuncParameters(((QuplaFuncStmtComboBoxItem)myPanel.functionsInSelectedModule.getSelectedItem()).getFuncStmt(),previousArgs);
                 }
             }
         });
         return myPanel.rootConfigPane;
     }
 
-    private void makeFuncParameters(AbraFuncStmt funcStmt, List<String> args){
+    private void makeFuncParameters(QuplaFuncStmt funcStmt, List<String> args){
         int i=0;
-        for(AbraFuncParameter funcParameter:funcStmt.getFuncSignature().getFuncParameterList()){
+        for(QuplaFuncParameter funcParameter:funcStmt.getFuncSignature().getFuncParameterList()){
             InputTritPanel inputTritPanel = new InputTritPanel(funcParameter,300, myPanel.targetTypeInstantiation);
             myPanel.argsContainer.add(inputTritPanel);
             if(args!=null && args.size()>=i+1 && args.get(i)!=null){
@@ -219,87 +219,87 @@ public class QuplaInterpreterSettingsEditor extends SettingsEditor<QuplaInterpre
     private static ComboBoxModel getModulesModel(Project project){
         QuplaModuleManager quplaModuleManager = project.getComponent(QuplaModuleManager.class);
         Collection<QuplaModule> modules = quplaModuleManager.allModules();
-        List<AbraFileComboBoxItem> abraFiles = new ArrayList<>();
+        List<QuplaFileComboBoxItem> abraFiles = new ArrayList<>();
         for(QuplaModule module:modules){
-            for(AbraFile f:module.getModuleFiles())
-                abraFiles.add(new AbraFileComboBoxItem(f));
+            for(QuplaFile f:module.getModuleFiles())
+                abraFiles.add(new QuplaFileComboBoxItem(f));
         }
-        abraFiles.sort(new Comparator<AbraFileComboBoxItem>() {
+        abraFiles.sort(new Comparator<QuplaFileComboBoxItem>() {
             @Override
-            public int compare(AbraFileComboBoxItem o1, AbraFileComboBoxItem o2) {
+            public int compare(QuplaFileComboBoxItem o1, QuplaFileComboBoxItem o2) {
                 return o1.toString().compareTo(o2.toString());
             }
         });
         return new ListComboBoxModel(abraFiles);
     }
 
-    private static ComboBoxModel getFunctionsModel(AbraFile abraModule){
+    private static ComboBoxModel getFunctionsModel(QuplaFile abraModule){
         if(abraModule==null)return new ListComboBoxModel(new ArrayList());
-        List<AbraFuncStmtComboBoxItem> model = new ArrayList<>();
-        for(AbraFuncStmt f:abraModule.findAllFuncStmt()){
-            model.add(new AbraFuncStmtComboBoxItem(f));
+        List<QuplaFuncStmtComboBoxItem> model = new ArrayList<>();
+        for(QuplaFuncStmt f:abraModule.findAllFuncStmt()){
+            model.add(new QuplaFuncStmtComboBoxItem(f));
         }
         return new ListComboBoxModel(model);
     }
 
-    private static ComboBoxModel getTypeInstanciationListModel(AbraFuncStmt funcStmt){
+    private static ComboBoxModel getTypeInstanciationListModel(QuplaFuncStmt funcStmt){
         if(funcStmt==null)return new ListComboBoxModel(new ArrayList());
-        List<AbraTypeInstComboBoxItem> model = new ArrayList<>();
-        for(AbraTypeInstantiation inst:funcStmt.getAllTypeInstantiation()){
-            model.add(new AbraTypeInstComboBoxItem(inst));
+        List<QuplaTypeInstComboBoxItem> model = new ArrayList<>();
+        for(QuplaTypeInstantiation inst:funcStmt.getAllTypeInstantiation()){
+            model.add(new QuplaTypeInstComboBoxItem(inst));
         }
         return new ListComboBoxModel(model);
     }
-    public static class AbraFileComboBoxItem{
-        private final AbraFile abraFile;
+    public static class QuplaFileComboBoxItem {
+        private final QuplaFile quplaFile;
 
-        public AbraFileComboBoxItem(AbraFile abraFile) {
-            this.abraFile = abraFile;
+        public QuplaFileComboBoxItem(QuplaFile quplaFile) {
+            this.quplaFile = quplaFile;
         }
 
         @Override
         public String toString() {
-            return abraFile.getImportableFilePath();
+            return quplaFile.getImportableFilePath();
         }
 
-        public AbraFile getAbraFile() {
-            return abraFile;
+        public QuplaFile getQuplaFile() {
+            return quplaFile;
         }
     }
 
-    public static class AbraFuncStmtComboBoxItem{
-        private final AbraFuncStmt abraFuncStmt;
+    public static class QuplaFuncStmtComboBoxItem {
+        private final QuplaFuncStmt abraFuncStmt;
 
-        public AbraFuncStmtComboBoxItem(AbraFuncStmt abraFuncStmt) {
+        public QuplaFuncStmtComboBoxItem(QuplaFuncStmt abraFuncStmt) {
             this.abraFuncStmt = abraFuncStmt;
         }
 
         @Override
         public String toString() {
             return abraFuncStmt.getFuncSignature().getText()+
-                    (abraFuncStmt.getParent() instanceof AbraTemplateStmt ?
-                            (" (from template "+((AbraTemplateStmt)abraFuncStmt.getParent()).getTemplateName().getText()+")"):"");
+                    (abraFuncStmt.getParent() instanceof QuplaTemplateStmt ?
+                            (" (from template "+((QuplaTemplateStmt)abraFuncStmt.getParent()).getTemplateName().getText()+")"):"");
         }
 
-        public AbraFuncStmt getFuncStmt() {
+        public QuplaFuncStmt getFuncStmt() {
             return abraFuncStmt;
         }
     }
 
-    public static class AbraTypeInstComboBoxItem{
-        private final AbraTypeInstantiation typeInstantiation;
+    public static class QuplaTypeInstComboBoxItem {
+        private final QuplaTypeInstantiation typeInstantiation;
 
-        public AbraTypeInstComboBoxItem(AbraTypeInstantiation typeInstantiation) {
+        public QuplaTypeInstComboBoxItem(QuplaTypeInstantiation typeInstantiation) {
             this.typeInstantiation = typeInstantiation;
         }
 
         @Override
         public String toString() {
             StringBuilder sb = new StringBuilder("<");
-            for(AbraTypeNameRef typeNameRef:typeInstantiation.getTypeNameRefList()){
-                AbraTypeName typeName = (AbraTypeName) typeNameRef.getReference().resolve();
+            for(QuplaTypeNameRef typeNameRef:typeInstantiation.getTypeNameRefList()){
+                QuplaTypeName typeName = (QuplaTypeName) typeNameRef.getReference().resolve();
                 if(typeName!=null){
-                    sb.append(AbraPsiImplUtil.getResolvedSize((AbraTypeStmt)typeName.getParent()));
+                    sb.append(QuplaPsiImplUtil.getResolvedSize((QuplaTypeStmt)typeName.getParent()));
                 }else {
                     sb.append("?");
                 }
@@ -310,7 +310,7 @@ public class QuplaInterpreterSettingsEditor extends SettingsEditor<QuplaInterpre
             return typeInstantiation.getText()+" ("+s+" trits)";
         }
 
-        public AbraTypeInstantiation getTypeInstantiation() {
+        public QuplaTypeInstantiation getTypeInstantiation() {
             return typeInstantiation;
         }
     }

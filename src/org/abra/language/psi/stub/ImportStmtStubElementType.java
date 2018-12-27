@@ -6,27 +6,27 @@ import com.intellij.lang.LighterASTTokenNode;
 import com.intellij.psi.impl.source.tree.LightTreeUtil;
 import com.intellij.psi.stubs.*;
 import com.intellij.util.CharTable;
-import org.abra.language.AbraLanguage;
-import org.abra.language.psi.AbraImportStmt;
-import org.abra.language.psi.AbraTypes;
+import org.abra.language.QuplaLanguage;
+import org.abra.language.psi.QuplaImportStmt;
+import org.abra.language.psi.QuplaTypes;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.IOException;
 
-public class ImportStmtStubElementType  extends ILightStubElementType<ImportStmtStub, AbraImportStmt> {
+public class ImportStmtStubElementType  extends ILightStubElementType<ImportStmtStub, QuplaImportStmt> {
     ImportStmtStubElementType() {
-        super("IMPORT", AbraLanguage.INSTANCE);
+        super("IMPORT", QuplaLanguage.INSTANCE);
     }
 
     @Override
-    public AbraImportStmt createPsi(@NotNull final ImportStmtStub stub) {
-        return null;//new AbraImportStmtImpl(stub, this);
-//        return new AbraImportStmtImpl(stub, this);
+    public QuplaImportStmt createPsi(@NotNull final ImportStmtStub stub) {
+        return null;//new QuplaImportStmtImpl(stub, this);
+//        return new QuplaImportStmtImpl(stub, this);
     }
 
     @Override
     @NotNull
-    public ImportStmtStub createStub(@NotNull final AbraImportStmt psi, final StubElement parentStub) {
+    public ImportStmtStub createStub(@NotNull final QuplaImportStmt psi, final StubElement parentStub) {
         return new ImportStmtStubImpl(parentStub, psi.getFilePath());
     }
 
@@ -54,7 +54,7 @@ public class ImportStmtStubElementType  extends ILightStubElementType<ImportStmt
     @NotNull
     @Override
     public ImportStmtStub createStub(@NotNull LighterAST tree, @NotNull LighterASTNode node, @NotNull StubElement parentStub) {
-        LighterASTNode keyNode = LightTreeUtil.firstChildOfType(tree, node, AbraTypes.IDENTIFIER);
+        LighterASTNode keyNode = LightTreeUtil.firstChildOfType(tree, node, QuplaTypes.IDENTIFIER);
         String key = intern(tree.getCharTable(), keyNode);
         return new ImportStmtStubImpl(parentStub, key);
     }

@@ -21,10 +21,10 @@ public class InputTritPanel extends JPanel implements DocumentListener {
     JPanel otherFormats;
     private static Font SMALL_FONT = new Font(JBFont.MONOSPACED, Font.PLAIN, 11);
     int charWidth;
-    AbraFuncParameter param;
+    QuplaFuncParameter param;
     private TRIT[] trits;
     private JComboBox targetTypeInst;
-    public InputTritPanel(AbraFuncParameter param, int preferredWidth, JComboBox targetTypeInst){
+    public InputTritPanel(QuplaFuncParameter param, int preferredWidth, JComboBox targetTypeInst){
         super(new VerticalFlowLayout(VerticalFlowLayout.TOP,5,1,true,false));
         this.param = param;
         this.targetTypeInst = targetTypeInst;
@@ -111,11 +111,11 @@ public class InputTritPanel extends JPanel implements DocumentListener {
                 } else if (formats[0] == TritUtils.DATA_FORMAT.FLOAT_FMT) {
                     int manSize = 9;
                     int expSize = 3;
-                    if(targetTypeInst!=null && targetTypeInst.getSelectedItem() instanceof QuplaInterpreterSettingsEditor.AbraTypeInstComboBoxItem){
-                        AbraTypeInstantiation typeInstantiation = ((QuplaInterpreterSettingsEditor.AbraTypeInstComboBoxItem)targetTypeInst.getSelectedItem()).getTypeInstantiation();
+                    if(targetTypeInst!=null && targetTypeInst.getSelectedItem() instanceof QuplaInterpreterSettingsEditor.QuplaTypeInstComboBoxItem){
+                        QuplaTypeInstantiation typeInstantiation = ((QuplaInterpreterSettingsEditor.QuplaTypeInstComboBoxItem)targetTypeInst.getSelectedItem()).getTypeInstantiation();
                         if(typeInstantiation.getTypeNameRefList().size()==2){
-                            manSize = (AbraPsiImplUtil.getResolvedSize((AbraTypeStmt) typeInstantiation.getTypeNameRefList().get(0).getReference().resolve().getParent()));
-                            expSize = (AbraPsiImplUtil.getResolvedSize((AbraTypeStmt) typeInstantiation.getTypeNameRefList().get(1).getReference().resolve().getParent()));
+                            manSize = (QuplaPsiImplUtil.getResolvedSize((QuplaTypeStmt) typeInstantiation.getTypeNameRefList().get(0).getReference().resolve().getParent()));
+                            expSize = (QuplaPsiImplUtil.getResolvedSize((QuplaTypeStmt) typeInstantiation.getTypeNameRefList().get(1).getReference().resolve().getParent()));
                         }
                     }
                     trits = TritUtils.floatToTrits(new BigDecimal(s),manSize, expSize);

@@ -5,18 +5,18 @@ import com.intellij.psi.tree.IElementType;
 
 import static com.intellij.psi.TokenType.BAD_CHARACTER;
 import static com.intellij.psi.TokenType.WHITE_SPACE;
-import static org.abra.language.psi.AbraTypes.*;
+import static org.abra.language.psi.QuplaTypes.*;
 
 %%
 
 %{
-  public AbraLexer() {
+  public QuplaLexer() {
     this((java.io.Reader)null);
   }
 %}
 
 %public
-%class AbraLexer
+%class QuplaLexer
 %implements FlexLexer
 %function advance
 %type IElementType

@@ -3,12 +3,12 @@ package org.abra.language.psi.impl;
 import com.intellij.extapi.psi.ASTWrapperPsiElement;
 import com.intellij.lang.ASTNode;
 import com.intellij.psi.PsiReference;
-import org.abra.language.psi.AbraImportStmt;
-import org.abra.language.psi.AbraPsiImplUtil;
+import org.abra.language.psi.QuplaImportStmt;
+import org.abra.language.psi.QuplaPsiImplUtil;
 import org.jetbrains.annotations.NotNull;
 
 @Deprecated
-public abstract class ReferencesCache extends ASTWrapperPsiElement implements AbraImportStmt {
+public abstract class ReferencesCache extends ASTWrapperPsiElement implements QuplaImportStmt {
 
     public ReferencesCache(@NotNull ASTNode node) {
         super(node);
@@ -20,11 +20,11 @@ public abstract class ReferencesCache extends ASTWrapperPsiElement implements Ab
     public PsiReference[] getReferences() {
         if(references==null) {
             synchronized (stateLock){
-                references = AbraPsiImplUtil.getReferences(this);
+                references = QuplaPsiImplUtil.getReferences(this);
             }
         }
         return references;
-//    return AbraPsiImplUtil.getReferences(this);
+//    return QuplaPsiImplUtil.getReferences(this);
     }
 
 

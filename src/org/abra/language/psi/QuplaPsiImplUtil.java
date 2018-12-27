@@ -14,12 +14,9 @@ import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiManager;
 import com.intellij.psi.PsiReference;
-import com.intellij.psi.search.FileTypeIndex;
-import com.intellij.psi.search.GlobalSearchScope;
 import com.intellij.psi.tree.TokenSet;
-import com.intellij.util.indexing.FileBasedIndex;
 import org.abra.ide.ui.QuplaIcons;
-import org.abra.language.AbraFileType;
+import org.abra.language.QuplaFileType;
 import org.abra.language.UnresolvableTokenException;
 import org.abra.language.module.QuplaModuleManager;
 import org.abra.language.psi.impl.*;
@@ -31,16 +28,16 @@ import javax.swing.*;
 import java.io.File;
 import java.util.*;
 
-public class AbraPsiImplUtil {
+public class QuplaPsiImplUtil {
 
 
     //====================================================================
-    //====================== AbraTypeStmt ================================
+    //====================== QuplaTypeStmt ================================
     //====================================================================
 
 
     @NotNull
-    public static ItemPresentation getPresentation(AbraTypeStmt element) {
+    public static ItemPresentation getPresentation(QuplaTypeStmt element) {
         return new ItemPresentation() {
             @NotNull
             @Override
@@ -75,28 +72,28 @@ public class AbraPsiImplUtil {
         };
     }
 
-    public static String getName(AbraTypeStmt element) {
+    public static String getName(QuplaTypeStmt element) {
         return element.getTypeName().getText();
     }
 
-    public static PsiElement setName(AbraTypeStmt element, String newName) {
+    public static PsiElement setName(QuplaTypeStmt element, String newName) {
         ASTNode globalIdNode = element.getTypeName().getNode();
         if (globalIdNode != null) {
-            AbraTypeName typeName = AbraElementFactory.createAbraTypeName(element.getProject(), newName);
+            QuplaTypeName typeName = QuplaElementFactory.createAbraTypeName(element.getProject(), newName);
             ASTNode newKeyNode = typeName.getFirstChild().getNode();
             element.getNode().replaceChild(globalIdNode, newKeyNode);
         }
         return element;
     }
 
-    public static PsiElement getNameIdentifier(AbraTypeStmt element) {
+    public static PsiElement getNameIdentifier(QuplaTypeStmt element) {
         return element.getTypeName();
     }
 
-    public static int getResolvedSize(AbraTypeStmt element){
+    public static int getResolvedSize(QuplaTypeStmt element){
         if(element.getFieldSpecList().size()>0) {
             int resolvedSize = 0;
-            for(AbraFieldSpec fieldSpec:element.getFieldSpecList()){
+            for(QuplaFieldSpec fieldSpec:element.getFieldSpecList()){
                 resolvedSize = resolvedSize + fieldSpec.getResolvedSize();
             }
             return resolvedSize;
@@ -104,29 +101,29 @@ public class AbraPsiImplUtil {
         return element.getTypeSize().getResolvedSize();
     }
 
-    public static String getName(AbraTypeName element) {
+    public static String getName(QuplaTypeName element) {
         return element.getText();
     }
 
-    public static PsiElement setName(AbraTypeName element, String newName) {
+    public static PsiElement setName(QuplaTypeName element, String newName) {
         ASTNode globalIdNode = element.getNode().getFirstChildNode();
         if (globalIdNode != null) {
-            AbraTypeName typeName = AbraElementFactory.createAbraTypeName(element.getProject(), newName);
+            QuplaTypeName typeName = QuplaElementFactory.createAbraTypeName(element.getProject(), newName);
             ASTNode newKeyNode = typeName.getFirstChild().getNode();
             element.getNode().replaceChild(globalIdNode, newKeyNode);
         }
         return element;
     }
 
-    public static PsiElement getNameIdentifier(AbraTypeName element) {
+    public static PsiElement getNameIdentifier(QuplaTypeName element) {
         return element;
     }
 
-    public static int getResolvedSize(AbraTypeName element){
-        return ((AbraTypeStmt)element.getParent()).getResolvedSize();
+    public static int getResolvedSize(QuplaTypeName element){
+        return ((QuplaTypeStmt)element.getParent()).getResolvedSize();
     }
 
-    public static ItemPresentation getPresentation(AbraTypeName typeName) {
+    public static ItemPresentation getPresentation(QuplaTypeName typeName) {
         return new ColoredItemPresentation() {
             @NotNull
             @Override
@@ -143,7 +140,7 @@ public class AbraPsiImplUtil {
             @Nullable
             @Override
             public String getLocationString() {
-                return ((AbraTypeStmt) typeName.getParent()).getPresentation().getLocationString();
+                return ((QuplaTypeStmt) typeName.getParent()).getPresentation().getLocationString();
             }
 
             @Nullable
@@ -155,7 +152,7 @@ public class AbraPsiImplUtil {
     }
 
 
-    public static ItemPresentation getPresentation(AbraVarName varName) {
+    public static ItemPresentation getPresentation(QuplaVarName varName) {
         return new ColoredItemPresentation() {
             @Nullable
             @Override
@@ -185,7 +182,7 @@ public class AbraPsiImplUtil {
 
 
 
-    public static ItemPresentation getPresentation(AbraParamName paramName) {
+    public static ItemPresentation getPresentation(QuplaParamName paramName) {
         return new ColoredItemPresentation() {
             @Nullable
             @Override
@@ -214,11 +211,11 @@ public class AbraPsiImplUtil {
     }
 
     //====================================================================
-    //====================== AbraLutStmt =================================
+    //====================== QuplaLutStmt =================================
     //====================================================================
 
     @NotNull
-    public static ItemPresentation getPresentation(AbraLutStmt element) {
+    public static ItemPresentation getPresentation(QuplaLutStmt element) {
         return new ItemPresentation() {
             @NotNull
             @Override
@@ -241,43 +238,43 @@ public class AbraPsiImplUtil {
         };
     }
 
-    public static String getName(AbraLutStmt element) {
+    public static String getName(QuplaLutStmt element) {
         return element.getLutName().getText();
     }
 
-    public static PsiElement setName(AbraLutStmt element, String newName) {
+    public static PsiElement setName(QuplaLutStmt element, String newName) {
         ASTNode globalIdNode = element.getLutName().getNode();
         if (globalIdNode != null) {
-            AbraLutName lutName = AbraElementFactory.createAbraLutName(element.getProject(), newName);
+            QuplaLutName lutName = QuplaElementFactory.createAbraLutName(element.getProject(), newName);
             ASTNode newKeyNode = lutName.getFirstChild().getNode();
             element.getNode().replaceChild(globalIdNode, newKeyNode);
         }
         return element;
     }
 
-    public static PsiElement getNameIdentifier(AbraLutStmt element) {
+    public static PsiElement getNameIdentifier(QuplaLutStmt element) {
         return element.getLutName();
     }
 
-    public static String getName(AbraLutName element) {
+    public static String getName(QuplaLutName element) {
         return element.getText();
     }
 
-    public static PsiElement setName(AbraLutName element, String newName) {
+    public static PsiElement setName(QuplaLutName element, String newName) {
         ASTNode globalIdNode = element.getNode().getFirstChildNode();
         if (globalIdNode != null) {
-            AbraLutName lutName = AbraElementFactory.createAbraLutName(element.getProject(), newName);
+            QuplaLutName lutName = QuplaElementFactory.createAbraLutName(element.getProject(), newName);
             ASTNode newKeyNode = lutName.getFirstChild().getNode();
             element.getNode().replaceChild(globalIdNode, newKeyNode);
         }
         return element;
     }
 
-    public static PsiElement getNameIdentifier(AbraLutName element) {
+    public static PsiElement getNameIdentifier(QuplaLutName element) {
         return element;
     }
 
-    public static ItemPresentation getPresentation(AbraLutName lutName) {
+    public static ItemPresentation getPresentation(QuplaLutName lutName) {
         return new ColoredItemPresentation() {
             @Nullable
             @Override
@@ -294,7 +291,7 @@ public class AbraPsiImplUtil {
             @Nullable
             @Override
             public String getLocationString() {
-                return ((AbraLutStmt) lutName.getParent()).getPresentation().getLocationString();
+                return ((QuplaLutStmt) lutName.getParent()).getPresentation().getLocationString();
             }
 
             @Nullable
@@ -305,11 +302,11 @@ public class AbraPsiImplUtil {
         };
     }
     //====================================================================
-    //====================== AbraFieldSpec ===============================
+    //====================== QuplaFieldSpec ===============================
     //====================================================================
 
     @NotNull
-    public static ItemPresentation getPresentation(AbraFieldSpec element) {
+    public static ItemPresentation getPresentation(QuplaFieldSpec element) {
         return new ItemPresentation() {
             @NotNull
             @Override
@@ -339,23 +336,23 @@ public class AbraPsiImplUtil {
         };
     }
 
-    public static int getResolvedSize(AbraFieldSpec fieldSpec){
+    public static int getResolvedSize(QuplaFieldSpec fieldSpec){
         return fieldSpec.getTypeSize().getResolvedSize();
     }
 
     //====================================================================
-    //====================== AbraFuncStmt ================================
+    //====================== QuplaFuncStmt ================================
     //====================================================================
 
-    public static int getResolvedSize(AbraTypeOrPlaceHolderNameRef typeOrPlaceHolderNameRef){
+    public static int getResolvedSize(QuplaTypeOrPlaceHolderNameRef typeOrPlaceHolderNameRef){
         PsiElement resolved = typeOrPlaceHolderNameRef.getReference().resolve();
-        if(resolved instanceof AbraTypeName){
-            return ((AbraTypeName)resolved).getResolvedSize();
+        if(resolved instanceof QuplaTypeName){
+            return ((QuplaTypeName)resolved).getResolvedSize();
         }
         return -1;
     }
     @NotNull
-    public static ItemPresentation getPresentation(AbraFuncStmt element) {
+    public static ItemPresentation getPresentation(QuplaFuncStmt element) {
         return new ItemPresentation() {
             @NotNull
             @Override
@@ -368,7 +365,7 @@ public class AbraPsiImplUtil {
             public String getLocationString() {
                 StringBuilder sb = new StringBuilder("( ");
                 int i=0;
-                for(AbraFuncParameter p:element.getFuncSignature().getFuncParameterList()){
+                for(QuplaFuncParameter p:element.getFuncSignature().getFuncParameterList()){
                     try{
                         int sz = p.getTypeOrPlaceHolderNameRef().getResolvedSize();
                         sb.append(sz<=0?p.getTypeOrPlaceHolderNameRef().getText():sz);
@@ -400,44 +397,44 @@ public class AbraPsiImplUtil {
         };
     }
 
-    public static String getName(AbraFuncStmt element) {
+    public static String getName(QuplaFuncStmt element) {
         return element.getFuncSignature().getFuncName().getText();
     }
 
-    public static PsiElement setName(AbraFuncStmt element, String newName) {
+    public static PsiElement setName(QuplaFuncStmt element, String newName) {
         ASTNode globalIdNode = element.getFuncSignature().getFuncName().getNode();
         if (globalIdNode != null) {
-            AbraFuncName funcName = AbraElementFactory.createAbraFuncName(element.getProject(), newName);
+            QuplaFuncName funcName = QuplaElementFactory.createAbraFuncName(element.getProject(), newName);
             ASTNode newKeyNode = funcName.getFirstChild().getNode();
             element.getNode().replaceChild(globalIdNode, newKeyNode);
         }
         return element;
     }
 
-    public static PsiElement getNameIdentifier(AbraFuncStmt element) {
+    public static PsiElement getNameIdentifier(QuplaFuncStmt element) {
         return element.getFuncSignature().getFuncName();
     }
 
-    public static String getName(AbraFuncName element) {
+    public static String getName(QuplaFuncName element) {
         return element.getText();
     }
 
-    public static PsiElement setName(AbraFuncName element, String newName) {
+    public static PsiElement setName(QuplaFuncName element, String newName) {
         ASTNode globalIdNode = element.getNode().getFirstChildNode();
         if (globalIdNode != null) {
-            AbraFuncName funcName = AbraElementFactory.createAbraFuncName(element.getProject(), newName);
+            QuplaFuncName funcName = QuplaElementFactory.createAbraFuncName(element.getProject(), newName);
             ASTNode newKeyNode = funcName.getFirstChild().getNode();
             element.getNode().replaceChild(globalIdNode, newKeyNode);
         }
         return element;
     }
 
-    public static PsiElement getNameIdentifier(AbraFuncName element) {
+    public static PsiElement getNameIdentifier(QuplaFuncName element) {
         return element;
     }
 
 
-    public static ItemPresentation getPresentation(AbraFuncName funcName) {
+    public static ItemPresentation getPresentation(QuplaFuncName funcName) {
 
         return new ColoredItemPresentation() {
             @Nullable
@@ -455,8 +452,8 @@ public class AbraPsiImplUtil {
             @Nullable
             @Override
             public String getLocationString() {
-                if (((AbraFuncStmt) funcName.getParent().getParent()).isInTemplate()) {
-                    return "(template: " + ((AbraTemplateStmt) ((AbraFuncStmt) funcName.getParent().getParent()).getParent()).getTemplateName().getText() + ")";
+                if (((QuplaFuncStmt) funcName.getParent().getParent()).isInTemplate()) {
+                    return "(template: " + ((QuplaTemplateStmt) ((QuplaFuncStmt) funcName.getParent().getParent()).getParent()).getTemplateName().getText() + ")";
                 }
                 return "";
             }
@@ -464,7 +461,7 @@ public class AbraPsiImplUtil {
             @Nullable
             @Override
             public Icon getIcon(boolean unused) {
-                if (((AbraFuncStmt) funcName.getParent().getParent()).isInTemplate()) {
+                if (((QuplaFuncStmt) funcName.getParent().getParent()).isInTemplate()) {
                     return QuplaIcons.TEMPLATE;
                 }
                 return QuplaIcons.FUNCTION;
@@ -472,21 +469,21 @@ public class AbraPsiImplUtil {
         };
     }
 
-    public static AbraDefinition getStatement(AbraFuncNameRef element){
+    public static QuplaDefinition getStatement(QuplaFuncNameRef element){
         PsiElement abraDefinition = element;
-        while(!(abraDefinition instanceof AbraDefinition))abraDefinition = abraDefinition.getParent();
-        return (AbraDefinition) abraDefinition;
+        while(!(abraDefinition instanceof QuplaDefinition))abraDefinition = abraDefinition.getParent();
+        return (QuplaDefinition) abraDefinition;
     }
 
-    public static boolean isInTemplate(AbraFuncStmt funcStmt){
-        return funcStmt.getParent() instanceof AbraTemplateStmt;
+    public static boolean isInTemplate(QuplaFuncStmt funcStmt){
+        return funcStmt.getParent() instanceof QuplaTemplateStmt;
     }
     //====================================================================
-    //====================== AbraTemplateStmt ============================
+    //====================== QuplaTemplateStmt ============================
     //====================================================================
 
     @NotNull
-    public static ItemPresentation getPresentation(AbraTemplateStmt element) {
+    public static ItemPresentation getPresentation(QuplaTemplateStmt element) {
         return new ItemPresentation() {
             @NotNull
             @Override
@@ -506,7 +503,7 @@ public class AbraPsiImplUtil {
             @Override
             public String getLocationString() {
 //                if(element.getFuncStmtList().size()==1) {
-//                    AbraFuncSignature sig = element.getFuncStmtList().get(0).getFuncSignature();
+//                    QuplaFuncSignature sig = element.getFuncStmtList().get(0).getFuncSignature();
 //                    return sig.getFuncName().getText()+"<"+
 //                            String.join(",",sig.getConstExprList().stream().map(expr->expr.getText()).collect(Collectors.toList()))
 //                            +">" + " -> " + sig.getTypeSize().getText();
@@ -522,49 +519,49 @@ public class AbraPsiImplUtil {
         };
     }
 
-    public static String getName(AbraTemplateStmt element) {
+    public static String getName(QuplaTemplateStmt element) {
         return element.getTemplateName().getText();
     }
 
-    public static PsiElement setName(AbraTemplateStmt element, String newName) {
+    public static PsiElement setName(QuplaTemplateStmt element, String newName) {
         ASTNode globalIdNode = element.getTemplateName().getNode();
         if (globalIdNode != null) {
-            AbraTemplateName templateName = AbraElementFactory.createAbraTemplateName(element.getProject(), newName);
+            QuplaTemplateName templateName = QuplaElementFactory.createAbraTemplateName(element.getProject(), newName);
             ASTNode newKeyNode = templateName.getFirstChild().getNode();
             element.getNode().replaceChild(globalIdNode, newKeyNode);
         }
         return element;
     }
 
-    public static PsiElement getNameIdentifier(AbraTemplateStmt element) {
+    public static PsiElement getNameIdentifier(QuplaTemplateStmt element) {
         return element.getTemplateName();
     }
 
 
-    public static String getName(AbraTemplateName element) {
+    public static String getName(QuplaTemplateName element) {
         return element.getText();
     }
 
-    public static PsiElement setName(AbraTemplateName element, String newName) {
+    public static PsiElement setName(QuplaTemplateName element, String newName) {
         ASTNode globalIdNode = element.getNode().getFirstChildNode();
         if (globalIdNode != null) {
-            AbraTemplateName templateName = AbraElementFactory.createAbraTemplateName(element.getProject(), newName);
+            QuplaTemplateName templateName = QuplaElementFactory.createAbraTemplateName(element.getProject(), newName);
             ASTNode newKeyNode = templateName.getFirstChild().getNode();
             element.getNode().replaceChild(globalIdNode, newKeyNode);
         }
         return element;
     }
 
-    public static PsiElement getNameIdentifier(AbraTemplateName element) {
+    public static PsiElement getNameIdentifier(QuplaTemplateName element) {
         return element;
     }
 
     //====================================================================
-    //====================== AbraUseStmt =================================
+    //====================== QuplaUseStmt =================================
     //====================================================================
 
     @NotNull
-    public static ItemPresentation getPresentation(AbraUseStmt element) {
+    public static ItemPresentation getPresentation(QuplaUseStmt element) {
         return new ItemPresentation() {
             @NotNull
             @Override
@@ -586,29 +583,29 @@ public class AbraPsiImplUtil {
         };
     }
 
-    public static String getName(AbraUseStmt element) {
+    public static String getName(QuplaUseStmt element) {
         return element.getTemplateNameRef().getText();
     }
 
-    public static PsiElement setName(AbraUseStmt element, String newName) {
+    public static PsiElement setName(QuplaUseStmt element, String newName) {
         ASTNode globalIdNode = element.getTemplateNameRef().getNode();
         if (globalIdNode != null) {
-            AbraFuncName funcName = AbraElementFactory.createAbraFuncName(element.getProject(), newName);
+            QuplaFuncName funcName = QuplaElementFactory.createAbraFuncName(element.getProject(), newName);
             ASTNode newKeyNode = funcName.getFirstChild().getNode();
             element.getNode().replaceChild(globalIdNode, newKeyNode);
         }
         return element;
     }
 
-    public static PsiElement getNameIdentifier(AbraUseStmt element) {
+    public static PsiElement getNameIdentifier(QuplaUseStmt element) {
         return element.getTemplateNameRef();
     }
 
-    public static Map<Integer, AbraTypeNameRef> getResolutionMap(AbraUseStmt element, int size){
-        HashMap<Integer, AbraTypeNameRef> map = new HashMap<>();
-        for(AbraTypeInstantiation typeInstantiation:element.getTypeInstantiationList()){
-            AbraTypeName typeName = (AbraTypeName) typeInstantiation.getTypeNameRefList().get(0).getReference().resolve();
-            if(((AbraTypeStmt)typeName.getParent()).getResolvedSize()==size) {
+    public static Map<Integer, QuplaTypeNameRef> getResolutionMap(QuplaUseStmt element, int size){
+        HashMap<Integer, QuplaTypeNameRef> map = new HashMap<>();
+        for(QuplaTypeInstantiation typeInstantiation:element.getTypeInstantiationList()){
+            QuplaTypeName typeName = (QuplaTypeName) typeInstantiation.getTypeNameRefList().get(0).getReference().resolve();
+            if(((QuplaTypeStmt)typeName.getParent()).getResolvedSize()==size) {
                 for(int i=0;i<typeInstantiation.getTypeNameRefList().size();i++){
                     map.put(i, typeInstantiation.getTypeNameRefList().get(i));
                     i++;
@@ -618,30 +615,30 @@ public class AbraPsiImplUtil {
         return map;
     }
 
-    public static Map<AbraPlaceHolderTypeName,AbraTypeNameRef> getTemplateContextMap(AbraUseStmt useStmt, int size){
-        Map<Integer, AbraTypeNameRef> resolutionMap = getResolutionMap(useStmt, size);
-        AbraTemplateName templateName = (AbraTemplateName) useStmt.getTemplateNameRef().getReference().resolve();
-        HashMap<AbraPlaceHolderTypeName,AbraTypeNameRef> context = new HashMap();
+    public static Map<QuplaPlaceHolderTypeName, QuplaTypeNameRef> getTemplateContextMap(QuplaUseStmt useStmt, int size){
+        Map<Integer, QuplaTypeNameRef> resolutionMap = getResolutionMap(useStmt, size);
+        QuplaTemplateName templateName = (QuplaTemplateName) useStmt.getTemplateNameRef().getReference().resolve();
+        HashMap<QuplaPlaceHolderTypeName, QuplaTypeNameRef> context = new HashMap();
         if(templateName==null)return context;
-        AbraTemplateStmt templateStmt = (AbraTemplateStmt)templateName.getParent();
+        QuplaTemplateStmt templateStmt = (QuplaTemplateStmt)templateName.getParent();
         int i=0;
-        for(AbraPlaceHolderTypeName phn:templateStmt.getPlaceHolderTypeNameList()){
+        for(QuplaPlaceHolderTypeName phn:templateStmt.getPlaceHolderTypeNameList()){
             context.put(phn,resolutionMap.get(i));
         }
         return context;
     }
 
     //====================================================================
-    //====================== AbraUseStmt =================================
+    //====================== QuplaUseStmt =================================
     //====================================================================
 
     @NotNull
-    public static ItemPresentation getPresentation(AbraTypeInstantiation element) {
+    public static ItemPresentation getPresentation(QuplaTypeInstantiation element) {
         return new ItemPresentation() {
             @NotNull
             @Override
             public String getPresentableText() {
-                return ((AbraUseStmt)element.getParent()).getTemplateNameRef().getText()+"<"+element.getTypeNameRefList().get(0).getText()+">";
+                return ((QuplaUseStmt)element.getParent()).getTemplateNameRef().getText()+"<"+element.getTypeNameRefList().get(0).getText()+">";
             }
 
             @NotNull
@@ -662,7 +659,7 @@ public class AbraPsiImplUtil {
     //====================== Range Expr ==================================
     //====================================================================
 
-//    public static int getResolvedSize(AbraRangeExpr rangeExpr){
+//    public static int getResolvedSize(QuplaRangeExpr rangeExpr){
 //        if(!rangeExpr.hasRangeOperator() && !rangeExpr.hasSmartRange())return 1;
 //
 //        if(rangeExpr.hasSmartRange()){
@@ -672,41 +669,41 @@ public class AbraPsiImplUtil {
 //            return rangeExpr.getConstExprList().get(1).getResolvedSize()-rangeExpr.getConstExprList().get(0).getResolvedSize();
 //        }
 //        PsiElement leftSibling = rangeExpr;
-//        while(!(leftSibling instanceof AbraResolvable))leftSibling = leftSibling.getPrevSibling();
-//        if(leftSibling instanceof AbraFieldNameRef){
-//            return ((AbraFieldNameRef) leftSibling).getResolvedSize() - rangeExpr.getConstExprList().get(0).getResolvedSize();
+//        while(!(leftSibling instanceof QuplaResolvable))leftSibling = leftSibling.getPrevSibling();
+//        if(leftSibling instanceof QuplaFieldNameRef){
+//            return ((QuplaFieldNameRef) leftSibling).getResolvedSize() - rangeExpr.getConstExprList().get(0).getResolvedSize();
 //        }
-//        if(leftSibling instanceof AbraParamOrVarNameRef){
-//            return ((AbraParamOrVarNameRef) leftSibling).getResolvedSize() - rangeExpr.getConstExprList().get(0).getResolvedSize();
+//        if(leftSibling instanceof QuplaParamOrVarNameRef){
+//            return ((QuplaParamOrVarNameRef) leftSibling).getResolvedSize() - rangeExpr.getConstExprList().get(0).getResolvedSize();
 //        }
-//        if(leftSibling instanceof AbraTypeOrPlaceHolderNameRef){
+//        if(leftSibling instanceof QuplaTypeOrPlaceHolderNameRef){
 //            PsiElement resolved = leftSibling.getReference().resolve();
-//            if(resolved instanceof AbraPlaceHolderTypeName){
-//                resolved = ContextStack.INSTANCE.resolveInContext((AbraPlaceHolderTypeName) resolved);
-//                if(resolved instanceof AbraTypeNameRef){
-//                    return ((AbraTypeStmt) ContextStack.INSTANCE.get().peek().get(resolved).getParent()).getTypeSize().getResolvedSize();
+//            if(resolved instanceof QuplaPlaceHolderTypeName){
+//                resolved = ContextStack.INSTANCE.resolveInContext((QuplaPlaceHolderTypeName) resolved);
+//                if(resolved instanceof QuplaTypeNameRef){
+//                    return ((QuplaTypeStmt) ContextStack.INSTANCE.get().peek().get(resolved).getParent()).getTypeSize().getResolvedSize();
 //                }
 //            }
-//            if(resolved instanceof AbraTypeName){
-//                return ((AbraTypeStmt) resolved.getParent()).getResolvedSize();
+//            if(resolved instanceof QuplaTypeName){
+//                return ((QuplaTypeStmt) resolved.getParent()).getResolvedSize();
 //            }
 //        }
 //        throw new UnresolvableTokenException(rangeExpr.getText());
 //    }
 
-    public static boolean hasRangeOperator(AbraRangeExpr rangeExpr){
+    public static boolean hasRangeOperator(QuplaRangeExpr rangeExpr){
         return rangeExpr.getText().contains("..");
     }
 
-    public static boolean hasOpenRange(AbraRangeExpr rangeExpr){
+    public static boolean hasOpenRange(QuplaRangeExpr rangeExpr){
         return hasRangeOperator(rangeExpr) && rangeExpr.getConstExprList().size()==1;
     }
 
-    public static boolean hasClosedRange(AbraRangeExpr rangeExpr){
+    public static boolean hasClosedRange(QuplaRangeExpr rangeExpr){
         return hasRangeOperator(rangeExpr) && rangeExpr.getConstExprList().size()==2;
     }
 
-    public static boolean hasSmartRange(AbraRangeExpr rangeExpr){
+    public static boolean hasSmartRange(QuplaRangeExpr rangeExpr){
         return rangeExpr.getText().contains(":");
     }
 
@@ -714,7 +711,7 @@ public class AbraPsiImplUtil {
     //====================== Const Stuff =================================
     //====================================================================
 
-//    public static int getResolvedSize(AbraSliceExpr sliceExpr){
+//    public static int getResolvedSize(QuplaSliceExpr sliceExpr){
 //        if(sliceExpr.getRangeExpr()==null){
 //            if(sliceExpr.getFieldNameRefList().size()==0)
 //                return sliceExpr.getParamOrVarNameRef().getResolvedSize();
@@ -723,98 +720,98 @@ public class AbraPsiImplUtil {
 //        return sliceExpr.getRangeExpr().getResolvedSize();
 //    }
 
-    public static boolean hasRangeOperator(AbraSliceExpr sliceExpr){
+    public static boolean hasRangeOperator(QuplaSliceExpr sliceExpr){
         return sliceExpr.getRangeExpr()!=null && sliceExpr.getRangeExpr().hasRangeOperator();
     }
 
-    public static boolean hasOpenRange(AbraSliceExpr sliceExpr){
+    public static boolean hasOpenRange(QuplaSliceExpr sliceExpr){
         return sliceExpr.getRangeExpr()!=null && sliceExpr.getRangeExpr().hasOpenRange();
     }
 
-    public static boolean hasClosedRange(AbraSliceExpr sliceExpr){
+    public static boolean hasClosedRange(QuplaSliceExpr sliceExpr){
         return sliceExpr.getRangeExpr()!=null && sliceExpr.getRangeExpr().hasClosedRange();
     }
 
 
 
-    public static int getResolvedSize(AbraInteger integer){
+    public static int getResolvedSize(QuplaInteger integer){
         return Integer.valueOf(integer.getText());
     }
 
-    public static int getResolvedSize(AbraTypeExpr typeExpr){
+    public static int getResolvedSize(QuplaTypeExpr typeExpr){
         int r = 0;
-        for(AbraFieldNameRef fieldNameRef:typeExpr.getFieldNameRefList()){
+        for(QuplaFieldNameRef fieldNameRef:typeExpr.getFieldNameRefList()){
             r += fieldNameRef.getResolvedSize();
         }
         return r;
     }
 
-    public static int getResolvedSize(AbraFieldNameRef fieldNameRef) throws UnresolvableTokenException {
-        AbraFieldName resolved = (AbraFieldName)fieldNameRef.getReference().resolve();
+    public static int getResolvedSize(QuplaFieldNameRef fieldNameRef) throws UnresolvableTokenException {
+        QuplaFieldName resolved = (QuplaFieldName)fieldNameRef.getReference().resolve();
         if(resolved!=null){
-            return ((AbraFieldSpec)resolved.getParent()).getTypeSize().getResolvedSize();
+            return ((QuplaFieldSpec)resolved.getParent()).getTypeSize().getResolvedSize();
         }
         throw new UnresolvableTokenException(fieldNameRef.getText());
     }
 
-    public static int getResolvedSize(AbraTypeSize typeSize){
+    public static int getResolvedSize(QuplaTypeSize typeSize){
         return typeSize.getConstExpr().getResolvedSize();
     }
 
-    public static int getResolvedSize(AbraParamName paramName){
-        return ((AbraFuncParameter)paramName.getParent()).getTypeOrPlaceHolderNameRef().getResolvedSize();
+    public static int getResolvedSize(QuplaParamName paramName){
+        return ((QuplaFuncParameter)paramName.getParent()).getTypeOrPlaceHolderNameRef().getResolvedSize();
     }
 
-    public static int getResolvedSize(AbraLutName lutName){
-        return ((AbraLutStmt)lutName.getParent()).getLutEntryList().get(0).getOutputLength();
+    public static int getResolvedSize(QuplaLutName lutName){
+        return ((QuplaLutStmt)lutName.getParent()).getLutEntryList().get(0).getOutputLength();
     }
 
-//    public static int getResolvedSize(AbraVarName varName){
-//        if(varName.getParent() instanceof AbraAssignExpr) {
-//            if (((AbraAssignExpr) varName.getParent()).getTypeSize() != null) {
-//                return ((AbraAssignExpr) varName.getParent()).getTypeSize().getResolvedSize();
+//    public static int getResolvedSize(QuplaVarName varName){
+//        if(varName.getParent() instanceof QuplaAssignExpr) {
+//            if (((QuplaAssignExpr) varName.getParent()).getTypeSize() != null) {
+//                return ((QuplaAssignExpr) varName.getParent()).getTypeSize().getResolvedSize();
 //            }
-//            return ((AbraAssignExpr) varName.getParent()).getMergeExpr().getResolvedSize();
+//            return ((QuplaAssignExpr) varName.getParent()).getMergeExpr().getResolvedSize();
 //        }
-//        return ((AbraStateExpr) varName.getParent()).getTypeSize().getResolvedSize();
+//        return ((QuplaStateExpr) varName.getParent()).getTypeSize().getResolvedSize();
 //    }
 //
-//    public static int getResolvedSize(AbraReturnExpr returnExpr){
+//    public static int getResolvedSize(QuplaReturnExpr returnExpr){
 //        return returnExpr.getMergeExpr().getResolvedSize();
 //    }
 
-//    public static int getResolvedSize(AbraConcatExpr concatExpr){
+//    public static int getResolvedSize(QuplaConcatExpr concatExpr){
 //        int r = 0;
-//        for(AbraPostfixExpr postfixExpr:concatExpr.getPostfixExprList()){
+//        for(QuplaPostfixExpr postfixExpr:concatExpr.getPostfixExprList()){
 //            r = r+postfixExpr.getResolvedSize();
 //        }
 //        return r;
 //    }
 
-    public static int getResolvedSize(AbraLutExpr element){
+    public static int getResolvedSize(QuplaLutExpr element){
         PsiElement resolved = element.getLutNameRef().getReference().resolve();
-        if(resolved instanceof AbraLutName){
-            return ((AbraLutStmt)resolved.getParent()).getLutEntryList().get(0).getOutputLength();
+        if(resolved instanceof QuplaLutName){
+            return ((QuplaLutStmt)resolved.getParent()).getLutEntryList().get(0).getOutputLength();
         }
         throw new UnresolvableTokenException(element.getText());
     }
 
-    public static int getResolvedSize(AbraLutOrSliceExpr lutOrSliceExpr){
+    public static int getResolvedSize(QuplaLutOrSliceExpr lutOrSliceExpr){
         PsiElement resolved = lutOrSliceExpr.getLutOrParamOrVarNameRef().getReference().resolve();
-        if(resolved instanceof AbraLutName){
-            return ((AbraLutStmt)resolved.getParent()).getLutEntryList().get(0).getOutputLength();
+        if(resolved instanceof QuplaLutName){
+            return ((QuplaLutStmt)resolved.getParent()).getLutEntryList().get(0).getOutputLength();
         }
-//        if(resolved instanceof AbraVarName){
-//            return ((AbraVarName)resolved).getResolvedSize();
+//        if(resolved instanceof QuplaVarName){
+//            return ((QuplaVarName)resolved).getResolvedSize();
 //        }
-//        if(resolved instanceof AbraParamName){
-//            return ((AbraParamName)resolved).getResolvedSize();
+//        if(resolved instanceof QuplaParamName){
+//            return ((QuplaParamName)resolved).getResolvedSize();
 //        }
 //        throw new UnresolvableTokenException(lutOrSliceExpr.getText());
         return 1;
     }
 
-    public static boolean isTypeOrPlaceHolderNameRef(AbraConstExpr element){
+    public static boolean isTypeOrPlaceHolderNameRef(QuplaConstExpr element){
         if(element.getConstTermList().size()==1){
             if(element.getConstTermList().get(0).getConstFactorList().size()==1){
                 if(element.getConstTermList().get(0).getConstFactorList().get(0).getTypeOrPlaceHolderNameRef()!=null){
@@ -825,7 +822,7 @@ public class AbraPsiImplUtil {
         return false;
     }
 
-    public static AbraTypeOrPlaceHolderNameRef getTypeOrPlaceHolderNameRef(AbraConstExpr element){
+    public static QuplaTypeOrPlaceHolderNameRef getTypeOrPlaceHolderNameRef(QuplaConstExpr element){
         if(isTypeOrPlaceHolderNameRef(element)){
             return element.getConstTermList().get(0).getConstFactorList().get(0).getTypeOrPlaceHolderNameRef();
         }
@@ -833,7 +830,7 @@ public class AbraPsiImplUtil {
     }
 
 
-    public static int getResolvedSize(AbraConstExpr element){
+    public static int getResolvedSize(QuplaConstExpr element){
         if(element.getConstTermList().size()==1){
             return element.getConstTermList().get(0).getResolvedSize();
         }
@@ -845,7 +842,7 @@ public class AbraPsiImplUtil {
         return lhs-rhs;
     }
 
-    public static int getResolvedSize(AbraConstExpr element, Map<Integer, AbraTypeNameRef> resolutionMap, AbraTemplateStmt templateStmt){
+    public static int getResolvedSize(QuplaConstExpr element, Map<Integer, QuplaTypeNameRef> resolutionMap, QuplaTemplateStmt templateStmt){
         if(element.getConstTermList().size()==1){
             return getResolvedSize(element.getConstTermList().get(0),resolutionMap,templateStmt);
         }
@@ -857,7 +854,7 @@ public class AbraPsiImplUtil {
         return lhs-rhs;
     }
 
-    public static int getResolvedSize(AbraConstTerm element){
+    public static int getResolvedSize(QuplaConstTerm element){
         if(element.getConstFactorList().size()==1){
             return element.getConstFactorList().get(0).getResolvedSize();
         }
@@ -871,7 +868,7 @@ public class AbraPsiImplUtil {
         return lhs / rhs;
     }
 
-    public static int getResolvedSize(AbraConstFactor element){
+    public static int getResolvedSize(QuplaConstFactor element){
         if(element.getNumber()!=null){
             return element.getNumber().getResolvedSize();
         }
@@ -883,30 +880,30 @@ public class AbraPsiImplUtil {
         }
         PsiElement resolved = element.getTypeOrPlaceHolderNameRef().getReference().resolve();
         if(resolved!=null){
-           if(resolved instanceof AbraTypeName){
-               return ((AbraTypeStmt)resolved.getParent()).getResolvedSize();
+           if(resolved instanceof QuplaTypeName){
+               return ((QuplaTypeStmt)resolved.getParent()).getResolvedSize();
            }
-            if(resolved instanceof AbraPlaceHolderTypeName){
-                PsiElement resolvedInContext = ContextStack.INSTANCE.resolveInContext((AbraPlaceHolderTypeName) resolved);
-                if(resolvedInContext instanceof AbraPlaceHolderTypeName){
+            if(resolved instanceof QuplaPlaceHolderTypeName){
+                PsiElement resolvedInContext = ContextStack.INSTANCE.resolveInContext((QuplaPlaceHolderTypeName) resolved);
+                if(resolvedInContext instanceof QuplaPlaceHolderTypeName){
                     if(ContextStack.INSTANCE.isEmpty())return -3;
-                    return ((AbraTypeStmt)ContextStack.INSTANCE.get().peek().get(resolvedInContext).getReference().resolve().getParent()).getTypeSize().getResolvedSize();
+                    return ((QuplaTypeStmt)ContextStack.INSTANCE.get().peek().get(resolvedInContext).getReference().resolve().getParent()).getTypeSize().getResolvedSize();
                 }
-                if(resolvedInContext instanceof AbraTypeNameRef){
+                if(resolvedInContext instanceof QuplaTypeNameRef){
                     PsiElement e = resolvedInContext.getReference().resolve();
-                    return e==null?-4:((AbraTypeStmt)e.getParent()).getResolvedSize();
+                    return e==null?-4:((QuplaTypeStmt)e.getParent()).getResolvedSize();
                 }
-                return ((AbraTypeStmt)resolvedInContext.getParent()).getResolvedSize();
+                return ((QuplaTypeStmt)resolvedInContext.getParent()).getResolvedSize();
             }
         }
         throw new UnresolvableTokenException(element.getText()+ " in file "+element.getContainingFile().getName());
     }
 
-    public static int getResolvedSize(AbraNumber number){
+    public static int getResolvedSize(QuplaNumber number){
         return Integer.valueOf(number.getText());
     }
 
-    public static int getResolvedSize(AbraConstTerm element, Map<Integer, AbraTypeNameRef> resolutionMap, AbraTemplateStmt templateStmt){
+    public static int getResolvedSize(QuplaConstTerm element, Map<Integer, QuplaTypeNameRef> resolutionMap, QuplaTemplateStmt templateStmt){
         if(element.getConstFactorList().size()==1){
             return getResolvedSize(element.getConstFactorList().get(0), resolutionMap, templateStmt);
         }
@@ -921,7 +918,7 @@ public class AbraPsiImplUtil {
         return lhs / rhs;
     }
 
-    public static int getResolvedSize(AbraConstFactor element, Map<Integer, AbraTypeNameRef> resolutionMap, AbraTemplateStmt templateStmt){
+    public static int getResolvedSize(QuplaConstFactor element, Map<Integer, QuplaTypeNameRef> resolutionMap, QuplaTemplateStmt templateStmt){
         if(element.getNumber()!=null){
             return element.getNumber().getResolvedSize();
         }
@@ -933,16 +930,16 @@ public class AbraPsiImplUtil {
         }
         PsiElement resolved = element.getTypeOrPlaceHolderNameRef().getReference().resolve();
         if(resolved!=null){
-            if(resolved instanceof AbraTypeName){
-                return ((AbraTypeStmt)resolved.getParent()).getResolvedSize();
+            if(resolved instanceof QuplaTypeName){
+                return ((QuplaTypeStmt)resolved.getParent()).getResolvedSize();
             }
-            if(resolved instanceof AbraPlaceHolderTypeName){
+            if(resolved instanceof QuplaPlaceHolderTypeName){
                 String tag = resolved.getText();
                 int index = getPlaceHolderIndex(tag, templateStmt);
-                AbraTypeNameRef typeNameRef = resolutionMap.get(index);
-                AbraTypeName typeName = (AbraTypeName) typeNameRef.getReference().resolve();
+                QuplaTypeNameRef typeNameRef = resolutionMap.get(index);
+                QuplaTypeName typeName = (QuplaTypeName) typeNameRef.getReference().resolve();
                 if(typeName!=null){
-                    return ((AbraTypeStmt)typeName.getParent()).getResolvedSize();
+                    return ((QuplaTypeStmt)typeName.getParent()).getResolvedSize();
                 }
             }
         }
@@ -950,14 +947,14 @@ public class AbraPsiImplUtil {
     }
 
 
-    public static int getResolvedSize2(AbraTypeOrPlaceHolderNameRef element, Map<String, Integer> resolutionMap, AbraTemplateStmt templateStmt){
+    public static int getResolvedSize2(QuplaTypeOrPlaceHolderNameRef element, Map<String, Integer> resolutionMap, QuplaTemplateStmt templateStmt){
         if(!resolutionMap.containsKey(element.getText())){
             return -1;
         }
         return resolutionMap.get(element.getText());
     }
 
-    public static int getResolvedSize2(AbraConstExpr element, Map<String, Integer> resolutionMap, AbraTemplateStmt templateStmt){
+    public static int getResolvedSize2(QuplaConstExpr element, Map<String, Integer> resolutionMap, QuplaTemplateStmt templateStmt){
         if(element.getConstTermList().size()==1){
             return getResolvedSize2(element.getConstTermList().get(0),resolutionMap,templateStmt);
         }
@@ -969,7 +966,7 @@ public class AbraPsiImplUtil {
         return lhs-rhs;
     }
 
-    public static int getResolvedSize2(AbraConstTerm element, Map<String, Integer> resolutionMap, AbraTemplateStmt templateStmt){
+    public static int getResolvedSize2(QuplaConstTerm element, Map<String, Integer> resolutionMap, QuplaTemplateStmt templateStmt){
         if(element.getConstFactorList().size()==1){
             return getResolvedSize2(element.getConstFactorList().get(0), resolutionMap, templateStmt);
         }
@@ -984,7 +981,7 @@ public class AbraPsiImplUtil {
         return lhs / rhs;
     }
 
-    public static int getResolvedSize2(AbraConstFactor element, Map<String, Integer> resolutionMap, AbraTemplateStmt templateStmt){
+    public static int getResolvedSize2(QuplaConstFactor element, Map<String, Integer> resolutionMap, QuplaTemplateStmt templateStmt){
         if(element.getNumber()!=null){
             return element.getNumber().getResolvedSize();
         }
@@ -997,7 +994,7 @@ public class AbraPsiImplUtil {
         PsiElement resolved = element.getTypeOrPlaceHolderNameRef().getReference().resolve();
         if(resolved!=null){
             if(resolutionMap.get(resolved.getText())!=null)return resolutionMap.get(resolved.getText());
-            if(resolved instanceof AbraTypeName)return ((AbraTypeName)resolved).getResolvedSize();
+            if(resolved instanceof QuplaTypeName)return ((QuplaTypeName)resolved).getResolvedSize();
             return -1;
         }
         throw new UnresolvableTokenException(element.getText());
@@ -1007,42 +1004,42 @@ public class AbraPsiImplUtil {
     //====================== PlaceHolder==================================
     //====================================================================
 
-    public static AbraTemplateStmt getTemplateStatement(AbraTypeOrPlaceHolderNameRef typeOrPlaceHolderNameRef){
+    public static QuplaTemplateStmt getTemplateStatement(QuplaTypeOrPlaceHolderNameRef typeOrPlaceHolderNameRef){
         PsiElement stmt = typeOrPlaceHolderNameRef;
-        while(!(stmt instanceof AbraFile) && !(stmt instanceof AbraTemplateStmt)) stmt = stmt.getParent();
-        return stmt instanceof AbraTemplateStmt ? (AbraTemplateStmt)stmt : null;
+        while(!(stmt instanceof QuplaFile) && !(stmt instanceof QuplaTemplateStmt)) stmt = stmt.getParent();
+        return stmt instanceof QuplaTemplateStmt ? (QuplaTemplateStmt)stmt : null;
     }
 
-    public static int getPlaceHolderIndex(AbraTypeOrPlaceHolderNameRef typeOrPlaceHolderNameRef){
-        AbraTemplateStmt stmt = getTemplateStatement(typeOrPlaceHolderNameRef);
+    public static int getPlaceHolderIndex(QuplaTypeOrPlaceHolderNameRef typeOrPlaceHolderNameRef){
+        QuplaTemplateStmt stmt = getTemplateStatement(typeOrPlaceHolderNameRef);
         if(stmt==null) return -1;
         return getPlaceHolderIndex(typeOrPlaceHolderNameRef.getText(), stmt);
     }
 
-    private static int getPlaceHolderIndex(String txt, AbraTemplateStmt stmt) {
+    private static int getPlaceHolderIndex(String txt, QuplaTemplateStmt stmt) {
         int i = 0;
-        for(AbraPlaceHolderTypeName abraPlaceHolderName:stmt.getPlaceHolderTypeNameList()){
+        for(QuplaPlaceHolderTypeName abraPlaceHolderName:stmt.getPlaceHolderTypeNameList()){
             if(abraPlaceHolderName.getText().equals(txt))return i;
             i++;
         }
         return -1;
     }
 
-    public static String getName(AbraPlaceHolderTypeName element) {
+    public static String getName(QuplaPlaceHolderTypeName element) {
         return element.getText();
     }
 
-    public static PsiElement setName(AbraPlaceHolderTypeName element, String newName) {
+    public static PsiElement setName(QuplaPlaceHolderTypeName element, String newName) {
         ASTNode globalIdNode = element.getNode().getFirstChildNode();
         if (globalIdNode != null) {
-            AbraPlaceHolderTypeName templateName = AbraElementFactory.createAbraPlaceHolderName(element.getProject(), newName);
+            QuplaPlaceHolderTypeName templateName = QuplaElementFactory.createAbraPlaceHolderName(element.getProject(), newName);
             ASTNode newKeyNode = templateName.getFirstChild().getNode();
             element.getNode().replaceChild(globalIdNode, newKeyNode);
         }
         return element;
     }
 
-    public static PsiElement getNameIdentifier(AbraPlaceHolderTypeName element) {
+    public static PsiElement getNameIdentifier(QuplaPlaceHolderTypeName element) {
         return element;
     }
     //====================================================================
@@ -1050,53 +1047,53 @@ public class AbraPsiImplUtil {
     //====================================================================
 
     @NotNull
-    public static PsiReference getReference(AbraFieldNameRef fieldNameRef) {
-        return new AbraFieldPsiReferenceImpl(fieldNameRef);
+    public static PsiReference getReference(QuplaFieldNameRef fieldNameRef) {
+        return new QuplaFieldPsiReferenceImpl(fieldNameRef);
     }
 
     @NotNull
-    public static PsiReference getReference(AbraTypeNameRef typeNameRef) {
-        return new AbraTypePsiReferenceImpl(typeNameRef);
+    public static PsiReference getReference(QuplaTypeNameRef typeNameRef) {
+        return new QuplaTypePsiReferenceImpl(typeNameRef);
     }
 
     @NotNull
-    public static PsiReference getReference(AbraTemplateNameRef templateNameRef) {
-        return new AbraTemplatePsiReferenceImpl(templateNameRef);
+    public static PsiReference getReference(QuplaTemplateNameRef templateNameRef) {
+        return new QuplaTemplatePsiReferenceImpl(templateNameRef);
     }
 
     @NotNull
-    public static PsiReference getReference(AbraLutOrParamOrVarNameRef lutOrParamOrVarNameRef) {
-        return new AbraLutOrVarOrParamPsiReferenceImpl(lutOrParamOrVarNameRef);
+    public static PsiReference getReference(QuplaLutOrParamOrVarNameRef lutOrParamOrVarNameRef) {
+        return new QuplaLutOrVarOrParamPsiReferenceImpl(lutOrParamOrVarNameRef);
     }
 
     @NotNull
-    public static PsiReference getReference(AbraLutNameRef lutNameRef) {
-        return new AbraLutPsiReferenceImpl(lutNameRef);
+    public static PsiReference getReference(QuplaLutNameRef lutNameRef) {
+        return new QuplaLutPsiReferenceImpl(lutNameRef);
     }
 
     @NotNull
-    public static PsiReference getReference(AbraParamOrVarNameRef paramOrVarNameRef) {
-        return new AbraVarOrParamPsiReferenceImpl(paramOrVarNameRef);
+    public static PsiReference getReference(QuplaParamOrVarNameRef paramOrVarNameRef) {
+        return new QuplaVarOrParamPsiReferenceImpl(paramOrVarNameRef);
     }
 
     @NotNull
-    public static PsiReference getReference(AbraTypeOrPlaceHolderNameRef typeOrPlaceHolderNameRef) {
-        return new AbraTypeOrPlaceHolderPsiReferenceImpl(typeOrPlaceHolderNameRef);
+    public static PsiReference getReference(QuplaTypeOrPlaceHolderNameRef typeOrPlaceHolderNameRef) {
+        return new QuplaTypeOrPlaceHolderPsiReferenceImpl(typeOrPlaceHolderNameRef);
     }
 
     @NotNull
-    public static PsiReference getReference(AbraFuncNameRef funcNameRef) {
-        return new AbraFuncPsiReferenceImpl(funcNameRef);
+    public static PsiReference getReference(QuplaFuncNameRef funcNameRef) {
+        return new QuplaFuncPsiReferenceImpl(funcNameRef);
     }
 
     @NotNull
-    public static PsiReference getReference(AbraVarName varName) {
-        return new AbraStateVarPsiReferenceImpl(varName);
+    public static PsiReference getReference(QuplaVarName varName) {
+        return new QuplaStateVarPsiReferenceImpl(varName);
     }
 
 
     @NotNull
-    public static PsiReference[] getReferences(AbraImportStmt importStmt){
+    public static PsiReference[] getReferences(QuplaImportStmt importStmt){
         List<PsiReference> importedFiles = new ArrayList<>();
         VirtualFile srcRoot = importStmt.getSourceRoot();
         VirtualFile target = null;
@@ -1106,7 +1103,7 @@ public class AbraPsiImplUtil {
             //ignore : filename is not valid.
         }
         if(target!=null) {
-            importedFiles.add(new AbraFileReferencePsiReferenceImpl(importStmt, target));
+            importedFiles.add(new QuplaFileReferencePsiReferenceImpl(importStmt, target));
         }else {
 
             try {
@@ -1117,8 +1114,8 @@ public class AbraPsiImplUtil {
             if (target != null) {
                 VirtualFile[] children = target.getChildren();
                 for (VirtualFile child : children) {
-                    if (!child.isDirectory() && child.getFileType() == AbraFileType.INSTANCE) {
-                        importedFiles.add(new AbraFileReferencePsiReferenceImpl(importStmt, child));
+                    if (!child.isDirectory() && child.getFileType() == QuplaFileType.INSTANCE) {
+                        importedFiles.add(new QuplaFileReferencePsiReferenceImpl(importStmt, child));
                     }
                 }
             }
@@ -1129,15 +1126,15 @@ public class AbraPsiImplUtil {
 
     public static final Key REF_FILES_KEY = new Key("RefFilesKey");
 
-    public static List<AbraFile> getReferencedFiles(AbraImportStmt importStmt) {
-            List<AbraFile> resp = (List<AbraFile>) importStmt.getUserData(REF_FILES_KEY);
+    public static List<QuplaFile> getReferencedFiles(QuplaImportStmt importStmt) {
+            List<QuplaFile> resp = (List<QuplaFile>) importStmt.getUserData(REF_FILES_KEY);
             if (resp == null) {
                 resp = new ArrayList<>();
-                PsiReference[] importedFiles = AbraPsiImplUtil.getReferences(importStmt);
+                PsiReference[] importedFiles = QuplaPsiImplUtil.getReferences(importStmt);
                 for (PsiReference psiRef : importedFiles) {
-                    AbraFile anAbraFile = (AbraFile) psiRef.resolve();
-                    if (anAbraFile != null) {
-                        resp.add(anAbraFile);
+                    QuplaFile anQuplaFile = (QuplaFile) psiRef.resolve();
+                    if (anQuplaFile != null) {
+                        resp.add(anQuplaFile);
                     }
                 }
                 importStmt.putUserData(REF_FILES_KEY, resp);
@@ -1146,10 +1143,10 @@ public class AbraPsiImplUtil {
     }
 
 
-    public static String getFilePath(AbraImportStmt importStmt){
+    public static String getFilePath(QuplaImportStmt importStmt){
         return importStmt.getText().substring(7).trim();
     }
-    public static VirtualFile getSourceRoot(AbraImportStmt importStmt){
+    public static VirtualFile getSourceRoot(QuplaImportStmt importStmt){
         List<VirtualFile> allRoots = getAllSourceRoot(importStmt.getProject());
         VirtualFile srcRoot = importStmt.getContainingFile().getVirtualFile();
         while(srcRoot!=null && !allRoots.contains(srcRoot))srcRoot = srcRoot.getParent();
@@ -1175,13 +1172,13 @@ public class AbraPsiImplUtil {
         return allRoots;
     }
 
-    public static AbraFile findFileForPath(Project project, String path){
-        AbraFile resp = null;
+    public static QuplaFile findFileForPath(Project project, String path){
+        QuplaFile resp = null;
         List<VirtualFile> allRoots = getAllSourceRoot(project);
         for(VirtualFile vf:allRoots){
             VirtualFile tmp = vf.findFileByRelativePath(path+".qpl");
             if(tmp!=null && tmp.exists()){
-                return (AbraFile) PsiManager.getInstance(project).findFile(tmp);
+                return (QuplaFile) PsiManager.getInstance(project).findFile(tmp);
             }
         }
         return null;
@@ -1190,46 +1187,46 @@ public class AbraPsiImplUtil {
     //====================== FuncParams ==================================
     //====================================================================
 
-    public static AbraFuncSignature getFuncSignature(AbraFuncBody funcBody){
-        return ((AbraFuncStmt)funcBody.getParent()).getFuncSignature();
+    public static QuplaFuncSignature getFuncSignature(QuplaFuncBody funcBody){
+        return ((QuplaFuncStmt)funcBody.getParent()).getFuncSignature();
     }
-    public static String getName(AbraParamName element) {
+    public static String getName(QuplaParamName element) {
         return element.getText();
     }
 
-    public static PsiElement setName(AbraParamName element, String newName) {
+    public static PsiElement setName(QuplaParamName element, String newName) {
         ASTNode globalIdNode = element.getNode().getFirstChildNode();
         if (globalIdNode != null) {
-            AbraParamName paramName = AbraElementFactory.createAbraParamName(element.getProject(), newName);
+            QuplaParamName paramName = QuplaElementFactory.createAbraParamName(element.getProject(), newName);
             ASTNode newKeyNode = paramName.getFirstChild().getNode();
             element.getNode().replaceChild(globalIdNode, newKeyNode);
         }
         return element;
     }
 
-    public static PsiElement getNameIdentifier(AbraParamName element) {
+    public static PsiElement getNameIdentifier(QuplaParamName element) {
         return element;
     }
 
-    public static AbraFuncExpr getFuncExpr(AbraFuncNameRef funcNameRef){
-        return (AbraFuncExpr) funcNameRef.getParent();
+    public static QuplaFuncExpr getFuncExpr(QuplaFuncNameRef funcNameRef){
+        return (QuplaFuncExpr) funcNameRef.getParent();
     }
 
-    public static AbraDefinition getStatment(AbraFuncExpr funcExpr){
+    public static QuplaDefinition getStatment(QuplaFuncExpr funcExpr){
         PsiElement abraDefinition = funcExpr;
-        while(!(abraDefinition instanceof AbraDefinition))abraDefinition = abraDefinition.getParent();
-        return (AbraDefinition) abraDefinition;
+        while(!(abraDefinition instanceof QuplaDefinition))abraDefinition = abraDefinition.getParent();
+        return (QuplaDefinition) abraDefinition;
     }
 
-    public static boolean isInTemplateStatement(AbraFuncExpr funcExpr){
-        return getStatment(funcExpr) instanceof AbraTemplateStmt;
+    public static boolean isInTemplateStatement(QuplaFuncExpr funcExpr){
+        return getStatment(funcExpr) instanceof QuplaTemplateStmt;
     }
 
-    public static boolean isInFuncStatement(AbraFuncExpr funcExpr){
-        return getStatment(funcExpr) instanceof AbraFuncStmt;
+    public static boolean isInFuncStatement(QuplaFuncExpr funcExpr){
+        return getStatment(funcExpr) instanceof QuplaFuncStmt;
     }
 
-    public static String getTypeLabelWithBrackets(AbraFuncSignature funcSignature){
+    public static String getTypeLabelWithBrackets(QuplaFuncSignature funcSignature){
         if (funcSignature.getTypeOrPlaceHolderNameRefList().size()==0) return "";
         return "<"+funcSignature.getText().substring(funcSignature.getTypeOrPlaceHolderNameRefList().get(0).getStartOffsetInParent(),
                                                      funcSignature.getTypeOrPlaceHolderNameRefList().get(funcSignature.getTypeOrPlaceHolderNameRefList().size()-1).getStartOffsetInParent()+funcSignature.getTypeOrPlaceHolderNameRefList().get(funcSignature.getTypeOrPlaceHolderNameRefList().size()-1).getTextLength())
@@ -1240,21 +1237,21 @@ public class AbraPsiImplUtil {
     //====================== AbraField ===================================
     //====================================================================
 
-    public static String getName(AbraFieldName element) {
+    public static String getName(QuplaFieldName element) {
         return element.getText();
     }
 
-    public static PsiElement setName(AbraFieldName element, String newName) {
+    public static PsiElement setName(QuplaFieldName element, String newName) {
         ASTNode globalIdNode = element.getNode().getFirstChildNode();
         if (globalIdNode != null) {
-            AbraFieldName paramName = AbraElementFactory.createAbraFieldName(element.getProject(), newName);
+            QuplaFieldName paramName = QuplaElementFactory.createAbraFieldName(element.getProject(), newName);
             ASTNode newKeyNode = paramName.getFirstChild().getNode();
             element.getNode().replaceChild(globalIdNode, newKeyNode);
         }
         return element;
     }
 
-    public static PsiElement getNameIdentifier(AbraFieldName element) {
+    public static PsiElement getNameIdentifier(QuplaFieldName element) {
         return element;
     }
 
@@ -1262,21 +1259,21 @@ public class AbraPsiImplUtil {
     //====================== LocalVars ===================================
     //====================================================================
 
-    public static String getName(AbraVarName element) {
+    public static String getName(QuplaVarName element) {
         return element.getText();
     }
 
-    public static PsiElement setName(AbraVarName element, String newName) {
+    public static PsiElement setName(QuplaVarName element, String newName) {
         ASTNode globalIdNode = element.getNode().getFirstChildNode();
         if (globalIdNode != null) {
-            AbraVarName varName = AbraElementFactory.createAbraVarName(element.getProject(), newName);
+            QuplaVarName varName = QuplaElementFactory.createAbraVarName(element.getProject(), newName);
             ASTNode newKeyNode = varName.getFirstChild().getNode();
             element.getNode().replaceChild(globalIdNode, newKeyNode);
         }
         return element;
     }
 
-    public static PsiElement getNameIdentifier(AbraVarName element) {
+    public static PsiElement getNameIdentifier(QuplaVarName element) {
         return element;
     }
 
@@ -1284,15 +1281,15 @@ public class AbraPsiImplUtil {
     //====================== LUT =========================================
     //====================================================================
 
-    public static int getLength(AbraTritList tritList){
+    public static int getLength(QuplaTritList tritList){
         return 1+tritList.getTextLength()-tritList.getText().replaceAll(",","").length();
     }
 
-    public static int getInputLength(AbraLutEntry lutEntry){
+    public static int getInputLength(QuplaLutEntry lutEntry){
         return lutEntry.getTritListList().get(0).getLength();
     }
 
-    public static int getOutputLength(AbraLutEntry lutEntry){
+    public static int getOutputLength(QuplaLutEntry lutEntry){
         return lutEntry.getTritListList().get(1).getLength();
     }
 
@@ -1302,12 +1299,12 @@ public class AbraPsiImplUtil {
     //====================================================================
 
 
-    public static class ContextStack extends ThreadLocal<Stack<Map<AbraPlaceHolderTypeName, AbraTypeNameRef>>>{
+    public static class ContextStack extends ThreadLocal<Stack<Map<QuplaPlaceHolderTypeName, QuplaTypeNameRef>>>{
 
         public static final ContextStack INSTANCE = new ContextStack();
 
-        public void push(Map<AbraPlaceHolderTypeName, AbraTypeNameRef> aContext){
-            Stack<Map<AbraPlaceHolderTypeName, AbraTypeNameRef>> stack = get();
+        public void push(Map<QuplaPlaceHolderTypeName, QuplaTypeNameRef> aContext){
+            Stack<Map<QuplaPlaceHolderTypeName, QuplaTypeNameRef>> stack = get();
             if(stack==null){
                 stack = new Stack<>();
                 set(stack);
@@ -1319,7 +1316,7 @@ public class AbraPsiImplUtil {
             get().pop();
         }
 
-        public PsiElement resolveInContext(AbraPlaceHolderTypeName elementToResolve){
+        public PsiElement resolveInContext(QuplaPlaceHolderTypeName elementToResolve){
             if(get()==null || get().size()==0)return elementToResolve;
             for(PsiElement key:get().peek().keySet()){
                 if(key.getText().equals(elementToResolve.getText()))return get().peek().get(key);
@@ -1333,9 +1330,9 @@ public class AbraPsiImplUtil {
     }
 
 
-    public static AbraFuncStmt getFuncWithNameInTemplate(String aName, AbraTemplateStmt templateStmt){
+    public static QuplaFuncStmt getFuncWithNameInTemplate(String aName, QuplaTemplateStmt templateStmt){
         if(templateStmt!=null) {
-            for (AbraFuncStmt func : templateStmt.getFuncStmtList()) {
+            for (QuplaFuncStmt func : templateStmt.getFuncStmtList()) {
                 if (func.getFuncSignature().getFuncName().getText().equals(aName)) return func;
             }
         }
@@ -1350,7 +1347,7 @@ public class AbraPsiImplUtil {
      * @return empty list when none of the use statement for func statement match the type instantiation for func expr
      * @return the subset of typeinstantiation of funcExpr covered by the type instantiation of funcStmt
      */
-    public static List<SizesInstantiation> match(AbraFuncExpr funcExpr, AbraFuncStmt funcStmt){
+    public static List<SizesInstantiation> match(QuplaFuncExpr funcExpr, QuplaFuncStmt funcStmt){
         if(! funcExpr.getFuncNameRef().getText().equals(funcStmt.getFuncSignature().getFuncName().getText())){
             return null;
         }
@@ -1362,12 +1359,12 @@ public class AbraPsiImplUtil {
             return null;
         }
         List<SizesInstantiation> funcStmtSizesInst = null;
-        if(funcStmt.getParent() instanceof AbraTemplateStmt) {
+        if(funcStmt.getParent() instanceof QuplaTemplateStmt) {
             funcStmtSizesInst = typesToSizesInstantiations(
-                    funcStmt.getFuncSignature().getTypeOrPlaceHolderNameRefList(), (AbraTemplateStmt) funcStmt.getParent(), funcStmt.getAllTypeInstantiation());
+                    funcStmt.getFuncSignature().getTypeOrPlaceHolderNameRefList(), (QuplaTemplateStmt) funcStmt.getParent(), funcStmt.getAllTypeInstantiation());
         }else{
             SizesInstantiation sizesInstantiation = new SizesInstantiation();
-            for(AbraTypeOrPlaceHolderNameRef constExpr:funcStmt.getFuncSignature().getTypeOrPlaceHolderNameRefList()){
+            for(QuplaTypeOrPlaceHolderNameRef constExpr:funcStmt.getFuncSignature().getTypeOrPlaceHolderNameRefList()){
                 sizesInstantiation.add(constExpr.getResolvedSize());
             }
             return Collections.singletonList(sizesInstantiation);
@@ -1379,44 +1376,44 @@ public class AbraPsiImplUtil {
         return resp.size()==0?null:resp;
     }
 
-    public static AbraFuncStmt getFuncStmt(AbraFuncExpr funcExpr){
+    public static QuplaFuncStmt getFuncStmt(QuplaFuncExpr funcExpr){
         PsiElement e = funcExpr;
-        while(!(e instanceof AbraFuncStmt))e = e.getParent();
-        return (AbraFuncStmt) e;
+        while(!(e instanceof QuplaFuncStmt))e = e.getParent();
+        return (QuplaFuncStmt) e;
     }
 
-    public static List<SizesInstantiation> getAllSizesInstantiation(AbraFuncExpr funcExpr){
+    public static List<SizesInstantiation> getAllSizesInstantiation(QuplaFuncExpr funcExpr){
         if(funcExpr.getTypeOrPlaceHolderNameRefList().size()==0){
             return new ArrayList<>();
         }
         if(!funcExpr.isInTemplate()){
             SizesInstantiation sizesInstantiation = new SizesInstantiation();
-            for(AbraTypeOrPlaceHolderNameRef typeOrPlaceHolderNameRef:funcExpr.getTypeOrPlaceHolderNameRefList()){
+            for(QuplaTypeOrPlaceHolderNameRef typeOrPlaceHolderNameRef:funcExpr.getTypeOrPlaceHolderNameRefList()){
                 sizesInstantiation.add(typeOrPlaceHolderNameRef.getResolvedSize());
             }
             return Collections.singletonList(sizesInstantiation);
         }
-        AbraTemplateStmt templateStmt = (AbraTemplateStmt) funcExpr.getFuncStmt().getParent();
-        AbraTypeInstantiation[] allTemplateInstantiations = templateStmt.getAllTypeInstantiation();
+        QuplaTemplateStmt templateStmt = (QuplaTemplateStmt) funcExpr.getFuncStmt().getParent();
+        QuplaTypeInstantiation[] allTemplateInstantiations = templateStmt.getAllTypeInstantiation();
         ArrayList<SizesInstantiation> resp = typesToSizesInstantiations(funcExpr.getTypeOrPlaceHolderNameRefList(), templateStmt, allTemplateInstantiations);
         return resp;
     }
 
-    public static boolean isInTemplate(AbraFuncExpr funcExpr){
+    public static boolean isInTemplate(QuplaFuncExpr funcExpr){
         PsiElement e = funcExpr.getParent();
-        while(! ((e instanceof AbraFuncStmt)||(e instanceof AbraTestStmt)))
+        while(! ((e instanceof QuplaFuncStmt)||(e instanceof QuplaTestStmt)))
             e = e.getParent();
-        if(e instanceof AbraTestStmt) return false;
-        if(e instanceof AbraFuncStmt) return isInTemplate((AbraFuncStmt)e);
+        if(e instanceof QuplaTestStmt) return false;
+        if(e instanceof QuplaFuncStmt) return isInTemplate((QuplaFuncStmt)e);
         return false;
 
     }
     @NotNull
-    public static ArrayList<SizesInstantiation> typesToSizesInstantiations(List<AbraTypeOrPlaceHolderNameRef> typeOrPlaceHolderNameRefs, AbraTemplateStmt templateStmt, AbraTypeInstantiation[] allTemplateInstantiations) {
+    public static ArrayList<SizesInstantiation> typesToSizesInstantiations(List<QuplaTypeOrPlaceHolderNameRef> typeOrPlaceHolderNameRefs, QuplaTemplateStmt templateStmt, QuplaTypeInstantiation[] allTemplateInstantiations) {
         ArrayList<SizesInstantiation> resp = new ArrayList<>();
-        for(AbraTypeInstantiation typeInstantiation:allTemplateInstantiations){
+        for(QuplaTypeInstantiation typeInstantiation:allTemplateInstantiations){
             SizesInstantiation sizesInstantiation = new SizesInstantiation();
-            for(AbraTypeOrPlaceHolderNameRef typeOrPlaceHolderNameRef:typeOrPlaceHolderNameRefs){
+            for(QuplaTypeOrPlaceHolderNameRef typeOrPlaceHolderNameRef:typeOrPlaceHolderNameRefs){
                 sizesInstantiation.add(getResolvedSize2(typeOrPlaceHolderNameRef,getResolutionMap(templateStmt,typeInstantiation),templateStmt));
             }
             resp.add(sizesInstantiation);
@@ -1424,11 +1421,11 @@ public class AbraPsiImplUtil {
         return resp;
     }
 
-    public static Map<String,Integer> getResolutionMap(AbraTemplateStmt templateStmt, AbraTypeInstantiation typeInstantiation){
+    public static Map<String,Integer> getResolutionMap(QuplaTemplateStmt templateStmt, QuplaTypeInstantiation typeInstantiation){
         HashMap<String,Integer> map = new HashMap<>();
         int i=0;
-        for(AbraTypeNameRef typeNameRef:typeInstantiation.getTypeNameRefList()) {
-            AbraTypeName typeName = (AbraTypeName) typeNameRef.getReference().resolve();
+        for(QuplaTypeNameRef typeNameRef:typeInstantiation.getTypeNameRefList()) {
+            QuplaTypeName typeName = (QuplaTypeName) typeNameRef.getReference().resolve();
             if(typeName!=null) {
                 map.put(templateStmt.getPlaceHolderTypeNameList().get(i).getText(), typeName.getResolvedSize());
             }else {
@@ -1436,75 +1433,75 @@ public class AbraPsiImplUtil {
             }
             i++;
         }
-        for(AbraTypeStmt typeStmt:templateStmt.getTypeStmtList()){
+        for(QuplaTypeStmt typeStmt:templateStmt.getTypeStmtList()){
             if(typeStmt.getTypeSize()!=null) {
                 map.put(typeStmt.getTypeName().getText(), getResolvedSize2(typeStmt.getTypeSize().getConstExpr(), map, templateStmt));
             }
         }
         return map;
     }
-    public static AbraTypeInstantiation[] getAllTypeInstantiation(AbraTemplateStmt templateStmt){
-        Collection<AbraFile> allAbraFiles = templateStmt.getProject().getComponent(QuplaModuleManager.class).getAllVisibleFiles((AbraFile) templateStmt.getContainingFile());
-        ArrayList<AbraTypeInstantiation> allTypeInstantiation = new ArrayList<>();
-        for(AbraFile abraFile:allAbraFiles){
-            if(abraFile.equals(templateStmt.getContainingFile()) || abraFile.isImporting((AbraFile) templateStmt.getContainingFile())){
-                for (ASTNode stmt : abraFile.getNode().getChildren(TokenSet.create(AbraTypes.USE_STMT))) {
-                        if (((AbraUseStmt) stmt.getPsi()).getTemplateNameRef().getText().equals(templateStmt.getTemplateName().getText())) {
-                            allTypeInstantiation.addAll(((AbraUseStmt) stmt.getPsi()).getTypeInstantiationList());
+    public static QuplaTypeInstantiation[] getAllTypeInstantiation(QuplaTemplateStmt templateStmt){
+        Collection<QuplaFile> allQuplaFiles = templateStmt.getProject().getComponent(QuplaModuleManager.class).getAllVisibleFiles((QuplaFile) templateStmt.getContainingFile());
+        ArrayList<QuplaTypeInstantiation> allTypeInstantiation = new ArrayList<>();
+        for(QuplaFile quplaFile : allQuplaFiles){
+            if(quplaFile.equals(templateStmt.getContainingFile()) || quplaFile.isImporting((QuplaFile) templateStmt.getContainingFile())){
+                for (ASTNode stmt : quplaFile.getNode().getChildren(TokenSet.create(QuplaTypes.USE_STMT))) {
+                        if (((QuplaUseStmt) stmt.getPsi()).getTemplateNameRef().getText().equals(templateStmt.getTemplateName().getText())) {
+                            allTypeInstantiation.addAll(((QuplaUseStmt) stmt.getPsi()).getTypeInstantiationList());
                         }
                     }
                 }
         }
-        AbraTypeInstantiation[] arr = new AbraTypeInstantiation[allTypeInstantiation.size()];
+        QuplaTypeInstantiation[] arr = new QuplaTypeInstantiation[allTypeInstantiation.size()];
         allTypeInstantiation.toArray(arr);
         return arr;
     }
 
-    public static AbraTypeInstantiation[] getAllTypeInstantiation(AbraFuncStmt funcStmt){
-        if(funcStmt.getParent() instanceof AbraTemplateStmt){
-                return getAllTypeInstantiation((AbraTemplateStmt) funcStmt.getParent());
+    public static QuplaTypeInstantiation[] getAllTypeInstantiation(QuplaFuncStmt funcStmt){
+        if(funcStmt.getParent() instanceof QuplaTemplateStmt){
+                return getAllTypeInstantiation((QuplaTemplateStmt) funcStmt.getParent());
             }
-        return new AbraTypeInstantiation[]{};
+        return new QuplaTypeInstantiation[]{};
     }
 
-    public static List<AbraFuncStmt> findAllFuncStmt(Project project, String name){
-        ArrayList<AbraFuncStmt> resp = new ArrayList<>();
-        for(AbraFile abraFile:project.getComponent(QuplaModuleManager.class).getAllAbraFiles()){
-            resp.addAll(abraFile.findAllFuncStmt(name));
+    public static List<QuplaFuncStmt> findAllFuncStmt(Project project, String name){
+        ArrayList<QuplaFuncStmt> resp = new ArrayList<>();
+        for(QuplaFile quplaFile :project.getComponent(QuplaModuleManager.class).getAllAbraFiles()){
+            resp.addAll(quplaFile.findAllFuncStmt(name));
         }
         return resp;
     }
 
-    public static List<AbraFuncNameRef> findAllFuncNameRef(Project project, String name){
-        ArrayList<AbraFuncNameRef> resp = new ArrayList<>();
-        for(AbraFile abraFile:project.getComponent(QuplaModuleManager.class).getAllAbraFiles()){
-            resp.addAll(abraFile.findAllFuncNameRef(name));
+    public static List<QuplaFuncNameRef> findAllFuncNameRef(Project project, String name){
+        ArrayList<QuplaFuncNameRef> resp = new ArrayList<>();
+        for(QuplaFile quplaFile :project.getComponent(QuplaModuleManager.class).getAllAbraFiles()){
+            resp.addAll(quplaFile.findAllFuncNameRef(name));
         }
         return resp;
     }
 
-    public static List<AbraFuncName> findAllFuncName(Project project, String name, List<AbraFile> files) {
-        ArrayList<AbraFuncName> resp = new ArrayList<>();
+    public static List<QuplaFuncName> findAllFuncName(Project project, String name, List<QuplaFile> files) {
+        ArrayList<QuplaFuncName> resp = new ArrayList<>();
         if (files == null) {
-            for(AbraFile abraFile:project.getComponent(QuplaModuleManager.class).getAllAbraFiles()){
-                resp.addAll(abraFile.findAllFuncName(name));
+            for(QuplaFile quplaFile :project.getComponent(QuplaModuleManager.class).getAllAbraFiles()){
+                resp.addAll(quplaFile.findAllFuncName(name));
             }
         } else {
-            for (AbraFile f : files) {
+            for (QuplaFile f : files) {
                 resp.addAll(f.findAllFuncName(name));
             }
         }
         return resp;
     }
 
-    public static List<AbraTypeName> findAllTypeName(Project project, String name, List<AbraFile> files) {
-        ArrayList<AbraTypeName> resp = new ArrayList<>();
+    public static List<QuplaTypeName> findAllTypeName(Project project, String name, List<QuplaFile> files) {
+        ArrayList<QuplaTypeName> resp = new ArrayList<>();
         if (files == null) {
-            for(AbraFile abraFile:project.getComponent(QuplaModuleManager.class).getAllAbraFiles()){
-                resp.addAll(abraFile.findAllTypeName(name));
+            for(QuplaFile quplaFile :project.getComponent(QuplaModuleManager.class).getAllAbraFiles()){
+                resp.addAll(quplaFile.findAllTypeName(name));
             }
         } else {
-            for (AbraFile f : files) {
+            for (QuplaFile f : files) {
                 resp.addAll(f.findAllTypeName(name));
             }
         }

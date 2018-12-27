@@ -31,9 +31,9 @@ public class QuplaInterpreterRunConfiguration extends ApplicationConfiguration {
     private boolean tree = false;
     private boolean fpga = false;
 
-    private AbraFile targetModule = null;
-    private AbraFuncStmt targetFunc = null;
-    private AbraTypeInstantiation targetTypeInstantiation = null;
+    private QuplaFile targetModule = null;
+    private QuplaFuncStmt targetFunc = null;
+    private QuplaTypeInstantiation targetTypeInstantiation = null;
     String[] args;
 
     protected QuplaInterpreterRunConfiguration(Project project, ConfigurationFactory factory, String name) {
@@ -62,16 +62,16 @@ public class QuplaInterpreterRunConfiguration extends ApplicationConfiguration {
 
         if (targetFunc != null) {
             String funcName = null;
-            if (targetFunc instanceof AbraUseStmt) {
-                funcName = ((AbraUseStmt) targetFunc).getTemplateNameRef().getText();
-            } else if (targetFunc instanceof AbraFuncStmt) {
+            if (targetFunc instanceof QuplaUseStmt) {
+                funcName = ((QuplaUseStmt) targetFunc).getTemplateNameRef().getText();
+            } else if (targetFunc instanceof QuplaFuncStmt) {
                 funcName = targetFunc.getFuncSignature().getFuncName().getText();
             }
             if (funcName == null) {
                 throw new RuntimeConfigurationException("Element " + targetFunc.getText() + " is not a valid evaluation target");
             }
             boolean foundTargetFunc = false;
-            for (AbraFuncStmt n : targetModule.getAllFuncStmts()) {
+            for (QuplaFuncStmt n : targetModule.getAllFuncStmts()) {
                 if (n.getFuncSignature().getFuncName().getText().equals(funcName)) {
                     foundTargetFunc = true;
                     break;
@@ -156,27 +156,27 @@ public class QuplaInterpreterRunConfiguration extends ApplicationConfiguration {
         this.fpga = fpga;
     }
 
-    public AbraFile getTargetModule() {
+    public QuplaFile getTargetModule() {
         return targetModule;
     }
 
-    public void setTargetModule(AbraFile targetModule) {
+    public void setTargetModule(QuplaFile targetModule) {
         this.targetModule = targetModule;
     }
 
-    public AbraFuncStmt getTargetFunc() {
+    public QuplaFuncStmt getTargetFunc() {
         return targetFunc;
     }
 
-    public void setTargetFunc(AbraFuncStmt targetFunc) {
+    public void setTargetFunc(QuplaFuncStmt targetFunc) {
         this.targetFunc = targetFunc;
     }
 
-    public AbraTypeInstantiation getTargetTypeInstantiation() {
+    public QuplaTypeInstantiation getTargetTypeInstantiation() {
         return targetTypeInstantiation;
     }
 
-    public void setTargetTypeInstantiation(AbraTypeInstantiation targetTypeInstantiation) {
+    public void setTargetTypeInstantiation(QuplaTypeInstantiation targetTypeInstantiation) {
         this.targetTypeInstantiation = targetTypeInstantiation;
     }
 
@@ -207,7 +207,7 @@ public class QuplaInterpreterRunConfiguration extends ApplicationConfiguration {
                     element.setAttribute("targetModule", targetModule.getImportableFilePath());
                     if (targetFunc != null) {
                         if (targetFunc.isInTemplate()) {
-                            element.setAttribute("targetFunc", ((AbraTemplateStmt) targetFunc.getParent()).getTemplateName().getText() + ":" + targetFunc.getFuncSignature().getFuncName().getText());
+                            element.setAttribute("targetFunc", ((QuplaTemplateStmt) targetFunc.getParent()).getTemplateName().getText() + ":" + targetFunc.getFuncSignature().getFuncName().getText());
                         } else {
                             element.setAttribute("targetFunc", targetFunc.getFuncSignature().getFuncName().getText());
                         }
@@ -246,7 +246,7 @@ public class QuplaInterpreterRunConfiguration extends ApplicationConfiguration {
                 trim = attributeEquals("trim","true");
                 Attribute targetMod = element.getAttribute("targetModule");
                 if (targetMod != null) {
-                    targetModule = AbraPsiImplUtil.findFileForPath(getProject(), targetMod.getValue());
+                    targetModule = QuplaPsiImplUtil.findFileForPath(getProject(), targetMod.getValue());
                     if (targetModule != null) {
                         Attribute targetF = element.getAttribute("targetFunc");
                         if (targetF != null) {
@@ -254,11 +254,11 @@ public class QuplaInterpreterRunConfiguration extends ApplicationConfiguration {
                             if (tmp.contains(":")) {
                                 String tmpl_name = tmp.substring(0, tmp.indexOf(":"));
                                 String func_name = tmp.substring(tmp.indexOf(":") + 1);
-                                AbraTemplateStmt tmpl = targetModule.getTemplate(tmpl_name);
+                                QuplaTemplateStmt tmpl = targetModule.getTemplate(tmpl_name);
                                 if (tmpl != null) {
-                                    for (ASTNode stmt : tmpl.getNode().getChildren(TokenSet.create(AbraTypes.FUNC_STMT))) {
-                                        if (((AbraFuncStmt) stmt.getPsi()).getFuncSignature().getFuncName().getText().equals(func_name)) {
-                                            targetFunc = (AbraFuncStmt) stmt.getPsi();
+                                    for (ASTNode stmt : tmpl.getNode().getChildren(TokenSet.create(QuplaTypes.FUNC_STMT))) {
+                                        if (((QuplaFuncStmt) stmt.getPsi()).getFuncSignature().getFuncName().getText().equals(func_name)) {
+                                            targetFunc = (QuplaFuncStmt) stmt.getPsi();
                                             break;
                                         }
                                     }
@@ -272,7 +272,7 @@ public class QuplaInterpreterRunConfiguration extends ApplicationConfiguration {
                                     Attribute targetType = element.getAttribute("targetTypeInstantiation");
                                     if (targetType != null) {
                                         String tmp2 = "<" + targetType.getValue() + ">";
-                                        for (AbraTypeInstantiation typInst : targetFunc.getAllTypeInstantiation()) {
+                                        for (QuplaTypeInstantiation typInst : targetFunc.getAllTypeInstantiation()) {
                                             if (tmp2.equals(typInst.getText())) {
                                                 targetTypeInstantiation = typInst;
                                                 break;

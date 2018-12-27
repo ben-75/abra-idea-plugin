@@ -3,10 +3,10 @@ package org.abra.ide.tools;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiReference;
 import com.intellij.refactoring.rename.RenamePsiElementProcessor;
-import org.abra.language.psi.AbraFuncName;
-import org.abra.language.psi.AbraFuncNameRef;
-import org.abra.language.psi.AbraFuncStmt;
-import org.abra.language.psi.AbraPsiImplUtil;
+import org.abra.language.psi.QuplaFuncName;
+import org.abra.language.psi.QuplaFuncNameRef;
+import org.abra.language.psi.QuplaFuncStmt;
+import org.abra.language.psi.QuplaPsiImplUtil;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
@@ -17,15 +17,15 @@ public class RenameFuncNameProcessor extends RenamePsiElementProcessor {
 
     @Override
     public boolean canProcessElement(@NotNull PsiElement element) {
-        return (element instanceof AbraFuncName) || (element instanceof AbraFuncNameRef);
+        return (element instanceof QuplaFuncName) || (element instanceof QuplaFuncNameRef);
     }
 
     @Override
     public void prepareRenaming(@NotNull PsiElement element, @NotNull String newName, @NotNull Map<PsiElement, String> allRenames) {
-        for(AbraFuncStmt funcStmt: AbraPsiImplUtil.findAllFuncStmt(element.getProject(),element.getText())){
+        for(QuplaFuncStmt funcStmt: QuplaPsiImplUtil.findAllFuncStmt(element.getProject(),element.getText())){
             allRenames.put(funcStmt.getFuncSignature().getFuncName(),newName);
         }
-//        for(AbraFuncNameRef funcNameRef: AbraPsiImplUtil.findAllFuncNameRef(element.getProject(),element.getText())){
+//        for(QuplaFuncNameRef funcNameRef: QuplaPsiImplUtil.findAllFuncNameRef(element.getProject(),element.getText())){
 //            allRenames.put(funcNameRef,newName);
 //        }
         super.prepareRenaming(element,newName,allRenames);
@@ -35,7 +35,7 @@ public class RenameFuncNameProcessor extends RenamePsiElementProcessor {
     @Override
     public Collection<PsiReference> findReferences(@NotNull PsiElement element) {
         ArrayList<PsiReference> allRefs = new ArrayList<>();
-        for(AbraFuncNameRef funcNameRef: AbraPsiImplUtil.findAllFuncNameRef(element.getProject(),element.getText())){
+        for(QuplaFuncNameRef funcNameRef: QuplaPsiImplUtil.findAllFuncNameRef(element.getProject(),element.getText())){
             allRefs.add(funcNameRef.getReference());
         }
         return allRefs;

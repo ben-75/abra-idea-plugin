@@ -11,33 +11,33 @@ import org.jetbrains.annotations.Nullable;
 import javax.swing.*;
 import java.util.HashMap;
 
-public class AbraFunctionInstanciation implements StructureViewTreeElement {
+public class QuplaFunctionInstanciation implements StructureViewTreeElement {
 
-    private final AbraFuncStmt funcStmt;
-    private final AbraTypeInstantiation typeInstantiation;
-    private final AbraTemplateStmt templateStmt;
+    private final QuplaFuncStmt funcStmt;
+    private final QuplaTypeInstantiation typeInstantiation;
+    private final QuplaTemplateStmt templateStmt;
     private final String name;
     private final String locationString;
-    public AbraFunctionInstanciation(AbraFuncStmt funcStmt, AbraTypeInstantiation typeInstantiation, AbraTemplateStmt templateStmt) {
+    public QuplaFunctionInstanciation(QuplaFuncStmt funcStmt, QuplaTypeInstantiation typeInstantiation, QuplaTemplateStmt templateStmt) {
         this.funcStmt = funcStmt;
         this.typeInstantiation = typeInstantiation;
         this.templateStmt = templateStmt;
         this.name = typeInstantiation.getText().substring(1,typeInstantiation.getTextLength()-1);
-        AbraTypeName typeName = (AbraTypeName) typeInstantiation.getTypeNameRefList().get(0).getReference().resolve();
+        QuplaTypeName typeName = (QuplaTypeName) typeInstantiation.getTypeNameRefList().get(0).getReference().resolve();
         if(typeName!=null){
             HashMap<String,Integer> map = new HashMap<>();
             map.put(templateStmt.getPlaceHolderTypeNameList().get(0).getText(), typeName.getResolvedSize());
-            for(AbraTypeStmt localTypeStmt:templateStmt.getTypeStmtList()){
+            for(QuplaTypeStmt localTypeStmt:templateStmt.getTypeStmtList()){
                 if(localTypeStmt.getTypeSize()!=null)
-                    map.put(localTypeStmt.getTypeName().getText(),AbraPsiImplUtil.getResolvedSize2(localTypeStmt.getTypeSize().getConstExpr(),map,templateStmt));
+                    map.put(localTypeStmt.getTypeName().getText(), QuplaPsiImplUtil.getResolvedSize2(localTypeStmt.getTypeSize().getConstExpr(),map,templateStmt));
             }
             StringBuilder sb = new StringBuilder("( ");
 
 
             int i=0;
-            for(AbraFuncParameter p:funcStmt.getFuncSignature().getFuncParameterList()){
+            for(QuplaFuncParameter p:funcStmt.getFuncSignature().getFuncParameterList()){
                 try{
-                    int sz = AbraPsiImplUtil.getResolvedSize2(p.getTypeOrPlaceHolderNameRef(),map,templateStmt);
+                    int sz = QuplaPsiImplUtil.getResolvedSize2(p.getTypeOrPlaceHolderNameRef(),map,templateStmt);
                     sb.append(sz<=0?p.getTypeOrPlaceHolderNameRef().getText():sz);
                 }catch (UnresolvableTokenException e){
                     sb.append("[?]");
@@ -48,7 +48,7 @@ public class AbraFunctionInstanciation implements StructureViewTreeElement {
             sb.append(" ) -> ");
             if(funcStmt.getFuncSignature().getTypeOrPlaceHolderNameRefList().size()>0){
                 try{
-                    int sz = AbraPsiImplUtil.getResolvedSize2(funcStmt.getFuncSignature().getTypeOrPlaceHolderNameRefList().get(0),map,templateStmt);
+                    int sz = QuplaPsiImplUtil.getResolvedSize2(funcStmt.getFuncSignature().getTypeOrPlaceHolderNameRefList().get(0),map,templateStmt);
                     sb.append(sz<=0?funcStmt.getFuncSignature().getTypeOrPlaceHolderNameRefList().get(0).getText():sz);
                 }catch (UnresolvableTokenException e){
                     sb.append("[?]");

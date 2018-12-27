@@ -7,8 +7,8 @@ import com.intellij.lang.findUsages.FindUsagesProvider;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiNamedElement;
 import com.intellij.psi.tree.TokenSet;
-import org.abra.language.AbraLexerAdapter;
-import org.abra.language.psi.AbraTypes;
+import org.abra.language.QuplaLexerAdapter;
+import org.abra.language.psi.QuplaTypes;
 import org.jetbrains.annotations.NotNull;
 
 public class QuplaFindUsagesProvider implements FindUsagesProvider {
@@ -36,6 +36,6 @@ public class QuplaFindUsagesProvider implements FindUsagesProvider {
     }
 
     public WordsScanner getWordsScanner() {
-        return new DefaultWordsScanner(new AbraLexerAdapter(), TokenSet.create(AbraTypes.FUNC_NAME_REF), TokenSet.create(AbraTypes.COMMENT), TokenSet.create(AbraTypes.INTEGER, AbraTypes.ONE, AbraTypes.ZERO, AbraTypes.MINUS));
+        return new DefaultWordsScanner(new QuplaLexerAdapter(), TokenSet.create(QuplaTypes.FUNC_NAME_REF), TokenSet.create(QuplaTypes.COMMENT), TokenSet.create(QuplaTypes.INTEGER, QuplaTypes.ONE, QuplaTypes.ZERO, QuplaTypes.MINUS));
     }
 }

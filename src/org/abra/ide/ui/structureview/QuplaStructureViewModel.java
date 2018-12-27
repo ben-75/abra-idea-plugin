@@ -5,7 +5,7 @@ import com.intellij.ide.structureView.StructureViewModelBase;
 import com.intellij.ide.structureView.StructureViewTreeElement;
 import com.intellij.ide.util.treeView.smartTree.Sorter;
 import com.intellij.psi.PsiFile;
-import org.abra.language.psi.AbraFile;
+import org.abra.language.psi.QuplaFile;
 import org.jetbrains.annotations.NotNull;
 
 public class QuplaStructureViewModel extends StructureViewModelBase implements
@@ -27,6 +27,6 @@ public class QuplaStructureViewModel extends StructureViewModelBase implements
 
     @Override
     public boolean isAlwaysLeaf(StructureViewTreeElement element) {
-        return element instanceof AbraFile;
+        return element instanceof QuplaFile;
     }
 }

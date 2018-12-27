@@ -7,8 +7,8 @@ import com.intellij.openapi.editor.colors.TextAttributesKey;
 import com.intellij.openapi.fileTypes.SyntaxHighlighterBase;
 import com.intellij.psi.TokenType;
 import com.intellij.psi.tree.IElementType;
-import org.abra.language.AbraLexerAdapter;
-import org.abra.language.psi.AbraTypes;
+import org.abra.language.QuplaLexerAdapter;
+import org.abra.language.psi.QuplaTypes;
 import org.jetbrains.annotations.NotNull;
 
 import static com.intellij.openapi.editor.DefaultLanguageHighlighterColors.KEYWORD;
@@ -73,45 +73,45 @@ public class QuplaSyntaxHighlighter extends SyntaxHighlighterBase  {
     @NotNull
     @Override
     public Lexer getHighlightingLexer() {
-        return new AbraLexerAdapter();
+        return new QuplaLexerAdapter();
     }
 
     @NotNull
     @Override
     public TextAttributesKey[] getTokenHighlights(IElementType tokenType) {
-        if (tokenType.equals(AbraTypes.TEMPLATE_KEYWORD)) {
+        if (tokenType.equals(QuplaTypes.TEMPLATE_KEYWORD)) {
             return KEYWORD_KEYS;
-        }else if (tokenType.equals(AbraTypes.FUNC_KEYWORD)) {
+        }else if (tokenType.equals(QuplaTypes.FUNC_KEYWORD)) {
             return KEYWORD_KEYS;
-        }else if (tokenType.equals(AbraTypes.LUT_KEYWORD)) {
+        }else if (tokenType.equals(QuplaTypes.LUT_KEYWORD)) {
             return KEYWORD_KEYS;
-        }else if (tokenType.equals(AbraTypes.RETURN_KEYWORD)) {
+        }else if (tokenType.equals(QuplaTypes.RETURN_KEYWORD)) {
             return KEYWORD_KEYS;
-        }else if (tokenType.equals(AbraTypes.IMPORT_KEYWORD)) {
+        }else if (tokenType.equals(QuplaTypes.IMPORT_KEYWORD)) {
             return KEYWORD_KEYS;
-        }else if (tokenType.equals(AbraTypes.TYPE_KEYWORD)) {
+        }else if (tokenType.equals(QuplaTypes.TYPE_KEYWORD)) {
             return KEYWORD_KEYS;
-        }else if (tokenType.equals(AbraTypes.USE_KEYWORD)) {
+        }else if (tokenType.equals(QuplaTypes.USE_KEYWORD)) {
             return KEYWORD_KEYS;
-        }else if (tokenType.equals(AbraTypes.STATE_KEYWORD)) {
+        }else if (tokenType.equals(QuplaTypes.STATE_KEYWORD)) {
             return KEYWORD_KEYS;
-        }else if (tokenType.equals(AbraTypes.JOIN_KEYWORD)) {
+        }else if (tokenType.equals(QuplaTypes.JOIN_KEYWORD)) {
             return ENV_KEYWORD_KEYS;
-        }else if (tokenType.equals(AbraTypes.LIMIT_KEYWORD)) {
+        }else if (tokenType.equals(QuplaTypes.LIMIT_KEYWORD)) {
             return ENV_KEYWORD_KEYS;
-        }else if (tokenType.equals(AbraTypes.AFFECT_KEYWORD)) {
+        }else if (tokenType.equals(QuplaTypes.AFFECT_KEYWORD)) {
             return ENV_KEYWORD_KEYS;
-        }else if (tokenType.equals(AbraTypes.DELAY_KEYWORD)) {
+        }else if (tokenType.equals(QuplaTypes.DELAY_KEYWORD)) {
             return ENV_KEYWORD_KEYS;
-        }else if (tokenType.equals(AbraTypes.COMMENT)) {
+        }else if (tokenType.equals(QuplaTypes.COMMENT)) {
             return COMMENT_KEYS;
-        }else if (tokenType.equals(AbraTypes.TEST_KEYWORD)) {
+        }else if (tokenType.equals(QuplaTypes.TEST_KEYWORD)) {
             return TEST_ASSERT_KEYS;
-        }else if (tokenType.equals(AbraTypes.EVAL_KEYWORD)) {
+        }else if (tokenType.equals(QuplaTypes.EVAL_KEYWORD)) {
             return TEST_ASSERT_KEYS;
-        }else if (tokenType.equals(AbraTypes.NULL_KEYWORD)) {
+        }else if (tokenType.equals(QuplaTypes.NULL_KEYWORD)) {
             return KEYWORD_KEYS;
-        }else if (tokenType.equals(AbraTypes.TRIT)) {
+        }else if (tokenType.equals(QuplaTypes.TRIT)) {
             return TRIT_KEYS;
         }else if (tokenType.equals(TokenType.BAD_CHARACTER)) {
             return BAD_CHAR_KEYS;

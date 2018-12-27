@@ -6,8 +6,8 @@ import com.intellij.codeInsight.completion.CompletionResultSet;
 import com.intellij.codeInsight.lookup.LookupElementBuilder;
 import com.intellij.psi.PsiElement;
 import com.intellij.util.ProcessingContext;
-import org.abra.language.psi.AbraFile;
-import org.abra.language.psi.AbraTemplateStmt;
+import org.abra.language.psi.QuplaFile;
+import org.abra.language.psi.QuplaTemplateStmt;
 import org.jetbrains.annotations.NotNull;
 
 public class QuplaKeywordCompletionProvider extends CompletionProvider<CompletionParameters> {
@@ -19,7 +19,7 @@ public class QuplaKeywordCompletionProvider extends CompletionProvider<Completio
     }
 
     void addCompletionsForOriginalParent(@NotNull PsiElement originalParent, @NotNull CompletionResultSet resultSet) {
-        if(originalParent instanceof AbraFile){
+        if(originalParent instanceof QuplaFile){
             resultSet.addElement(LookupElementBuilder.create("func "));
             resultSet.addElement(LookupElementBuilder.create("type "));
             resultSet.addElement(LookupElementBuilder.create("import "));
@@ -27,7 +27,7 @@ public class QuplaKeywordCompletionProvider extends CompletionProvider<Completio
             resultSet.addElement(LookupElementBuilder.create("template "));
             resultSet.addElement(LookupElementBuilder.create("eval "));
             resultSet.addElement(LookupElementBuilder.create("test "));
-        }else if(originalParent instanceof AbraTemplateStmt){
+        }else if(originalParent instanceof QuplaTemplateStmt){
             resultSet.addElement(LookupElementBuilder.create("func "));
             resultSet.addElement(LookupElementBuilder.create("type "));
         }

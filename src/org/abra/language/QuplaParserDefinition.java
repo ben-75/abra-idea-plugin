@@ -5,22 +5,22 @@ import com.intellij.lexer.Lexer;
 import com.intellij.openapi.project.Project;
 import com.intellij.psi.*;
 import com.intellij.psi.tree.*;
-import org.abra.language.parser.AbraParser;
-import org.abra.language.psi.AbraFile;
-import org.abra.language.psi.AbraTypes;
+import org.abra.language.parser.QuplaParser;
+import org.abra.language.psi.QuplaFile;
+import org.abra.language.psi.QuplaTypes;
 import org.jetbrains.annotations.NotNull;
 
-public class AbraParserDefinition implements ParserDefinition {
+public class QuplaParserDefinition implements ParserDefinition {
     public static final TokenSet WHITE_SPACES = TokenSet.create(TokenType.WHITE_SPACE);
-//    public static final TokenSet COMMENTS = TokenSet.create(AbraTypes.COMMENT,AbraTypes.TEST_COMMENT,AbraTypes.TEST_ASSERTION,AbraTypes.EXPR_COMMENT,AbraTypes.EXPR_ASSERTION);
-    public static final TokenSet COMMENTS = TokenSet.create(AbraTypes.COMMENT);
+//    public static final TokenSet COMMENTS = TokenSet.create(QuplaTypes.COMMENT,QuplaTypes.TEST_COMMENT,QuplaTypes.TEST_ASSERTION,QuplaTypes.EXPR_COMMENT,QuplaTypes.EXPR_ASSERTION);
+    public static final TokenSet COMMENTS = TokenSet.create(QuplaTypes.COMMENT);
 
-    public static final IFileElementType FILE = new IFileElementType(AbraLanguage.INSTANCE);
+    public static final IFileElementType FILE = new IFileElementType(QuplaLanguage.INSTANCE);
 
     @NotNull
     @Override
     public Lexer createLexer(Project project) {
-        return new AbraLexerAdapter();
+        return new QuplaLexerAdapter();
     }
 
     @NotNull
@@ -40,7 +40,7 @@ public class AbraParserDefinition implements ParserDefinition {
 
     @NotNull
     public PsiParser createParser(final Project project) {
-        return new AbraParser();
+        return new QuplaParser();
     }
 
     @Override
@@ -49,7 +49,7 @@ public class AbraParserDefinition implements ParserDefinition {
     }
 
     public PsiFile createFile(FileViewProvider viewProvider) {
-        return new AbraFile(viewProvider);
+        return new QuplaFile(viewProvider);
     }
 
     @SuppressWarnings("deprecated")
@@ -59,6 +59,6 @@ public class AbraParserDefinition implements ParserDefinition {
 
     @NotNull
     public PsiElement createElement(ASTNode node) {
-        return AbraTypes.Factory.createElement(node);
+        return QuplaTypes.Factory.createElement(node);
     }
 }

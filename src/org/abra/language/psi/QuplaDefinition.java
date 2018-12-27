@@ -4,7 +4,7 @@ import com.intellij.navigation.ItemPresentation;
 import com.intellij.psi.NavigatablePsiElement;
 import org.jetbrains.annotations.NotNull;
 
-public interface AbraDefinition extends NavigatablePsiElement {
+public interface QuplaDefinition extends NavigatablePsiElement {
 
     @NotNull
     @Override

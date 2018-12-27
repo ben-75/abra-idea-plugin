@@ -11,10 +11,10 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 
-public class AbraStateVarPsiReferenceImpl extends PsiReferenceBase implements PsiReference {
+public class QuplaStateVarPsiReferenceImpl extends PsiReferenceBase implements PsiReference {
 
 
-    public AbraStateVarPsiReferenceImpl(@NotNull PsiElement element) {
+    public QuplaStateVarPsiReferenceImpl(@NotNull PsiElement element) {
         super(element);
     }
 
@@ -27,7 +27,7 @@ public class AbraStateVarPsiReferenceImpl extends PsiReferenceBase implements Ps
 
     @Override
     public PsiElement handleElementRename(String newElementName) throws IncorrectOperationException {
-        AbraVarName stateVarRef = AbraElementFactory.createAbraVarName(myElement.getProject(), newElementName);
+        QuplaVarName stateVarRef = QuplaElementFactory.createAbraVarName(myElement.getProject(), newElementName);
         ASTNode newKeyNode = stateVarRef.getFirstChild().getNode();
         myElement.getNode().replaceChild(myElement.getFirstChild().getNode(), newKeyNode);
         return stateVarRef;
@@ -37,11 +37,11 @@ public class AbraStateVarPsiReferenceImpl extends PsiReferenceBase implements Ps
     @Override
     public PsiElement resolve() {
         PsiElement funcBody = myElement;
-        while(!(funcBody instanceof AbraFuncBody)){
+        while(!(funcBody instanceof QuplaFuncBody)){
             funcBody = funcBody.getParent();
         }
-        AbraFuncBody body = (AbraFuncBody)funcBody;
-        for(AbraStateExpr stateExpr:body.getStateExprList()){
+        QuplaFuncBody body = (QuplaFuncBody)funcBody;
+        for(QuplaStateExpr stateExpr:body.getStateExprList()){
             if(stateExpr.getVarName()!=myElement && stateExpr.getVarName().getText().equals(myElement.getText())){
                 return stateExpr.getVarName();
             }

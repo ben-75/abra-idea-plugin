@@ -4,77 +4,77 @@ import com.intellij.testFramework.fixtures.LightPlatformCodeInsightFixtureTestCa
 import org.abra.language.psi.*;
 import org.junit.Assert;
 
-public class AbraElementFactoryTest extends LightPlatformCodeInsightFixtureTestCase {
+public class QuplaElementFactoryTest extends LightPlatformCodeInsightFixtureTestCase {
 
     public void testCreateAbraTypeName(){
-        AbraTypeName ref = AbraElementFactory.createAbraTypeName(getProject(),"elem");
+        QuplaTypeName ref = QuplaElementFactory.createAbraTypeName(getProject(),"elem");
         Assert.assertEquals("elem",ref.getText());
     }
     public void testCreateAbraFieldName(){
-        AbraFieldName ref = AbraElementFactory.createAbraFieldName(getProject(),"elem");
+        QuplaFieldName ref = QuplaElementFactory.createAbraFieldName(getProject(),"elem");
         Assert.assertEquals("elem",ref.getText());
     }
     public void testCreateAbraFuncName(){
-        AbraFuncName ref = AbraElementFactory.createAbraFuncName(getProject(),"elem");
+        QuplaFuncName ref = QuplaElementFactory.createAbraFuncName(getProject(),"elem");
         Assert.assertEquals("elem",ref.getText());
     }
     public void testCreateAbraParamName(){
-        AbraParamName ref = AbraElementFactory.createAbraParamName(getProject(),"elem");
+        QuplaParamName ref = QuplaElementFactory.createAbraParamName(getProject(),"elem");
         Assert.assertEquals("elem",ref.getText());
     }
     public void testCreateAbraVarName(){
-        AbraVarName ref = AbraElementFactory.createAbraVarName(getProject(),"elem");
+        QuplaVarName ref = QuplaElementFactory.createAbraVarName(getProject(),"elem");
         Assert.assertEquals("elem",ref.getText());
     }
 
     public void testCreateAbraLutName(){
-        AbraLutName ref = AbraElementFactory.createAbraLutName(getProject(),"elem");
+        QuplaLutName ref = QuplaElementFactory.createAbraLutName(getProject(),"elem");
         Assert.assertEquals("elem",ref.getText());
     }
 
     public void testCreateAbraTemplateName(){
-        AbraTemplateName ref = AbraElementFactory.createAbraTemplateName(getProject(),"elem");
+        QuplaTemplateName ref = QuplaElementFactory.createAbraTemplateName(getProject(),"elem");
         Assert.assertEquals("elem",ref.getText());
     }
 
     public void testCreateAbraPlaceHolderName(){
-        AbraPlaceHolderTypeName ref = AbraElementFactory.createAbraPlaceHolderName(getProject(),"elem");
+        QuplaPlaceHolderTypeName ref = QuplaElementFactory.createAbraPlaceHolderName(getProject(),"elem");
         Assert.assertEquals("elem",ref.getText());
     }
 
 
     public void testCreateAbraFunctionReference(){
-        AbraFuncNameRef ref = AbraElementFactory.createAbraFunctionReference(getProject(),"elem");
+        QuplaFuncNameRef ref = QuplaElementFactory.createAbraFunctionReference(getProject(),"elem");
         Assert.assertEquals("elem",ref.getText());
     }
 
     public void testCreateAbraTypeNameRef(){
-        AbraTypeNameRef ref = AbraElementFactory.createAbraTypeNameRef(getProject(),"elem");
+        QuplaTypeNameRef ref = QuplaElementFactory.createAbraTypeNameRef(getProject(),"elem");
         Assert.assertEquals("elem",ref.getText());
     }
 
     public void testCreateAbraVarOrParamNameRef(){
-        AbraParamOrVarNameRef ref = AbraElementFactory.createAbraVarOrParamNameRef(getProject(),"elem");
+        QuplaParamOrVarNameRef ref = QuplaElementFactory.createAbraVarOrParamNameRef(getProject(),"elem");
         Assert.assertEquals("elem",ref.getText());
     }
 
     public void testCreateAbraLutOrParamOrVarRef(){
-        AbraLutOrParamOrVarNameRef ref = AbraElementFactory.createAbraLutOrParamOrVarRef(getProject(),"elem");
+        QuplaLutOrParamOrVarNameRef ref = QuplaElementFactory.createAbraLutOrParamOrVarRef(getProject(),"elem");
         Assert.assertEquals("elem",ref.getText());
     }
 
     public void testCreateAbraTemplateNameRef(){
-        AbraTemplateNameRef ref = AbraElementFactory.createAbraTemplateNameRef(getProject(),"elem");
+        QuplaTemplateNameRef ref = QuplaElementFactory.createAbraTemplateNameRef(getProject(),"elem");
         Assert.assertEquals("elem",ref.getText());
     }
 
     public void testCreateAbraTypeOrPlaceHolderNameRef(){
-        AbraTypeOrPlaceHolderNameRef ref = AbraElementFactory.createAbraTypeOrPlaceHolderNameRef(getProject(),"elem");
+        QuplaTypeOrPlaceHolderNameRef ref = QuplaElementFactory.createAbraTypeOrPlaceHolderNameRef(getProject(),"elem");
         Assert.assertEquals("elem",ref.getText());
     }
 
     public void testCreateAbraLutNameRef(){
-        AbraLutNameRef ref = AbraElementFactory.createAbraLutNameRef(getProject(),"elem");
+        QuplaLutNameRef ref = QuplaElementFactory.createAbraLutNameRef(getProject(),"elem");
         Assert.assertEquals("elem",ref.getText());
     }
 

@@ -4,7 +4,7 @@ import com.intellij.psi.tree.IElementType;
 
 import java.util.Stack;
 
-public class AbraContextualLexer {
+public class QuplaContextualLexer {
 
     public IElementType lastIdCategory = null;
 

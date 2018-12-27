@@ -1,18 +1,18 @@
 {
 
- parserClass="org.abra.language.parser.AbraParser"
+ parserClass="org.abra.language.parser.QuplaParser"
 
   extends="com.intellij.extapi.psi.ASTWrapperPsiElement"
 
-  psiClassPrefix="Abra"
+  psiClassPrefix="Qupla"
   psiImplClassSuffix="Impl"
   psiPackage="org.abra.language.psi"
   psiImplPackage="org.abra.language.psi.impl"
 
-  elementTypeHolderClass="org.abra.language.psi.AbraTypes"
-  elementTypeClass="org.abra.language.psi.AbraElementType"
-  tokenTypeClass="org.abra.language.psi.AbraTokenType"
-  psiImplUtilClass="org.abra.language.psi.AbraPsiImplUtil"
+  elementTypeHolderClass="org.abra.language.psi.QuplaTypes"
+  elementTypeClass="org.abra.language.psi.QuplaElementType"
+  tokenTypeClass="org.abra.language.psi.QuplaTokenType"
+  psiImplUtilClass="org.abra.language.psi.QuplaPsiImplUtil"
 
   tokens=[
     ZERO='regexp:(0)'
@@ -66,8 +66,8 @@ importStmt          ::= IMPORT_KEYWORD moduleName
 
 typeStmt            ::= TYPE_KEYWORD typeName (typeSize | ('{' fieldSpec+ '}'))
                     {
-                        mixin="org.abra.language.psi.impl.AbraDefinitionImpl"
-                        implements="org.abra.language.psi.AbraDefinition"
+                        mixin="org.abra.language.psi.impl.QuplaDefinitionImpl"
+                        implements="org.abra.language.psi.QuplaDefinition"
 
                         methods=[getPresentation getName setName getNameIdentifier getResolvedSize ]
                         pin=1
@@ -75,39 +75,39 @@ typeStmt            ::= TYPE_KEYWORD typeName (typeSize | ('{' fieldSpec+ '}'))
 
 fieldSpec           ::= fieldName typeSize
                     {
-                        mixin="org.abra.language.psi.impl.AbraDefinitionImpl"
-                        implements="org.abra.language.psi.AbraDefinition"
+                        mixin="org.abra.language.psi.impl.QuplaDefinitionImpl"
+                        implements="org.abra.language.psi.QuplaDefinition"
                         methods=[getPresentation getResolvedSize]
                     }
 
 lutStmt             ::= LUT_KEYWORD lutName '{' lutEntry+ '}'
                     {
-                        mixin="org.abra.language.psi.impl.AbraDefinitionImpl"
-                        implements="org.abra.language.psi.AbraDefinition"
+                        mixin="org.abra.language.psi.impl.QuplaDefinitionImpl"
+                        implements="org.abra.language.psi.QuplaDefinition"
                         methods=[getPresentation getName setName getNameIdentifier]
                         pin=1
                     }
 
 funcStmt            ::= FUNC_KEYWORD funcSignature funcBody
                     {
-                        mixin="org.abra.language.psi.impl.AbraDefinitionImpl"
-                        implements="org.abra.language.psi.AbraDefinition"
+                        mixin="org.abra.language.psi.impl.QuplaDefinitionImpl"
+                        implements="org.abra.language.psi.QuplaDefinition"
                         methods=[getPresentation getName setName getNameIdentifier isInTemplate getAllTypeInstantiation]
                         pin=1
                     }
 
 templateStmt        ::= TEMPLATE_KEYWORD templateName '<' (placeHolderTypeName (COMMA placeHolderTypeName)*) '>' ('{' typeStmt* funcStmt+ '}')
                     {
-                        mixin="org.abra.language.psi.impl.AbraDefinitionImpl"
-                        implements="org.abra.language.psi.AbraDefinition"
+                        mixin="org.abra.language.psi.impl.QuplaDefinitionImpl"
+                        implements="org.abra.language.psi.QuplaDefinition"
                         methods=[getPresentation getName setName getNameIdentifier getAllTypeInstantiation]
                         pin=1
                     }
 
 useStmt             ::= USE_KEYWORD templateNameRef typeInstantiation (COMMA typeInstantiation)*
                     {
-                        mixin="org.abra.language.psi.impl.AbraDefinitionImpl"
-                        implements="org.abra.language.psi.AbraDefinition"
+                        mixin="org.abra.language.psi.impl.QuplaDefinitionImpl"
+                        implements="org.abra.language.psi.QuplaDefinition"
                         methods=[getPresentation getName setName getNameIdentifier]
                         pin=1
                     }
@@ -126,8 +126,8 @@ private testRecover ::= !(stmt)
 
 typeInstantiation   ::= '<' (typeNameRef (COMMA typeNameRef)*) '>'
                     {
-                        mixin="org.abra.language.psi.impl.AbraDefinitionImpl"
-                        implements="org.abra.language.psi.AbraDefinition"
+                        mixin="org.abra.language.psi.impl.QuplaDefinitionImpl"
+                        implements="org.abra.language.psi.QuplaDefinition"
                         methods=[getPresentation]
                     }
 
@@ -266,47 +266,47 @@ tritList            ::= trit (COMMA trit)*
 
 varName             ::= IDENTIFIER
                     {
-                        mixin="org.abra.language.psi.impl.AbraNamedElementImpl"
-                        implements="org.abra.language.psi.AbraNamedElement"
+                        mixin="org.abra.language.psi.impl.QuplaNamedElementImpl"
+                        implements="org.abra.language.psi.QuplaNamedElement"
                         methods=[getName setName getNameIdentifier getReference getPresentation]
                     }
 
 paramName           ::= IDENTIFIER
                     {
-                        mixin="org.abra.language.psi.impl.AbraNamedElementImpl"
-                        implements="org.abra.language.psi.AbraNamedElement"
+                        mixin="org.abra.language.psi.impl.QuplaNamedElementImpl"
+                        implements="org.abra.language.psi.QuplaNamedElement"
                         methods=[getName setName getNameIdentifier getResolvedSize getPresentation]
                     }
 
 paramOrVarNameRef   ::= IDENTIFIER
                     {
-                        implements="org.abra.language.psi.AbraResolvable"
+                        implements="org.abra.language.psi.QuplaResolvable"
                         methods = [getReference]
                     }
 
 lutOrParamOrVarNameRef ::= IDENTIFIER
                     {
-                        implements="org.abra.language.psi.AbraResolvable"
+                        implements="org.abra.language.psi.QuplaResolvable"
                         methods = [getReference ]
                     }
 
 fieldName           ::= IDENTIFIER
                     {
-                        mixin="org.abra.language.psi.impl.AbraNamedElementImpl"
-                        implements="org.abra.language.psi.AbraNamedElement"
+                        mixin="org.abra.language.psi.impl.QuplaNamedElementImpl"
+                        implements="org.abra.language.psi.QuplaNamedElement"
                         methods=[getName setName getNameIdentifier]
                     }
 
 fieldNameRef        ::= IDENTIFIER
                     {
-                        implements="org.abra.language.psi.AbraResolvable"
+                        implements="org.abra.language.psi.QuplaResolvable"
                         methods=[getResolvedSize getReference]
                     }
 
 typeName            ::= IDENTIFIER
                     {
-                        mixin="org.abra.language.psi.impl.AbraNamedElementImpl"
-                        implements="org.abra.language.psi.AbraNamedElement"
+                        mixin="org.abra.language.psi.impl.QuplaNamedElementImpl"
+                        implements="org.abra.language.psi.QuplaNamedElement"
                         methods=[getName setName getNameIdentifier getResolvedSize getPresentation]
                         pin=1 recoverWhile=typeNameRecover
                     }
@@ -314,27 +314,27 @@ private typeNameRecover ::= !('['|'{')
 
 typeNameRef         ::= IDENTIFIER
                     {
-                        implements="org.abra.language.psi.AbraResolvable"
+                        implements="org.abra.language.psi.QuplaResolvable"
                         methods = [getReference ]
                     }
 
 funcName            ::= IDENTIFIER
                     {
-                        mixin="org.abra.language.psi.impl.AbraNamedElementImpl"
-                        implements="org.abra.language.psi.AbraNamedElement"
+                        mixin="org.abra.language.psi.impl.QuplaNamedElementImpl"
+                        implements="org.abra.language.psi.QuplaNamedElement"
                         methods=[getName setName getNameIdentifier getPresentation]
                     }
 
 funcNameRef         ::= IDENTIFIER
                     {
-                        implements="org.abra.language.psi.AbraResolvable"
+                        implements="org.abra.language.psi.QuplaResolvable"
                         methods = [getReference ]
                     }
 
 lutName             ::= IDENTIFIER
                     {
-                        mixin="org.abra.language.psi.impl.AbraNamedElementImpl"
-                        implements="org.abra.language.psi.AbraNamedElement"
+                        mixin="org.abra.language.psi.impl.QuplaNamedElementImpl"
+                        implements="org.abra.language.psi.QuplaNamedElement"
                         methods = [getName setName getNameIdentifier getPresentation]
                         pin=1 recoverWhile=lutNameRecover
                     }
@@ -342,33 +342,33 @@ private lutNameRecover ::= !'{'
 
 lutNameRef          ::= IDENTIFIER
                     {
-                        implements="org.abra.language.psi.AbraResolvable"
+                        implements="org.abra.language.psi.QuplaResolvable"
                         methods = [getReference ]
                     }
 
 templateName        ::= IDENTIFIER
                     {
-                        mixin="org.abra.language.psi.impl.AbraNamedElementImpl"
-                        implements="org.abra.language.psi.AbraNamedElement"
+                        mixin="org.abra.language.psi.impl.QuplaNamedElementImpl"
+                        implements="org.abra.language.psi.QuplaNamedElement"
                         methods=[getName setName getNameIdentifier]
                     }
 
 templateNameRef     ::= IDENTIFIER
                     {
-                        implements="org.abra.language.psi.AbraResolvable"
+                        implements="org.abra.language.psi.QuplaResolvable"
                         methods = [getReference ]
                     }
 
 placeHolderTypeName ::= IDENTIFIER
                     {
-                        mixin="org.abra.language.psi.impl.AbraNamedElementImpl"
-                        implements="org.abra.language.psi.AbraNamedElement"
+                        mixin="org.abra.language.psi.impl.QuplaNamedElementImpl"
+                        implements="org.abra.language.psi.QuplaNamedElement"
                         methods=[getName setName getNameIdentifier]
                     }
 
 typeOrPlaceHolderNameRef ::= IDENTIFIER
                     {
-                        implements="org.abra.language.psi.AbraResolvable"
+                        implements="org.abra.language.psi.QuplaResolvable"
                         methods = [getReference getResolvedSize]
                     }
 

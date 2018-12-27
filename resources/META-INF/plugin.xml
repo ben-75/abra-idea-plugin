@@ -41,8 +41,8 @@
   -->
 
   <extensions defaultExtensionNs="com.intellij">
-    <fileTypeFactory implementation="org.abra.language.AbraFileTypeFactory"/>
-    <lang.parserDefinition language="Qupla" implementationClass="org.abra.language.AbraParserDefinition"/>
+    <fileTypeFactory implementation="org.abra.language.QuplaFileTypeFactory"/>
+    <lang.parserDefinition language="Qupla" implementationClass="org.abra.language.QuplaParserDefinition"/>
     <lang.syntaxHighlighterFactory language="Qupla" implementationClass="org.abra.ide.highlighter.QuplaSyntaxHighlighterFactory"/>
     <lang.braceMatcher language="Qupla" implementationClass="org.abra.ide.tools.QuplaBraceMatcher"/>
     <lang.commenter language="Qupla" implementationClass="org.abra.ide.tools.QuplaCommenter"/>
@@ -57,8 +57,8 @@
     <annotator language="Qupla" implementationClass="org.abra.ide.highlighter.FuncArgsAnnotator"/>
     <annotator language="Qupla" implementationClass="org.abra.ide.highlighter.ImportAnnotator"/>
     <completion.contributor language="Qupla" implementationClass="org.abra.ide.tools.completion.QuplaCompletionContributor"/>
-    <additionalTextAttributes scheme="Default" file="colors/AbraDefault.xml"/>
-    <additionalTextAttributes scheme="Darcula" file="colors/AbraDarcula.xml"/>
+    <additionalTextAttributes scheme="Default" file="colors/QuplaDefault.xml"/>
+    <additionalTextAttributes scheme="Darcula" file="colors/QuplaDarcula.xml"/>
     <renamePsiElementProcessor implementation="org.abra.ide.tools.RenameFuncNameProcessor"/>
     <configurationType implementation="org.abra.runtime.interpreter.QuplaInterpreterConfigurationType"/>
     <programRunner implementation="org.abra.runtime.interpreter.QuplaInterpreterProgramRunner"/>

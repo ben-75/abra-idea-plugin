@@ -5,30 +5,30 @@ import com.intellij.lang.annotation.Annotator;
 import com.intellij.openapi.util.TextRange;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiReference;
-import org.abra.language.psi.AbraFile;
-import org.abra.language.psi.AbraImportStmt;
+import org.abra.language.psi.QuplaFile;
+import org.abra.language.psi.QuplaImportStmt;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.*;
 
 public class ImportAnnotator  implements Annotator {
 
-    private Map<AbraFile, Set<PsiElement>> refCache = new HashMap<>();
+    private Map<QuplaFile, Set<PsiElement>> refCache = new HashMap<>();
 
     @Override
     public void annotate(@NotNull final PsiElement element, @NotNull AnnotationHolder holder) {
-        if(element instanceof AbraImportStmt){
+        if(element instanceof QuplaImportStmt){
             PsiReference[] references = element.getReferences();
             if(references.length==1) {
-                AbraFile rootImport = (AbraFile) references[0].resolve();
+                QuplaFile rootImport = (QuplaFile) references[0].resolve();
                 Set<PsiElement> resolvedReferences = refCache.get(element.getContainingFile());
                 if (resolvedReferences == null) {
-                    resolvedReferences = ((AbraFile) element.getContainingFile()).computeResolvedReferences();
-                    refCache.put((AbraFile) element.getContainingFile(), resolvedReferences);
+                    resolvedReferences = ((QuplaFile) element.getContainingFile()).computeResolvedReferences();
+                    refCache.put((QuplaFile) element.getContainingFile(), resolvedReferences);
                 }
                 boolean usedImport = false;
                 boolean rootImportUsed = false;
-                List<AbraFile> importTree = ((AbraFile) element.getContainingFile()).getImportTree();
+                List<QuplaFile> importTree = ((QuplaFile) element.getContainingFile()).getImportTree();
                 for (PsiElement e : resolvedReferences) {
                     if (importTree.contains(e.getContainingFile())) {
                         usedImport = true;

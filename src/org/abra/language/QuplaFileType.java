@@ -6,11 +6,11 @@ import org.jetbrains.annotations.*;
 
 import javax.swing.*;
 
-public class AbraFileType extends LanguageFileType {
-    public static final AbraFileType INSTANCE = new AbraFileType();
+public class QuplaFileType extends LanguageFileType {
+    public static final QuplaFileType INSTANCE = new QuplaFileType();
 
-    private AbraFileType() {
-        super(AbraLanguage.INSTANCE);
+    private QuplaFileType() {
+        super(QuplaLanguage.INSTANCE);
     }
 
     @NotNull

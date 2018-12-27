@@ -12,12 +12,12 @@ import org.abra.language.psi.*;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-public class AbraFileReferencePsiReferenceImpl extends PsiReferenceBase implements PsiReference {
+public class QuplaFileReferencePsiReferenceImpl extends PsiReferenceBase implements PsiReference {
 
     private final VirtualFile virtualFile;
 
-    public AbraFileReferencePsiReferenceImpl(AbraImportStmt abraImportStmt, VirtualFile virtualFile) {
-        super(abraImportStmt, false);
+    public QuplaFileReferencePsiReferenceImpl(QuplaImportStmt quplaImportStmt, VirtualFile virtualFile) {
+        super(quplaImportStmt, false);
         this.virtualFile = virtualFile;
     }
     @NotNull
@@ -29,7 +29,7 @@ public class AbraFileReferencePsiReferenceImpl extends PsiReferenceBase implemen
 
     @Override
     public PsiElement handleElementRename(String newElementName) throws IncorrectOperationException {
-        AbraModuleName moduleName = AbraElementFactory.createAbraModuleName(myElement.getProject(), newElementName);
+        QuplaModuleName moduleName = QuplaElementFactory.createAbraModuleName(myElement.getProject(), newElementName);
         ASTNode newKeyNode = moduleName.getFirstChild().getNode();
         myElement.getNode().replaceChild(myElement.getLastChild().getNode(), newKeyNode);
         return moduleName;

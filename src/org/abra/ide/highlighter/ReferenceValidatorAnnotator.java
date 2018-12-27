@@ -18,7 +18,7 @@ public class ReferenceValidatorAnnotator implements Annotator {
 
     @Override
     public void annotate(@NotNull final PsiElement element, @NotNull AnnotationHolder holder) {
-        if(element instanceof AbraResolvable){
+        if(element instanceof QuplaResolvable){
             if(element.getReference()==null)return;
             PsiReference psiReference = element.getReference();
             if(psiReference instanceof PsiPolyVariantReference){
@@ -43,17 +43,17 @@ public class ReferenceValidatorAnnotator implements Annotator {
                     if (!resolved.getContainingFile().equals(element.getContainingFile())) {
                         //was resolved from import
 
-                        List<AbraFile> importTree = ((AbraFile) element.getContainingFile()).getImportTree();
+                        List<QuplaFile> importTree = ((QuplaFile) element.getContainingFile()).getImportTree();
                         importTree.remove(resolved.getContainingFile());
                         PsiElement resolved2 = null;
-                        if (psiReference instanceof AbraLutOrVarOrParamPsiReferenceImpl) {
-                            resolved2 = ((AbraLutOrVarOrParamPsiReferenceImpl) psiReference).resolveFromImportTree(importTree);
-                        } else if (resolved instanceof AbraFieldPsiReferenceImpl) {
-                            resolved2 = ((AbraFieldPsiReferenceImpl) psiReference).resolveFromImportTree(importTree);
-                        } else if (resolved instanceof AbraTemplatePsiReferenceImpl) {
-                            resolved2 = ((AbraTemplatePsiReferenceImpl) element.getReference()).resolveFromImportTree(importTree);
-                        } else if (resolved instanceof AbraTypeOrPlaceHolderPsiReferenceImpl) {
-                            resolved2 = ((AbraTypeOrPlaceHolderPsiReferenceImpl) element.getReference()).resolveFromImportTree(importTree);
+                        if (psiReference instanceof QuplaLutOrVarOrParamPsiReferenceImpl) {
+                            resolved2 = ((QuplaLutOrVarOrParamPsiReferenceImpl) psiReference).resolveFromImportTree(importTree);
+                        } else if (resolved instanceof QuplaFieldPsiReferenceImpl) {
+                            resolved2 = ((QuplaFieldPsiReferenceImpl) psiReference).resolveFromImportTree(importTree);
+                        } else if (resolved instanceof QuplaTemplatePsiReferenceImpl) {
+                            resolved2 = ((QuplaTemplatePsiReferenceImpl) element.getReference()).resolveFromImportTree(importTree);
+                        } else if (resolved instanceof QuplaTypeOrPlaceHolderPsiReferenceImpl) {
+                            resolved2 = ((QuplaTypeOrPlaceHolderPsiReferenceImpl) element.getReference()).resolveFromImportTree(importTree);
                         }
                         if (resolved2 != null) {
                             makeAmbiguousAnnotation(element, holder, resolved, resolved2);

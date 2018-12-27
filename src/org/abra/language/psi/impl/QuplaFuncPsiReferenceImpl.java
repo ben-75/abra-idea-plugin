@@ -11,10 +11,10 @@ import org.jetbrains.annotations.Nullable;
 import java.util.ArrayList;
 import java.util.List;
 
-public class AbraFuncPsiReferenceImpl extends PsiReferenceBase implements PsiPolyVariantReference {
+public class QuplaFuncPsiReferenceImpl extends PsiReferenceBase implements PsiPolyVariantReference {
 
 
-    public AbraFuncPsiReferenceImpl(@NotNull AbraFuncNameRef element) {
+    public QuplaFuncPsiReferenceImpl(@NotNull QuplaFuncNameRef element) {
         super(element);
     }
 
@@ -27,7 +27,7 @@ public class AbraFuncPsiReferenceImpl extends PsiReferenceBase implements PsiPol
 
     @Override
     public PsiElement handleElementRename(String newElementName) throws IncorrectOperationException {
-        AbraFuncNameRef ref = AbraElementFactory.createAbraFunctionReference(myElement.getProject(), newElementName);
+        QuplaFuncNameRef ref = QuplaElementFactory.createAbraFunctionReference(myElement.getProject(), newElementName);
         ASTNode newKeyNode = ref.getFirstChild().getNode();
         myElement.getNode().replaceChild(myElement.getFirstChild().getNode(), newKeyNode);
         return ref;
@@ -67,31 +67,31 @@ public class AbraFuncPsiReferenceImpl extends PsiReferenceBase implements PsiPol
     @NotNull
     @Override
     public Object[] getVariants() {
-        AbraFile startingFile = (AbraFile) myElement.getContainingFile();
-        List<AbraFile> files = startingFile.getAbraFileScope();
-        List<AbraFuncName> allRefs = AbraPsiImplUtil.findAllFuncName(myElement.getProject(), null, files.size() == 1 ? null : files);
+        QuplaFile startingFile = (QuplaFile) myElement.getContainingFile();
+        List<QuplaFile> files = startingFile.getAbraFileScope();
+        List<QuplaFuncName> allRefs = QuplaPsiImplUtil.findAllFuncName(myElement.getProject(), null, files.size() == 1 ? null : files);
         return allRefs.toArray();
     }
 
     public List<ResolveResult> resolveInFile(PsiFile aFile){
         List<ResolveResult> resolveResults = new ArrayList<>();
-        List<AbraFuncName> all = ((AbraFile)aFile).findAllFuncName(myElement.getText());
-        for(AbraFuncName funcName:all){
+        List<QuplaFuncName> all = ((QuplaFile)aFile).findAllFuncName(myElement.getText());
+        for(QuplaFuncName funcName:all){
             resolveResults.add(buildResolvedResult(funcName));
         }
         return resolveResults;
     }
 
-    private ResolveResult buildResolvedResult(final AbraFuncName psi) {
+    private ResolveResult buildResolvedResult(final QuplaFuncName psi) {
         return new PsiElementResolveResult(psi,true);
     }
 
     private List<ResolveResult> resolveFromImports(PsiFile startingFile){
-        List<AbraFile> importsTree = (((AbraFile)startingFile).getImportTree());
+        List<QuplaFile> importsTree = (((QuplaFile)startingFile).getImportTree());
        return resolveFromImportTree(importsTree);
     }
 
-    public List<ResolveResult> resolveFromImportTree(List<AbraFile> scope){
+    public List<ResolveResult> resolveFromImportTree(List<QuplaFile> scope){
         List<ResolveResult> resolveResults = new ArrayList<>();
         if(scope.size()>0){
             for(PsiFile f:scope){

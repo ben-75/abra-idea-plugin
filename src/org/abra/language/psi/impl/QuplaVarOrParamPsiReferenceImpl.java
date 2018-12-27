@@ -13,10 +13,10 @@ import org.jetbrains.annotations.Nullable;
 import java.util.ArrayList;
 import java.util.List;
 
-public class AbraVarOrParamPsiReferenceImpl extends PsiReferenceBase implements PsiReference {
+public class QuplaVarOrParamPsiReferenceImpl extends PsiReferenceBase implements PsiReference {
 
 
-    public AbraVarOrParamPsiReferenceImpl(@NotNull PsiElement element) {
+    public QuplaVarOrParamPsiReferenceImpl(@NotNull PsiElement element) {
         super(element);
     }
 
@@ -29,7 +29,7 @@ public class AbraVarOrParamPsiReferenceImpl extends PsiReferenceBase implements 
 
     @Override
     public PsiElement handleElementRename(String newElementName) throws IncorrectOperationException {
-        AbraParamOrVarNameRef ref = AbraElementFactory.createAbraVarOrParamNameRef(myElement.getProject(), newElementName);
+        QuplaParamOrVarNameRef ref = QuplaElementFactory.createAbraVarOrParamNameRef(myElement.getProject(), newElementName);
         ASTNode newKeyNode = ref.getFirstChild().getNode();
         myElement.getNode().replaceChild(myElement.getFirstChild().getNode(), newKeyNode);
         return ref;
@@ -46,8 +46,8 @@ public class AbraVarOrParamPsiReferenceImpl extends PsiReferenceBase implements 
     public Object[] getVariants() {
         PsiElement funcBody = myElement;
         PsiElement myExpression = null;
-        while(!(funcBody instanceof AbraFuncBody)){
-            if(funcBody.getParent() instanceof AbraFuncBody){
+        while(!(funcBody instanceof QuplaFuncBody)){
+            if(funcBody.getParent() instanceof QuplaFuncBody){
                 myExpression = funcBody;
             }
             funcBody = funcBody.getParent();
@@ -55,23 +55,23 @@ public class AbraVarOrParamPsiReferenceImpl extends PsiReferenceBase implements 
         List<PsiElement> allRefs = new ArrayList<>();
 
         //look in state vars
-        if(((AbraFuncBody)funcBody).getStateExprList()!=null) {
-            for (AbraStateExpr stateExpr : ((AbraFuncBody) funcBody).getStateExprList()){
+        if(((QuplaFuncBody)funcBody).getStateExprList()!=null) {
+            for (QuplaStateExpr stateExpr : ((QuplaFuncBody) funcBody).getStateExprList()){
                 if(stateExpr.equals(myExpression))break;
                 allRefs.add(stateExpr.getVarName());
             }
         }
 
         //look in local vars
-        if(((AbraFuncBody)funcBody).getAssignExprList()!=null) {
-            for (AbraAssignExpr assignExpr : ((AbraFuncBody) funcBody).getAssignExprList()){
+        if(((QuplaFuncBody)funcBody).getAssignExprList()!=null) {
+            for (QuplaAssignExpr assignExpr : ((QuplaFuncBody) funcBody).getAssignExprList()){
                 if(assignExpr.equals(myExpression))break;
                 allRefs.add(assignExpr.getVarName());
 
             }
         }
         //look in function parameters
-        for(AbraFuncParameter p:((AbraFuncBody)funcBody).getFuncSignature().getFuncParameterList()){
+        for(QuplaFuncParameter p:((QuplaFuncBody)funcBody).getFuncSignature().getFuncParameterList()){
             allRefs.add(p.getParamName());
         }
         return allRefs.toArray();
@@ -80,16 +80,16 @@ public class AbraVarOrParamPsiReferenceImpl extends PsiReferenceBase implements 
     private PsiElement resolveLocally(){
         PsiElement funcBody = myElement;
         PsiElement myExpression = null;
-        while(!(funcBody instanceof AbraFuncBody)){
-            if(funcBody.getParent() instanceof AbraFuncBody){
+        while(!(funcBody instanceof QuplaFuncBody)){
+            if(funcBody.getParent() instanceof QuplaFuncBody){
                 myExpression = funcBody;
             }
             funcBody = funcBody.getParent();
         }
 
         //look in state vars
-        if(((AbraFuncBody)funcBody).getStateExprList()!=null) {
-            for (AbraStateExpr stateExpr : ((AbraFuncBody) funcBody).getStateExprList()){
+        if(((QuplaFuncBody)funcBody).getStateExprList()!=null) {
+            for (QuplaStateExpr stateExpr : ((QuplaFuncBody) funcBody).getStateExprList()){
                 if(stateExpr.equals(myExpression))break;
                 if(stateExpr.getVarName().getText().equals(myElement.getText())){
                     return stateExpr.getVarName();
@@ -98,8 +98,8 @@ public class AbraVarOrParamPsiReferenceImpl extends PsiReferenceBase implements 
         }
 
         //look in local vars
-        if(((AbraFuncBody)funcBody).getAssignExprList()!=null) {
-            for (AbraAssignExpr assignExpr : ((AbraFuncBody) funcBody).getAssignExprList()){
+        if(((QuplaFuncBody)funcBody).getAssignExprList()!=null) {
+            for (QuplaAssignExpr assignExpr : ((QuplaFuncBody) funcBody).getAssignExprList()){
                 if(assignExpr.equals(myExpression))break;
                 if(assignExpr.getVarName().getText().equals(myElement.getText())){
                     return assignExpr.getVarName();
@@ -107,21 +107,21 @@ public class AbraVarOrParamPsiReferenceImpl extends PsiReferenceBase implements 
             }
         }
         //look in function parameters
-        for(AbraFuncParameter p:((AbraFuncBody)funcBody).getFuncSignature().getFuncParameterList()){
+        for(QuplaFuncParameter p:((QuplaFuncBody)funcBody).getFuncSignature().getFuncParameterList()){
             if(p.getParamName().getText().equals(myElement.getText())){
                 return p.getParamName();
             }
         }
 
         //look in template types
-        if(funcBody.getParent().getParent() instanceof AbraTemplateStmt){
-            AbraTemplateStmt templateStmt = (AbraTemplateStmt)funcBody.getParent().getParent();
-            for(AbraPlaceHolderTypeName phn:templateStmt.getPlaceHolderTypeNameList()){
+        if(funcBody.getParent().getParent() instanceof QuplaTemplateStmt){
+            QuplaTemplateStmt templateStmt = (QuplaTemplateStmt)funcBody.getParent().getParent();
+            for(QuplaPlaceHolderTypeName phn:templateStmt.getPlaceHolderTypeNameList()){
                 if(phn.getText().equals(myElement.getText())){
                     return phn;
                 }
             }
-            for(AbraTypeStmt phn:templateStmt.getTypeStmtList()){
+            for(QuplaTypeStmt phn:templateStmt.getTypeStmtList()){
                 if(phn.getTypeName().getText().equals(myElement.getText())){
                     return phn;
                 }

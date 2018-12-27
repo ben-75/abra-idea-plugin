@@ -4,16 +4,16 @@ import com.intellij.lang.BracePair;
 import com.intellij.lang.PairedBraceMatcher;
 import com.intellij.psi.PsiFile;
 import com.intellij.psi.tree.IElementType;
-import org.abra.language.psi.AbraTypes;
+import org.abra.language.psi.QuplaTypes;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 public class QuplaBraceMatcher implements PairedBraceMatcher {
 
     private static final BracePair[] PAIRS = {
-            new BracePair(AbraTypes.OPEN_BRACE, AbraTypes.CLOSE_BRACE, true),
-            new BracePair(AbraTypes.OPEN_BRACKET, AbraTypes.CLOSE_BRACKET, true),
-            new BracePair(AbraTypes.OPEN_PAR, AbraTypes.CLOSE_PAR, true),
+            new BracePair(QuplaTypes.OPEN_BRACE, QuplaTypes.CLOSE_BRACE, true),
+            new BracePair(QuplaTypes.OPEN_BRACKET, QuplaTypes.CLOSE_BRACKET, true),
+            new BracePair(QuplaTypes.OPEN_PAR, QuplaTypes.CLOSE_PAR, true),
     };
 
     @NotNull

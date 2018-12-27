@@ -10,11 +10,11 @@ import org.jetbrains.annotations.NotNull;
 public class FuncArgsAnnotator  implements Annotator {
     @Override
     public void annotate(@NotNull final PsiElement element, @NotNull AnnotationHolder holder) {
-        if(element instanceof AbraFuncExpr){
-            AbraFuncExpr funcExpr = (AbraFuncExpr) element;
+        if(element instanceof QuplaFuncExpr){
+            QuplaFuncExpr funcExpr = (QuplaFuncExpr) element;
             PsiElement resolved =  funcExpr.getFuncNameRef().getReference().resolve();
             if(resolved!=null){
-                AbraFuncSignature funcSignature = resolved instanceof AbraFuncName ? (AbraFuncSignature) resolved.getParent() : getFuncSignatureForTemplateNameRef(funcExpr.getFuncNameRef().getText(),(AbraTemplateNameRef)resolved);
+                QuplaFuncSignature funcSignature = resolved instanceof QuplaFuncName ? (QuplaFuncSignature) resolved.getParent() : getFuncSignatureForTemplateNameRef(funcExpr.getFuncNameRef().getText(),(QuplaTemplateNameRef)resolved);
                 int  argsCount = funcExpr.getCondExprList().size();
                 int   startOffset = funcExpr.getCondExprList().get(0).getTextRange().getStartOffset();
                 int  endOffset = funcExpr.getCondExprList().get(argsCount - 1).getTextRange().getEndOffset();
@@ -29,11 +29,11 @@ public class FuncArgsAnnotator  implements Annotator {
         }
     }
 
-    private AbraFuncSignature getFuncSignatureForTemplateNameRef(String funcName, AbraTemplateNameRef templateNameRef) {
-        AbraTemplateName templateName = (AbraTemplateName) templateNameRef.getReference().resolve();
+    private QuplaFuncSignature getFuncSignatureForTemplateNameRef(String funcName, QuplaTemplateNameRef templateNameRef) {
+        QuplaTemplateName templateName = (QuplaTemplateName) templateNameRef.getReference().resolve();
         if(templateName!=null) {
-            //((AbraTemplateStmt)useStmt.getTemplateNameRef().getReference().resolve().getParent()).getFuncStmtList().get(0).getFuncSignature().getFuncName().getText()
-            AbraFuncStmt funcStmt = AbraPsiImplUtil.getFuncWithNameInTemplate(funcName, (AbraTemplateStmt) templateName.getParent());
+            //((QuplaTemplateStmt)useStmt.getTemplateNameRef().getReference().resolve().getParent()).getFuncStmtList().get(0).getFuncSignature().getFuncName().getText()
+            QuplaFuncStmt funcStmt = QuplaPsiImplUtil.getFuncWithNameInTemplate(funcName, (QuplaTemplateStmt) templateName.getParent());
             if (funcStmt!=null) {
                 return funcStmt.getFuncSignature();
             }

@@ -14,10 +14,10 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 
-public class AbraTypePsiReferenceImpl  extends PsiReferenceBase implements PsiReference {
+public class QuplaTypePsiReferenceImpl extends PsiReferenceBase implements PsiReference {
 
 
-    public AbraTypePsiReferenceImpl(@NotNull PsiElement element) {
+    public QuplaTypePsiReferenceImpl(@NotNull PsiElement element) {
         super(element);
     }
 
@@ -30,7 +30,7 @@ public class AbraTypePsiReferenceImpl  extends PsiReferenceBase implements PsiRe
 
     @Override
     public PsiElement handleElementRename(String newElementName) throws IncorrectOperationException {
-        AbraTypeNameRef ref = AbraElementFactory.createAbraTypeNameRef(myElement.getProject(), newElementName);
+        QuplaTypeNameRef ref = QuplaElementFactory.createAbraTypeNameRef(myElement.getProject(), newElementName);
         ASTNode newKeyNode = ref.getFirstChild().getNode();
         myElement.getNode().replaceChild(myElement.getFirstChild().getNode(), newKeyNode);
         return ref;
@@ -50,11 +50,11 @@ public class AbraTypePsiReferenceImpl  extends PsiReferenceBase implements PsiRe
 
     private PsiElement resolveInTemplate(){
         PsiElement templateStmt = myElement;
-        while(!(templateStmt instanceof AbraFile) && !(templateStmt instanceof AbraTemplateStmt)){
+        while(!(templateStmt instanceof QuplaFile) && !(templateStmt instanceof QuplaTemplateStmt)){
             templateStmt = templateStmt.getParent();
         }
-        if(templateStmt instanceof AbraTemplateStmt){
-            for(AbraTypeStmt localTypeStmt:((AbraTemplateStmt)templateStmt).getTypeStmtList()){
+        if(templateStmt instanceof QuplaTemplateStmt){
+            for(QuplaTypeStmt localTypeStmt:((QuplaTemplateStmt)templateStmt).getTypeStmtList()){
                 if(myElement.getText().equals(localTypeStmt.getTypeName().getText())){
                     return localTypeStmt.getTypeName();
                 }
@@ -65,16 +65,16 @@ public class AbraTypePsiReferenceImpl  extends PsiReferenceBase implements PsiRe
     @NotNull
     @Override
     public Object[] getVariants() {
-        AbraFile startingFile = (AbraFile) myElement.getContainingFile();
-        List<AbraFile> files = startingFile.getAbraFileScope();
-        List<AbraTypeName> allRefs = AbraPsiImplUtil.findAllTypeName(myElement.getProject(), null, files.size() == 1 ? null : files);
+        QuplaFile startingFile = (QuplaFile) myElement.getContainingFile();
+        List<QuplaFile> files = startingFile.getAbraFileScope();
+        List<QuplaTypeName> allRefs = QuplaPsiImplUtil.findAllTypeName(myElement.getProject(), null, files.size() == 1 ? null : files);
         return allRefs.toArray();
     }
 
-    private AbraTypeName resolveInFile(PsiFile aFile){
-        for(ASTNode stmt:aFile.getNode().getChildren(TokenSet.create(AbraTypes.TYPE_STMT))){
-            if(((AbraTypeStmt)stmt.getPsi()).getTypeName().getText().equals(myElement.getText())){
-                return ((AbraTypeStmt)stmt.getPsi()).getTypeName();
+    private QuplaTypeName resolveInFile(PsiFile aFile){
+        for(ASTNode stmt:aFile.getNode().getChildren(TokenSet.create(QuplaTypes.TYPE_STMT))){
+            if(((QuplaTypeStmt)stmt.getPsi()).getTypeName().getText().equals(myElement.getText())){
+                return ((QuplaTypeStmt)stmt.getPsi()).getTypeName();
             }
         }
 
@@ -82,11 +82,11 @@ public class AbraTypePsiReferenceImpl  extends PsiReferenceBase implements PsiRe
     }
 
     private PsiElement resolveFromImports(PsiFile startingFile){
-        List<AbraFile> importsTree = (((AbraFile)startingFile).getImportTree());
+        List<QuplaFile> importsTree = (((QuplaFile)startingFile).getImportTree());
         return resolveFromImportTree(importsTree);
     }
 
-    public PsiElement resolveFromImportTree(List<AbraFile> scope){
+    public PsiElement resolveFromImportTree(List<QuplaFile> scope){
         if(scope.size()>0){
             for(PsiFile f:scope){
                 PsiElement resolved = resolveInFile(f);

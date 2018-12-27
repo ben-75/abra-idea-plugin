@@ -13,42 +13,42 @@ public class DeclarationAnnotator  implements Annotator {
     @Override
     public void annotate(@NotNull final PsiElement element, @NotNull AnnotationHolder holder) {
 
-        if (element instanceof AbraTypeName) {
-            if(element.getParent().getParent().getParent() instanceof AbraFieldName){
+        if (element instanceof QuplaTypeName) {
+            if(element.getParent().getParent().getParent() instanceof QuplaFieldName){
                 highlight(element,holder, QuplaSyntaxHighlighter.ABRA_FIELD_DECLARATION);
             }else {
                 highlight(element,holder, QuplaSyntaxHighlighter.ABRA_TYPE_DECLARATION);
             }
-        } else if (element instanceof AbraFuncName || element instanceof AbraFuncNameRef) {
+        } else if (element instanceof QuplaFuncName || element instanceof QuplaFuncNameRef) {
             highlight(element,holder, QuplaSyntaxHighlighter.ABRA_FCT_DECLARATION);
-        } else if (element instanceof AbraVarName ||
-                   element instanceof AbraParamName ||
-                   element instanceof AbraParamOrVarNameRef ||
-                  (element instanceof AbraLutOrParamOrVarNameRef && !(element.getReference().resolve() instanceof AbraLutName)) ) {
-            if((element instanceof AbraVarName && (element.getParent() instanceof AbraStateExpr || element.getReference().resolve()!=null)) ||
-                    (element instanceof AbraParamOrVarNameRef && element.getReference().resolve()!=null && element.getReference().resolve().getParent() instanceof AbraStateExpr)){
+        } else if (element instanceof QuplaVarName ||
+                   element instanceof QuplaParamName ||
+                   element instanceof QuplaParamOrVarNameRef ||
+                  (element instanceof QuplaLutOrParamOrVarNameRef && !(element.getReference().resolve() instanceof QuplaLutName)) ) {
+            if((element instanceof QuplaVarName && (element.getParent() instanceof QuplaStateExpr || element.getReference().resolve()!=null)) ||
+                    (element instanceof QuplaParamOrVarNameRef && element.getReference().resolve()!=null && element.getReference().resolve().getParent() instanceof QuplaStateExpr)){
                 highlight(element,holder, QuplaSyntaxHighlighter.ABRA_STATE_VAR_REFERENCE);
             }else {
                 highlight(element,holder, QuplaSyntaxHighlighter.ABRA_LOCAL_VAR);
             }
-        } else if (element instanceof AbraLutName || element instanceof AbraLutNameRef ||
-                (element instanceof AbraLutOrParamOrVarNameRef && (element.getReference().resolve() instanceof AbraLutName)) ) {
+        } else if (element instanceof QuplaLutName || element instanceof QuplaLutNameRef ||
+                (element instanceof QuplaLutOrParamOrVarNameRef && (element.getReference().resolve() instanceof QuplaLutName)) ) {
             highlight(element,holder, QuplaSyntaxHighlighter.ABRA_LUT_DECLARATION);
-        } else if (element instanceof AbraFieldName ||
-                (element instanceof AbraFieldNameRef) ) {
+        } else if (element instanceof QuplaFieldName ||
+                (element instanceof QuplaFieldNameRef) ) {
             highlight(element,holder, QuplaSyntaxHighlighter.ABRA_FIELD_DECLARATION);
-        } else if (element instanceof AbraTemplateName ||
-                (element instanceof AbraTemplateNameRef) ) {
+        } else if (element instanceof QuplaTemplateName ||
+                (element instanceof QuplaTemplateNameRef) ) {
             highlight(element,holder, QuplaSyntaxHighlighter.ABRA_TEMPLATE_DECLARATION);
-        }  else if (element instanceof AbraEnvironmentName ) {
+        }  else if (element instanceof QuplaEnvironmentName) {
             highlight(element,holder, QuplaSyntaxHighlighter.ENV_NAME);
-        } else if (element instanceof AbraEnvValue ) {
+        } else if (element instanceof QuplaEnvValue) {
             highlight(element,holder, QuplaSyntaxHighlighter.ENV_VALUE);
-        } else if (element instanceof AbraTypeNameRef || (element instanceof AbraTypeOrPlaceHolderNameRef && element.getReference().resolve() instanceof AbraTypeName)) {
+        } else if (element instanceof QuplaTypeNameRef || (element instanceof QuplaTypeOrPlaceHolderNameRef && element.getReference().resolve() instanceof QuplaTypeName)) {
             highlight(element,holder, QuplaSyntaxHighlighter.ABRA_TYPE_REFERENCE);
-        } else if (element.getParent() instanceof AbraTritList && (element.getNode().getElementType()== AbraTypes.MINUS ||
-                element.getNode().getElementType()== AbraTypes.ZERO ||
-                element.getNode().getElementType()== AbraTypes.ONE)){
+        } else if (element.getParent() instanceof QuplaTritList && (element.getNode().getElementType()== QuplaTypes.MINUS ||
+                element.getNode().getElementType()== QuplaTypes.ZERO ||
+                element.getNode().getElementType()== QuplaTypes.ONE)){
             highlight(element,holder, QuplaSyntaxHighlighter.ABRA_TRIT);
         }
 

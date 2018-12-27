@@ -6,8 +6,8 @@ import com.intellij.execution.configurations.ConfigurationFactory;
 import com.intellij.execution.configurations.ConfigurationType;
 import com.intellij.openapi.util.Ref;
 import com.intellij.psi.PsiElement;
-import org.abra.language.psi.AbraFile;
-import org.abra.language.psi.AbraFuncStmt;
+import org.abra.language.psi.QuplaFile;
+import org.abra.language.psi.QuplaFuncStmt;
 
 public class QuplaRunConfigurationProducer extends RunConfigurationProducer<QuplaInterpreterRunConfiguration> {
 
@@ -34,10 +34,10 @@ public class QuplaRunConfigurationProducer extends RunConfigurationProducer<Qupl
 
     @Override
     protected boolean setupConfigurationFromContext(QuplaInterpreterRunConfiguration configuration, ConfigurationContext context, Ref<PsiElement> sourceElement) {
-        if(sourceElement.get().getContainingFile() instanceof AbraFile){
-            AbraFuncStmt func = findFuncStmt(sourceElement.get());
+        if(sourceElement.get().getContainingFile() instanceof QuplaFile){
+            QuplaFuncStmt func = findFuncStmt(sourceElement.get());
             if(func==null)return false;
-            configuration.setTargetModule((AbraFile) func.getContainingFile());
+            configuration.setTargetModule((QuplaFile) func.getContainingFile());
             configuration.setTargetFunc(func);
             configuration.setName(func.getFuncSignature().getFuncName().getText());
             return true;
@@ -47,16 +47,16 @@ public class QuplaRunConfigurationProducer extends RunConfigurationProducer<Qupl
 
     @Override
     public boolean isConfigurationFromContext(QuplaInterpreterRunConfiguration configuration, ConfigurationContext context) {
-//        AbraFuncStmt func = findFuncStmt(context.getPsiLocation());
+//        QuplaFuncStmt func = findFuncStmt(context.getPsiLocation());
 //        return func!=null && func.isEquivalentTo(configuration.getTargetFunc());
         return false;
     }
 
-    private AbraFuncStmt findFuncStmt(PsiElement f){
-        while(! (f instanceof AbraFuncStmt) && ! (f instanceof AbraFile) && f!=null){
+    private QuplaFuncStmt findFuncStmt(PsiElement f){
+        while(! (f instanceof QuplaFuncStmt) && ! (f instanceof QuplaFile) && f!=null){
             f = f.getParent();
         }
-        if(f instanceof AbraFile)return null;
-        return (AbraFuncStmt) f;
+        if(f instanceof QuplaFile)return null;
+        return (QuplaFuncStmt) f;
     }
 }

@@ -61,49 +61,49 @@ public class QuplaStructureViewElement implements StructureViewTreeElement, Sort
     @NotNull
     @Override
     public TreeElement[] getChildren() {
-        if (element instanceof AbraFile) {
-            AbraDefinition[] abraDeclarations = PsiTreeUtil.getChildrenOfType(element, AbraDefinition.class);
+        if (element instanceof QuplaFile) {
+            QuplaDefinition[] abraDeclarations = PsiTreeUtil.getChildrenOfType(element, QuplaDefinition.class);
             if(abraDeclarations!=null) {
                 List<TreeElement> treeElements = new ArrayList<TreeElement>(abraDeclarations.length);
-                for (AbraDefinition abraDeclaration : abraDeclarations) {
+                for (QuplaDefinition abraDeclaration : abraDeclarations) {
                     treeElements.add(new QuplaStructureViewElement(abraDeclaration));
                 }
                 return treeElements.toArray(new TreeElement[treeElements.size()]);
             }
-        } else if (element instanceof AbraTypeStmt && ((AbraTypeStmt)element).getFieldSpecList().size()>0) {
-                List<TreeElement> treeElements = new ArrayList<TreeElement>(((AbraTypeStmt)element).getFieldSpecList().size());
-                for(AbraFieldSpec field : ((AbraTypeStmt)element).getFieldSpecList()){
+        } else if (element instanceof QuplaTypeStmt && ((QuplaTypeStmt)element).getFieldSpecList().size()>0) {
+                List<TreeElement> treeElements = new ArrayList<TreeElement>(((QuplaTypeStmt)element).getFieldSpecList().size());
+                for(QuplaFieldSpec field : ((QuplaTypeStmt)element).getFieldSpecList()){
                     treeElements.add(new QuplaStructureViewElement(field));
                 }
                 return treeElements.toArray(new TreeElement[treeElements.size()]);
-        } else if (element instanceof AbraTemplateStmt && ((AbraTemplateStmt)element).getTypeStmtList().size()+((AbraTemplateStmt)element).getFuncStmtList().size()>0) {
-            List<TreeElement> treeElements = new ArrayList<TreeElement>(((AbraTemplateStmt)element).getTypeStmtList().size()+((AbraTemplateStmt)element).getFuncStmtList().size());
-            for(AbraTypeStmt typeStmt : ((AbraTemplateStmt)element).getTypeStmtList()){
+        } else if (element instanceof QuplaTemplateStmt && ((QuplaTemplateStmt)element).getTypeStmtList().size()+((QuplaTemplateStmt)element).getFuncStmtList().size()>0) {
+            List<TreeElement> treeElements = new ArrayList<TreeElement>(((QuplaTemplateStmt)element).getTypeStmtList().size()+((QuplaTemplateStmt)element).getFuncStmtList().size());
+            for(QuplaTypeStmt typeStmt : ((QuplaTemplateStmt)element).getTypeStmtList()){
                 treeElements.add(new QuplaStructureViewElement(typeStmt));
             }
-            for(AbraFuncStmt funcStmt : ((AbraTemplateStmt)element).getFuncStmtList()){
+            for(QuplaFuncStmt funcStmt : ((QuplaTemplateStmt)element).getFuncStmtList()){
                 treeElements.add(new QuplaStructureViewElement(funcStmt));
             }
             return treeElements.toArray(new TreeElement[treeElements.size()]);
-        } else if (element instanceof AbraUseStmt && ((AbraUseStmt)element).getTypeInstantiationList().size()>0) {
-            AbraTemplateName tmplName = (AbraTemplateName) ((AbraUseStmt)element).getTemplateNameRef().getReference().resolve();
+        } else if (element instanceof QuplaUseStmt && ((QuplaUseStmt)element).getTypeInstantiationList().size()>0) {
+            QuplaTemplateName tmplName = (QuplaTemplateName) ((QuplaUseStmt)element).getTemplateNameRef().getReference().resolve();
             if(tmplName!=null) {
-                AbraTemplateStmt tmpl = (AbraTemplateStmt) tmplName.getParent();
-                int childCount = ((AbraUseStmt) element).getTypeInstantiationList().size();
+                QuplaTemplateStmt tmpl = (QuplaTemplateStmt) tmplName.getParent();
+                int childCount = ((QuplaUseStmt) element).getTypeInstantiationList().size();
                 List<TreeElement> treeElements = new ArrayList<TreeElement>(childCount);
-                for (AbraTypeInstantiation typeInstanciation : ((AbraUseStmt) element).getTypeInstantiationList()) {
+                for (QuplaTypeInstantiation typeInstanciation : ((QuplaUseStmt) element).getTypeInstantiationList()) {
                     treeElements.add(new QuplaStructureViewElement(typeInstanciation));
                 }
                 return treeElements.toArray(new TreeElement[treeElements.size()]);
             }
-        } else if (element instanceof AbraTypeInstantiation) {
-            AbraTemplateName tmplName = (AbraTemplateName) ((AbraUseStmt)element.getParent()).getTemplateNameRef().getReference().resolve();
+        } else if (element instanceof QuplaTypeInstantiation) {
+            QuplaTemplateName tmplName = (QuplaTemplateName) ((QuplaUseStmt)element.getParent()).getTemplateNameRef().getReference().resolve();
             if(tmplName!=null) {
-                AbraTemplateStmt tmpl = (AbraTemplateStmt) tmplName.getParent();
+                QuplaTemplateStmt tmpl = (QuplaTemplateStmt) tmplName.getParent();
                 int childCount = tmpl.getFuncStmtList().size();
                 List<TreeElement> treeElements = new ArrayList<TreeElement>(childCount);
-                for (AbraFuncStmt funcStmt : tmpl.getFuncStmtList()) {
-                    treeElements.add(new AbraFunctionInstanciation(funcStmt, (AbraTypeInstantiation) element, tmpl));
+                for (QuplaFuncStmt funcStmt : tmpl.getFuncStmtList()) {
+                    treeElements.add(new QuplaFunctionInstanciation(funcStmt, (QuplaTypeInstantiation) element, tmpl));
                 }
                 return treeElements.toArray(new TreeElement[treeElements.size()]);
             }

@@ -14,10 +14,10 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 
-public class AbraLutPsiReferenceImpl  extends PsiReferenceBase implements PsiReference {
+public class QuplaTemplatePsiReferenceImpl extends PsiReferenceBase implements PsiReference {
 
 
-    public AbraLutPsiReferenceImpl(@NotNull AbraLutNameRef element) {
+    public QuplaTemplatePsiReferenceImpl(@NotNull QuplaTemplateNameRef element) {
         super(element);
     }
 
@@ -29,8 +29,8 @@ public class AbraLutPsiReferenceImpl  extends PsiReferenceBase implements PsiRef
     }
 
     @Override
-    public PsiElement handleElementRename(String newElementName) throws IncorrectOperationException {
-        AbraLutNameRef ref = AbraElementFactory.createAbraLutNameRef(myElement.getProject(), newElementName);
+    public QuplaTemplateNameRef handleElementRename(String newElementName) throws IncorrectOperationException {
+        QuplaTemplateNameRef ref = QuplaElementFactory.createAbraTemplateNameRef(myElement.getProject(), newElementName);
         ASTNode newKeyNode = ref.getFirstChild().getNode();
         myElement.getNode().replaceChild(myElement.getFirstChild().getNode(), newKeyNode);
         return ref;
@@ -52,21 +52,37 @@ public class AbraLutPsiReferenceImpl  extends PsiReferenceBase implements PsiRef
         return new Object[0];
     }
 
-    private AbraLutName resolveInFile(PsiFile aFile){
-        for(ASTNode stmt:aFile.getNode().getChildren(TokenSet.create(AbraTypes.LUT_STMT))){
-            if(((AbraLutStmt)stmt.getPsi()).getLutName().getText().equals(myElement.getText())){
-                return ((AbraLutStmt)stmt.getPsi()).getLutName();
+    private QuplaTemplateName resolveInFile(PsiFile aFile){
+        for(ASTNode stmt:aFile.getNode().getChildren(TokenSet.create(QuplaTypes.TEMPLATE_STMT))){
+            if(((QuplaTemplateStmt)stmt.getPsi()).getTemplateName().getText().equals(myElement.getText())){
+                return ((QuplaTemplateStmt)stmt.getPsi()).getTemplateName();
             }
         }
         return null;
     }
 
+//    private QuplaTemplateName resolveFromImports(PsiFile startingFile){
+//        for(ASTNode stmt:startingFile.getNode().getChildren(TokenSet.create(QuplaTypes.IMPORT_STMT))){
+//            PsiReference[] importedFiles = QuplaPsiImplUtil.getReferences((QuplaImportStmt) stmt.getPsi());
+//            if(importedFiles!=null) {
+//                for (PsiReference psiRef : importedFiles) {
+//                    PsiElement anAbraFile = psiRef.resolve();
+//                    if(anAbraFile!=null){
+//                        QuplaTemplateName resolved = resolveInFile((PsiFile) anAbraFile);
+//                        if(resolved!=null)return resolved;
+//                    }
+//                }
+//            }
+//        }
+//        return null;
+//    }
+
     private PsiElement resolveFromImports(PsiFile startingFile){
-        List<AbraFile> importsTree = (((AbraFile)startingFile).getImportTree());
+        List<QuplaFile> importsTree = (((QuplaFile)startingFile).getImportTree());
         return resolveFromImportTree(importsTree);
     }
 
-    public PsiElement resolveFromImportTree(List<AbraFile> scope){
+    public PsiElement resolveFromImportTree(List<QuplaFile> scope){
         if(scope.size()>0){
             for(PsiFile f:scope){
                 PsiElement resolved = resolveInFile(f);

@@ -6,8 +6,8 @@ import com.intellij.openapi.components.PersistentStateComponent;
 import com.intellij.openapi.components.State;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.vfs.*;
-import org.abra.language.AbraFileType;
-import org.abra.language.psi.AbraFile;
+import org.abra.language.QuplaFileType;
+import org.abra.language.psi.QuplaFile;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -44,15 +44,15 @@ public class QuplaModuleManagerImpl implements QuplaModuleManager, PersistentSta
     }
 
     @Override
-    public synchronized Collection<AbraFile> getAllVisibleFiles(AbraFile file){
+    public synchronized Collection<QuplaFile> getAllVisibleFiles(QuplaFile file){
         checkValidity();
         return getAllVisibleFiles(findModule(file));
     }
 
     @Override
-    public synchronized Collection<AbraFile> getAllAbraFiles(){
+    public synchronized Collection<QuplaFile> getAllAbraFiles(){
         checkValidity();
-        ArrayList<AbraFile> resp = new ArrayList<>();
+        ArrayList<QuplaFile> resp = new ArrayList<>();
         for(QuplaModule module:modules.values()){
             resp.addAll(module.getModuleFiles());
         }
@@ -177,7 +177,7 @@ public class QuplaModuleManagerImpl implements QuplaModuleManager, PersistentSta
         modules.put(quplaModule.getName(), quplaModule);
     }
 
-    private synchronized QuplaModule findModule(AbraFile file){
+    private synchronized QuplaModule findModule(QuplaFile file){
         if(!file.isPhysical())return null;
         VirtualFile moduleRoot = file.getVirtualFile().getParent();
         if(!moduleRoot.getPath().contains(getQuplaSourceRootPath()))return null;
@@ -187,9 +187,9 @@ public class QuplaModuleManagerImpl implements QuplaModuleManager, PersistentSta
         return modules.get(moduleRoot.getName());
     }
 
-    private synchronized Collection<AbraFile> getAllVisibleFiles(QuplaModule module){
+    private synchronized Collection<QuplaFile> getAllVisibleFiles(QuplaModule module){
         if(module==null) return Collections.EMPTY_LIST;
-        ArrayList<AbraFile> resp = new ArrayList<>();
+        ArrayList<QuplaFile> resp = new ArrayList<>();
         for(String imported:module.getImportedModuleNames()){
             QuplaModule importedModule = modules.get(imported);
             if(importedModule!=null){
@@ -206,7 +206,7 @@ public class QuplaModuleManagerImpl implements QuplaModuleManager, PersistentSta
             VfsUtilCore.visitChildrenRecursively(directory, new VirtualFileVisitor<Object>() {
                 @Override
                 public boolean visitFile(@NotNull VirtualFile file) {
-                    if(AbraFileType.INSTANCE.getDefaultExtension().equals(file.getExtension())){
+                    if(QuplaFileType.INSTANCE.getDefaultExtension().equals(file.getExtension())){
                         collectedFiles.add(file);
                     }
                     return true;
@@ -224,7 +224,7 @@ public class QuplaModuleManagerImpl implements QuplaModuleManager, PersistentSta
             VfsUtilCore.visitChildrenRecursively(project.getBaseDir(), new VirtualFileVisitor<Object>() {
                 @Override
                 public boolean visitFile(@NotNull VirtualFile file) {
-                    if(AbraFileType.INSTANCE.getDefaultExtension().equals(file.getExtension())){
+                    if(QuplaFileType.INSTANCE.getDefaultExtension().equals(file.getExtension())){
                         qplFound.set(true);
                     }
                     return !qplFound.get();

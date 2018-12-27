@@ -9,7 +9,7 @@ import com.intellij.openapi.util.TextRange;
 import com.intellij.psi.PsiWhiteSpace;
 import com.intellij.psi.tree.IElementType;
 import com.intellij.psi.tree.TokenSet;
-import org.abra.language.psi.AbraTypes;
+import org.abra.language.psi.QuplaTypes;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -31,11 +31,11 @@ public class QuplaFoldingBuilder implements FoldingBuilder {
     @Override
     public String getPlaceholderText(@NotNull ASTNode node) {
         final IElementType type = node.getElementType();
-        if (type == AbraTypes.OPEN_BRACE) {
+        if (type == QuplaTypes.OPEN_BRACE) {
             return "{ ... }";
         } else if (isCommentLike(type)) {
             return "// ...";
-        } else if (type == AbraTypes.OPEN_BRACKET) {
+        } else if (type == QuplaTypes.OPEN_BRACKET) {
             return "[ ... ]";
         } else {
             return "...";
@@ -43,7 +43,7 @@ public class QuplaFoldingBuilder implements FoldingBuilder {
     }
 
     private static boolean isCommentLike(IElementType type) {
-        return AbraTypes.COMMENT == type;
+        return QuplaTypes.COMMENT == type;
     }
 
     @Override
@@ -56,7 +56,7 @@ public class QuplaFoldingBuilder implements FoldingBuilder {
             return;
         }
 
-        final ASTNode[] braces = node.getChildren(TokenSet.create(AbraTypes.OPEN_BRACE,AbraTypes.CLOSE_BRACE));
+        final ASTNode[] braces = node.getChildren(TokenSet.create(QuplaTypes.OPEN_BRACE, QuplaTypes.CLOSE_BRACE));
         if (braces.length == 2) {
             final ASTNode lbrace = braces[0];
             final ASTNode rbrace = braces[1];
@@ -66,7 +66,7 @@ public class QuplaFoldingBuilder implements FoldingBuilder {
             }
         }
 
-        final ASTNode[] brackets = node.getChildren(TokenSet.create(AbraTypes.OPEN_BRACKET,AbraTypes.CLOSE_BRACKET));
+        final ASTNode[] brackets = node.getChildren(TokenSet.create(QuplaTypes.OPEN_BRACKET, QuplaTypes.CLOSE_BRACKET));
         if (brackets.length == 2) {
             final ASTNode lbrace = brackets[0];
             final ASTNode rbrace = brackets[1];
@@ -80,7 +80,7 @@ public class QuplaFoldingBuilder implements FoldingBuilder {
         node = node.getFirstChildNode();
         while (node != null) {
 
-            node = checkNodeAndSiblings(node, TokenSet.create(AbraTypes.COMMENT), regions, document);
+            node = checkNodeAndSiblings(node, TokenSet.create(QuplaTypes.COMMENT), regions, document);
 
             process(node, document, regions);
 
@@ -116,18 +116,18 @@ public class QuplaFoldingBuilder implements FoldingBuilder {
     }
 
     private static boolean shouldFold(ASTNode first, ASTNode second, Document document) {
-        if (first.getElementType() != AbraTypes.OPEN_BRACE) {
+        if (first.getElementType() != QuplaTypes.OPEN_BRACE) {
             return false;
-        } else if (second.getElementType() != AbraTypes.CLOSE_BRACE) {
+        } else if (second.getElementType() != QuplaTypes.CLOSE_BRACE) {
             return false;
         } else {
             return isOnDifferentLine(first, second, document);
         }
     }
     private static boolean shouldFoldBracket(ASTNode first, ASTNode second, Document document) {
-        if (first.getElementType() != AbraTypes.OPEN_BRACKET) {
+        if (first.getElementType() != QuplaTypes.OPEN_BRACKET) {
             return false;
-        } else if (second.getElementType() != AbraTypes.CLOSE_BRACKET) {
+        } else if (second.getElementType() != QuplaTypes.CLOSE_BRACKET) {
             return false;
         } else {
             return isOnDifferentLine(first, second, document);

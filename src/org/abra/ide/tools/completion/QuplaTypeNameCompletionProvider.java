@@ -7,10 +7,9 @@ import com.intellij.codeInsight.lookup.LookupElementBuilder;
 import com.intellij.psi.PsiElement;
 import com.intellij.util.ProcessingContext;
 import org.abra.language.module.QuplaModuleManager;
-import org.abra.language.psi.AbraFile;
-import org.abra.language.psi.AbraPlaceHolderTypeName;
-import org.abra.language.psi.AbraTemplateStmt;
-import org.abra.language.psi.AbraTypeStmt;
+import org.abra.language.psi.*;
+import org.abra.language.psi.QuplaTemplateStmt;
+import org.abra.language.psi.QuplaTypeStmt;
 import org.jetbrains.annotations.NotNull;
 
 public class QuplaTypeNameCompletionProvider extends CompletionProvider<CompletionParameters> {
@@ -18,20 +17,20 @@ public class QuplaTypeNameCompletionProvider extends CompletionProvider<Completi
     @Override
     protected void addCompletions(@NotNull CompletionParameters parameters, ProcessingContext context, @NotNull CompletionResultSet result) {
         PsiElement element = parameters.getPosition();
-        while(!(element instanceof AbraFile)){
-            if(element instanceof AbraTemplateStmt){
-                for(AbraPlaceHolderTypeName placeHolderTypeName : ((AbraTemplateStmt)element).getPlaceHolderTypeNameList()){
+        while(!(element instanceof QuplaFile)){
+            if(element instanceof QuplaTemplateStmt){
+                for(QuplaPlaceHolderTypeName placeHolderTypeName : ((QuplaTemplateStmt)element).getPlaceHolderTypeNameList()){
                     result.addElement(LookupElementBuilder.createWithIcon(placeHolderTypeName));
                 }
-                for(AbraTypeStmt typeStmt:((AbraTemplateStmt)element).getTypeStmtList()){
+                for(QuplaTypeStmt typeStmt:((QuplaTemplateStmt)element).getTypeStmtList()){
                     if(typeStmt.getTypeName()!=null)
                         result.addElement(LookupElementBuilder.createWithIcon(typeStmt.getTypeName()));
                 }
             }
             element = element.getParent();
         }
-        for(AbraFile f:element.getProject().getComponent(QuplaModuleManager.class).getAllVisibleFiles((AbraFile) ((AbraFile) element).getOriginalFile())){
-            for(AbraTypeStmt typeStmt:f.getAllTypeStmts()){
+        for(QuplaFile f:element.getProject().getComponent(QuplaModuleManager.class).getAllVisibleFiles((QuplaFile) ((QuplaFile) element).getOriginalFile())){
+            for(QuplaTypeStmt typeStmt:f.getAllTypeStmts()){
                 if(typeStmt.getTypeName()!=null)
                     result.addElement(LookupElementBuilder.createWithIcon(typeStmt.getTypeName()));
             }

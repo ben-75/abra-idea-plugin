@@ -14,10 +14,10 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 
-public class AbraFieldPsiReferenceImpl   extends PsiReferenceBase implements PsiReference {
+public class QuplaFieldPsiReferenceImpl extends PsiReferenceBase implements PsiReference {
 
 
-    public AbraFieldPsiReferenceImpl(@NotNull PsiElement element) {
+    public QuplaFieldPsiReferenceImpl(@NotNull PsiElement element) {
         super(element);
     }
 
@@ -29,7 +29,7 @@ public class AbraFieldPsiReferenceImpl   extends PsiReferenceBase implements Psi
     }
     @Override
     public PsiElement handleElementRename(String newElementName) throws IncorrectOperationException {
-        AbraFieldNameRef ref = AbraElementFactory.createAbraFieldNameReference(myElement.getProject(), newElementName);
+        QuplaFieldNameRef ref = QuplaElementFactory.createAbraFieldNameReference(myElement.getProject(), newElementName);
         ASTNode newKeyNode = ref.getFirstChild().getNode();
         myElement.getNode().replaceChild(myElement.getFirstChild().getNode(), newKeyNode);
         return ref;
@@ -54,8 +54,8 @@ public class AbraFieldPsiReferenceImpl   extends PsiReferenceBase implements Psi
     private PsiElement resolveInFile(PsiFile aFile){
         PsiElement resolved = resolveInTemplate();
         if(resolved!=null)return resolved;
-        for(ASTNode stmt:aFile.getNode().getChildren(TokenSet.create(AbraTypes.TYPE_STMT))){
-            for(AbraFieldSpec fieldSpec:((AbraTypeStmt)stmt.getPsi()).getFieldSpecList()){
+        for(ASTNode stmt:aFile.getNode().getChildren(TokenSet.create(QuplaTypes.TYPE_STMT))){
+            for(QuplaFieldSpec fieldSpec:((QuplaTypeStmt)stmt.getPsi()).getFieldSpecList()){
                 if(fieldSpec.getFieldName().getText().equals(myElement.getText())){
                     return fieldSpec.getFieldName();
                 }
@@ -66,13 +66,13 @@ public class AbraFieldPsiReferenceImpl   extends PsiReferenceBase implements Psi
 
     private PsiElement resolveInTemplate(){
         PsiElement templateStmt = myElement;
-        while(!(templateStmt instanceof AbraFile) && !(templateStmt instanceof AbraTemplateStmt)){
+        while(!(templateStmt instanceof QuplaFile) && !(templateStmt instanceof QuplaTemplateStmt)){
             templateStmt = templateStmt.getParent();
         }
-        if(templateStmt instanceof AbraTemplateStmt){
-            for(AbraTypeStmt localTypeStmt:((AbraTemplateStmt)templateStmt).getTypeStmtList()){
+        if(templateStmt instanceof QuplaTemplateStmt){
+            for(QuplaTypeStmt localTypeStmt:((QuplaTemplateStmt)templateStmt).getTypeStmtList()){
                 if(localTypeStmt.getFieldSpecList().size()>0){
-                    for(AbraFieldSpec fs:localTypeStmt.getFieldSpecList()){
+                    for(QuplaFieldSpec fs:localTypeStmt.getFieldSpecList()){
                         if(fs.getFieldName().getText().equals(myElement.getText()))return fs.getFieldName();
                     }
                 }
@@ -82,8 +82,8 @@ public class AbraFieldPsiReferenceImpl   extends PsiReferenceBase implements Psi
     }
 
 //    private PsiElement resolveFromImports(PsiFile startingFile){
-//        for(ASTNode stmt:startingFile.getNode().getChildren(TokenSet.create(AbraTypes.IMPORT_STMT))){
-//            PsiReference[] importedFiles = AbraPsiImplUtil.getReferences((AbraImportStmt) stmt.getPsi());
+//        for(ASTNode stmt:startingFile.getNode().getChildren(TokenSet.create(QuplaTypes.IMPORT_STMT))){
+//            PsiReference[] importedFiles = QuplaPsiImplUtil.getReferences((QuplaImportStmt) stmt.getPsi());
 //            if(importedFiles!=null) {
 //                for (PsiReference psiRef : importedFiles) {
 //                    PsiElement anAbraFile = psiRef.resolve();
@@ -98,11 +98,11 @@ public class AbraFieldPsiReferenceImpl   extends PsiReferenceBase implements Psi
 //    }
 
     private PsiElement resolveFromImports(PsiFile startingFile){
-        List<AbraFile> importsTree = (((AbraFile)startingFile).getImportTree());
+        List<QuplaFile> importsTree = (((QuplaFile)startingFile).getImportTree());
         return resolveFromImportTree(importsTree);
     }
 
-    public PsiElement resolveFromImportTree(List<AbraFile> scope){
+    public PsiElement resolveFromImportTree(List<QuplaFile> scope){
         if(scope.size()>0){
             for(PsiFile f:scope){
                 PsiElement resolved = resolveInFile(f);

@@ -6,7 +6,7 @@ import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiErrorElement;
 import com.intellij.psi.tree.TokenSet;
 import com.intellij.util.ProcessingContext;
-import org.abra.language.AbraLanguage;
+import org.abra.language.QuplaLanguage;
 import org.abra.language.psi.*;
 import org.jetbrains.annotations.NotNull;
 
@@ -27,15 +27,15 @@ public class QuplaCompletionContributor extends CompletionContributor {
         }
     };
     static final ElementPattern<PsiElement> AFTER_FUNC_KEYWORD = quplaElement().afterLeaf("func");
-    static final ElementPattern<PsiElement> TYPE_REFERENCE = quplaElement().withParents(AbraTypeOrPlaceHolderNameRef.class,AbraTypeNameRef.class);
+    static final ElementPattern<PsiElement> TYPE_REFERENCE = quplaElement().withParents(QuplaTypeOrPlaceHolderNameRef.class, QuplaTypeNameRef.class);
     static final ElementPattern<PsiElement> PSI_ERROR_ELEMENT = quplaElement().withParent(PsiErrorElement.class);
 
-    static final ElementPattern<PsiElement> VALID_STMT = quplaElement().withElementType(TokenSet.create(AbraTypes.FUNC_STMT, AbraTypes.TYPE_STMT, AbraTypes.IMPORT_STMT, AbraTypes.USE_STMT, AbraTypes.TEMPLATE_STMT)).with(NO_ERROR);
+    static final ElementPattern<PsiElement> VALID_STMT = quplaElement().withElementType(TokenSet.create(QuplaTypes.FUNC_STMT, QuplaTypes.TYPE_STMT, QuplaTypes.IMPORT_STMT, QuplaTypes.USE_STMT, QuplaTypes.TEMPLATE_STMT)).with(NO_ERROR);
     static final ElementPattern<PsiElement> AFTER_VALID_STMT = quplaElement().afterSiblingSkipping(quplaElement().whitespace(),VALID_STMT);
 
 
     static PsiElementPattern quplaElement(){
-        return psiElement().withLanguage(AbraLanguage.INSTANCE);
+        return psiElement().withLanguage(QuplaLanguage.INSTANCE);
     }
     public QuplaCompletionContributor() {
         extend(CompletionType.BASIC, PSI_ERROR_ELEMENT,new QuplaKeywordCompletionProvider());

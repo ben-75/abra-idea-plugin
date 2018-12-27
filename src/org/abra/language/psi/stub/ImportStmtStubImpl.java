@@ -2,14 +2,14 @@ package org.abra.language.psi.stub;
 
 import com.intellij.psi.stubs.StubBase;
 import com.intellij.psi.stubs.StubElement;
-import org.abra.language.psi.AbraImportStmt;
+import org.abra.language.psi.QuplaImportStmt;
 
-public class ImportStmtStubImpl extends StubBase<AbraImportStmt> implements ImportStmtStub {
+public class ImportStmtStubImpl extends StubBase<QuplaImportStmt> implements ImportStmtStub {
 
     private String module;
 
     public ImportStmtStubImpl(StubElement parent, String module) {
-        super(parent, AbraStubElementTypes.IMPORT);
+        super(parent, QuplaStubElementTypes.IMPORT);
         this.module = module;
     }
 

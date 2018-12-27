@@ -1,6 +1,6 @@
 package org.abra.language.module;
 
-import org.abra.language.psi.AbraFile;
+import org.abra.language.psi.QuplaFile;
 
 import java.util.Collection;
 
@@ -11,7 +11,7 @@ public interface QuplaModuleManager {
 
     void setQuplaSourceRootPath(String quplaSourceRootPath);
 
-    Collection<AbraFile> getAllVisibleFiles(AbraFile file);
+    Collection<QuplaFile> getAllVisibleFiles(QuplaFile file);
 
     Collection<QuplaModule> allModules();
 
@@ -19,5 +19,5 @@ public interface QuplaModuleManager {
 
     QuplaModule getModule(String name);
 
-    Collection<AbraFile> getAllAbraFiles();
+    Collection<QuplaFile> getAllAbraFiles();
 }
