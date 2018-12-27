@@ -1,5 +1,5 @@
 <idea-plugin>
-  <id>org.abra.language</id>
+  <id>org.qupla.language</id>
   <name>Qupla Plugin</name>
   <version>0.0.29-pre-alpha</version>
   <vendor url="https://github.com/ben-75/abra-idea-plugin"/>
@@ -41,35 +41,35 @@
   -->
 
   <extensions defaultExtensionNs="com.intellij">
-    <fileTypeFactory implementation="org.abra.language.QuplaFileTypeFactory"/>
-    <lang.parserDefinition language="Qupla" implementationClass="org.abra.language.QuplaParserDefinition"/>
-    <lang.syntaxHighlighterFactory language="Qupla" implementationClass="org.abra.ide.highlighter.QuplaSyntaxHighlighterFactory"/>
-    <lang.braceMatcher language="Qupla" implementationClass="org.abra.ide.tools.QuplaBraceMatcher"/>
-    <lang.commenter language="Qupla" implementationClass="org.abra.ide.tools.QuplaCommenter"/>
-    <lang.foldingBuilder language="Qupla" implementationClass="org.abra.ide.tools.QuplaFoldingBuilder"/>
-    <colorSettingsPage implementation="org.abra.ide.highlighter.QuplaColorSettingsPage"/>
-    <lang.psiStructureViewFactory language="Qupla" implementationClass="org.abra.ide.ui.structureview.QuplaStructureViewFactory"/>
-    <lang.findUsagesProvider language="Qupla" implementationClass="org.abra.ide.tools.QuplaFindUsagesProvider"/>
-    <annotator language="Qupla" implementationClass="org.abra.ide.highlighter.DeclarationAnnotator"/>
-    <annotator language="Qupla" implementationClass="org.abra.ide.highlighter.ReferenceValidatorAnnotator"/>
-    <annotator language="Qupla" implementationClass="org.abra.ide.highlighter.MultiDeclarationAnnotator"/>
-    <annotator language="Qupla" implementationClass="org.abra.ide.highlighter.LutValidationAnnotator"/>
-    <annotator language="Qupla" implementationClass="org.abra.ide.highlighter.FuncArgsAnnotator"/>
-    <annotator language="Qupla" implementationClass="org.abra.ide.highlighter.ImportAnnotator"/>
-    <completion.contributor language="Qupla" implementationClass="org.abra.ide.tools.completion.QuplaCompletionContributor"/>
+    <fileTypeFactory implementation="org.qupla.language.QuplaFileTypeFactory"/>
+    <lang.parserDefinition language="Qupla" implementationClass="org.qupla.language.QuplaParserDefinition"/>
+    <lang.syntaxHighlighterFactory language="Qupla" implementationClass="org.qupla.ide.highlighter.QuplaSyntaxHighlighterFactory"/>
+    <lang.braceMatcher language="Qupla" implementationClass="org.qupla.ide.tools.QuplaBraceMatcher"/>
+    <lang.commenter language="Qupla" implementationClass="org.qupla.ide.tools.QuplaCommenter"/>
+    <lang.foldingBuilder language="Qupla" implementationClass="org.qupla.ide.tools.QuplaFoldingBuilder"/>
+    <colorSettingsPage implementation="org.qupla.ide.highlighter.QuplaColorSettingsPage"/>
+    <lang.psiStructureViewFactory language="Qupla" implementationClass="org.qupla.ide.ui.structureview.QuplaStructureViewFactory"/>
+    <lang.findUsagesProvider language="Qupla" implementationClass="org.qupla.ide.tools.QuplaFindUsagesProvider"/>
+    <annotator language="Qupla" implementationClass="org.qupla.ide.highlighter.DeclarationAnnotator"/>
+    <annotator language="Qupla" implementationClass="org.qupla.ide.highlighter.ReferenceValidatorAnnotator"/>
+    <annotator language="Qupla" implementationClass="org.qupla.ide.highlighter.MultiDeclarationAnnotator"/>
+    <annotator language="Qupla" implementationClass="org.qupla.ide.highlighter.LutValidationAnnotator"/>
+    <annotator language="Qupla" implementationClass="org.qupla.ide.highlighter.FuncArgsAnnotator"/>
+    <annotator language="Qupla" implementationClass="org.qupla.ide.highlighter.ImportAnnotator"/>
+    <completion.contributor language="Qupla" implementationClass="org.qupla.ide.tools.completion.QuplaCompletionContributor"/>
     <additionalTextAttributes scheme="Default" file="colors/QuplaDefault.xml"/>
     <additionalTextAttributes scheme="Darcula" file="colors/QuplaDarcula.xml"/>
-    <renamePsiElementProcessor implementation="org.abra.ide.tools.RenameFuncNameProcessor"/>
-    <configurationType implementation="org.abra.runtime.interpreter.QuplaInterpreterConfigurationType"/>
-    <programRunner implementation="org.abra.runtime.interpreter.QuplaInterpreterProgramRunner"/>
-    <runConfigurationProducer implementation="org.abra.runtime.interpreter.QuplaRunConfigurationProducer"/>
-    <iconLayerProvider implementation="org.abra.ide.ui.QuplaIconProvider" order="last"/>
+    <renamePsiElementProcessor implementation="org.qupla.ide.tools.RenameFuncNameProcessor"/>
+    <configurationType implementation="org.qupla.runtime.interpreter.QuplaInterpreterConfigurationType"/>
+    <programRunner implementation="org.qupla.runtime.interpreter.QuplaInterpreterProgramRunner"/>
+    <runConfigurationProducer implementation="org.qupla.runtime.interpreter.QuplaRunConfigurationProducer"/>
+    <iconLayerProvider implementation="org.qupla.ide.ui.QuplaIconProvider" order="last"/>
   </extensions>
 
   <project-components>
     <component>
-      <interface-class>org.abra.language.module.QuplaModuleManager</interface-class>
-      <implementation-class>org.abra.language.module.QuplaModuleManagerImpl</implementation-class>
+      <interface-class>org.qupla.language.module.QuplaModuleManager</interface-class>
+      <implementation-class>org.qupla.language.module.QuplaModuleManagerImpl</implementation-class>
       <option name="workspace" value="true" />
       <loadForDefaultProject/>
     </component>
@@ -77,8 +77,8 @@
   <actions>
     <!-- Add your actions here -->
 
-    <action id="org.abra.ide.ui.action.MarkAsQuplaSourceRoot"
-            class="org.abra.ide.ui.action.MarkAsQuplaSourceRoot"
+    <action id="org.qupla.ide.ui.action.MarkAsQuplaSourceRoot"
+            class="org.qupla.ide.ui.action.MarkAsQuplaSourceRoot"
             text="Mark as Qupla Sources Root" description="This directory contains Qupla modules">
       <add-to-group group-id="ProjectViewPopupMenu" anchor="last"/>
     </action>
