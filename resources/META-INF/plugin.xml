@@ -2,7 +2,7 @@
   <id>org.qupla.language</id>
   <name>Qupla Plugin</name>
   <version>0.0.29-pre-alpha</version>
-  <vendor url="https://github.com/ben-75/abra-idea-plugin"/>
+  <vendor url="https://github.com/ben-75/qupla-idea-plugin"/>
 
   <description><![CDATA[
       [Experimental] support for Qupla language
