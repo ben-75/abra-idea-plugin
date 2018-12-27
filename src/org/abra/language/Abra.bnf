@@ -115,14 +115,12 @@ useStmt             ::= USE_KEYWORD templateNameRef typeInstantiation (COMMA typ
 evalStmt            ::= EVAL_KEYWORD funcExpr
                     {
                         pin=1
-                        recoverWhile=evalRecover
                     }
 private evalRecover ::= !(stmt)
 
 testStmt            ::= TEST_KEYWORD valueExpr '=' funcExpr
                     {
                         pin=1
-                        recoverWhile=testRecover
                     }
 private testRecover ::= !(stmt)
 

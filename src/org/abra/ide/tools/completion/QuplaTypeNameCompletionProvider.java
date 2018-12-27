@@ -21,19 +21,19 @@ public class QuplaTypeNameCompletionProvider extends CompletionProvider<Completi
         while(!(element instanceof AbraFile)){
             if(element instanceof AbraTemplateStmt){
                 for(AbraPlaceHolderTypeName placeHolderTypeName : ((AbraTemplateStmt)element).getPlaceHolderTypeNameList()){
-                    result.addElement(LookupElementBuilder.create(placeHolderTypeName));
+                    result.addElement(LookupElementBuilder.createWithIcon(placeHolderTypeName));
                 }
                 for(AbraTypeStmt typeStmt:((AbraTemplateStmt)element).getTypeStmtList()){
-                    result.addElement(LookupElementBuilder.create(typeStmt.getTypeName()));
+                    if(typeStmt.getTypeName()!=null)
+                        result.addElement(LookupElementBuilder.createWithIcon(typeStmt.getTypeName()));
                 }
             }
             element = element.getParent();
         }
-        if(element instanceof AbraFile){
-            for(AbraFile f:element.getProject().getComponent(QuplaModuleManager.class).getAllVisibleFiles((AbraFile) ((AbraFile) element).getOriginalFile())){
-                for(AbraTypeStmt typeStmt:f.getAllTypeStmts()){
-                    result.addElement(LookupElementBuilder.create(typeStmt.getTypeName()));
-                }
+        for(AbraFile f:element.getProject().getComponent(QuplaModuleManager.class).getAllVisibleFiles((AbraFile) ((AbraFile) element).getOriginalFile())){
+            for(AbraTypeStmt typeStmt:f.getAllTypeStmts()){
+                if(typeStmt.getTypeName()!=null)
+                    result.addElement(LookupElementBuilder.createWithIcon(typeStmt.getTypeName()));
             }
         }
     }

@@ -2,14 +2,11 @@ package org.abra.ide.tools.completion;
 
 import com.intellij.codeInsight.completion.*;
 import com.intellij.codeInsight.lookup.LookupElementBuilder;
-import com.intellij.patterns.CharPattern;
-import com.intellij.patterns.ElementPattern;
-import com.intellij.patterns.PlatformPatterns;
-import com.intellij.patterns.StandardPatterns;
+import com.intellij.patterns.*;
 import com.intellij.psi.PsiElement;
-import com.intellij.psi.PsiWhiteSpace;
+import com.intellij.psi.PsiErrorElement;
+import com.intellij.psi.tree.TokenSet;
 import com.intellij.util.ProcessingContext;
-import org.abra.ide.tools.completion.QuplaTypeNameCompletionProvider;
 import org.abra.language.AbraLanguage;
 import org.abra.language.psi.*;
 import org.jetbrains.annotations.NotNull;
@@ -18,81 +15,43 @@ import static com.intellij.patterns.PlatformPatterns.psiElement;
 
 public class QuplaCompletionContributor extends CompletionContributor {
 
-    static final ElementPattern WHITE_SPACE = psiElement().whitespace();
-    static final ElementPattern<PsiElement> AFTER_FUNC_KEYWORD = psiElement().withLanguage(AbraLanguage.INSTANCE).afterLeaf("func");
-    static final ElementPattern<PsiElement> FIRST_FUNC_PARAM_TYPE = psiElement().withLanguage(AbraLanguage.INSTANCE).afterSiblingSkipping(WHITE_SPACE,psiElement().withText("(")).withSuperParent(2,AbraFuncParameter.class);
-    static final ElementPattern<PsiElement> FUNC_PARAM_TYPE = psiElement().withLanguage(AbraLanguage.INSTANCE).afterSiblingSkipping(WHITE_SPACE,psiElement().withText(",")).withSuperParent(2,AbraFuncParameter.class);
+    static final PatternCondition NO_ERROR = new PatternCondition("no error") {
+        @Override
+        public boolean accepts(@NotNull Object o, ProcessingContext context) {
+            return o instanceof PsiElement && noError(((PsiElement) o).getChildren());
+        }
+        boolean noError(PsiElement[] elements){
+            for(PsiElement e:elements){
+                if(e instanceof PsiErrorElement)return false;
+            }
+            return true;
+        }
+    };
+    static final ElementPattern<PsiElement> AFTER_FUNC_KEYWORD = quplaElement().afterLeaf("func");
+    static final ElementPattern<PsiElement> TYPE_REFERENCE = quplaElement().withParents(AbraTypeOrPlaceHolderNameRef.class,AbraTypeNameRef.class);
+    static final ElementPattern<PsiElement> PSI_ERROR_ELEMENT = quplaElement().withParent(PsiErrorElement.class);
+
+    static final ElementPattern<PsiElement> VALID_STMT = quplaElement().withElementType(TokenSet.create(AbraTypes.FUNC_STMT, AbraTypes.TYPE_STMT, AbraTypes.IMPORT_STMT, AbraTypes.USE_STMT, AbraTypes.TEMPLATE_STMT)).with(NO_ERROR);
+    static final ElementPattern<PsiElement> AFTER_VALID_STMT = quplaElement().afterSiblingSkipping(quplaElement().whitespace(),VALID_STMT);
 
 
+    static PsiElementPattern quplaElement(){
+        return psiElement().withLanguage(AbraLanguage.INSTANCE);
+    }
     public QuplaCompletionContributor() {
-//        extend(CompletionType.BASIC,
-//                PlatformPatterns.psiElement(AbraTypes.IDENTIFIER).withLanguage(AbraLanguage.INSTANCE),
-//                new CompletionProvider<CompletionParameters>() {
-//                    public void addCompletions(@NotNull CompletionParameters parameters,
-//                                               ProcessingContext context,
-//                                               @NotNull CompletionResultSet resultSet) {
-//                        Collection<AbraFuncStmt> funcStmts = ((AbraFile)parameters.getOriginalFile()).findAllAccessibleFunc();
-//                        for(AbraFuncStmt f:funcStmts){
-//                            ItemPresentation itemPresentation = f.getPresentation();
-//                            resultSet.addElement(LookupElementBuilder.create(itemPresentation.getPresentableText()).withIcon(itemPresentation.getIcon(true)).appendTailText(itemPresentation.getLocationString(),true));
-//                        }
-//                        Collection<AbraLutStmt> lutStmts = ((AbraFile)parameters.getOriginalFile()).findAllAccessibleLut();
-//                        for(AbraLutStmt l:lutStmts){
-//                            ItemPresentation itemPresentation = l.getPresentation();
-//                            resultSet.addElement(LookupElementBuilder.create(itemPresentation.getPresentableText()).withIcon(itemPresentation.getIcon(true)).appendTailText(itemPresentation.getLocationString(),true));
-//                        }
-//                    }
-//                }
-//        );
+        extend(CompletionType.BASIC, PSI_ERROR_ELEMENT,new QuplaKeywordCompletionProvider());
         extend(CompletionType.BASIC, AFTER_FUNC_KEYWORD,new QuplaTypeNameCompletionProvider());
-        extend(CompletionType.BASIC, FIRST_FUNC_PARAM_TYPE,new QuplaTypeNameCompletionProvider());
-        extend(CompletionType.BASIC, FUNC_PARAM_TYPE,new QuplaTypeNameCompletionProvider());
-        extend(CompletionType.BASIC,
-                PlatformPatterns.psiElement().withLanguage(AbraLanguage.INSTANCE),
-                new CompletionProvider<CompletionParameters>() {
-                    public void addCompletions(@NotNull CompletionParameters parameters,
-                                               ProcessingContext context,
-                                               @NotNull CompletionResultSet resultSet) {
-                        PsiElement current = parameters.getOriginalFile().findElementAt(parameters.getOffset());
-                        if(current instanceof PsiWhiteSpace) {
-                            PsiElement parent = current.getParent();
-                            if (parent instanceof AbraTemplateStmt) {
-                                resultSet.addElement(LookupElementBuilder.create("func"));
-                                resultSet.addElement(LookupElementBuilder.create("type"));
-                            }else if (parent instanceof AbraFile) {
-                                resultSet.addElement(LookupElementBuilder.create("func"));
-                                resultSet.addElement(LookupElementBuilder.create("type"));
-                                resultSet.addElement(LookupElementBuilder.create("import"));
-                                resultSet.addElement(LookupElementBuilder.create("use"));
-                                resultSet.addElement(LookupElementBuilder.create("template"));
-                            }else if (parent instanceof AbraFuncBody) {
-//                                if(((AbraFuncBody) parent).getOpenBrace()!=null){
-//                                    if(acceptJoinExpr(current)){
-//                                        resultSet.addElement(LookupElementBuilder.create("join"));
-//                                        resultSet.addElement(LookupElementBuilder.create("affect"));
-//                                        resultSet.addElement(LookupElementBuilder.create("state"));
-//                                    }else if(acceptAffectExpr(current)){
-//                                        resultSet.addElement(LookupElementBuilder.create("affect"));
-//                                        resultSet.addElement(LookupElementBuilder.create("state"));
-//                                    }else if(acceptStateExpr(current)){
-//                                        resultSet.addElement(LookupElementBuilder.create("state"));
-//                                    }
-//                                }
-                            }
-                        }
-
-                    }
-                });
+        extend(CompletionType.BASIC, TYPE_REFERENCE,new QuplaTypeNameCompletionProvider());
     }
 
-    private boolean acceptJoinExpr(PsiElement current){
-        return current.getPrevSibling().getNode().getElementType()==AbraTypes.OPEN_BRACE || current.getPrevSibling() instanceof AbraJoinExpr;
-    }
-    private boolean acceptAffectExpr(PsiElement current){
-        return current.getPrevSibling() instanceof AbraJoinExpr || current.getPrevSibling() instanceof AbraAffectExpr;
+    @Override
+    public void beforeCompletion(@NotNull CompletionInitializationContext context) {
+        super.beforeCompletion(context);
     }
 
-    private boolean acceptStateExpr(PsiElement current){
-        return current.getPrevSibling() instanceof AbraStateExpr;
+    @Override
+    public void fillCompletionVariants(@NotNull CompletionParameters parameters, @NotNull CompletionResultSet resultSet) {
+        super.fillCompletionVariants(parameters, resultSet);
     }
+
 }
