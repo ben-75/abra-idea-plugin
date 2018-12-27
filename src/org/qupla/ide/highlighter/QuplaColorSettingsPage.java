@@ -20,19 +20,19 @@ public class QuplaColorSettingsPage implements ColorSettingsPage {
     private static final AttributesDescriptor[] DESCRIPTORS = new AttributesDescriptor[]{
             new AttributesDescriptor("Comments", QuplaSyntaxHighlighter.COMMENT),
             new AttributesDescriptor("Keywords", KEYWORD),
-            new AttributesDescriptor("Type definition", QuplaSyntaxHighlighter.ABRA_TYPE_DECLARATION),
-            new AttributesDescriptor("Type reference", QuplaSyntaxHighlighter.ABRA_TYPE_REFERENCE),
-            new AttributesDescriptor("Field definition", QuplaSyntaxHighlighter.ABRA_FIELD_DECLARATION),
-            new AttributesDescriptor("Functions definition and usage", QuplaSyntaxHighlighter.ABRA_FCT_DECLARATION),
-            new AttributesDescriptor("LUT definition and usage", QuplaSyntaxHighlighter.ABRA_LUT_DECLARATION),
-            new AttributesDescriptor("Local variables", QuplaSyntaxHighlighter.ABRA_LOCAL_VAR),
-            new AttributesDescriptor("Trits", QuplaSyntaxHighlighter.ABRA_TRIT),
-            new AttributesDescriptor("Template definition and usage", QuplaSyntaxHighlighter.ABRA_TEMPLATE_DECLARATION),
-            new AttributesDescriptor("Test assertion prefix", QuplaSyntaxHighlighter.ABRA_TEST_ASSERTION_PREFIX),
-            new AttributesDescriptor("Test assertion", QuplaSyntaxHighlighter.ABRA_TEST_ASSERTION),
-            new AttributesDescriptor("Expression assertion prefix", QuplaSyntaxHighlighter.ABRA_EXPR_ASSERTION_PREFIX),
-            new AttributesDescriptor("Expression assertion", QuplaSyntaxHighlighter.ABRA_EXPR_ASSERTION),
-            new AttributesDescriptor("State variable", QuplaSyntaxHighlighter.ABRA_STATE_VAR_REFERENCE),
+            new AttributesDescriptor("Type definition", QuplaSyntaxHighlighter.QUPLA_TYPE_DECLARATION),
+            new AttributesDescriptor("Type reference", QuplaSyntaxHighlighter.QUPLA_TYPE_REFERENCE),
+            new AttributesDescriptor("Field definition", QuplaSyntaxHighlighter.QUPLA_FIELD_DECLARATION),
+            new AttributesDescriptor("Functions definition and usage", QuplaSyntaxHighlighter.QUPLA_FCT_DECLARATION),
+            new AttributesDescriptor("LUT definition and usage", QuplaSyntaxHighlighter.QUPLA_LUT_DECLARATION),
+            new AttributesDescriptor("Local variables", QuplaSyntaxHighlighter.QUPLA_LOCAL_VAR),
+            new AttributesDescriptor("Trits", QuplaSyntaxHighlighter.QUPLA_TRIT),
+            new AttributesDescriptor("Template definition and usage", QuplaSyntaxHighlighter.QUPLA_TEMPLATE_DECLARATION),
+            new AttributesDescriptor("Test assertion prefix", QuplaSyntaxHighlighter.QUPLA_TEST_ASSERTION_PREFIX),
+            new AttributesDescriptor("Test assertion", QuplaSyntaxHighlighter.QUPLA_TEST_ASSERTION),
+            new AttributesDescriptor("Expression assertion prefix", QuplaSyntaxHighlighter.QUPLA_EXPR_ASSERTION_PREFIX),
+            new AttributesDescriptor("Expression assertion", QuplaSyntaxHighlighter.QUPLA_EXPR_ASSERTION),
+            new AttributesDescriptor("State variable", QuplaSyntaxHighlighter.QUPLA_STATE_VAR_REFERENCE),
             //new AttributesDescriptor("Environment expression", QuplaSyntaxHighlighter.ENV_EXPR),
             new AttributesDescriptor("Environment keywords", QuplaSyntaxHighlighter.ENV_KEYWORD),
             new AttributesDescriptor("Environment name", QuplaSyntaxHighlighter.ENV_NAME),
@@ -139,15 +139,15 @@ public class QuplaColorSettingsPage implements ColorSettingsPage {
     @Override
     public Map<String, TextAttributesKey> getAdditionalHighlightingTagToDescriptorMap() {
         if(ANNOTATOR_MAP.size()==0){
-            ANNOTATOR_MAP.put("typedef", QuplaSyntaxHighlighter.ABRA_TYPE_DECLARATION);
-            ANNOTATOR_MAP.put("lutdef", QuplaSyntaxHighlighter.ABRA_LUT_DECLARATION);
-            ANNOTATOR_MAP.put("fielddef", QuplaSyntaxHighlighter.ABRA_FIELD_DECLARATION);
-            ANNOTATOR_MAP.put("funcdef", QuplaSyntaxHighlighter.ABRA_FCT_DECLARATION);
-            ANNOTATOR_MAP.put("local_var", QuplaSyntaxHighlighter.ABRA_LOCAL_VAR);
-            ANNOTATOR_MAP.put("trit", QuplaSyntaxHighlighter.ABRA_TRIT);
-            ANNOTATOR_MAP.put("templatedef", QuplaSyntaxHighlighter.ABRA_TEMPLATE_DECLARATION);
-            ANNOTATOR_MAP.put("typeref", QuplaSyntaxHighlighter.ABRA_TYPE_REFERENCE);
-            ANNOTATOR_MAP.put("statevar", QuplaSyntaxHighlighter.ABRA_STATE_VAR_REFERENCE);
+            ANNOTATOR_MAP.put("typedef", QuplaSyntaxHighlighter.QUPLA_TYPE_DECLARATION);
+            ANNOTATOR_MAP.put("lutdef", QuplaSyntaxHighlighter.QUPLA_LUT_DECLARATION);
+            ANNOTATOR_MAP.put("fielddef", QuplaSyntaxHighlighter.QUPLA_FIELD_DECLARATION);
+            ANNOTATOR_MAP.put("funcdef", QuplaSyntaxHighlighter.QUPLA_FCT_DECLARATION);
+            ANNOTATOR_MAP.put("local_var", QuplaSyntaxHighlighter.QUPLA_LOCAL_VAR);
+            ANNOTATOR_MAP.put("trit", QuplaSyntaxHighlighter.QUPLA_TRIT);
+            ANNOTATOR_MAP.put("templatedef", QuplaSyntaxHighlighter.QUPLA_TEMPLATE_DECLARATION);
+            ANNOTATOR_MAP.put("typeref", QuplaSyntaxHighlighter.QUPLA_TYPE_REFERENCE);
+            ANNOTATOR_MAP.put("statevar", QuplaSyntaxHighlighter.QUPLA_STATE_VAR_REFERENCE);
             ANNOTATOR_MAP.put("envkeyword", QuplaSyntaxHighlighter.ENV_KEYWORD);
             ANNOTATOR_MAP.put("envname", QuplaSyntaxHighlighter.ENV_NAME);
             ANNOTATOR_MAP.put("envexpr", QuplaSyntaxHighlighter.ENV_EXPR);

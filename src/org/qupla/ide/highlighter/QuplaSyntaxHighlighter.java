@@ -22,32 +22,32 @@ public class QuplaSyntaxHighlighter extends SyntaxHighlighterBase  {
             createTextAttributesKey("SIMPLE_BAD_CHARACTER", HighlighterColors.BAD_CHARACTER);
 
 
-    public static final TextAttributesKey ABRA_TYPE_DECLARATION =
-            createTextAttributesKey("ABRA_TYPE_DECLARATION", DefaultLanguageHighlighterColors.TEMPLATE_LANGUAGE_COLOR);
-    public static final TextAttributesKey ABRA_TYPE_REFERENCE =
-            createTextAttributesKey("ABRA_TYPE_REFERENCE", DefaultLanguageHighlighterColors.TEMPLATE_LANGUAGE_COLOR);
-    public static final TextAttributesKey ABRA_STATE_VAR_REFERENCE =
-            createTextAttributesKey("ABRA_STATE_VAR_REFERENCE", DefaultLanguageHighlighterColors.TEMPLATE_LANGUAGE_COLOR);
-    public static final TextAttributesKey ABRA_FIELD_DECLARATION =
-            createTextAttributesKey("ABRA_FIELD_DECLARATION", DefaultLanguageHighlighterColors.GLOBAL_VARIABLE);
-    public static final TextAttributesKey ABRA_FCT_DECLARATION =
-            createTextAttributesKey("ABRA_FCT_DECLARATION", DefaultLanguageHighlighterColors.STRING);
-    public static final TextAttributesKey ABRA_LUT_DECLARATION =
-            createTextAttributesKey("ABRA_LUT_DECLARATION", DefaultLanguageHighlighterColors.INSTANCE_FIELD);
-    public static final TextAttributesKey ABRA_TEMPLATE_DECLARATION =
-            createTextAttributesKey("ABRA_TEMPLATE_DECLARATION", DefaultLanguageHighlighterColors.FUNCTION_CALL);
-    public static final TextAttributesKey ABRA_LOCAL_VAR =
-            createTextAttributesKey("ABRA_LOCAL_VAR", DefaultLanguageHighlighterColors.LOCAL_VARIABLE);
-    public static final TextAttributesKey ABRA_TRIT =
-            createTextAttributesKey("ABRA_TRIT", DefaultLanguageHighlighterColors.IDENTIFIER);
-    public static final TextAttributesKey ABRA_TEST_ASSERTION_PREFIX =
-            createTextAttributesKey("ABRA_TEST_ASSERTION_PREFIX", DefaultLanguageHighlighterColors.LINE_COMMENT);
-    public static final TextAttributesKey ABRA_EXPR_ASSERTION_PREFIX =
-            createTextAttributesKey("ABRA_EXPR_ASSERTION_PREFIX", DefaultLanguageHighlighterColors.LINE_COMMENT);
-    public static final TextAttributesKey ABRA_TEST_ASSERTION =
-            createTextAttributesKey("ABRA_TEST_ASSERTION", DefaultLanguageHighlighterColors.LINE_COMMENT);
-    public static final TextAttributesKey ABRA_EXPR_ASSERTION =
-            createTextAttributesKey("ABRA_EXPR_ASSERTION", DefaultLanguageHighlighterColors.LINE_COMMENT);
+    public static final TextAttributesKey QUPLA_TYPE_DECLARATION =
+            createTextAttributesKey("QUPLA_TYPE_DECLARATION", DefaultLanguageHighlighterColors.TEMPLATE_LANGUAGE_COLOR);
+    public static final TextAttributesKey QUPLA_TYPE_REFERENCE =
+            createTextAttributesKey("QUPLA_TYPE_REFERENCE", DefaultLanguageHighlighterColors.TEMPLATE_LANGUAGE_COLOR);
+    public static final TextAttributesKey QUPLA_STATE_VAR_REFERENCE =
+            createTextAttributesKey("QUPLA_STATE_VAR_REFERENCE", DefaultLanguageHighlighterColors.TEMPLATE_LANGUAGE_COLOR);
+    public static final TextAttributesKey QUPLA_FIELD_DECLARATION =
+            createTextAttributesKey("QUPLA_FIELD_DECLARATION", DefaultLanguageHighlighterColors.GLOBAL_VARIABLE);
+    public static final TextAttributesKey QUPLA_FCT_DECLARATION =
+            createTextAttributesKey("QUPLA_FCT_DECLARATION", DefaultLanguageHighlighterColors.STRING);
+    public static final TextAttributesKey QUPLA_LUT_DECLARATION =
+            createTextAttributesKey("QUPLA_LUT_DECLARATION", DefaultLanguageHighlighterColors.INSTANCE_FIELD);
+    public static final TextAttributesKey QUPLA_TEMPLATE_DECLARATION =
+            createTextAttributesKey("QUPLA_TEMPLATE_DECLARATION", DefaultLanguageHighlighterColors.FUNCTION_CALL);
+    public static final TextAttributesKey QUPLA_LOCAL_VAR =
+            createTextAttributesKey("QUPLA_LOCAL_VAR", DefaultLanguageHighlighterColors.LOCAL_VARIABLE);
+    public static final TextAttributesKey QUPLA_TRIT =
+            createTextAttributesKey("QUPLA_TRIT", DefaultLanguageHighlighterColors.IDENTIFIER);
+    public static final TextAttributesKey QUPLA_TEST_ASSERTION_PREFIX =
+            createTextAttributesKey("QUPLA_TEST_ASSERTION_PREFIX", DefaultLanguageHighlighterColors.LINE_COMMENT);
+    public static final TextAttributesKey QUPLA_EXPR_ASSERTION_PREFIX =
+            createTextAttributesKey("QUPLA_EXPR_ASSERTION_PREFIX", DefaultLanguageHighlighterColors.LINE_COMMENT);
+    public static final TextAttributesKey QUPLA_TEST_ASSERTION =
+            createTextAttributesKey("QUPLA_TEST_ASSERTION", DefaultLanguageHighlighterColors.LINE_COMMENT);
+    public static final TextAttributesKey QUPLA_EXPR_ASSERTION =
+            createTextAttributesKey("QUPLA_EXPR_ASSERTION", DefaultLanguageHighlighterColors.LINE_COMMENT);
     public static final TextAttributesKey ENV_KEYWORD =
             createTextAttributesKey("ENV_KEYWORD", DefaultLanguageHighlighterColors.KEYWORD);
     public static final TextAttributesKey ENV_NAME =
@@ -62,13 +62,13 @@ public class QuplaSyntaxHighlighter extends SyntaxHighlighterBase  {
 
     private static final TextAttributesKey[] BAD_CHAR_KEYS = new TextAttributesKey[]{BAD_CHARACTER};
     private static final TextAttributesKey[] COMMENT_KEYS = new TextAttributesKey[]{COMMENT};
-    private static final TextAttributesKey[] TEST_COMMENT_KEYS = new TextAttributesKey[]{ABRA_TEST_ASSERTION_PREFIX};
-    private static final TextAttributesKey[] EXPR_COMMENT_KEYS = new TextAttributesKey[]{ABRA_EXPR_ASSERTION_PREFIX};
-    private static final TextAttributesKey[] TEST_ASSERT_KEYS = new TextAttributesKey[]{ABRA_TEST_ASSERTION};
-    private static final TextAttributesKey[] EXPR_ASSERT_KEYS = new TextAttributesKey[]{ABRA_EXPR_ASSERTION};
+    private static final TextAttributesKey[] TEST_COMMENT_KEYS = new TextAttributesKey[]{QUPLA_TEST_ASSERTION_PREFIX};
+    private static final TextAttributesKey[] EXPR_COMMENT_KEYS = new TextAttributesKey[]{QUPLA_EXPR_ASSERTION_PREFIX};
+    private static final TextAttributesKey[] TEST_ASSERT_KEYS = new TextAttributesKey[]{QUPLA_TEST_ASSERTION};
+    private static final TextAttributesKey[] EXPR_ASSERT_KEYS = new TextAttributesKey[]{QUPLA_EXPR_ASSERTION};
     private static final TextAttributesKey[] KEYWORD_KEYS = new TextAttributesKey[]{KEYWORD};
     private static final TextAttributesKey[] ENV_KEYWORD_KEYS = new TextAttributesKey[]{ENV_KEYWORD};
-    private static final TextAttributesKey[] TRIT_KEYS = new TextAttributesKey[]{ABRA_TRIT};
+    private static final TextAttributesKey[] TRIT_KEYS = new TextAttributesKey[]{QUPLA_TRIT};
 
     @NotNull
     @Override

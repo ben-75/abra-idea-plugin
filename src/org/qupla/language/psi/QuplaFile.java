@@ -30,7 +30,7 @@ public class QuplaFile extends PsiFileBase {
 
     @Override
     public String toString() {
-        return "Abra File";
+        return "Qupla File";
     }
 
     @Override
@@ -177,7 +177,7 @@ public class QuplaFile extends PsiFileBase {
         return null;
     }
 
-    public synchronized List<QuplaFile> getAbraFileScope() {
+    public synchronized List<QuplaFile> getQuplaFileScope() {
         ArrayList<QuplaFile> resp = new ArrayList<>();
         int analysed = 0;
         resp.add(this);

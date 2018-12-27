@@ -30,7 +30,7 @@ public class QuplaLutPsiReferenceImpl extends PsiReferenceBase implements PsiRef
 
     @Override
     public PsiElement handleElementRename(String newElementName) throws IncorrectOperationException {
-        QuplaLutNameRef ref = QuplaElementFactory.createAbraLutNameRef(myElement.getProject(), newElementName);
+        QuplaLutNameRef ref = QuplaElementFactory.createQuplaLutNameRef(myElement.getProject(), newElementName);
         ASTNode newKeyNode = ref.getFirstChild().getNode();
         myElement.getNode().replaceChild(myElement.getFirstChild().getNode(), newKeyNode);
         return ref;

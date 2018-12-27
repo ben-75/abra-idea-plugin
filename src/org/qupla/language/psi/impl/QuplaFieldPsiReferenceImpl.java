@@ -29,7 +29,7 @@ public class QuplaFieldPsiReferenceImpl extends PsiReferenceBase implements PsiR
     }
     @Override
     public PsiElement handleElementRename(String newElementName) throws IncorrectOperationException {
-        QuplaFieldNameRef ref = QuplaElementFactory.createAbraFieldNameReference(myElement.getProject(), newElementName);
+        QuplaFieldNameRef ref = QuplaElementFactory.createQuplaFieldNameReference(myElement.getProject(), newElementName);
         ASTNode newKeyNode = ref.getFirstChild().getNode();
         myElement.getNode().replaceChild(myElement.getFirstChild().getNode(), newKeyNode);
         return ref;
@@ -80,22 +80,6 @@ public class QuplaFieldPsiReferenceImpl extends PsiReferenceBase implements PsiR
         }
         return null;
     }
-
-//    private PsiElement resolveFromImports(PsiFile startingFile){
-//        for(ASTNode stmt:startingFile.getNode().getChildren(TokenSet.create(QuplaTypes.IMPORT_STMT))){
-//            PsiReference[] importedFiles = QuplaPsiImplUtil.getReferences((QuplaImportStmt) stmt.getPsi());
-//            if(importedFiles!=null) {
-//                for (PsiReference psiRef : importedFiles) {
-//                    PsiElement anAbraFile = psiRef.resolve();
-//                    if(anAbraFile!=null){
-//                        PsiElement resolved = resolveInFile((PsiFile) anAbraFile);
-//                        if(resolved!=null)return resolved;
-//                    }
-//                }
-//            }
-//        }
-//        return null;
-//    }
 
     private PsiElement resolveFromImports(PsiFile startingFile){
         List<QuplaFile> importsTree = (((QuplaFile)startingFile).getImportTree());

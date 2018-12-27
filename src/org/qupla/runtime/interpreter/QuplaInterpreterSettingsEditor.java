@@ -21,7 +21,6 @@ import java.util.*;
 public class QuplaInterpreterSettingsEditor extends SettingsEditor<QuplaInterpreterRunConfiguration> {
     private QuplaInterpreterRunConfigUI myPanel;
     private LabeledComponent<ComponentWithBrowseButton> myMainClass;
-    private static VirtualFileFilter abraFileFilter = file -> file.isDirectory() || file.getName().endsWith(".qpl");
 
 
     @Override
@@ -219,24 +218,24 @@ public class QuplaInterpreterSettingsEditor extends SettingsEditor<QuplaInterpre
     private static ComboBoxModel getModulesModel(Project project){
         QuplaModuleManager quplaModuleManager = project.getComponent(QuplaModuleManager.class);
         Collection<QuplaModule> modules = quplaModuleManager.allModules();
-        List<QuplaFileComboBoxItem> abraFiles = new ArrayList<>();
+        List<QuplaFileComboBoxItem> quplaFiles = new ArrayList<>();
         for(QuplaModule module:modules){
             for(QuplaFile f:module.getModuleFiles())
-                abraFiles.add(new QuplaFileComboBoxItem(f));
+                quplaFiles.add(new QuplaFileComboBoxItem(f));
         }
-        abraFiles.sort(new Comparator<QuplaFileComboBoxItem>() {
+        quplaFiles.sort(new Comparator<QuplaFileComboBoxItem>() {
             @Override
             public int compare(QuplaFileComboBoxItem o1, QuplaFileComboBoxItem o2) {
                 return o1.toString().compareTo(o2.toString());
             }
         });
-        return new ListComboBoxModel(abraFiles);
+        return new ListComboBoxModel(quplaFiles);
     }
 
-    private static ComboBoxModel getFunctionsModel(QuplaFile abraModule){
-        if(abraModule==null)return new ListComboBoxModel(new ArrayList());
+    private static ComboBoxModel getFunctionsModel(QuplaFile module){
+        if(module==null)return new ListComboBoxModel(new ArrayList());
         List<QuplaFuncStmtComboBoxItem> model = new ArrayList<>();
-        for(QuplaFuncStmt f:abraModule.findAllFuncStmt()){
+        for(QuplaFuncStmt f:module.findAllFuncStmt()){
             model.add(new QuplaFuncStmtComboBoxItem(f));
         }
         return new ListComboBoxModel(model);
@@ -268,21 +267,21 @@ public class QuplaInterpreterSettingsEditor extends SettingsEditor<QuplaInterpre
     }
 
     public static class QuplaFuncStmtComboBoxItem {
-        private final QuplaFuncStmt abraFuncStmt;
+        private final QuplaFuncStmt funcStmt;
 
-        public QuplaFuncStmtComboBoxItem(QuplaFuncStmt abraFuncStmt) {
-            this.abraFuncStmt = abraFuncStmt;
+        public QuplaFuncStmtComboBoxItem(QuplaFuncStmt funcStmt) {
+            this.funcStmt = funcStmt;
         }
 
         @Override
         public String toString() {
-            return abraFuncStmt.getFuncSignature().getText()+
-                    (abraFuncStmt.getParent() instanceof QuplaTemplateStmt ?
-                            (" (from template "+((QuplaTemplateStmt)abraFuncStmt.getParent()).getTemplateName().getText()+")"):"");
+            return funcStmt.getFuncSignature().getText()+
+                    (funcStmt.getParent() instanceof QuplaTemplateStmt ?
+                            (" (from template "+((QuplaTemplateStmt) funcStmt.getParent()).getTemplateName().getText()+")"):"");
         }
 
         public QuplaFuncStmt getFuncStmt() {
-            return abraFuncStmt;
+            return funcStmt;
         }
     }
 

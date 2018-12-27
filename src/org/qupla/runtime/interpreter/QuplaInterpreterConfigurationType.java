@@ -16,12 +16,12 @@ public class QuplaInterpreterConfigurationType implements ConfigurationType {
     }
     @Override
     public String getDisplayName() {
-        return "Abra Interpreter";
+        return "Qupla Interpreter";
     }
 
     @Override
     public String getConfigurationTypeDescription() {
-        return "Abra Interpreter Run Configuration Type";
+        return "Qupla Interpreter Run Configuration Type";
     }
 
     @Override
@@ -32,7 +32,7 @@ public class QuplaInterpreterConfigurationType implements ConfigurationType {
     @NotNull
     @Override
     public String getId() {
-        return "ABRA_INTERPRETER_RUN_CONFIGURATION";
+        return "QUPLA_INTERPRETER_RUN_CONFIGURATION";
     }
 
     @Override

@@ -29,7 +29,7 @@ public class QuplaFileReferencePsiReferenceImpl extends PsiReferenceBase impleme
 
     @Override
     public PsiElement handleElementRename(String newElementName) throws IncorrectOperationException {
-        QuplaModuleName moduleName = QuplaElementFactory.createAbraModuleName(myElement.getProject(), newElementName);
+        QuplaModuleName moduleName = QuplaElementFactory.createQuplaModuleName(myElement.getProject(), newElementName);
         ASTNode newKeyNode = moduleName.getFirstChild().getNode();
         myElement.getNode().replaceChild(myElement.getLastChild().getNode(), newKeyNode);
         return moduleName;

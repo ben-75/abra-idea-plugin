@@ -79,7 +79,7 @@ public class QuplaPsiImplUtil {
     public static PsiElement setName(QuplaTypeStmt element, String newName) {
         ASTNode globalIdNode = element.getTypeName().getNode();
         if (globalIdNode != null) {
-            QuplaTypeName typeName = QuplaElementFactory.createAbraTypeName(element.getProject(), newName);
+            QuplaTypeName typeName = QuplaElementFactory.createQuplaTypeName(element.getProject(), newName);
             ASTNode newKeyNode = typeName.getFirstChild().getNode();
             element.getNode().replaceChild(globalIdNode, newKeyNode);
         }
@@ -108,7 +108,7 @@ public class QuplaPsiImplUtil {
     public static PsiElement setName(QuplaTypeName element, String newName) {
         ASTNode globalIdNode = element.getNode().getFirstChildNode();
         if (globalIdNode != null) {
-            QuplaTypeName typeName = QuplaElementFactory.createAbraTypeName(element.getProject(), newName);
+            QuplaTypeName typeName = QuplaElementFactory.createQuplaTypeName(element.getProject(), newName);
             ASTNode newKeyNode = typeName.getFirstChild().getNode();
             element.getNode().replaceChild(globalIdNode, newKeyNode);
         }
@@ -128,7 +128,7 @@ public class QuplaPsiImplUtil {
             @NotNull
             @Override
             public TextAttributesKey getTextAttributesKey() {
-                return QuplaSyntaxHighlighter.ABRA_TYPE_DECLARATION;
+                return QuplaSyntaxHighlighter.QUPLA_TYPE_DECLARATION;
             }
 
             @Nullable
@@ -157,7 +157,7 @@ public class QuplaPsiImplUtil {
             @Nullable
             @Override
             public TextAttributesKey getTextAttributesKey() {
-                return QuplaSyntaxHighlighter.ABRA_LOCAL_VAR;
+                return QuplaSyntaxHighlighter.QUPLA_LOCAL_VAR;
             }
 
             @Nullable
@@ -187,7 +187,7 @@ public class QuplaPsiImplUtil {
             @Nullable
             @Override
             public TextAttributesKey getTextAttributesKey() {
-                return QuplaSyntaxHighlighter.ABRA_LOCAL_VAR;
+                return QuplaSyntaxHighlighter.QUPLA_LOCAL_VAR;
             }
 
             @Nullable
@@ -245,7 +245,7 @@ public class QuplaPsiImplUtil {
     public static PsiElement setName(QuplaLutStmt element, String newName) {
         ASTNode globalIdNode = element.getLutName().getNode();
         if (globalIdNode != null) {
-            QuplaLutName lutName = QuplaElementFactory.createAbraLutName(element.getProject(), newName);
+            QuplaLutName lutName = QuplaElementFactory.createQuplaLutName(element.getProject(), newName);
             ASTNode newKeyNode = lutName.getFirstChild().getNode();
             element.getNode().replaceChild(globalIdNode, newKeyNode);
         }
@@ -263,7 +263,7 @@ public class QuplaPsiImplUtil {
     public static PsiElement setName(QuplaLutName element, String newName) {
         ASTNode globalIdNode = element.getNode().getFirstChildNode();
         if (globalIdNode != null) {
-            QuplaLutName lutName = QuplaElementFactory.createAbraLutName(element.getProject(), newName);
+            QuplaLutName lutName = QuplaElementFactory.createQuplaLutName(element.getProject(), newName);
             ASTNode newKeyNode = lutName.getFirstChild().getNode();
             element.getNode().replaceChild(globalIdNode, newKeyNode);
         }
@@ -279,7 +279,7 @@ public class QuplaPsiImplUtil {
             @Nullable
             @Override
             public TextAttributesKey getTextAttributesKey() {
-                return QuplaSyntaxHighlighter.ABRA_FCT_DECLARATION;
+                return QuplaSyntaxHighlighter.QUPLA_FCT_DECLARATION;
             }
 
             @Nullable
@@ -404,7 +404,7 @@ public class QuplaPsiImplUtil {
     public static PsiElement setName(QuplaFuncStmt element, String newName) {
         ASTNode globalIdNode = element.getFuncSignature().getFuncName().getNode();
         if (globalIdNode != null) {
-            QuplaFuncName funcName = QuplaElementFactory.createAbraFuncName(element.getProject(), newName);
+            QuplaFuncName funcName = QuplaElementFactory.createQuplaFuncName(element.getProject(), newName);
             ASTNode newKeyNode = funcName.getFirstChild().getNode();
             element.getNode().replaceChild(globalIdNode, newKeyNode);
         }
@@ -422,7 +422,7 @@ public class QuplaPsiImplUtil {
     public static PsiElement setName(QuplaFuncName element, String newName) {
         ASTNode globalIdNode = element.getNode().getFirstChildNode();
         if (globalIdNode != null) {
-            QuplaFuncName funcName = QuplaElementFactory.createAbraFuncName(element.getProject(), newName);
+            QuplaFuncName funcName = QuplaElementFactory.createQuplaFuncName(element.getProject(), newName);
             ASTNode newKeyNode = funcName.getFirstChild().getNode();
             element.getNode().replaceChild(globalIdNode, newKeyNode);
         }
@@ -440,7 +440,7 @@ public class QuplaPsiImplUtil {
             @Nullable
             @Override
             public TextAttributesKey getTextAttributesKey() {
-                return QuplaSyntaxHighlighter.ABRA_FCT_DECLARATION;
+                return QuplaSyntaxHighlighter.QUPLA_FCT_DECLARATION;
             }
 
             @Nullable
@@ -470,9 +470,9 @@ public class QuplaPsiImplUtil {
     }
 
     public static QuplaDefinition getStatement(QuplaFuncNameRef element){
-        PsiElement abraDefinition = element;
-        while(!(abraDefinition instanceof QuplaDefinition))abraDefinition = abraDefinition.getParent();
-        return (QuplaDefinition) abraDefinition;
+        PsiElement quplaDefinition = element;
+        while(!(quplaDefinition instanceof QuplaDefinition))quplaDefinition = quplaDefinition.getParent();
+        return (QuplaDefinition) quplaDefinition;
     }
 
     public static boolean isInTemplate(QuplaFuncStmt funcStmt){
@@ -526,7 +526,7 @@ public class QuplaPsiImplUtil {
     public static PsiElement setName(QuplaTemplateStmt element, String newName) {
         ASTNode globalIdNode = element.getTemplateName().getNode();
         if (globalIdNode != null) {
-            QuplaTemplateName templateName = QuplaElementFactory.createAbraTemplateName(element.getProject(), newName);
+            QuplaTemplateName templateName = QuplaElementFactory.createQuplaTemplateName(element.getProject(), newName);
             ASTNode newKeyNode = templateName.getFirstChild().getNode();
             element.getNode().replaceChild(globalIdNode, newKeyNode);
         }
@@ -545,7 +545,7 @@ public class QuplaPsiImplUtil {
     public static PsiElement setName(QuplaTemplateName element, String newName) {
         ASTNode globalIdNode = element.getNode().getFirstChildNode();
         if (globalIdNode != null) {
-            QuplaTemplateName templateName = QuplaElementFactory.createAbraTemplateName(element.getProject(), newName);
+            QuplaTemplateName templateName = QuplaElementFactory.createQuplaTemplateName(element.getProject(), newName);
             ASTNode newKeyNode = templateName.getFirstChild().getNode();
             element.getNode().replaceChild(globalIdNode, newKeyNode);
         }
@@ -590,7 +590,7 @@ public class QuplaPsiImplUtil {
     public static PsiElement setName(QuplaUseStmt element, String newName) {
         ASTNode globalIdNode = element.getTemplateNameRef().getNode();
         if (globalIdNode != null) {
-            QuplaFuncName funcName = QuplaElementFactory.createAbraFuncName(element.getProject(), newName);
+            QuplaFuncName funcName = QuplaElementFactory.createQuplaFuncName(element.getProject(), newName);
             ASTNode newKeyNode = funcName.getFirstChild().getNode();
             element.getNode().replaceChild(globalIdNode, newKeyNode);
         }
@@ -1018,8 +1018,8 @@ public class QuplaPsiImplUtil {
 
     private static int getPlaceHolderIndex(String txt, QuplaTemplateStmt stmt) {
         int i = 0;
-        for(QuplaPlaceHolderTypeName abraPlaceHolderName:stmt.getPlaceHolderTypeNameList()){
-            if(abraPlaceHolderName.getText().equals(txt))return i;
+        for(QuplaPlaceHolderTypeName quplaPlaceHolderTypeName:stmt.getPlaceHolderTypeNameList()){
+            if(quplaPlaceHolderTypeName.getText().equals(txt))return i;
             i++;
         }
         return -1;
@@ -1032,7 +1032,7 @@ public class QuplaPsiImplUtil {
     public static PsiElement setName(QuplaPlaceHolderTypeName element, String newName) {
         ASTNode globalIdNode = element.getNode().getFirstChildNode();
         if (globalIdNode != null) {
-            QuplaPlaceHolderTypeName templateName = QuplaElementFactory.createAbraPlaceHolderName(element.getProject(), newName);
+            QuplaPlaceHolderTypeName templateName = QuplaElementFactory.createQuplaPlaceHolderName(element.getProject(), newName);
             ASTNode newKeyNode = templateName.getFirstChild().getNode();
             element.getNode().replaceChild(globalIdNode, newKeyNode);
         }
@@ -1197,7 +1197,7 @@ public class QuplaPsiImplUtil {
     public static PsiElement setName(QuplaParamName element, String newName) {
         ASTNode globalIdNode = element.getNode().getFirstChildNode();
         if (globalIdNode != null) {
-            QuplaParamName paramName = QuplaElementFactory.createAbraParamName(element.getProject(), newName);
+            QuplaParamName paramName = QuplaElementFactory.createQuplaParamName(element.getProject(), newName);
             ASTNode newKeyNode = paramName.getFirstChild().getNode();
             element.getNode().replaceChild(globalIdNode, newKeyNode);
         }
@@ -1213,9 +1213,9 @@ public class QuplaPsiImplUtil {
     }
 
     public static QuplaDefinition getStatment(QuplaFuncExpr funcExpr){
-        PsiElement abraDefinition = funcExpr;
-        while(!(abraDefinition instanceof QuplaDefinition))abraDefinition = abraDefinition.getParent();
-        return (QuplaDefinition) abraDefinition;
+        PsiElement quplaDefinition = funcExpr;
+        while(!(quplaDefinition instanceof QuplaDefinition))quplaDefinition = quplaDefinition.getParent();
+        return (QuplaDefinition) quplaDefinition;
     }
 
     public static boolean isInTemplateStatement(QuplaFuncExpr funcExpr){
@@ -1234,7 +1234,7 @@ public class QuplaPsiImplUtil {
     }
 
     //====================================================================
-    //====================== AbraField ===================================
+    //====================== QuplaField ==================================
     //====================================================================
 
     public static String getName(QuplaFieldName element) {
@@ -1244,7 +1244,7 @@ public class QuplaPsiImplUtil {
     public static PsiElement setName(QuplaFieldName element, String newName) {
         ASTNode globalIdNode = element.getNode().getFirstChildNode();
         if (globalIdNode != null) {
-            QuplaFieldName paramName = QuplaElementFactory.createAbraFieldName(element.getProject(), newName);
+            QuplaFieldName paramName = QuplaElementFactory.createQuplaFieldName(element.getProject(), newName);
             ASTNode newKeyNode = paramName.getFirstChild().getNode();
             element.getNode().replaceChild(globalIdNode, newKeyNode);
         }
@@ -1266,7 +1266,7 @@ public class QuplaPsiImplUtil {
     public static PsiElement setName(QuplaVarName element, String newName) {
         ASTNode globalIdNode = element.getNode().getFirstChildNode();
         if (globalIdNode != null) {
-            QuplaVarName varName = QuplaElementFactory.createAbraVarName(element.getProject(), newName);
+            QuplaVarName varName = QuplaElementFactory.createQuplaVarName(element.getProject(), newName);
             ASTNode newKeyNode = varName.getFirstChild().getNode();
             element.getNode().replaceChild(globalIdNode, newKeyNode);
         }
@@ -1466,7 +1466,7 @@ public class QuplaPsiImplUtil {
 
     public static List<QuplaFuncStmt> findAllFuncStmt(Project project, String name){
         ArrayList<QuplaFuncStmt> resp = new ArrayList<>();
-        for(QuplaFile quplaFile :project.getComponent(QuplaModuleManager.class).getAllAbraFiles()){
+        for(QuplaFile quplaFile :project.getComponent(QuplaModuleManager.class).getAllQuplaFiles()){
             resp.addAll(quplaFile.findAllFuncStmt(name));
         }
         return resp;
@@ -1474,7 +1474,7 @@ public class QuplaPsiImplUtil {
 
     public static List<QuplaFuncNameRef> findAllFuncNameRef(Project project, String name){
         ArrayList<QuplaFuncNameRef> resp = new ArrayList<>();
-        for(QuplaFile quplaFile :project.getComponent(QuplaModuleManager.class).getAllAbraFiles()){
+        for(QuplaFile quplaFile :project.getComponent(QuplaModuleManager.class).getAllQuplaFiles()){
             resp.addAll(quplaFile.findAllFuncNameRef(name));
         }
         return resp;
@@ -1483,7 +1483,7 @@ public class QuplaPsiImplUtil {
     public static List<QuplaFuncName> findAllFuncName(Project project, String name, List<QuplaFile> files) {
         ArrayList<QuplaFuncName> resp = new ArrayList<>();
         if (files == null) {
-            for(QuplaFile quplaFile :project.getComponent(QuplaModuleManager.class).getAllAbraFiles()){
+            for(QuplaFile quplaFile :project.getComponent(QuplaModuleManager.class).getAllQuplaFiles()){
                 resp.addAll(quplaFile.findAllFuncName(name));
             }
         } else {
@@ -1497,7 +1497,7 @@ public class QuplaPsiImplUtil {
     public static List<QuplaTypeName> findAllTypeName(Project project, String name, List<QuplaFile> files) {
         ArrayList<QuplaTypeName> resp = new ArrayList<>();
         if (files == null) {
-            for(QuplaFile quplaFile :project.getComponent(QuplaModuleManager.class).getAllAbraFiles()){
+            for(QuplaFile quplaFile :project.getComponent(QuplaModuleManager.class).getAllQuplaFiles()){
                 resp.addAll(quplaFile.findAllTypeName(name));
             }
         } else {

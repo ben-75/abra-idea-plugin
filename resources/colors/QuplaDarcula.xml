@@ -1,59 +1,59 @@
 <?xml version='1.0'?>
 <list>
-  <option name="ABRA_FCT_DECLARATION">
+  <option name="QUPLA_FCT_DECLARATION">
     <value>
       <option name="FOREGROUND" value="ffc66d" />
     </value>
   </option>
-  <option name="ABRA_LOCAL_VAR">
+  <option name="QUPLA_LOCAL_VAR">
     <value>
       <option name="FOREGROUND" value="9876aa" />
       <option name="FONT_TYPE" value="2" />
       <option name="EFFECT_TYPE" value="1" />
     </value>
   </option>
-  <option name="ABRA_LUT_DECLARATION">
+  <option name="QUPLA_LUT_DECLARATION">
     <value>
       <option name="FOREGROUND" value="99ff" />
     </value>
   </option>
-  <option name="ABRA_TEMPLATE_DECLARATION">
+  <option name="QUPLA_TEMPLATE_DECLARATION">
     <value>
       <option name="FOREGROUND" value="995457" />
     </value>
   </option>
-  <option name="ABRA_TYPE_DECLARATION">
+  <option name="QUPLA_TYPE_DECLARATION">
     <value>
       <option name="FOREGROUND" value="43cc84" />
       <option name="FONT_TYPE" value="3" />
       <option name="EFFECT_TYPE" value="4" />
     </value>
   </option>
-  <option name="ABRA_TRIT">
+  <option name="QUPLA_TRIT">
     <value>
       <option name="FOREGROUND" value="f6fff4" />
       <option name="FONT_TYPE" value="1" />
     </value>
   </option>
-  <option name="ABRA_FIELD_DECLARATION">
+  <option name="QUPLA_FIELD_DECLARATION">
     <value>
       <option name="FOREGROUND" value="725984" />
       <option name="FONT_TYPE" value="2" />
     </value>
   </option>
-  <option name="ABRA_TYPE_REFERENCE">
+  <option name="QUPLA_TYPE_REFERENCE">
     <value>
       <option name="FOREGROUND" value="8b6546" />
       <option name="FONT_TYPE" value="1" />
       <option name="EFFECT_TYPE" value="4" />
     </value>
   </option>
-  <option name="ABRA_TEST_ASSERTION">
+  <option name="QUPLA_TEST_ASSERTION">
     <value>
       <option name="FOREGROUND" value="fffd00" />
     </value>
   </option>
-  <option name="ABRA_STATE_VAR_REFERENCE">
+  <option name="QUPLA_STATE_VAR_REFERENCE">
     <value>
       <option name="FOREGROUND" value="f6fff4" />
       <option name="FONT_TYPE" value="3" />

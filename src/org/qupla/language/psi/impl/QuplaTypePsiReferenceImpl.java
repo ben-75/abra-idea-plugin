@@ -30,7 +30,7 @@ public class QuplaTypePsiReferenceImpl extends PsiReferenceBase implements PsiRe
 
     @Override
     public PsiElement handleElementRename(String newElementName) throws IncorrectOperationException {
-        QuplaTypeNameRef ref = QuplaElementFactory.createAbraTypeNameRef(myElement.getProject(), newElementName);
+        QuplaTypeNameRef ref = QuplaElementFactory.createQuplaTypeNameRef(myElement.getProject(), newElementName);
         ASTNode newKeyNode = ref.getFirstChild().getNode();
         myElement.getNode().replaceChild(myElement.getFirstChild().getNode(), newKeyNode);
         return ref;
@@ -66,7 +66,7 @@ public class QuplaTypePsiReferenceImpl extends PsiReferenceBase implements PsiRe
     @Override
     public Object[] getVariants() {
         QuplaFile startingFile = (QuplaFile) myElement.getContainingFile();
-        List<QuplaFile> files = startingFile.getAbraFileScope();
+        List<QuplaFile> files = startingFile.getQuplaFileScope();
         List<QuplaTypeName> allRefs = QuplaPsiImplUtil.findAllTypeName(myElement.getProject(), null, files.size() == 1 ? null : files);
         return allRefs.toArray();
     }

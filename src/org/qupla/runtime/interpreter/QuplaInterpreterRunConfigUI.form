@@ -122,7 +122,7 @@
         </constraints>
         <properties>
           <text value="echo"/>
-          <toolTipText value="Echoes back the current code tree as Abra source"/>
+          <toolTipText value="Echoes back the current code tree as Qupla source"/>
         </properties>
       </component>
       <component id="f1bdc" class="javax.swing.JCheckBox" binding="trimCheckBox" default-binding="true">

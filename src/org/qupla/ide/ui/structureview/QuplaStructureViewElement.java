@@ -62,11 +62,11 @@ public class QuplaStructureViewElement implements StructureViewTreeElement, Sort
     @Override
     public TreeElement[] getChildren() {
         if (element instanceof QuplaFile) {
-            QuplaDefinition[] abraDeclarations = PsiTreeUtil.getChildrenOfType(element, QuplaDefinition.class);
-            if(abraDeclarations!=null) {
-                List<TreeElement> treeElements = new ArrayList<TreeElement>(abraDeclarations.length);
-                for (QuplaDefinition abraDeclaration : abraDeclarations) {
-                    treeElements.add(new QuplaStructureViewElement(abraDeclaration));
+            QuplaDefinition[] quplaDeclarations = PsiTreeUtil.getChildrenOfType(element, QuplaDefinition.class);
+            if(quplaDeclarations!=null) {
+                List<TreeElement> treeElements = new ArrayList<TreeElement>(quplaDeclarations.length);
+                for (QuplaDefinition quplaDefinition : quplaDeclarations) {
+                    treeElements.add(new QuplaStructureViewElement(quplaDefinition));
                 }
                 return treeElements.toArray(new TreeElement[treeElements.size()]);
             }

@@ -27,7 +27,7 @@ public class QuplaStateVarPsiReferenceImpl extends PsiReferenceBase implements P
 
     @Override
     public PsiElement handleElementRename(String newElementName) throws IncorrectOperationException {
-        QuplaVarName stateVarRef = QuplaElementFactory.createAbraVarName(myElement.getProject(), newElementName);
+        QuplaVarName stateVarRef = QuplaElementFactory.createQuplaVarName(myElement.getProject(), newElementName);
         ASTNode newKeyNode = stateVarRef.getFirstChild().getNode();
         myElement.getNode().replaceChild(myElement.getFirstChild().getNode(), newKeyNode);
         return stateVarRef;

@@ -19,5 +19,5 @@ public interface QuplaModuleManager {
 
     QuplaModule getModule(String name);
 
-    Collection<QuplaFile> getAllAbraFiles();
+    Collection<QuplaFile> getAllQuplaFiles();
 }

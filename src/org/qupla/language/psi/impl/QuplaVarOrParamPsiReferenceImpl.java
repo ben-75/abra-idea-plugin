@@ -29,7 +29,7 @@ public class QuplaVarOrParamPsiReferenceImpl extends PsiReferenceBase implements
 
     @Override
     public PsiElement handleElementRename(String newElementName) throws IncorrectOperationException {
-        QuplaParamOrVarNameRef ref = QuplaElementFactory.createAbraVarOrParamNameRef(myElement.getProject(), newElementName);
+        QuplaParamOrVarNameRef ref = QuplaElementFactory.createQuplaVarOrParamNameRef(myElement.getProject(), newElementName);
         ASTNode newKeyNode = ref.getFirstChild().getNode();
         myElement.getNode().replaceChild(myElement.getFirstChild().getNode(), newKeyNode);
         return ref;

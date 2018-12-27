@@ -17,7 +17,7 @@ public class QuplaInterpreterConfigurationFactory extends ConfigurationFactory {
     @Override
     @NotNull
     public RunConfiguration createTemplateConfiguration(@NotNull Project project) {
-        return new QuplaInterpreterRunConfiguration(project, this, "Abra Interpreter");
+        return new QuplaInterpreterRunConfiguration(project, this, "Qupla Interpreter");
     }
 
     @Override

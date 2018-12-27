@@ -50,7 +50,7 @@ public class QuplaModuleManagerImpl implements QuplaModuleManager, PersistentSta
     }
 
     @Override
-    public synchronized Collection<QuplaFile> getAllAbraFiles(){
+    public synchronized Collection<QuplaFile> getAllQuplaFiles(){
         checkValidity();
         ArrayList<QuplaFile> resp = new ArrayList<>();
         for(QuplaModule module:modules.values()){

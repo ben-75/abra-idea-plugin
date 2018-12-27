@@ -1,5 +1,5 @@
 
-# Abra plugin  
+# Qupla plugin  
 Intellij plugin for the Qupla language.  
   
 The Qupla language is not completely defined yet, so consider this plugin as highly experimental.  
@@ -42,13 +42,13 @@ language plugin development. Instructions can be found
   
 Once your environment is ready, clone this repository, open the project and generate the parser and the lexer:  
   
- - To generate the parser : right-click on the file Abra.bnf and select "Generate Parser Code"  
- - To generate the lexer : right-click on the file Abra.flex and select "Run JFlex Generator"  
+ - To generate the parser : right-click on the file Qupla.bnf and select "Generate Parser Code"  
+ - To generate the lexer : right-click on the file Qupla.flex and select "Run JFlex Generator"  
   
 Now you should have a `gen/` directory at the root of the project with all the generated code.  
   
 Make sure that the `gen/` directory is in the source path of your project   
-(Open "Project Structure > Modules > abra-language-plugin > tab "Sources")  
+(Open "Project Structure > Modules > qupla-language-plugin > tab "Sources")  
   
 You can now run the plugin. If you plan to modify the bnf or the lexer: it can be useful to enable the plugin 
 PsiViewer in the instance of IntelliJ running the plugin (If you followed carefully the instructions to 

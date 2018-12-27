@@ -17,7 +17,7 @@ public class QuplaModule {
     private Project project;
     private String name;
     private VirtualFile root;
-    private List<SmartPsiElementPointer<QuplaFile>> abraFiles;
+    private List<SmartPsiElementPointer<QuplaFile>> quplaFiles;
     private Set<String> importedModuleNames = new HashSet<>();
 
     public QuplaModule(Project project, String name, VirtualFile root, List<VirtualFile> sources){
@@ -36,13 +36,13 @@ public class QuplaModule {
                         for(QuplaImportStmt stmt:imports)importedModuleNames.add(stmt.getModuleName().getText());
                     }
                 }
-                abraFiles = wrap(files);
+                quplaFiles = wrap(files);
             }
         });
     }
 
     public List<QuplaFile> getModuleFiles(){
-        return unwrap(abraFiles);
+        return unwrap(quplaFiles);
     }
 
     private List<SmartPsiElementPointer<QuplaFile>> wrap(List<QuplaFile> l){

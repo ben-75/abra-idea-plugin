@@ -55,7 +55,6 @@ public class QuplaInterpreterState extends JavaCommandLineState {
     @Override
     protected JavaParameters createJavaParameters() throws ExecutionException {
         JavaParameters javaParameters = new JavaParameters();
-        javaParameters.getVMParametersList().add("-Dabra.tritcode=out/tritcode/build/tritcode");
         javaParameters.setWorkingDirectory(runConfiguration.getProject().getComponent(QuplaModuleManager.class).getFullQuplaSourceRootPath());
 
         javaParameters.setMainClass("org.iota.qupla.Qupla");
