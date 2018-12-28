@@ -2,7 +2,7 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/abra-language-support.iml" filepath="$PROJECT_DIR$/abra-language-support.iml" />
+      <module fileurl="file://$PROJECT_DIR$/qupla-language-support.iml" filepath="$PROJECT_DIR$/qupla-language-support.iml" />
     </modules>
   </component>
 </project>
