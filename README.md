@@ -75,5 +75,10 @@ setup your environment the PsiViewer is already enabled in your main instance of
   - Integration with the Qupla interpreter through a specific "Run configuration" to easily execute Qupla code. (this will work only in IntelliJ and Android Studio)
   - ...
   
+  ### Integration with the Qupla interpreter
+  
+  The Qupla interpreter is developed by IOTA Foundation and is not part of this plugin. 
+  Currently the plugin will search for the interpreter code in the current project, so to have the integration with the interpreter working as expected: the current project must be java based, and the interpreter code must be in the project.
+  The interpreter code is available here https://github.com/iotaledger/qupla and if you follow the "Getting started" instructions : integration with interpreter should work just fine.
   
   
