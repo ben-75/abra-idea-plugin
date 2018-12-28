@@ -29,6 +29,10 @@ If you wish to support this effort, you can make a donation on this address : BS
   
   ### Install from plugins repository
   
+  <aside class="notice">
+  The plugin is still "pending jetbrains approval". So currently, the recommended way to install it is to go through the [manual installation](#manual-install)
+  </aside>
+  
  - Open Settings from the menu File (Ctrl+Alt+S)
  - Select "Plugins" on the left pane
  - Search "Qupla" in the search box
