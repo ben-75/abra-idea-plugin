@@ -1,44 +1,35 @@
 <idea-plugin>
   <id>org.qupla.language</id>
   <name>Qupla Plugin</name>
-  <version>0.0.29-pre-alpha</version>
+  <version>0.1.0-alpha</version>
   <vendor url="https://github.com/ben-75/qupla-idea-plugin"/>
 
   <description><![CDATA[
-      [Experimental] support for Qupla language
+      Support for Qupla language
 
       <h3>Features</h3>
       <ul>
-      <li> Basic syntax highlighting
+      <li> Syntax highlighting
       <li> Static resolution of trit vector size
       <li> Resolve references (also cross file references)
-      <li> Resolve template references
       <li> LUT: detection of duplicate entries, detection of inconsistent input(resp. output) length
-      <li> Detection of duplicate declarations
-      <li> Detection of ambiguous reference
       <li> Code folding
       <li> Braces matching
       <li> Check args count
+      <li> Integration with Qupla interpreter
       <li> ...
       </ul>
     ]]></description>
 
   <change-notes><![CDATA[
         <ul>
-        <li>Move from Abra to Qupla
+        <li>First alpha release
         </ul>
     ]]>
   </change-notes>
 
 
-  <!-- please see http://www.jetbrains.org/intellij/sdk/docs/basics/getting_started/build_number_ranges.html for description -->
   <idea-version since-build="171.0"/>
-
-  <!-- please see http://www.jetbrains.org/intellij/sdk/docs/basics/getting_started/plugin_compatibility.html
-       on how to target different products -->
-  <!-- uncomment to enable plugin in all products
-  <depends>com.intellij.modules.lang</depends>
-  -->
 
   <extensions defaultExtensionNs="com.intellij">
     <fileTypeFactory implementation="org.qupla.language.QuplaFileTypeFactory"/>
