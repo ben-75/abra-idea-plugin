@@ -29,9 +29,7 @@ If you wish to support this effort, you can make a donation on this address : BS
   
   ### Install from plugins repository
   
- <span style="padding:20px;background-color:#f44336;color:white;margin-bottom:15px;"> 
-   The plugin is still "pending jetbrains approval". So currently, the recommended way to install it is to go through the [manual installation](#manual-install)
- </span>
+   >>The plugin is still "pending jetbrains approval". So currently, the recommended way to install it is to go through the [manual installation](#manual-install)
  
  - Open Settings from the menu File (Ctrl+Alt+S)
  - Select "Plugins" on the left pane
