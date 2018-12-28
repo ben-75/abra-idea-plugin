@@ -6,7 +6,6 @@ import com.intellij.openapi.project.Project;
 import com.intellij.openapi.ui.ComponentWithBrowseButton;
 import com.intellij.openapi.ui.LabeledComponent;
 import com.intellij.openapi.ui.TextFieldWithBrowseButton;
-import com.intellij.openapi.vfs.VirtualFileFilter;
 import org.qupla.language.module.QuplaModule;
 import org.qupla.language.module.QuplaModuleManager;
 import org.qupla.language.psi.*;

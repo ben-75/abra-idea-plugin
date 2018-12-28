@@ -19,12 +19,14 @@ public class MarkAsQuplaSourceRoot extends AnAction {
     @Override
     public void actionPerformed(AnActionEvent e) {
         Navigatable focused = e.getData(CommonDataKeys.NAVIGATABLE);
-        if(focused instanceof PsiDirectory){
+        if(focused instanceof PsiDirectory && e.getProject()!=null){
             String fullPath = ((PsiDirectory)focused).getVirtualFile().getPath();
             String projectPath = e.getProject().getBasePath();
-            String subPath = fullPath.substring(projectPath.length()+1);
-            e.getProject().getComponent(QuplaModuleManager.class).setQuplaSourceRootPath(subPath);
-            ProjectView.getInstance(e.getProject()).refresh();
+            if(projectPath!=null) {
+                String subPath = fullPath.substring(projectPath.length() + 1);
+                e.getProject().getComponent(QuplaModuleManager.class).setQuplaSourceRootPath(subPath);
+                ProjectView.getInstance(e.getProject()).refresh();
+            }
         }
     }
 

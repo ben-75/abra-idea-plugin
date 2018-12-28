@@ -2,17 +2,21 @@
 # Qupla plugin  
 Intellij plugin for the Qupla language.  
   
-The Qupla language is not completely defined yet, so consider this plugin as highly experimental.  
-The plugin should be compatible with any IntelliJ based platform (minimal build : 171.0)  
+The Qupla language is not completely defined yet, so consider this plugin as experimental.  
+We recommend to use the plugin with IntelliJ IDE (even if basic features of the plugin should work on any IntelliJ based platform) (minimal build : 171.0)  
   
+Keep in mind that Qupla language is evolving almost every day, we do our best to keep this plugin compatible with latest Qupla version.
+If you wish to support this effort, you can make a donation on this address : QUYQBKMQOSCYYBYHCXYBQBUEZRWUVXXEEFSVBVCR9VNNPJDPCBGBRDKHYTNYPU9RBKZOIBUGCJZPKQGWBQWSPRMBXX
+
   ## Getting started
  
- - If you don't already an IDE based on IntelliJ platform installed on your computer, you can download and install 
+ - If you don't already have IntelliJ installed on your computer, you can download and install 
  IntelliJ Community from [Jetbrains website](https://www.jetbrains.com/idea/download/)
  - Start IntelliJ (or any other Jetbrains IDE) and install the Qupla Plugin ([details here](#installation))
  - After plugin installation it is recommended to restart IntelliJ
  - Checkout the qupla repository: https://github.com/iotaledger/qupla and open it as a gradle project.
  - Start exploring qupla, base library and samples can be found under src/main/resources
+ - Learn more about features supported by the plugin [here](#features)
  
   ![Qupla Plugin in Action](https://github.com/ben-75/qupla-idea-plugin/blob/interpreter/doc/ready.png?raw=true)
   
@@ -30,8 +34,10 @@ The plugin should be compatible with any IntelliJ based platform (minimal build 
   
   ### Manual Install    
 
- - Copy the [latest release](https://github.com/ben-75/qupla-idea-plugin/releases) 
- in &lt;INTELLIJ_INSTALL&gt;/plugins/qupla-language/lib/ 
+ - Download the [latest release](https://github.com/ben-75/qupla-idea-plugin/releases) 
+ - Open Settings from the menu File (Ctrl+Alt+S)
+ - Select "Plugins" on the left pane
+ - Choose "Install from disk" and select the qupla-language-support.jar
  - Restart IntelliJ  
 
   ### Building from sources  
@@ -53,3 +59,19 @@ Make sure that the `gen/` directory is in the source path of your project
 You can now run the plugin. If you plan to modify the bnf or the lexer: it can be useful to enable the plugin 
 PsiViewer in the instance of IntelliJ running the plugin (If you followed carefully the instructions to 
 setup your environment the PsiViewer is already enabled in your main instance of IntelliJ).
+
+  ## Features
+  
+  - Syntax highlighting
+  - Reference resolution (including cross-file, cross-module resolution) : ctrl-click on a symbol to see it's definition.
+  - Rename symbols
+  - Very basic code completion (but there is room for improvements)
+  - Brace matching
+  - Check validity of lut statements (no double entries)
+  - Code folding
+  - Comment/Uncomment portion of code
+  - Integration with the Qupla interpreter through a specific "Run configuration" to easily execute Qupla code. (this will work only in IntelliJ and Android Studio)
+  - ...
+  
+  
+  

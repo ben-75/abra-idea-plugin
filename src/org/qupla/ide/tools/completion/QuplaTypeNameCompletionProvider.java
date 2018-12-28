@@ -8,8 +8,6 @@ import com.intellij.psi.PsiElement;
 import com.intellij.util.ProcessingContext;
 import org.qupla.language.module.QuplaModuleManager;
 import org.qupla.language.psi.*;
-import org.qupla.language.psi.QuplaTemplateStmt;
-import org.qupla.language.psi.QuplaTypeStmt;
 import org.jetbrains.annotations.NotNull;
 
 public class QuplaTypeNameCompletionProvider extends CompletionProvider<CompletionParameters> {

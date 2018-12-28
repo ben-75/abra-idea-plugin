@@ -14,14 +14,10 @@ import java.util.HashMap;
 public class QuplaFunctionInstanciation implements StructureViewTreeElement {
 
     private final QuplaFuncStmt funcStmt;
-    private final QuplaTypeInstantiation typeInstantiation;
-    private final QuplaTemplateStmt templateStmt;
     private final String name;
     private final String locationString;
     public QuplaFunctionInstanciation(QuplaFuncStmt funcStmt, QuplaTypeInstantiation typeInstantiation, QuplaTemplateStmt templateStmt) {
         this.funcStmt = funcStmt;
-        this.typeInstantiation = typeInstantiation;
-        this.templateStmt = templateStmt;
         this.name = typeInstantiation.getText().substring(1,typeInstantiation.getTextLength()-1);
         QuplaTypeName typeName = (QuplaTypeName) typeInstantiation.getTypeNameRefList().get(0).getReference().resolve();
         if(typeName!=null){

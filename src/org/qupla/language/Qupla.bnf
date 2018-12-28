@@ -64,7 +64,7 @@ importStmt          ::= IMPORT_KEYWORD moduleName
                         pin=1
                     }
 
-typeStmt            ::= TYPE_KEYWORD typeName (typeSize | ('{' fieldSpec+ '}'))
+typeStmt            ::= TYPE_KEYWORD typeName ( typeSize | ('{' fieldSpec+ '}') | typeAlias)
                     {
                         mixin="org.qupla.language.psi.impl.QuplaDefinitionImpl"
                         implements="org.qupla.language.psi.QuplaDefinition"
@@ -80,7 +80,7 @@ fieldSpec           ::= fieldName typeSize
                         methods=[getPresentation getResolvedSize]
                     }
 
-lutStmt             ::= LUT_KEYWORD lutName '{' lutEntry+ '}'
+lutStmt             ::= LUT_KEYWORD lutName ('{' lutEntry+ '}' | lutAlias)
                     {
                         mixin="org.qupla.language.psi.impl.QuplaDefinitionImpl"
                         implements="org.qupla.language.psi.QuplaDefinition"
@@ -131,7 +131,8 @@ typeInstantiation   ::= '<' (typeNameRef (COMMA typeNameRef)*) '>'
                         methods=[getPresentation]
                     }
 
-entityAlias         ::= ASSIGN entityName '@' moduleNameRef
+lutAlias            ::= ASSIGN lutNameRef AT moduleNameRef
+typeAlias           ::= ASSIGN typeNameRef AT moduleNameRef
 
 lutEntry            ::= tritList ASSIGN tritList
                     {
@@ -310,7 +311,7 @@ typeName            ::= IDENTIFIER
                         methods=[getName setName getNameIdentifier getResolvedSize getPresentation]
                         pin=1 recoverWhile=typeNameRecover
                     }
-private typeNameRecover ::= !('['|'{')
+private typeNameRecover ::= !('['|'{'|'=')
 
 typeNameRef         ::= IDENTIFIER
                     {
@@ -338,7 +339,7 @@ lutName             ::= IDENTIFIER
                         methods = [getName setName getNameIdentifier getPresentation]
                         pin=1 recoverWhile=lutNameRecover
                     }
-private lutNameRecover ::= !'{'
+private lutNameRecover ::= !('{'|'=')
 
 lutNameRef          ::= IDENTIFIER
                     {
@@ -374,8 +375,6 @@ typeOrPlaceHolderNameRef ::= IDENTIFIER
 
 moduleName          ::= IDENTIFIER
 moduleNameRef       ::= IDENTIFIER
-
-entityName          ::= IDENTIFIER
 
 environmentName     ::= IDENTIFIER
 

@@ -6,6 +6,7 @@ import com.intellij.openapi.components.PersistentStateComponent;
 import com.intellij.openapi.components.State;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.vfs.*;
+import com.intellij.util.concurrency.AppExecutorUtil;
 import org.qupla.language.QuplaFileType;
 import org.qupla.language.psi.QuplaFile;
 import org.jetbrains.annotations.NotNull;
@@ -14,6 +15,8 @@ import org.jetbrains.annotations.Nullable;
 import java.io.File;
 import java.util.*;
 import java.util.concurrent.atomic.AtomicBoolean;
+
+import static java.util.concurrent.TimeUnit.SECONDS;
 
 @State(name = "QuplaModuleManager")
 public class QuplaModuleManagerImpl implements QuplaModuleManager, PersistentStateComponent<QuplaModuleManagerImpl.State> {
@@ -148,6 +151,19 @@ public class QuplaModuleManagerImpl implements QuplaModuleManager, PersistentSta
 
         if(startupNotificationRequired){
             VirtualFileManager.getInstance().addVirtualFileListener(new QuplaFileSystemListener(this));
+
+
+            AppExecutorUtil.getAppScheduledExecutorService().scheduleWithFixedDelay(new Runnable() {
+                @Override
+                public void run() {
+                    System.out.println("Scheduled Task Running...");
+                    synchronized (QuplaModuleManagerImpl.this){
+                        populateModuleMap();
+                    }
+                }
+            }, 15, 10L , SECONDS);
+
+
             startupNotificationRequired = false;
             StringBuilder modulesList = new StringBuilder();
             for(String s:modules.keySet()){
@@ -162,6 +178,7 @@ public class QuplaModuleManagerImpl implements QuplaModuleManager, PersistentSta
     }
 
     private void populateModuleMap() {
+        int fileCount = 0;
         for(VirtualFile potentialModule:workingDir.getChildren()){
             if(potentialModule.isDirectory()){
                 ArrayList<VirtualFile> quplaFiles = new QuplaFileVisitor().collect(potentialModule);
@@ -233,4 +250,6 @@ public class QuplaModuleManagerImpl implements QuplaModuleManager, PersistentSta
             return qplFound.get();
         }
     }
+
+
 }

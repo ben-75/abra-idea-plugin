@@ -7,6 +7,8 @@ import com.intellij.psi.PsiElement;
 import org.qupla.language.psi.*;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.List;
+
 public class FuncArgsAnnotator  implements Annotator {
     @Override
     public void annotate(@NotNull final PsiElement element, @NotNull AnnotationHolder holder) {
@@ -19,6 +21,7 @@ public class FuncArgsAnnotator  implements Annotator {
                 int   startOffset = funcExpr.getCondExprList().get(0).getTextRange().getStartOffset();
                 int  endOffset = funcExpr.getCondExprList().get(argsCount - 1).getTextRange().getEndOffset();
 
+                assert funcSignature != null;
                 int expectedArgsCount = funcSignature.getFuncParameterList().size();
 
                 if (expectedArgsCount != argsCount) {

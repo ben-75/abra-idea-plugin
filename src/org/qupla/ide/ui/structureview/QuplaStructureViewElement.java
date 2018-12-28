@@ -15,14 +15,12 @@ import java.util.List;
 
 public class QuplaStructureViewElement implements StructureViewTreeElement, SortableTreeElement {
     private final NavigatablePsiElement element;
-    private final String typeName;
 
     public QuplaStructureViewElement(NavigatablePsiElement element) {
         this(element,null);
     }
     public QuplaStructureViewElement(NavigatablePsiElement element, String typeName) {
         this.element = element;
-        this.typeName = typeName;
     }
     @Override
     public Object getValue() {
@@ -68,14 +66,14 @@ public class QuplaStructureViewElement implements StructureViewTreeElement, Sort
                 for (QuplaDefinition quplaDefinition : quplaDeclarations) {
                     treeElements.add(new QuplaStructureViewElement(quplaDefinition));
                 }
-                return treeElements.toArray(new TreeElement[treeElements.size()]);
+                return treeElements.toArray(new TreeElement[0]);
             }
         } else if (element instanceof QuplaTypeStmt && ((QuplaTypeStmt)element).getFieldSpecList().size()>0) {
                 List<TreeElement> treeElements = new ArrayList<TreeElement>(((QuplaTypeStmt)element).getFieldSpecList().size());
                 for(QuplaFieldSpec field : ((QuplaTypeStmt)element).getFieldSpecList()){
                     treeElements.add(new QuplaStructureViewElement(field));
                 }
-                return treeElements.toArray(new TreeElement[treeElements.size()]);
+                return treeElements.toArray(new TreeElement[0]);
         } else if (element instanceof QuplaTemplateStmt && ((QuplaTemplateStmt)element).getTypeStmtList().size()+((QuplaTemplateStmt)element).getFuncStmtList().size()>0) {
             List<TreeElement> treeElements = new ArrayList<TreeElement>(((QuplaTemplateStmt)element).getTypeStmtList().size()+((QuplaTemplateStmt)element).getFuncStmtList().size());
             for(QuplaTypeStmt typeStmt : ((QuplaTemplateStmt)element).getTypeStmtList()){
@@ -84,7 +82,7 @@ public class QuplaStructureViewElement implements StructureViewTreeElement, Sort
             for(QuplaFuncStmt funcStmt : ((QuplaTemplateStmt)element).getFuncStmtList()){
                 treeElements.add(new QuplaStructureViewElement(funcStmt));
             }
-            return treeElements.toArray(new TreeElement[treeElements.size()]);
+            return treeElements.toArray(new TreeElement[0]);
         } else if (element instanceof QuplaUseStmt && ((QuplaUseStmt)element).getTypeInstantiationList().size()>0) {
             QuplaTemplateName tmplName = (QuplaTemplateName) ((QuplaUseStmt)element).getTemplateNameRef().getReference().resolve();
             if(tmplName!=null) {
@@ -94,7 +92,7 @@ public class QuplaStructureViewElement implements StructureViewTreeElement, Sort
                 for (QuplaTypeInstantiation typeInstanciation : ((QuplaUseStmt) element).getTypeInstantiationList()) {
                     treeElements.add(new QuplaStructureViewElement(typeInstanciation));
                 }
-                return treeElements.toArray(new TreeElement[treeElements.size()]);
+                return treeElements.toArray(new TreeElement[0]);
             }
         } else if (element instanceof QuplaTypeInstantiation) {
             QuplaTemplateName tmplName = (QuplaTemplateName) ((QuplaUseStmt)element.getParent()).getTemplateNameRef().getReference().resolve();
@@ -105,7 +103,7 @@ public class QuplaStructureViewElement implements StructureViewTreeElement, Sort
                 for (QuplaFuncStmt funcStmt : tmpl.getFuncStmtList()) {
                     treeElements.add(new QuplaFunctionInstanciation(funcStmt, (QuplaTypeInstantiation) element, tmpl));
                 }
-                return treeElements.toArray(new TreeElement[treeElements.size()]);
+                return treeElements.toArray(new TreeElement[0]);
             }
         }
         return EMPTY_ARRAY;

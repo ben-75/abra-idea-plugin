@@ -15,8 +15,6 @@ import com.intellij.openapi.module.ModuleUtil;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.roots.ProjectRootManager;
 import com.intellij.openapi.vfs.VirtualFile;
-import com.intellij.xdebugger.XDebuggerManager;
-import com.intellij.xdebugger.breakpoints.XBreakpointManager;
 import org.qupla.language.module.QuplaModuleManager;
 import org.qupla.utils.TritUtils;
 import org.jetbrains.annotations.NotNull;

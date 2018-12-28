@@ -32,6 +32,7 @@ SLASH=("/")
 TIMES=(\*)
 MODULO=(%)
 AMP=(&)
+AT=(@)
 DOT=(\.)
 MERGE_OPERATOR=(\|)
 COMMA=(,)
@@ -85,6 +86,7 @@ QUESTION_MARK=(\?)
   {TIMES}                     { return TIMES; }
   {MODULO}                    { return MODULO; }
   {AMP}                       { return AMP; }
+  {AT}                        { yybegin(YYINITIAL); return AT; }
   {DOT}                       { return DOT; }
   {COMMENT}                   { return COMMENT; }
   {WHITE_SPACE}               { return WHITE_SPACE; }

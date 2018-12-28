@@ -56,6 +56,8 @@ public class QuplaSyntaxHighlighter extends SyntaxHighlighterBase  {
             createTextAttributesKey("ENV_VALUE", DefaultLanguageHighlighterColors.IDENTIFIER);
     public static final TextAttributesKey ENV_EXPR =
             createTextAttributesKey("ENV_EXPR", DefaultLanguageHighlighterColors.IDENTIFIER);
+    public static final TextAttributesKey QUPLA_ALIAS =
+            createTextAttributesKey("QUPLA_ALIAS", DefaultLanguageHighlighterColors.TEMPLATE_LANGUAGE_COLOR);
     private static final TextAttributesKey[] EMPTY_KEYS = new TextAttributesKey[0];
 
 
@@ -69,6 +71,7 @@ public class QuplaSyntaxHighlighter extends SyntaxHighlighterBase  {
     private static final TextAttributesKey[] KEYWORD_KEYS = new TextAttributesKey[]{KEYWORD};
     private static final TextAttributesKey[] ENV_KEYWORD_KEYS = new TextAttributesKey[]{ENV_KEYWORD};
     private static final TextAttributesKey[] TRIT_KEYS = new TextAttributesKey[]{QUPLA_TRIT};
+    private static final TextAttributesKey[] ALIAS_KEYS = new TextAttributesKey[]{QUPLA_ALIAS};
 
     @NotNull
     @Override
@@ -113,6 +116,8 @@ public class QuplaSyntaxHighlighter extends SyntaxHighlighterBase  {
             return KEYWORD_KEYS;
         }else if (tokenType.equals(QuplaTypes.TRIT)) {
             return TRIT_KEYS;
+        }else if (tokenType.equals(QuplaTypes.AT)) {
+            return ALIAS_KEYS;
         }else if (tokenType.equals(TokenType.BAD_CHARACTER)) {
             return BAD_CHAR_KEYS;
         } else {

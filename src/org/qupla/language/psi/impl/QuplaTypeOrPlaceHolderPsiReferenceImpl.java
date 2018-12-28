@@ -45,7 +45,8 @@ public class QuplaTypeOrPlaceHolderPsiReferenceImpl extends PsiReferenceBase imp
                 if(phn.getText().equals(myElement.getText()))return phn;
             }
             for(QuplaTypeStmt typeStmt:((QuplaTemplateStmt)templateStmt).getTypeStmtList()){
-                if(typeStmt.getTypeName().getText().equals(myElement.getText()))return typeStmt.getTypeName();
+                QuplaTypeName typeName = typeStmt.getTypeName();
+                if(typeName!=null && typeName.getText().equals(myElement.getText()))return typeStmt.getTypeName();
             }
         }
         PsiElement resolved = resolveInFile(myElement.getContainingFile());
@@ -57,7 +58,8 @@ public class QuplaTypeOrPlaceHolderPsiReferenceImpl extends PsiReferenceBase imp
 
     private QuplaTypeName resolveInFile(PsiFile aFile){
         for(ASTNode stmt:aFile.getNode().getChildren(TokenSet.create(QuplaTypes.TYPE_STMT))){
-            if(((QuplaTypeStmt)stmt.getPsi()).getTypeName().getText().equals(myElement.getText())){
+            QuplaTypeName typeName = ((QuplaTypeStmt)stmt.getPsi()).getTypeName();
+            if(typeName!=null && typeName.getText().equals(myElement.getText())){
                 return ((QuplaTypeStmt)stmt.getPsi()).getTypeName();
             }
         }

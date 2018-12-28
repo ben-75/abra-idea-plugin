@@ -37,6 +37,7 @@ public class QuplaColorSettingsPage implements ColorSettingsPage {
             new AttributesDescriptor("Environment keywords", QuplaSyntaxHighlighter.ENV_KEYWORD),
             new AttributesDescriptor("Environment name", QuplaSyntaxHighlighter.ENV_NAME),
             new AttributesDescriptor("Environment attribute value", QuplaSyntaxHighlighter.ENV_VALUE),
+            new AttributesDescriptor("Alias", QuplaSyntaxHighlighter.QUPLA_ALIAS),
 
     };
 
@@ -70,6 +71,7 @@ public class QuplaColorSettingsPage implements ColorSettingsPage {
                 "type <typedef>Long</typedef> [81]\n" +
                 "type <typedef>Hash</typedef> [243]\n" +
                 "type <typedef>State</typedef> [<typeref>Hash</typeref> * 3]\n" +
+                "type <typedef>MyType</typedef> = <typeref>OtherType</typeref><alias>@OtherModule</alias>\n" +
                 "\n" +
                 "// Named structured trio vector\n" +
                 "type <typedef>Transaction</typedef> {\n" +
@@ -152,6 +154,7 @@ public class QuplaColorSettingsPage implements ColorSettingsPage {
             ANNOTATOR_MAP.put("envname", QuplaSyntaxHighlighter.ENV_NAME);
             ANNOTATOR_MAP.put("envexpr", QuplaSyntaxHighlighter.ENV_EXPR);
             ANNOTATOR_MAP.put("envvalue", QuplaSyntaxHighlighter.ENV_VALUE);
+            ANNOTATOR_MAP.put("alias", QuplaSyntaxHighlighter.QUPLA_ALIAS);
         }
 
         return ANNOTATOR_MAP;

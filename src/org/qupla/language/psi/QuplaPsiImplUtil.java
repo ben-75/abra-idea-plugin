@@ -42,7 +42,8 @@ public class QuplaPsiImplUtil {
             @NotNull
             @Override
             public String getPresentableText() {
-                return element.getTypeName().getText();
+                QuplaTypeName typeName = element.getTypeName();
+                return typeName==null?"?":typeName.getText();
             }
 
             @NotNull
@@ -52,7 +53,11 @@ public class QuplaPsiImplUtil {
                     int sz = element.getResolvedSize();
                     String txt = null;
                     if(element.getTypeSize()==null){
-                        txt = "";
+                        if(element.getTypeAlias()!=null){
+                            txt = element.getTypeAlias().getTypeNameRef().getText();
+                        }else {
+                            txt = "";
+                        }
                     }else{
                         txt = element.getTypeSize().getText();
                     }
@@ -98,7 +103,18 @@ public class QuplaPsiImplUtil {
             }
             return resolvedSize;
         }
-        return element.getTypeSize().getResolvedSize();
+        QuplaTypeSize typeSize = element.getTypeSize();
+        if(typeSize!=null) {
+            return typeSize.getResolvedSize();
+        }
+        QuplaTypeAlias typeAlias = element.getTypeAlias();
+        if(typeAlias!=null){
+            QuplaTypeName reference = (QuplaTypeName) typeAlias.getTypeNameRef().getReference().resolve();
+            if(reference!=null){
+                return reference.getResolvedSize();
+            }
+        }
+        return -1;
     }
 
     public static String getName(QuplaTypeName element) {
@@ -226,8 +242,19 @@ public class QuplaPsiImplUtil {
             @NotNull
             @Override
             public String getLocationString() {
-                return "("+element.getLutEntryList().get(0).getInputLength()+") -> "+
-                        element.getLutEntryList().get(0).getOutputLength();
+                List<QuplaLutEntry> entries = element.getLutEntryList();
+                if(entries.size()==0 && element.getLutAlias()!=null){
+                    QuplaLutName lutName = (QuplaLutName) element.getLutAlias().getLutNameRef().getReference().resolve();
+                    if(lutName!=null){
+                        entries = ((QuplaLutStmt)lutName.getParent()).getLutEntryList();
+                    }
+                }
+                if(entries!=null && entries.size()>0) {
+                    return "(" + entries.get(0).getInputLength() + ") -> " +
+                            entries.get(0).getOutputLength();
+                }else{
+                    return "? -> ?";
+                }
             }
 
             @NotNull
@@ -453,7 +480,7 @@ public class QuplaPsiImplUtil {
             @Override
             public String getLocationString() {
                 if (((QuplaFuncStmt) funcName.getParent().getParent()).isInTemplate()) {
-                    return "(template: " + ((QuplaTemplateStmt) ((QuplaFuncStmt) funcName.getParent().getParent()).getParent()).getTemplateName().getText() + ")";
+                    return "(template: " + ((QuplaTemplateStmt) funcName.getParent().getParent().getParent()).getTemplateName().getText() + ")";
                 }
                 return "";
             }

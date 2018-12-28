@@ -44,6 +44,8 @@ public class DeclarationAnnotator  implements Annotator {
             highlight(element,holder, QuplaSyntaxHighlighter.ENV_NAME);
         } else if (element instanceof QuplaEnvValue) {
             highlight(element,holder, QuplaSyntaxHighlighter.ENV_VALUE);
+        } else if (element instanceof QuplaModuleNameRef) {
+            highlight(element,holder, QuplaSyntaxHighlighter.QUPLA_ALIAS);
         } else if (element instanceof QuplaTypeNameRef || (element instanceof QuplaTypeOrPlaceHolderNameRef && element.getReference().resolve() instanceof QuplaTypeName)) {
             highlight(element,holder, QuplaSyntaxHighlighter.QUPLA_TYPE_REFERENCE);
         } else if (element.getParent() instanceof QuplaTritList && (element.getNode().getElementType()== QuplaTypes.MINUS ||
