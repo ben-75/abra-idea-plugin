@@ -8,6 +8,9 @@ We recommend to use the plugin with IntelliJ IDE (even if basic features of the 
 Keep in mind that Qupla language is evolving almost every day, we do our best to keep this plugin compatible with latest Qupla version.
 If you wish to support this effort, you can make a donation on this address : BSLZW9OSZPOPWWDUWVZLLJILAATPCBCTPTSJEE9OIULLWSBWBHNJHIQYQ9TPDUHTASINTWWZAPCISEQT9RRPAXNWC9
 ![Trinity donation address](https://github.com/ben-75/qupla-idea-plugin/blob/master/doc/frame.png?raw=true)
+
+(this project is a community project, not affiliated with Iota Foundation)
+
   ## Getting started
  
  - If you don't already have IntelliJ installed on your computer, you can download and install 
