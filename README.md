@@ -6,8 +6,8 @@ The Qupla language is not completely defined yet, so consider this plugin as exp
 We recommend to use the plugin with IntelliJ IDE (even if basic features of the plugin should work on any IntelliJ based platform) (minimal build : 171.0)  
   
 Keep in mind that Qupla language is evolving almost every day, we do our best to keep this plugin compatible with latest Qupla version.
-If you wish to support this effort, you can make a donation on this address : QUYQBKMQOSCYYBYHCXYBQBUEZRWUVXXEEFSVBVCR9VNNPJDPCBGBRDKHYTNYPU9RBKZOIBUGCJZPKQGWBQWSPRMBXX
-
+If you wish to support this effort, you can make a donation on this address : BSLZW9OSZPOPWWDUWVZLLJILAATPCBCTPTSJEE9OIULLWSBWBHNJHIQYQ9TPDUHTASINTWWZAPCISEQT9RRPAXNWC9
+![Trinity donation address](https://github.com/ben-75/qupla-idea-plugin/blob/master/doc/frame.png?raw=true)
   ## Getting started
  
  - If you don't already have IntelliJ installed on your computer, you can download and install 
