@@ -12,8 +12,6 @@ public class QuplaInterpreterProgramRunner extends DefaultJavaProgramRunner {
 
     @Override
     protected void execute(@NotNull ExecutionEnvironment environment, @Nullable Callback callback, @NotNull RunProfileState state) throws ExecutionException {
-           System.out.println("runner execute");
-        //state.execute(environment.getExecutor(),this);
         super.execute(environment, callback, state);
     }
 

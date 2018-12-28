@@ -156,7 +156,6 @@ public class QuplaModuleManagerImpl implements QuplaModuleManager, PersistentSta
             AppExecutorUtil.getAppScheduledExecutorService().scheduleWithFixedDelay(new Runnable() {
                 @Override
                 public void run() {
-                    System.out.println("Scheduled Task Running...");
                     synchronized (QuplaModuleManagerImpl.this){
                         populateModuleMap();
                     }
@@ -183,7 +182,6 @@ public class QuplaModuleManagerImpl implements QuplaModuleManager, PersistentSta
             if(potentialModule.isDirectory()){
                 ArrayList<VirtualFile> quplaFiles = new QuplaFileVisitor().collect(potentialModule);
                 if(quplaFiles.size()>0){
-                    System.out.println("Found Qupla module: "+potentialModule.getName()+ " with "+quplaFiles.size()+" source files");
                     register(new QuplaModule(project, potentialModule.getName(), potentialModule, quplaFiles));
                 }
             }
