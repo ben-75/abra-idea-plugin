@@ -66,10 +66,9 @@ setup your environment the PsiViewer is already enabled in your main instance of
   - Reference resolution (including cross-file, cross-module resolution) : ctrl-click on a symbol to see it's definition.
   - Rename symbols
   - Very basic code completion (but there is room for improvements)
-  - Brace matching
   - Check validity of lut statements (no double entries)
+  - Brace matching
   - Code folding
-  - Comment/Uncomment portion of code
   - Integration with the Qupla interpreter through a specific "Run configuration" to easily execute Qupla code. (this will work only in IntelliJ and Android Studio)
   - ...
   
