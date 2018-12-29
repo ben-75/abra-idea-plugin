@@ -52,6 +52,11 @@ public class QuplaInterpreterState extends JavaCommandLineState {
 
     @Override
     protected JavaParameters createJavaParameters() throws ExecutionException {
+        return buildJavaParameters(runConfiguration);
+    }
+
+    @NotNull
+    public static JavaParameters buildJavaParameters(QuplaInterpreterRunConfiguration runConfiguration) {
         JavaParameters javaParameters = new JavaParameters();
         javaParameters.setWorkingDirectory(runConfiguration.getProject().getComponent(QuplaModuleManager.class).getFullQuplaSourceRootPath());
 
@@ -70,8 +75,8 @@ public class QuplaInterpreterState extends JavaCommandLineState {
         if(runConfiguration.isRunEval()){
             javaParameters.getProgramParametersList().add("-eval");
         }
-        if(runConfiguration.isEmit()){
-            javaParameters.getProgramParametersList().add("-emit");
+        if(runConfiguration.isAbra()){
+            javaParameters.getProgramParametersList().add("-abra");
         }
         if(runConfiguration.isFpga()){
             javaParameters.getProgramParametersList().add("-fpga");

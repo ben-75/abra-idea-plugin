@@ -1,16 +1,16 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <form xmlns="http://www.intellij.com/uidesigner/form/" version="1" bind-to-class="org.qupla.runtime.interpreter.QuplaInterpreterRunConfigUI">
-  <grid id="27dc6" binding="rootConfigPane" layout-manager="GridLayoutManager" row-count="7" column-count="7" same-size-horizontally="false" same-size-vertically="false" hgap="-1" vgap="-1">
+  <grid id="27dc6" binding="rootConfigPane" layout-manager="GridLayoutManager" row-count="8" column-count="7" same-size-horizontally="false" same-size-vertically="false" hgap="-1" vgap="-1">
     <margin top="0" left="0" bottom="0" right="0"/>
     <constraints>
-      <xy x="20" y="20" width="451" height="400"/>
+      <xy x="20" y="20" width="614" height="434"/>
     </constraints>
     <properties/>
     <border type="none"/>
     <children>
       <vspacer id="d6de1">
         <constraints>
-          <grid row="6" column="6" row-span="1" col-span="1" vsize-policy="6" hsize-policy="1" anchor="0" fill="2" indent="0" use-parent-layout="false"/>
+          <grid row="6" column="6" row-span="2" col-span="1" vsize-policy="6" hsize-policy="1" anchor="0" fill="2" indent="0" use-parent-layout="false"/>
         </constraints>
       </vspacer>
       <component id="96e3c" class="javax.swing.JComboBox" binding="modules">
@@ -66,7 +66,7 @@
         </constraints>
         <properties>
           <text value="test"/>
-          <toolTipText value="Interprets special comments as unit test expressions &#10;//? &lt;value&gt; = &amp;lt;expression&amp;gt;" noi18n="true"/>
+          <toolTipText value="Evaluate test expressions (test &amp;amp;lt;value&amp;amp;gt = &amp;amp;lt;expression&amp;amp;gt;)" noi18n="true"/>
         </properties>
       </component>
       <component id="be8fe" class="javax.swing.JCheckBox" binding="runEvalCheckBox" default-binding="true">
@@ -76,7 +76,7 @@
         <properties>
           <enabled value="true"/>
           <text value="eval"/>
-          <toolTipText value="Interprets special comments as debug expressions&#10;//=&amp;lt;expression&amp;gt;"/>
+          <toolTipText value="Interprets eval statements as debug expressions&amp;#10;eval &amp;amp;lt;expression&amp;amp;gt;"/>
         </properties>
       </component>
       <component id="b4340" class="javax.swing.JLabel" binding="typeInstLabel">
@@ -125,15 +125,6 @@
           <toolTipText value="Echoes back the current code tree as Qupla source"/>
         </properties>
       </component>
-      <component id="f1bdc" class="javax.swing.JCheckBox" binding="trimCheckBox" default-binding="true">
-        <constraints>
-          <grid row="4" column="4" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
-        </constraints>
-        <properties>
-          <enabled value="false"/>
-          <text value="Trim"/>
-        </properties>
-      </component>
       <component id="670b5" class="javax.swing.JCheckBox" binding="verilogCheckBox" default-binding="true">
         <constraints>
           <grid row="5" column="1" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
@@ -143,13 +134,13 @@
           <toolTipText value="Emits Verilog HDL for loading into FPGA as resources/Verilog.txt (requires -trit)"/>
         </properties>
       </component>
-      <component id="314c6" class="javax.swing.JCheckBox" binding="emitCheckBox" default-binding="true">
+      <component id="314c6" class="javax.swing.JCheckBox" binding="abraCheckBox">
         <constraints>
           <grid row="5" column="2" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
         </constraints>
         <properties>
-          <text value="emit"/>
-          <toolTipText value="Emits LLVM code from the code tree and executes it (requires -trit)"/>
+          <text value="abra"/>
+          <toolTipText value="Generate abra trit code, and execute test and eval statement on trit code"/>
         </properties>
       </component>
       <component id="4ef7c" class="javax.swing.JCheckBox" binding="treeCheckBox" default-binding="true">
@@ -159,6 +150,37 @@
         <properties>
           <text value="tree"/>
           <toolTipText value="Generates a textual representation of the code tree (requires -trit)"/>
+        </properties>
+      </component>
+      <component id="3dd79" class="javax.swing.JLabel">
+        <constraints>
+          <grid row="6" column="0" row-span="2" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
+        </constraints>
+        <properties>
+          <text value="Command line:"/>
+        </properties>
+      </component>
+      <component id="5a6e0" class="javax.swing.JTextArea" binding="commandLine">
+        <constraints>
+          <grid row="7" column="1" row-span="1" col-span="4" vsize-policy="3" hsize-policy="6" anchor="0" fill="3" indent="0" use-parent-layout="false">
+            <preferred-size width="150" height="50"/>
+          </grid>
+        </constraints>
+        <properties/>
+      </component>
+      <component id="e24f7" class="javax.swing.JButton" binding="copyToClipboard">
+        <constraints>
+          <grid row="7" column="5" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="1" fill="0" indent="0" use-parent-layout="false">
+            <minimum-size width="36" height="36"/>
+            <preferred-size width="36" height="36"/>
+            <maximum-size width="36" height="36"/>
+          </grid>
+        </constraints>
+        <properties>
+          <horizontalAlignment value="0"/>
+          <icon value="actions/copy.png"/>
+          <text value=""/>
+          <toolTipText value="copy to clipboard"/>
         </properties>
       </component>
     </children>

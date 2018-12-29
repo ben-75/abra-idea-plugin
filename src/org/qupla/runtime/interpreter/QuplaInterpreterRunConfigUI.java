@@ -15,10 +15,12 @@ public class QuplaInterpreterRunConfigUI {
     JLabel typeInstLabel;
     JPanel argsContainer;
     JCheckBox verilogCheckBox;
-    JCheckBox emitCheckBox;
-    JCheckBox trimCheckBox;
+    JCheckBox abraCheckBox;
     JCheckBox treeCheckBox;
     JLabel argsContainerLabel;
+    public JTextArea commandLine;
+    public JButton copyToClipboard;
+    private JTextPane textPane1;
 
     private void createUIComponents() {
         argsContainer = new JPanel(new VerticalLayout());

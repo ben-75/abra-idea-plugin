@@ -11,6 +11,8 @@ import javax.swing.*;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 
@@ -24,6 +26,7 @@ public class InputTritPanel extends JPanel implements DocumentListener {
     QuplaFuncParameter param;
     private TRIT[] trits;
     private JComboBox targetTypeInst;
+    private Runnable onChange;
     public InputTritPanel(QuplaFuncParameter param, int preferredWidth, JComboBox targetTypeInst){
         super(new VerticalFlowLayout(VerticalFlowLayout.TOP,5,1,true,false));
         this.param = param;
@@ -124,6 +127,7 @@ public class InputTritPanel extends JPanel implements DocumentListener {
                 }
             }
         }
+        if(this.onChange!=null)this.onChange.run();
     }
 
     private String truncate(String s){
@@ -134,5 +138,9 @@ public class InputTritPanel extends JPanel implements DocumentListener {
 
     public void setUserInput(String s) {
         textField.setText(s);
+    }
+
+    public void onChange(Runnable runnable) {
+        this.onChange = runnable;
     }
 }

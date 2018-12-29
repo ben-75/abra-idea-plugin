@@ -1,5 +1,8 @@
 package org.qupla.runtime.interpreter;
 
+import com.intellij.execution.CantRunException;
+import com.intellij.execution.configurations.GeneralCommandLine;
+import com.intellij.execution.configurations.RunConfiguration;
 import com.intellij.openapi.options.ConfigurationException;
 import com.intellij.openapi.options.SettingsEditor;
 import com.intellij.openapi.project.Project;
@@ -13,9 +16,16 @@ import org.jdesktop.swingx.combobox.ListComboBoxModel;
 import org.jetbrains.annotations.NotNull;
 
 import javax.swing.*;
+import javax.swing.Timer;
+import javax.swing.border.BevelBorder;
+import javax.swing.border.EtchedBorder;
+import java.awt.*;
+import java.awt.datatransfer.Clipboard;
+import java.awt.datatransfer.StringSelection;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.*;
+import java.util.List;
 
 public class QuplaInterpreterSettingsEditor extends SettingsEditor<QuplaInterpreterRunConfiguration> {
     private QuplaInterpreterRunConfigUI myPanel;
@@ -84,9 +94,11 @@ public class QuplaInterpreterSettingsEditor extends SettingsEditor<QuplaInterpre
         myPanel.runEvalCheckBox.setSelected(runConfig.isRunEval());
         myPanel.echoCheckBox.setSelected(runConfig.isEcho());
         myPanel.verilogCheckBox.setSelected(runConfig.isFpga());
-        myPanel.emitCheckBox.setSelected(runConfig.isEmit());
-        myPanel.trimCheckBox.setSelected(runConfig.isTrim());
+        myPanel.abraCheckBox.setSelected(runConfig.isAbra());
         myPanel.treeCheckBox.setSelected(runConfig.isTree());
+
+        updateCommandLine();
+
     }
 
     @Override
@@ -117,9 +129,9 @@ public class QuplaInterpreterSettingsEditor extends SettingsEditor<QuplaInterpre
         runCongig.setRunEval(myPanel.runEvalCheckBox.isSelected());
         runCongig.setEcho(myPanel.echoCheckBox.isSelected());
         runCongig.setFpga(myPanel.verilogCheckBox.isSelected());
-        runCongig.setEmit(myPanel.emitCheckBox.isSelected());
+        runCongig.setAbra(myPanel.abraCheckBox.isSelected());
         runCongig.setTree(myPanel.treeCheckBox.isSelected());
-        runCongig.setTrim(myPanel.trimCheckBox.isSelected());
+
     }
 
     @NotNull
@@ -139,6 +151,7 @@ public class QuplaInterpreterSettingsEditor extends SettingsEditor<QuplaInterpre
                     myPanel.typeInstLabel.setVisible(false);
                     myPanel.targetTypeInstantiation.setVisible(false);
                 }
+                updateCommandLine();
             }
         });
         myPanel.functionsInSelectedModule.addActionListener(new ActionListener() {
@@ -168,6 +181,7 @@ public class QuplaInterpreterSettingsEditor extends SettingsEditor<QuplaInterpre
                     myPanel.argsContainerLabel.setVisible(false);
 
                 }
+                updateCommandLine();
             }
         });
         myPanel.modules.setSelectedItem(null);
@@ -182,8 +196,46 @@ public class QuplaInterpreterSettingsEditor extends SettingsEditor<QuplaInterpre
                     List<String> previousArgs = clearFuncParameters();
                     makeFuncParameters(((QuplaFuncStmtComboBoxItem)myPanel.functionsInSelectedModule.getSelectedItem()).getFuncStmt(),previousArgs);
                 }
+                updateCommandLine();
             }
         });
+        myPanel.commandLine.setEditable(false);
+        myPanel.commandLine.setLineWrap(true);
+        myPanel.copyToClipboard.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                myPanel.copyToClipboard.setBorder(BorderFactory.createEtchedBorder(EtchedBorder.RAISED));
+                String myString = myPanel.commandLine.getText();
+                StringSelection stringSelection = new StringSelection(myString);
+                Clipboard clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
+                clipboard.setContents(stringSelection, null);
+
+                int delay = 300;
+                Timer timer = new Timer( delay, new ActionListener(){
+                    @Override
+                    public void actionPerformed( ActionEvent e ){
+                        myPanel.copyToClipboard.setBorder(BorderFactory.createEmptyBorder());
+                    }
+                } );
+                timer.setRepeats( false );
+                timer.start();
+
+
+            }
+        });
+        myPanel.copyToClipboard.setBorder(BorderFactory.createEmptyBorder());
+        ActionListener updateCommandLineListener = new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                updateCommandLine();
+            }
+        };
+        myPanel.echoCheckBox.addActionListener(updateCommandLineListener);
+        myPanel.runEvalCheckBox.addActionListener(updateCommandLineListener);
+        myPanel.runTestsCheckBox.addActionListener(updateCommandLineListener);
+        myPanel.abraCheckBox.addActionListener(updateCommandLineListener);
+        myPanel.treeCheckBox.addActionListener(updateCommandLineListener);
+        myPanel.verilogCheckBox.addActionListener(updateCommandLineListener);
         return myPanel.rootConfigPane;
     }
 
@@ -194,6 +246,12 @@ public class QuplaInterpreterSettingsEditor extends SettingsEditor<QuplaInterpre
             myPanel.argsContainer.add(inputTritPanel);
             if(args!=null && args.size()>=i+1 && args.get(i)!=null){
                 inputTritPanel.setUserInput(args.get(i));
+                inputTritPanel.onChange(new Runnable(){
+                    @Override
+                    public void run() {
+                        updateCommandLine();
+                    }
+                });
             }
             i++;
         }
@@ -213,7 +271,28 @@ public class QuplaInterpreterSettingsEditor extends SettingsEditor<QuplaInterpre
         myMainClass.setComponent(new TextFieldWithBrowseButton());
     }
 
-
+    public void updateCommandLine(){
+        if(myPanel!=null && myPanel.modules!=null && myPanel.modules.getModel()!=null) {
+            QuplaFileComboBoxItem item = (QuplaFileComboBoxItem) myPanel.modules.getModel().getElementAt(0);
+            if (item != null) {
+                Project project = item.quplaFile.getProject();
+                QuplaInterpreterRunConfiguration dummy = (QuplaInterpreterRunConfiguration) QuplaInterpreterConfigurationType.getInstance().getConfigurationFactories()[0].createTemplateConfiguration(project);
+                try {
+                    applyEditorTo(dummy);
+                    GeneralCommandLine cmd = QuplaInterpreterState.buildJavaParameters(dummy).toCommandLine();
+                    myPanel.commandLine.setText(cmd.getCommandLineString());
+                } catch (ConfigurationException e) {
+                    myPanel.commandLine.setText("Invalid configuration !");
+                } catch (CantRunException e) {
+                    myPanel.commandLine.setText("Error !");
+                }
+            } else {
+                myPanel.commandLine.setText("");
+            }
+        }else{
+            myPanel.commandLine.setText("");
+        }
+    }
     private static ComboBoxModel getModulesModel(Project project){
         QuplaModuleManager quplaModuleManager = project.getComponent(QuplaModuleManager.class);
         Collection<QuplaModule> modules = quplaModuleManager.allModules();

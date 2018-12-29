@@ -29,7 +29,7 @@ If you wish to support this effort, you can make a donation on this address : BS
   
   ### Install from plugins repository
   
-   >>The plugin is still "pending jetbrains approval". So currently, the recommended way to install it is to go through the [manual installation](#manual-install)
+   >> **The plugin is still "pending jetbrains approval". So currently, the recommended way to install it is to go through the [manual installation](#manual-install)**
  
  - Open Settings from the menu File (Ctrl+Alt+S)
  - Select "Plugins" on the left pane
@@ -39,7 +39,7 @@ If you wish to support this effort, you can make a donation on this address : BS
   
   ### Manual Install    
 
- - Download the [latest release](https://github.com/ben-75/qupla-idea-plugin/releases) 
+ - Download the [latest release : qupla-language-support.jar](https://github.com/ben-75/qupla-idea-plugin/releases) 
  - Open Settings from the menu File (Ctrl+Alt+S)
  - Select "Plugins" on the left pane
  - Choose "Install from disk" and select the qupla-language-support.jar
