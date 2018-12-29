@@ -1255,7 +1255,7 @@ public class QuplaPsiImplUtil {
 
     public static String getTypeLabelWithBrackets(QuplaFuncSignature funcSignature){
         if (funcSignature.getTypeOrPlaceHolderNameRefList().size()==0) return "";
-        return "<"+funcSignature.getText().substring(funcSignature.getTypeOrPlaceHolderNameRefList().get(0).getStartOffsetInParent(),
+        return funcSignature.getText().substring(funcSignature.getFuncName().getStartOffsetInParent(),
                                                      funcSignature.getTypeOrPlaceHolderNameRefList().get(funcSignature.getTypeOrPlaceHolderNameRefList().size()-1).getStartOffsetInParent()+funcSignature.getTypeOrPlaceHolderNameRefList().get(funcSignature.getTypeOrPlaceHolderNameRefList().size()-1).getTextLength())
                 +">";
     }
