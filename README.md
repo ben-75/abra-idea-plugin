@@ -25,25 +25,19 @@ If you wish to support this effort, you can make a donation on this address : BS
   
   ## Installation
   
-  The Qupla plugin can be installed either from Jetbrains plugin repository, either manually, or it can be build from sources.
+  The Qupla plugin can be installed manually or it can be build from sources.
   
+   ### Manual Install    
+    
+   - Download the [latest release : qupla-language-support.jar](https://github.com/ben-75/qupla-idea-plugin/releases) 
+   - Open Settings from the menu File (Ctrl+Alt+S)
+   - Select "Plugins" on the left pane
+   - Choose "Install from disk" and select the qupla-language-support.jar
+   - Restart IntelliJ  
+   
   ### Install from plugins repository
   
-   >> **The plugin is still "pending jetbrains approval". So currently, the recommended way to install it is to go through the [manual installation](#manual-install)**
- 
- - Open Settings from the menu File (Ctrl+Alt+S)
- - Select "Plugins" on the left pane
- - Search "Qupla" in the search box
- - Click "Search in repositories" and install `Qupla Plugin`
- - Restart IntelliJ
-  
-  ### Manual Install    
-
- - Download the [latest release : qupla-language-support.jar](https://github.com/ben-75/qupla-idea-plugin/releases) 
- - Open Settings from the menu File (Ctrl+Alt+S)
- - Select "Plugins" on the left pane
- - Choose "Install from disk" and select the qupla-language-support.jar
- - Restart IntelliJ  
+ Coming soon
 
   ### Building from sources  
   
