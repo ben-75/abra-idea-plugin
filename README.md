@@ -3,7 +3,7 @@
 Intellij plugin for the Qupla language.  
   
 The Qupla language is not completely defined yet, so consider this plugin as experimental.  
-We recommend to use the plugin with IntelliJ IDE (even if basic features of the plugin should work on any IntelliJ based platform) (minimal build : 171.0)  
+We recommend to use the plugin with IntelliJ IDE (it also works with Android Studio) (minimal build : 171.0)  
   
 Keep in mind that Qupla language is evolving almost every day, we do our best to keep this plugin compatible with latest Qupla version.
 If you wish to support this effort, you can make a donation on this address : BSLZW9OSZPOPWWDUWVZLLJILAATPCBCTPTSJEE9OIULLWSBWBHNJHIQYQ9TPDUHTASINTWWZAPCISEQT9RRPAXNWC9
@@ -13,9 +13,9 @@ If you wish to support this effort, you can make a donation on this address : BS
 
   ## Getting started
  
- - If you don't already have IntelliJ installed on your computer, you can download and install 
+ - If you don't already have IntelliJ (or Android Studio) installed on your computer, you can download and install 
  IntelliJ Community from [Jetbrains website](https://www.jetbrains.com/idea/download/)
- - Start IntelliJ (or any other Jetbrains IDE) and install the Qupla Plugin ([details here](#installation))
+ - Start IntelliJ (or Android Studio) and install the Qupla Plugin ([details here](#installation))
  - After plugin installation it is recommended to restart IntelliJ
  - Checkout the qupla repository: https://github.com/iotaledger/qupla and open it as a gradle project.
  - Start exploring qupla, base library and samples can be found under src/main/resources
@@ -68,7 +68,7 @@ setup your environment the PsiViewer is already enabled in your main instance of
   - Check validity of lut statements (no double entries)
   - Brace matching
   - Code folding
-  - Integration with the Qupla interpreter through a specific "Run configuration" to easily execute Qupla code. (this will work only in IntelliJ and Android Studio)
+  - Integration with the Qupla interpreter through a specific "Run configuration" to easily execute Qupla code.
   - ...
   
   ### Integration with the Qupla interpreter
