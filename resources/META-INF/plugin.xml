@@ -1,7 +1,7 @@
 <idea-plugin>
   <id>org.qupla.language</id>
   <name>Qupla Plugin</name>
-  <version>0.1.0-alpha</version>
+  <version>0.1.1-alpha</version>
   <vendor url="https://github.com/ben-75/qupla-idea-plugin"/>
 
   <description><![CDATA[
@@ -23,7 +23,7 @@
 
   <change-notes><![CDATA[
         <ul>
-        <li>First alpha release
+        <li>Display generated command line on Run Configuration panel
         </ul>
     ]]>
   </change-notes>
