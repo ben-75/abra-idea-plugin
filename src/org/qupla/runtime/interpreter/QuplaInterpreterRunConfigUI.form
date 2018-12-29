@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <form xmlns="http://www.intellij.com/uidesigner/form/" version="1" bind-to-class="org.qupla.runtime.interpreter.QuplaInterpreterRunConfigUI">
-  <grid id="27dc6" binding="rootConfigPane" layout-manager="GridLayoutManager" row-count="8" column-count="7" same-size-horizontally="false" same-size-vertically="false" hgap="-1" vgap="-1">
+  <grid id="27dc6" binding="rootConfigPane" layout-manager="GridLayoutManager" row-count="8" column-count="6" same-size-horizontally="false" same-size-vertically="false" hgap="-1" vgap="-1">
     <margin top="0" left="0" bottom="0" right="0"/>
     <constraints>
       <xy x="20" y="20" width="614" height="434"/>
@@ -8,11 +8,6 @@
     <properties/>
     <border type="none"/>
     <children>
-      <vspacer id="d6de1">
-        <constraints>
-          <grid row="6" column="6" row-span="2" col-span="1" vsize-policy="6" hsize-policy="1" anchor="0" fill="2" indent="0" use-parent-layout="false"/>
-        </constraints>
-      </vspacer>
       <component id="96e3c" class="javax.swing.JComboBox" binding="modules">
         <constraints>
           <grid row="0" column="1" row-span="1" col-span="4" vsize-policy="0" hsize-policy="2" anchor="8" fill="1" indent="0" use-parent-layout="false"/>
@@ -152,17 +147,9 @@
           <toolTipText value="Generates a textual representation of the code tree (requires -trit)"/>
         </properties>
       </component>
-      <component id="3dd79" class="javax.swing.JLabel">
-        <constraints>
-          <grid row="6" column="0" row-span="2" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
-        </constraints>
-        <properties>
-          <text value="Command line:"/>
-        </properties>
-      </component>
       <component id="5a6e0" class="javax.swing.JTextArea" binding="commandLine">
         <constraints>
-          <grid row="7" column="1" row-span="1" col-span="4" vsize-policy="3" hsize-policy="6" anchor="0" fill="3" indent="0" use-parent-layout="false">
+          <grid row="6" column="1" row-span="2" col-span="4" vsize-policy="3" hsize-policy="6" anchor="0" fill="3" indent="0" use-parent-layout="false">
             <preferred-size width="150" height="50"/>
           </grid>
         </constraints>
@@ -170,7 +157,7 @@
       </component>
       <component id="e24f7" class="javax.swing.JButton" binding="copyToClipboard">
         <constraints>
-          <grid row="7" column="5" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="1" fill="0" indent="0" use-parent-layout="false">
+          <grid row="6" column="5" row-span="2" col-span="1" vsize-policy="0" hsize-policy="0" anchor="1" fill="0" indent="0" use-parent-layout="false">
             <minimum-size width="36" height="36"/>
             <preferred-size width="36" height="36"/>
             <maximum-size width="36" height="36"/>
@@ -183,6 +170,19 @@
           <toolTipText value="copy to clipboard"/>
         </properties>
       </component>
+      <component id="8bd7c" class="javax.swing.JLabel">
+        <constraints>
+          <grid row="6" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
+        </constraints>
+        <properties>
+          <text value="Command line:"/>
+        </properties>
+      </component>
+      <vspacer id="10759">
+        <constraints>
+          <grid row="7" column="0" row-span="1" col-span="1" vsize-policy="6" hsize-policy="1" anchor="0" fill="2" indent="0" use-parent-layout="false"/>
+        </constraints>
+      </vspacer>
     </children>
   </grid>
 </form>
