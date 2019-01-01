@@ -17,6 +17,10 @@ public class LutValidationAnnotator implements Annotator {
             HashSet entrySet = new HashSet(lutStmt.getLutEntryList().size());
             if (lutStmt.getLutEntryList().size() > 0) {
                 int left_size = lutStmt.getLutEntryList().get(0).getInputLength();
+                if(left_size>3){
+                    TextRange range = new TextRange(lutStmt.getTextRange().getStartOffset(),lutStmt.getTextRange().getEndOffset());
+                    holder.createErrorAnnotation(range, "LUT cannot have more than 3 input trits");
+                }
                 int right_size = lutStmt.getLutEntryList().get(0).getOutputLength();
                 for (QuplaLutEntry entry : lutStmt.getLutEntryList()) {
                     QuplaTritList lhs = entry.getTritListList().get(0);
