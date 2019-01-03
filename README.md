@@ -25,7 +25,7 @@ If you wish to support this effort, you can make a donation on this address : BS
   
   ## Installation
   
-  The Qupla plugin can be installed manually or it can be build from sources.
+  The Qupla plugin can be installed manually, downloaded from jetbrain plugin repositories, or it can be build from sources.
   
    ### Manual Install    
     
@@ -37,7 +37,11 @@ If you wish to support this effort, you can make a donation on this address : BS
    
   ### Install from plugins repository
   
- Coming soon
+   - Open Settings from the menu File (Ctrl+Alt+S)
+   - Select "Plugins" on the left pane
+   - Search "Qupla" in the search box
+   - Click "Search in repositories" and install `Qupla Plugin`
+   - Restart IntelliJ
 
   ### Building from sources  
   
