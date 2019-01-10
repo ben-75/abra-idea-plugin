@@ -1,7 +1,7 @@
 <idea-plugin>
   <id>org.qupla.language</id>
   <name>Qupla Language</name>
-  <version>0.1.2-alpha</version>
+  <version>0.1.3-alpha</version>
   <vendor url="https://github.com/ben-75/qupla-idea-plugin"/>
 
   <description><![CDATA[
@@ -23,14 +23,15 @@
 
   <change-notes><![CDATA[
         <ul>
-        <li>Display generated command line on Run Configuration panel
+        <li>Requires intelliJ build 182.0+
+        <li>Support updated syntax for template instantiation
         </ul>
     ]]>
   </change-notes>
 
 
-  <idea-version since-build="171.0"/>
-
+  <idea-version since-build="182.0"/>
+  <depends/>
   <extensions defaultExtensionNs="com.intellij">
     <fileTypeFactory implementation="org.qupla.language.QuplaFileTypeFactory"/>
     <lang.parserDefinition language="Qupla" implementationClass="org.qupla.language.QuplaParserDefinition"/>
