@@ -52,10 +52,6 @@ public class QuplaParserDefinition implements ParserDefinition {
         return new QuplaFile(viewProvider);
     }
 
-    @SuppressWarnings("deprecated")
-    public SpaceRequirements spaceExistanceTypeBetweenTokens(ASTNode left, ASTNode right) {
-        return SpaceRequirements.MAY;
-    }
 
     @NotNull
     public PsiElement createElement(ASTNode node) {
