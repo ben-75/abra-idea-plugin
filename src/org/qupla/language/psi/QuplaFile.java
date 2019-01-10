@@ -124,6 +124,21 @@ public class QuplaFile extends PsiFileBase {
         return resp;
     }
 
+    public List<QuplaTypeName> findAllConcreteTypeName(String name) {
+        ArrayList<QuplaTypeName> resp = new ArrayList<>();
+        for (ASTNode t_stmt : getNode().getChildren(TokenSet.create(QuplaTypes.TYPE_STMT))){
+            QuplaTypeName ref = ((QuplaTypeStmt)t_stmt.getPsi()).getTypeName();
+            if (name == null || ref.getText().equals(name)) {
+                resp.add(ref);
+            }
+        }
+        return resp;
+    }
+
+    public List<QuplaTypeName> findAllVisibleConcreteTypeName(String name) {
+        return QuplaPsiImplUtil.findAllConcreteTypeName(getProject(),name,getProject().getComponent(QuplaModuleManager.class).getAllVisibleFiles(this));
+    }
+
     public Set<PsiElement> computeResolvedReferences() {
         HashSet<PsiElement> resp = new HashSet<>();
         for(QuplaResolvable ref:PsiTreeUtil.findChildrenOfAnyType(this,true, QuplaResolvable.class)){

@@ -34,6 +34,7 @@ public class QuplaInterpreterRunConfiguration extends ApplicationConfiguration {
     private QuplaFile targetModule = null;
     private QuplaFuncStmt targetFunc = null;
     private QuplaTypeInstantiation targetTypeInstantiation = null;
+    private QuplaTypeName targetTypeName = null;
     String[] args;
 
     protected QuplaInterpreterRunConfiguration(Project project, ConfigurationFactory factory, String name) {
@@ -174,6 +175,14 @@ public class QuplaInterpreterRunConfiguration extends ApplicationConfiguration {
         this.targetTypeInstantiation = targetTypeInstantiation;
     }
 
+    public QuplaTypeName getTargetTypeName() {
+        return targetTypeName;
+    }
+
+    public void setTargetTypeName(QuplaTypeName targetTypeName) {
+        this.targetTypeName = targetTypeName;
+    }
+
     public boolean hasArgs(){
         return args!=null && args.length>0;
     }
@@ -207,6 +216,9 @@ public class QuplaInterpreterRunConfiguration extends ApplicationConfiguration {
                         }
                         if (targetTypeInstantiation != null) {
                             element.setAttribute("targetTypeInstantiation", targetTypeInstantiation.getText().substring(1, targetTypeInstantiation.getTextLength() - 1));
+                        }
+                        if (targetTypeName != null) {
+                            element.setAttribute("targetTypeName", targetTypeName.getText());
                         }
                         for(int i=0;i<targetFunc.getFuncSignature().getFuncParameterList().size();i++){
                             if(args!=null && args.length>i && args[i]!=null && args[i].length()>0){
@@ -269,6 +281,17 @@ public class QuplaInterpreterRunConfiguration extends ApplicationConfiguration {
                                         for (QuplaTypeInstantiation typInst : targetFunc.getAllTypeInstantiation()) {
                                             if (tmp2.equals(typInst.getText())) {
                                                 targetTypeInstantiation = typInst;
+                                                break;
+                                            }
+                                        }
+                                    }
+
+                                    Attribute targetTypeNameAttr = element.getAttribute("targetTypeName");
+                                    if (targetTypeNameAttr != null) {
+                                        String tmp2 = targetTypeNameAttr.getValue();
+                                        for (QuplaTypeName typInst : ((QuplaFile)targetFunc.getContainingFile()).findAllVisibleConcreteTypeName(null)) {
+                                            if (tmp2.equals(typInst.getText())) {
+                                                targetTypeName = typInst;
                                                 break;
                                             }
                                         }

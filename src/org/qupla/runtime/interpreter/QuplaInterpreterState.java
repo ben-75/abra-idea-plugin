@@ -90,6 +90,8 @@ public class QuplaInterpreterState extends JavaCommandLineState {
         String type = "";
         if(runConfiguration.getTargetTypeInstantiation()!=null){
             type=runConfiguration.getTargetTypeInstantiation().getText();
+        }else if(runConfiguration.getTargetTypeName()!=null){
+            type="<"+runConfiguration.getTargetTypeName().getText()+">";
         }
         if(runConfiguration.getTargetFunc()!=null && runConfiguration.hasArgs()) {
             for (String s : runConfiguration.getArgs()) {

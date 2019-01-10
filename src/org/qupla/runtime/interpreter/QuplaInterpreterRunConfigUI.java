@@ -20,6 +20,8 @@ public class QuplaInterpreterRunConfigUI {
     JLabel argsContainerLabel;
     public JTextArea commandLine;
     public JButton copyToClipboard;
+    JComboBox typeNameCombo;
+    JLabel typeNameLabel;
     private JTextPane textPane1;
 
     private void createUIComponents() {

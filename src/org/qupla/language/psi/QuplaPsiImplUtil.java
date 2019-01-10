@@ -1521,7 +1521,7 @@ public class QuplaPsiImplUtil {
         return resp;
     }
 
-    public static List<QuplaTypeName> findAllTypeName(Project project, String name, List<QuplaFile> files) {
+    public static List<QuplaTypeName> findAllTypeName(Project project, String name, Collection<QuplaFile> files) {
         ArrayList<QuplaTypeName> resp = new ArrayList<>();
         if (files == null) {
             for(QuplaFile quplaFile :project.getComponent(QuplaModuleManager.class).getAllQuplaFiles()){
@@ -1533,6 +1533,20 @@ public class QuplaPsiImplUtil {
             }
         }
        return resp;
+    }
+
+    public static List<QuplaTypeName> findAllConcreteTypeName(Project project, String name, Collection<QuplaFile> files) {
+        ArrayList<QuplaTypeName> resp = new ArrayList<>();
+        if (files == null) {
+            for(QuplaFile quplaFile :project.getComponent(QuplaModuleManager.class).getAllQuplaFiles()){
+                resp.addAll(quplaFile.findAllConcreteTypeName(name));
+            }
+        } else {
+            for (QuplaFile f : files) {
+                resp.addAll(f.findAllConcreteTypeName(name));
+            }
+        }
+        return resp;
     }
 
 
