@@ -55,7 +55,7 @@
   ]
 }
 
-qupla                ::= (stmt|COMMENT|CRLF)*
+qupla               ::= (stmt|COMMENT|CRLF)*
 private stmt        ::= (importStmt | typeStmt | lutStmt | funcStmt | templateStmt | useStmt | testStmt | evalStmt)
 
 importStmt          ::= IMPORT_KEYWORD moduleName
@@ -96,13 +96,14 @@ funcStmt            ::= FUNC_KEYWORD funcSignature funcBody
                         pin=1
                     }
 
-templateStmt        ::= TEMPLATE_KEYWORD templateName '<' (placeHolderTypeName (COMMA placeHolderTypeName)*) '>' ('{' typeStmt* funcStmt+ '}')
+templateStmt        ::= TEMPLATE_KEYWORD templateName '<' (placeHolderTypeName (COMMA placeHolderTypeName)*) '>' (templateTypeRelation)? ('{' typeStmt* funcStmt+ '}')
                     {
                         mixin="org.qupla.language.psi.impl.QuplaDefinitionImpl"
                         implements="org.qupla.language.psi.QuplaDefinition"
                         methods=[getPresentation getName setName getNameIdentifier getAllTypeInstantiation]
                         pin=1
                     }
+templateTypeRelation::= '=' typeOrPlaceHolderNameRef ('+' typeOrPlaceHolderNameRef)+
 
 useStmt             ::= USE_KEYWORD templateNameRef typeInstantiation (COMMA typeInstantiation)*
                     {
@@ -202,7 +203,7 @@ postfixExpr         ::= valueExpr | funcExpr | lutExpr | lutOrSliceExpr | typeEx
 
 valueExpr           ::= float | integer | trit
 
-typeExpr            ::= typeNameRef '{' fieldAssignExpr+ '}'
+typeExpr            ::= typeOrPlaceHolderNameRef '{' fieldAssignExpr+ '}'
                     {
                         methods=[getResolvedSize ]
                     }
@@ -248,7 +249,7 @@ constTerm           ::= constFactor ((SLASH|TIMES|MODULO) constFactor)*
                         methods=[getResolvedSize ]
                     }
 
-constFactor         ::= number | typeOrPlaceHolderNameRef | (MINUS constFactor) | ('(' constExpr ')')
+constFactor         ::= number | typeOrPlaceHolderNameRef ('.' fieldNameRef)* | (MINUS constFactor) | ('(' constExpr ')')
                     {
                         methods = [getResolvedSize ]
                     }
