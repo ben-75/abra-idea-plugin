@@ -55,6 +55,12 @@
     <programRunner implementation="org.qupla.runtime.interpreter.QuplaInterpreterProgramRunner"/>
     <runConfigurationProducer implementation="org.qupla.runtime.interpreter.QuplaRunConfigurationProducer"/>
     <iconLayerProvider implementation="org.qupla.ide.ui.QuplaIconProvider" order="last"/>
+
+    <programRunner implementation="org.qupla.runtime.debugger.QuplaInterpreterDebugRunner"/>
+    <xdebugger.breakpointType implementation="org.qupla.runtime.debugger.QuplaLineBreakpointType"/>
+    <debugger.javaBreakpointHandlerFactory implementation="org.qupla.runtime.debugger.QuplaBreakpointHandlerFactory"/>
+    <debugger.positionManagerFactory implementation="org.qupla.runtime.debugger.QuplaPositionManagerFactory"/>
+
   </extensions>
 
   <project-components>
