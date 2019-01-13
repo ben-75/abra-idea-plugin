@@ -381,7 +381,7 @@ environmentName     ::= IDENTIFIER
 
 private trit        ::= MINUS|TRIT
 
-number              ::= DIGIT+
+number              ::= DIGITS
                     {
                         methods = [getResolvedSize ]
                     }

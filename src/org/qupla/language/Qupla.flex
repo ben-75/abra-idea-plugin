@@ -61,6 +61,7 @@ CLOSE_PAR=(\))
 OPEN_TAG=(<)
 CLOSE_TAG=(>)
 DIGIT=[0-9]
+DIGITS=[0-9]+
 TRIT=[-01]
 RANGE_OPERATOR=(\.\.)
 SMART_RANGE_OPERATOR=(:)
@@ -115,7 +116,7 @@ QUESTION_MARK=(\?)
   {OPEN_TAG}                  { return OPEN_TAG; }
   {CLOSE_TAG}                 { return CLOSE_TAG; }
   {QUESTION_MARK}             { return QUESTION_MARK; }
-  {DIGIT}                     { return DIGIT; }
+  {DIGITS}                    { return DIGITS; }
   {TRIT}                      { return TRIT; }
   {RANGE_OPERATOR}            { return RANGE_OPERATOR; }
   {SMART_RANGE_OPERATOR}      { return SMART_RANGE_OPERATOR; }
