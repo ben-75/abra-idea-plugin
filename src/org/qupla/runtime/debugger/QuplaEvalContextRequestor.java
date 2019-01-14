@@ -107,12 +107,14 @@ public class QuplaEvalContextRequestor implements ClassPrepareRequestor {
                                 ObjectReferenceImpl token = (ObjectReferenceImpl) ((ObjectReferenceImpl) expr).getValue(originField);
                                 Field sourceField = token.referenceType().fieldByName("source");
                                 Field lineNrField = token.referenceType().fieldByName("lineNr");
+                                Field colNrField = token.referenceType().fieldByName("colNr");
                                 int lineNumber = ((IntegerValueImpl) token.getValue(lineNrField)).intValue();
+                                int colNumber = ((IntegerValueImpl) token.getValue(colNrField)).intValue();
                                 String exprString = DebuggerUtils.getValueAsString(evaluationContext, expr);
                                 String modulePath = DebuggerUtils.getValueAsString(
                                         evaluationContext,
                                         ((ObjectReferenceImpl) expr).getValue(sourceField));
-                                callStack.add(0, new QuplaCallStackItem(((MethodEntryEvent) event).method().name(), exprString, lineNumber + 1, modulePath));
+                                callStack.add(0, new QuplaCallStackItem(((MethodEntryEvent) event).method().name(), exprString, lineNumber + 1, colNumber+1,modulePath));
                             }
                         }
                     }
