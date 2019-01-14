@@ -9,12 +9,14 @@ import com.intellij.debugger.engine.evaluation.EvaluateException;
 import com.intellij.debugger.engine.evaluation.EvaluationContextImpl;
 import com.intellij.debugger.engine.events.SuspendContextCommandImpl;
 import com.intellij.debugger.jdi.StackFrameProxyImpl;
+import com.intellij.debugger.jdi.ThreadReferenceProxyImpl;
 import com.intellij.debugger.requests.ClassPrepareRequestor;
 import com.intellij.debugger.settings.DebuggerSettings;
 import com.intellij.debugger.ui.breakpoints.FilteredRequestor;
 import com.intellij.openapi.application.ApplicationManager;
 import com.intellij.ui.classFilter.ClassFilter;
 import com.sun.jdi.Field;
+import com.sun.jdi.ObjectReference;
 import com.sun.jdi.ReferenceType;
 import com.sun.jdi.Value;
 import com.sun.jdi.event.LocatableEvent;
@@ -22,6 +24,7 @@ import com.sun.jdi.event.MethodEntryEvent;
 import com.sun.jdi.event.MethodExitEvent;
 import com.sun.tools.jdi.*;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -43,6 +46,9 @@ public class QuplaEvalContextRequestor implements ClassPrepareRequestor {
 
     private static final String[] watchedEvalMethods = new String[]{"evalAssign","evalSlice","evalConcat","evalLutLookup",
             "evalMerge","evalFuncCall","evalVector","evalConditional","evalState","evalType"};
+
+    public static List<QuplaCallStackItem> callStack = new ArrayList<>();
+
 
     public QuplaEvalContextRequestor() {
     }
@@ -106,7 +112,7 @@ public class QuplaEvalContextRequestor implements ClassPrepareRequestor {
                                 String modulePath = DebuggerUtils.getValueAsString(
                                         evaluationContext,
                                         ((ObjectReferenceImpl) expr).getValue(sourceField));
-                                callStack.add(0, new AbraCallStackItem(((MethodEntryEvent) event).method().name(), exprString, lineNumber + 1, modulePath));
+                                callStack.add(0, new QuplaCallStackItem(((MethodEntryEvent) event).method().name(), exprString, lineNumber + 1, modulePath));
                             }
                         }
                     }
@@ -124,6 +130,16 @@ public class QuplaEvalContextRequestor implements ClassPrepareRequestor {
 
     }
 
+    protected ObjectReference getThisObject(SuspendContextImpl context, LocatableEvent event) throws EvaluateException {
+        ThreadReferenceProxyImpl thread = context.getThread();
+        if(thread != null) {
+            StackFrameProxyImpl stackFrameProxy = thread.frame(0);
+            if(stackFrameProxy != null) {
+                return stackFrameProxy.thisObject();
+            }
+        }
+        return null;
+    }
 
     private abstract class EvalContextFilteredRequestor implements FilteredRequestor {
         @Override
