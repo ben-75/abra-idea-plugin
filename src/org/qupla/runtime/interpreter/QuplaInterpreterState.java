@@ -63,9 +63,10 @@ public class QuplaInterpreterState extends JavaCommandLineState {
         javaParameters.setMainClass("org.iota.qupla.Qupla");
         //javaParameters.getVMParametersList()
         StringBuilder sb = new StringBuilder();
-        String filePath = runConfiguration.getTargetModule().getImportableFilePath();
-        javaParameters.getProgramParametersList().add(filePath.substring(0,filePath.indexOf("/")));
-
+        if(runConfiguration.getTargetModule()!=null) {
+            String filePath = runConfiguration.getTargetModule().getImportableFilePath();
+            javaParameters.getProgramParametersList().add(filePath.substring(0, filePath.indexOf("/")));
+        }
         if(runConfiguration.isEcho()){
             javaParameters.getProgramParametersList().add("-echo");
         }
