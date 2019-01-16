@@ -76,6 +76,7 @@ public class QuplaPositionManager implements MultiRequestPositionManager {
             if (evalContextClass != null) {
                 List<ClassPrepareRequest> resp = new ArrayList<>();
                 resp.add(debugProcess.getRequestsManager().createClassPrepareRequest(quplaEvalContextRequestor, classPattern));
+                resp.add(debugProcess.getRequestsManager().createClassPrepareRequest(new QuplaBreakpointRequestor(position), classPattern));
                 return resp;
             } else {
                 throw new RuntimeException("Interpreter class "+QUPLA_CONTEXT_CLASSNAME+" not found in classpath. Debugger won't work.");
