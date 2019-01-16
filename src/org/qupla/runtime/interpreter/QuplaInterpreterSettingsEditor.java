@@ -362,6 +362,9 @@ public class QuplaInterpreterSettingsEditor extends SettingsEditor<QuplaInterpre
                     myPanel.commandLine.setText("Invalid configuration !");
                 } catch (CantRunException e) {
                     myPanel.commandLine.setText("Error !");
+                } catch (Exception e) {
+                    myPanel.commandLine.setText("Configuration is not complete");
+                    e.printStackTrace();
                 }
             } else {
                 myPanel.commandLine.setText("");
