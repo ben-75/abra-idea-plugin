@@ -1,11 +1,11 @@
 package org.qupla.runtime.debugger;
 
 import com.intellij.debugger.SourcePosition;
-import com.intellij.debugger.engine.DebugProcess;
-import com.intellij.debugger.requests.ClassPrepareRequestor;
-import com.sun.jdi.ReferenceType;
+import com.intellij.debugger.engine.events.SuspendContextCommandImpl;
+import com.sun.jdi.event.LocatableEvent;
 
-public class QuplaBreakpointRequestor  implements ClassPrepareRequestor {
+public class QuplaBreakpointRequestor extends QuplaEvalContextFilteredAbstractRequestor {
+
     private final SourcePosition position;
 
     public QuplaBreakpointRequestor(SourcePosition position) {
@@ -13,7 +13,9 @@ public class QuplaBreakpointRequestor  implements ClassPrepareRequestor {
     }
 
     @Override
-    public void processClassPrepare(DebugProcess debuggerProcess, ReferenceType referenceType) {
-        System.out.println("here need to request a breakpoint");
+    public boolean processLocatableEvent(SuspendContextCommandImpl action, LocatableEvent event) throws EventProcessingException {
+        //need to evaluate if the current eval call match our source location
+        //TODO
+        return false;
     }
 }

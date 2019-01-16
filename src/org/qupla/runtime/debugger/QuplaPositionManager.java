@@ -2,10 +2,8 @@ package org.qupla.runtime.debugger;
 
 import com.intellij.debugger.MultiRequestPositionManager;
 import com.intellij.debugger.NoDataException;
-import com.intellij.debugger.PositionManager;
 import com.intellij.debugger.SourcePosition;
 import com.intellij.debugger.engine.DebugProcess;
-import com.intellij.debugger.engine.DebugProcessListener;
 import com.intellij.debugger.engine.DebuggerUtils;
 import com.intellij.debugger.engine.JVMNameUtil;
 import com.intellij.debugger.impl.DebuggerUtilsEx;
@@ -76,7 +74,7 @@ public class QuplaPositionManager implements MultiRequestPositionManager {
             if (evalContextClass != null) {
                 List<ClassPrepareRequest> resp = new ArrayList<>();
                 resp.add(debugProcess.getRequestsManager().createClassPrepareRequest(quplaEvalContextRequestor, classPattern));
-                resp.add(debugProcess.getRequestsManager().createClassPrepareRequest(new QuplaBreakpointRequestor(position), classPattern));
+                resp.add(debugProcess.getRequestsManager().createClassPrepareRequest(new QuplaBreakpointPreparator(position), classPattern));
                 return resp;
             } else {
                 throw new RuntimeException("Interpreter class "+QUPLA_CONTEXT_CLASSNAME+" not found in classpath. Debugger won't work.");
