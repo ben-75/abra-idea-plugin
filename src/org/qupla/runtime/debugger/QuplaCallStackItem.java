@@ -3,8 +3,8 @@ package org.qupla.runtime.debugger;
 public class QuplaCallStackItem {
 
     private String modulePath;
-    private int lineNumber;
-    private int colNumber;
+    private int lineNumber;  //1 based index (end user friendly)
+    private int colNumber;   //1 based index (end user friendly)
     private String expr;
     private String operation;
 

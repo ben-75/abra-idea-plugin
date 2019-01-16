@@ -64,4 +64,10 @@ public class QuplaLineBreakpoint <P extends QuplaBreakpointProperties> extends B
     public PsiElement getEvaluationElement() {
         return null;
     }
+
+    @NotNull
+    @Override
+    protected P getProperties() {
+        return super.getProperties();
+    }
 }

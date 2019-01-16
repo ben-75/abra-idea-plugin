@@ -2,8 +2,10 @@ package org.qupla.runtime.debugger;
 
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.vfs.VirtualFile;
+import com.intellij.xdebugger.breakpoints.XBreakpointProperties;
 import com.intellij.xdebugger.breakpoints.XLineBreakpointTypeBase;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 public class QuplaLineBreakpointType extends XLineBreakpointTypeBase {
 
@@ -17,4 +19,15 @@ public class QuplaLineBreakpointType extends XLineBreakpointTypeBase {
         return true;  //TODO
     }
 
+    @Nullable
+    @Override
+    public QuplaBreakpointProperties createProperties() {
+        return new QuplaBreakpointProperties(); //TODO
+    }
+
+    @Nullable
+    @Override
+    public XBreakpointProperties createBreakpointProperties(@NotNull VirtualFile file, int line) {
+        return createProperties(); //TODO
+    }
 }

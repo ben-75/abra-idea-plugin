@@ -1,11 +1,14 @@
 package org.qupla.runtime.debugger;
 
+import com.intellij.debugger.MultiRequestPositionManager;
 import com.intellij.debugger.NoDataException;
 import com.intellij.debugger.PositionManager;
 import com.intellij.debugger.SourcePosition;
 import com.intellij.debugger.engine.DebugProcess;
+import com.intellij.debugger.engine.DebugProcessListener;
 import com.intellij.debugger.engine.DebuggerUtils;
 import com.intellij.debugger.engine.JVMNameUtil;
+import com.intellij.debugger.impl.DebuggerUtilsEx;
 import com.intellij.debugger.requests.ClassPrepareRequestor;
 import com.intellij.openapi.application.ApplicationManager;
 import com.intellij.openapi.fileTypes.FileType;
@@ -18,13 +21,14 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.qupla.language.QuplaFileType;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 
-public class QuplaPositionManager implements PositionManager {
+public class QuplaPositionManager implements MultiRequestPositionManager {
 
-    public static final String QUPLA_CONTEXT_CLASSNAME = "org.iota.qupla.qupla.context.QuplaEvalContext";
+    public static final String QUPLA_CONTEXT_CLASSNAME = "org.iota.qupla.qupla.context.QuplaToAbraContext";
 
     private final DebugProcess debugProcess;
     private PsiClass evalContextClass;
@@ -37,13 +41,14 @@ public class QuplaPositionManager implements PositionManager {
                     evalContextClass = DebuggerUtils.findClass(QUPLA_CONTEXT_CLASSNAME, debugProcess.getProject(), GlobalSearchScope.allScope(debugProcess.getProject()));
                     classPattern = JVMNameUtil.getNonAnonymousClassName(evalContextClass);
                 });
+        DebuggerUtilsEx.setAlternativeSourceUrl(QUPLA_CONTEXT_CLASSNAME, "dummy", evalContextClass.getProject());
     }
 
     @Nullable
     @Override
     public SourcePosition getSourcePosition(@Nullable Location location) throws NoDataException {
         //TODO
-        return null;
+        throw NoDataException.INSTANCE;
     }
 
     @NotNull
@@ -59,6 +64,23 @@ public class QuplaPositionManager implements PositionManager {
     @Override
     public List<Location> locationsOfLine(@NotNull ReferenceType type, @NotNull SourcePosition position) throws NoDataException {
         //TODO
+        throw NoDataException.INSTANCE;
+    }
+
+
+    private QuplaEvalContextRequestor quplaEvalContextRequestor = new QuplaEvalContextRequestor();
+    @Nullable
+    @Override
+    public List<ClassPrepareRequest> createPrepareRequests(@NotNull ClassPrepareRequestor requestor, @NotNull SourcePosition position) throws NoDataException {
+        if (position.getFile().getFileType() == QuplaFileType.INSTANCE) {
+            if (evalContextClass != null) {
+                List<ClassPrepareRequest> resp = new ArrayList<>();
+                resp.add(debugProcess.getRequestsManager().createClassPrepareRequest(quplaEvalContextRequestor, classPattern));
+                return resp;
+            } else {
+                throw new RuntimeException("Interpreter class "+QUPLA_CONTEXT_CLASSNAME+" not found in classpath. Debugger won't work.");
+            }
+        }
         throw NoDataException.INSTANCE;
     }
 
