@@ -14,6 +14,13 @@ import com.intellij.debugger.jdi.ThreadReferenceProxyImpl;
 import com.intellij.debugger.requests.ClassPrepareRequestor;
 import com.intellij.debugger.ui.breakpoints.FilteredRequestor;
 import com.intellij.openapi.application.ApplicationManager;
+import com.intellij.openapi.project.Project;
+import com.intellij.openapi.wm.ToolWindow;
+import com.intellij.openapi.wm.ToolWindowId;
+import com.intellij.openapi.wm.ToolWindowManager;
+import com.intellij.ui.content.Content;
+import com.intellij.ui.content.ContentFactory;
+import com.intellij.ui.content.ContentManager;
 import com.sun.jdi.Field;
 import com.sun.jdi.ObjectReference;
 import com.sun.jdi.ReferenceType;
@@ -24,6 +31,7 @@ import com.sun.jdi.event.MethodExitEvent;
 import com.sun.jdi.request.MethodEntryRequest;
 import com.sun.jdi.request.MethodExitRequest;
 import com.sun.tools.jdi.*;
+import org.qupla.runtime.debugger.ui.QuplaDebuggerToolWindow;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -50,11 +58,16 @@ public class QuplaEvalContextRequestor implements ClassPrepareRequestor {
     private static final String[] watchedEvalMethods = new String[]{"evalAssign","evalSlice","evalConcat","evalLutLookup",
             "evalMerge","evalFuncCall","evalVector","evalConditional","evalState","evalType"};
 
-    public static List<QuplaCallStackItem> callStack = new ArrayList<>();
+    public List<QuplaCallStackItem> callStack = new ArrayList<>();
     private boolean requestRegistered = false;
+    private final Project myProject;
 
+    public QuplaEvalContextRequestor(Project project) {
+        this.myProject = project;
+    }
 
-    public QuplaEvalContextRequestor() {
+    public List<QuplaCallStackItem> getCallStack() {
+        return callStack;
     }
 
     @Override
@@ -135,7 +148,7 @@ public class QuplaEvalContextRequestor implements ClassPrepareRequestor {
                                 String modulePath = DebuggerUtils.getValueAsString(
                                         evaluationContext,
                                         token.getValue(token.referenceType().fieldByName("source")));
-                                callStack.add(0, new QuplaCallStackItem(((MethodEntryEvent) event).method().name(), exprString, lineNumber + 1, colNumber+1,modulePath));
+                                callStack.add(0, new QuplaCallStackItem(myProject,((MethodEntryEvent) event).method().name(), exprString, lineNumber + 1, colNumber+1,modulePath));
                                 return false;
                             }
                         }
@@ -153,6 +166,25 @@ public class QuplaEvalContextRequestor implements ClassPrepareRequestor {
         }
 
     }
+
+
+    public void updateQuplaDebuggerWindow(){
+        ApplicationManager.getApplication().invokeLater(new Runnable() {
+            @Override
+            public void run() {
+                if(quplaDebuggerToolWindow==null){
+                    ToolWindow toolWindow = ToolWindowManager.getInstance(myProject).getToolWindow(ToolWindowId.DEBUG);
+                    ContentManager contentManager = toolWindow.getContentManager();
+                    ContentFactory contentFactory = ContentFactory.SERVICE.getInstance();
+                    quplaDebuggerToolWindow = new QuplaDebuggerToolWindow(toolWindow);
+                    Content content = contentFactory.createContent(quplaDebuggerToolWindow.getContent(), "Qupla CallStack", false);
+                    toolWindow.getContentManager().addContent(content);
+                }
+                quplaDebuggerToolWindow.applyCallStack(getCallStack());
+            }
+        });
+    }
+    QuplaDebuggerToolWindow quplaDebuggerToolWindow;
 
     protected ObjectReference getThisObject(SuspendContextImpl context, LocatableEvent event) throws EvaluateException {
         ThreadReferenceProxyImpl thread = context.getThread();

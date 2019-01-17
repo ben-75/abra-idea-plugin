@@ -63,6 +63,18 @@ public class QuplaModuleManagerImpl implements QuplaModuleManager, PersistentSta
     }
 
     @Override
+    public QuplaFile findQuplaFile(String modulePath) {
+        checkValidity();
+        for(QuplaModule module:modules.values()){
+            for(QuplaFile file:module.getModuleFiles()){
+                if((file.getImportableFilePath()+".qpl").equals(modulePath))
+                    return file;
+            }
+        }
+        return null;
+    }
+
+    @Override
     public synchronized Collection<QuplaModule> allModules() {
         checkValidity();
         return modules.values();

@@ -1,5 +1,6 @@
 package org.qupla.language.module;
 
+import com.intellij.psi.PsiFile;
 import org.qupla.language.psi.QuplaFile;
 
 import java.util.Collection;
@@ -20,4 +21,6 @@ public interface QuplaModuleManager {
     QuplaModule getModule(String name);
 
     Collection<QuplaFile> getAllQuplaFiles();
+
+    QuplaFile findQuplaFile(String modulePath);
 }

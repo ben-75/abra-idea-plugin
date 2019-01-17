@@ -57,6 +57,7 @@ public class QuplaLineBreakpoint <P extends QuplaBreakpointProperties> extends B
     private final int line;
     private final String methodName;
     private final String modulePath;
+    private QuplaEvalContextRequestor quplaEvalContextRequestor;
 
 
     public QuplaLineBreakpoint(@NotNull Project project, XBreakpoint xBreakpoint) {
@@ -231,7 +232,7 @@ public class QuplaLineBreakpoint <P extends QuplaBreakpointProperties> extends B
                         if(pause){
                             context.getDebugProcess().getPositionManager().clearCache();
                             QuplaPositionManager.current.setLastSourcePosition(position);
-                            updateQuplaDebuggerWindow();
+                            quplaEvalContextRequestor.updateQuplaDebuggerWindow();
                         }
                         return pause;
                     }
@@ -248,24 +249,7 @@ public class QuplaLineBreakpoint <P extends QuplaBreakpointProperties> extends B
         return false;
     }
 
-    private void updateQuplaDebuggerWindow(){
-        ApplicationManager.getApplication().invokeLater(new Runnable() {
-            @Override
-            public void run() {
 
-                ToolWindow toolWindow = ToolWindowManager.getInstance(myProject).getToolWindow(ToolWindowId.DEBUG);
-                ContentManager contentManager = toolWindow.getContentManager();
-                Content content = contentManager.findContent("CallStack");
-                if(content==null){
-                    ContentFactory contentFactory = ContentFactory.SERVICE.getInstance();
-                    QuplaDebuggerToolWindow quplaDebuggerToolWindow = new QuplaDebuggerToolWindow(toolWindow);
-                    content = contentFactory.createContent(quplaDebuggerToolWindow.getContent(), "CallStack", false);
-                    toolWindow.getContentManager().addContent(content);
-                }
-                //TODO : populate callstack
-            }
-        });
-    }
 
     private static String findMethodForEvaluable(PsiElement e){
         if(e==null)return null;
@@ -280,5 +264,9 @@ public class QuplaLineBreakpoint <P extends QuplaBreakpointProperties> extends B
         if(e instanceof QuplaTypeExpr) return "evalType";
         if(e instanceof QuplaInteger) return "evalVector";
         return null;
+    }
+
+    public void setQuplaEvalContextRequestor(QuplaEvalContextRequestor quplaEvalContextRequestor) {
+        this.quplaEvalContextRequestor = quplaEvalContextRequestor;
     }
 }

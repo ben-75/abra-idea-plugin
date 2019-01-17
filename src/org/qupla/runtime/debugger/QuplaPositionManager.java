@@ -26,7 +26,7 @@ import java.util.Set;
 
 public class QuplaPositionManager implements MultiRequestPositionManager {
 
-    public static final String QUPLA_CONTEXT_CLASSNAME = "org.iota.qupla.qupla.context.QuplaToAbraContext";
+    public static final String QUPLA_CONTEXT_CLASSNAME = "org.iota.qupla.qupla.context.QuplaEvalContext";
 
     private final DebugProcess debugProcess;
     private PsiClass evalContextClass;
@@ -87,10 +87,11 @@ public class QuplaPositionManager implements MultiRequestPositionManager {
             if (evalContextClass != null) {
                 List<ClassPrepareRequest> resp = new ArrayList<>();
                 if(quplaEvalContextRequestor==null) { //we only need this one time
-                    quplaEvalContextRequestor = new QuplaEvalContextRequestor();
+                    quplaEvalContextRequestor = new QuplaEvalContextRequestor(debugProcess.getProject());
                     resp.add(debugProcess.getRequestsManager().createClassPrepareRequest(quplaEvalContextRequestor, classPattern));
                 }
                 //we need this for every breakpoint
+                ((QuplaLineBreakpoint)requestor).setQuplaEvalContextRequestor(quplaEvalContextRequestor);
                 resp.add(debugProcess.getRequestsManager().createClassPrepareRequest(requestor, classPattern));
                 return resp;
             } else {
