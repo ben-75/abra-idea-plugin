@@ -1,19 +1,27 @@
 package org.qupla.runtime.debugger;
 
 import com.intellij.debugger.DebuggerManagerEx;
+import com.intellij.debugger.SourcePosition;
 import com.intellij.debugger.engine.ContextUtil;
 import com.intellij.debugger.engine.DebugProcessImpl;
+import com.intellij.debugger.engine.requests.RequestManagerImpl;
 import com.intellij.debugger.ui.breakpoints.BreakpointCategory;
 import com.intellij.debugger.ui.breakpoints.BreakpointWithHighlighter;
 import com.intellij.icons.AllIcons;
+import com.intellij.openapi.application.ApplicationManager;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.util.Key;
 import com.intellij.psi.PsiElement;
+import com.intellij.psi.PsiFile;
+import com.intellij.psi.PsiManager;
 import com.intellij.ui.LayeredIcon;
 import com.intellij.xdebugger.breakpoints.XBreakpoint;
 import com.intellij.xdebugger.impl.XDebuggerUtilImpl;
+import com.sun.jdi.AbsentInformationException;
+import com.sun.jdi.Location;
 import com.sun.jdi.ReferenceType;
 import com.sun.jdi.event.LocatableEvent;
+import com.sun.jdi.request.BreakpointRequest;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -23,6 +31,8 @@ public class QuplaLineBreakpoint <P extends QuplaBreakpointProperties> extends B
 
     private final XBreakpoint myXBreakpoint;
     Key<QuplaLineBreakpoint> CATEGORY = BreakpointCategory.lookup("line_breakpoints");
+
+    private PsiFile file;
 
     public QuplaLineBreakpoint(@NotNull Project project, XBreakpoint xBreakpoint) {
         super(project, xBreakpoint);
@@ -39,9 +49,37 @@ public class QuplaLineBreakpoint <P extends QuplaBreakpointProperties> extends B
         super.createOrWaitPrepare(debugProcess, classToBeLoaded);
     }
 
+
     @Override
-    protected void createRequestForPreparedClass(DebugProcessImpl debugProcess, ReferenceType classType) {
+    protected void createRequestForPreparedClass(DebugProcessImpl debugProcess, ReferenceType referenceType) {
         System.out.println("QuplaLineBreakpoint: createRequestForPreparedClass");
+        RequestManagerImpl requestsManager = (RequestManagerImpl) debugProcess.getRequestsManager();
+
+
+        Location location = null;
+
+        try {
+            location= findLocation(referenceType);
+        } catch (AbsentInformationException e) {
+            e.printStackTrace();
+        }
+
+        if(location!=null) {
+            ApplicationManager.getApplication().runReadAction(new Runnable() {
+                @Override
+                public void run() {
+                    file = PsiManager.getInstance(getProject()).findFile(myXBreakpoint.getSourcePosition().getFile());
+                }
+            });
+            BreakpointRequest request = requestsManager.createBreakpointRequest(
+                    new QuplaBreakpointRequestor(SourcePosition.createFromLine(file, myXBreakpoint.getSourcePosition().getLine())), location);
+            requestsManager.enableRequest(request);
+        }
+    }
+
+    public static Location findLocation(ReferenceType referenceType) throws AbsentInformationException {
+        String targetMethodName = "evalAssign";
+        return referenceType.methodsByName(targetMethodName).get(0).allLineLocations().get(0);
     }
 
     @Override

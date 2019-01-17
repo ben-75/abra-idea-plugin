@@ -118,7 +118,7 @@ public class QuplaBreakpointRequestor extends QuplaEvalContextFilteredAbstractRe
         return null;
     }
 
-    private String findMethodForEvaluable(PsiElement e){
+    private static String findMethodForEvaluable(PsiElement e){
         if(e==null)return null;
         if(e instanceof QuplaAssignExpr) return "evalAssign";
         if(e instanceof QuplaSliceExpr) return "evalSlice";

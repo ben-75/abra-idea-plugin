@@ -25,7 +25,7 @@ public class QuplaBreakpointPreparator implements ClassPrepareRequestor {
         Location location = null;
 
         try {
-            location= findLocation(referenceType);
+            location= QuplaLineBreakpoint.findLocation(referenceType);
         } catch (AbsentInformationException e) {
             e.printStackTrace();
         }
@@ -35,11 +35,5 @@ public class QuplaBreakpointPreparator implements ClassPrepareRequestor {
             requestsManager.enableRequest(request);
         }
     }
-
-    private Location findLocation(ReferenceType referenceType) throws AbsentInformationException {
-        String targetMethodName = "evalAssign";
-        return referenceType.methodsByName(targetMethodName).get(0).allLineLocations().get(0);
-    }
-
 
 }
