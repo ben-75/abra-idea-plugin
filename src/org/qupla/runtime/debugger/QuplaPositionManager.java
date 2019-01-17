@@ -31,9 +31,12 @@ public class QuplaPositionManager implements MultiRequestPositionManager {
     private final DebugProcess debugProcess;
     private PsiClass evalContextClass;
     private String classPattern;
+    public static QuplaPositionManager current;
+    private SourcePosition lastSourcePosition;
 
     public QuplaPositionManager(DebugProcess process) {
         this.debugProcess = process;
+        current = this;
         ApplicationManager.getApplication().runReadAction(
                 () -> {
                     evalContextClass = DebuggerUtils.findClass(QUPLA_CONTEXT_CLASSNAME, debugProcess.getProject(), GlobalSearchScope.allScope(debugProcess.getProject()));
@@ -42,10 +45,20 @@ public class QuplaPositionManager implements MultiRequestPositionManager {
         DebuggerUtilsEx.setAlternativeSourceUrl(QUPLA_CONTEXT_CLASSNAME, "dummy", evalContextClass.getProject());
     }
 
+    private QuplaSourcePosition sourcePositionLocalCache;
     @Nullable
     @Override
     public SourcePosition getSourcePosition(@Nullable Location location) throws NoDataException {
-        //TODO
+        if(lastSourcePosition!=null){
+            sourcePositionLocalCache =
+                    new QuplaSourcePosition(QuplaDebuggerUtil.findEvaluableNearElement(lastSourcePosition.getElementAt()), lastSourcePosition.getLine(),location);
+            lastSourcePosition = null;
+        }
+        if(sourcePositionLocalCache!=null && sourcePositionLocalCache.getLocation()==location){
+            return sourcePositionLocalCache;
+        }else{
+            sourcePositionLocalCache = null;
+        }
         throw NoDataException.INSTANCE;
     }
 
@@ -100,5 +113,13 @@ public class QuplaPositionManager implements MultiRequestPositionManager {
     @Override
     public Set<? extends FileType> getAcceptedFileTypes() {
         return Collections.singleton(QuplaFileType.INSTANCE);
+    }
+
+    public void setLastSourcePosition(SourcePosition lastSourcePosition) {
+        this.lastSourcePosition = lastSourcePosition;
+    }
+
+    public SourcePosition getLastSourcePosition() {
+        return lastSourcePosition;
     }
 }

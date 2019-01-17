@@ -8,6 +8,7 @@ import com.intellij.debugger.ui.breakpoints.FilteredRequestor;
 import com.sun.jdi.AbsentInformationException;
 import com.sun.jdi.Location;
 import com.sun.jdi.ReferenceType;
+import com.sun.jdi.request.BreakpointRequest;
 
 public class QuplaBreakpointPreparator implements ClassPrepareRequestor {
 
@@ -30,7 +31,8 @@ public class QuplaBreakpointPreparator implements ClassPrepareRequestor {
         }
 
         if(location!=null) {
-            requestsManager.createBreakpointRequest(new QuplaBreakpointRequestor(position), location);
+            BreakpointRequest request = requestsManager.createBreakpointRequest(new QuplaBreakpointRequestor(position), location);
+            requestsManager.enableRequest(request);
         }
     }
 
