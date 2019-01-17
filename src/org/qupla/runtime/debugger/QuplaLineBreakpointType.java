@@ -29,15 +29,4 @@ public class QuplaLineBreakpointType extends XLineBreakpointTypeBase {
         return abraDoc.getLineNumber(element.getTextRange().getStartOffset()) == line;
     }
 
-    @Nullable
-    @Override
-    public QuplaBreakpointProperties createProperties() {
-        return new QuplaBreakpointProperties(); //TODO
-    }
-
-    @Nullable
-    @Override
-    public XBreakpointProperties createBreakpointProperties(@NotNull VirtualFile file, int line) {
-        return createProperties(); //TODO
-    }
 }

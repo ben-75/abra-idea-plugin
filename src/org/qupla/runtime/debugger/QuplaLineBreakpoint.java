@@ -19,12 +19,18 @@ import com.intellij.openapi.application.ApplicationManager;
 import com.intellij.openapi.editor.Document;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.util.Key;
+import com.intellij.openapi.wm.ToolWindow;
+import com.intellij.openapi.wm.ToolWindowId;
+import com.intellij.openapi.wm.ToolWindowManager;
 import com.intellij.psi.PsiDocumentManager;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiFile;
 import com.intellij.psi.PsiManager;
 import com.intellij.ui.LayeredIcon;
 import com.intellij.ui.classFilter.ClassFilter;
+import com.intellij.ui.content.Content;
+import com.intellij.ui.content.ContentFactory;
+import com.intellij.ui.content.ContentManager;
 import com.intellij.xdebugger.breakpoints.XBreakpoint;
 import com.intellij.xdebugger.impl.XDebuggerUtilImpl;
 import com.sun.jdi.*;
@@ -34,6 +40,7 @@ import com.sun.tools.jdi.*;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.qupla.language.psi.*;
+import org.qupla.runtime.debugger.ui.QuplaDebuggerToolWindow;
 
 import javax.swing.*;
 import java.util.List;
@@ -224,6 +231,7 @@ public class QuplaLineBreakpoint <P extends QuplaBreakpointProperties> extends B
                         if(pause){
                             context.getDebugProcess().getPositionManager().clearCache();
                             QuplaPositionManager.current.setLastSourcePosition(position);
+                            updateQuplaDebuggerWindow();
                         }
                         return pause;
                     }
@@ -238,6 +246,25 @@ public class QuplaLineBreakpoint <P extends QuplaBreakpointProperties> extends B
             throw new EventProcessingException(title, ex.getMessage(), ex);
         }
         return false;
+    }
+
+    private void updateQuplaDebuggerWindow(){
+        ApplicationManager.getApplication().invokeLater(new Runnable() {
+            @Override
+            public void run() {
+
+                ToolWindow toolWindow = ToolWindowManager.getInstance(myProject).getToolWindow(ToolWindowId.DEBUG);
+                ContentManager contentManager = toolWindow.getContentManager();
+                Content content = contentManager.findContent("CallStack");
+                if(content==null){
+                    ContentFactory contentFactory = ContentFactory.SERVICE.getInstance();
+                    QuplaDebuggerToolWindow quplaDebuggerToolWindow = new QuplaDebuggerToolWindow(toolWindow);
+                    content = contentFactory.createContent(quplaDebuggerToolWindow.getContent(), "CallStack", false);
+                    toolWindow.getContentManager().addContent(content);
+                }
+                //TODO : populate callstack
+            }
+        });
     }
 
     private static String findMethodForEvaluable(PsiElement e){

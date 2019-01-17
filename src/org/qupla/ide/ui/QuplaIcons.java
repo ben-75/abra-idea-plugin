@@ -14,6 +14,7 @@ public class QuplaIcons {
     public static final Icon USE = IconLoader.getIcon("/org/qupla/ide/ui/U.png");
     public static final Icon TEMPLATE = IconLoader.getIcon("/org/qupla/ide/ui/Template.png");
     public static final Icon RUN = IconLoader.getIcon("/org/qupla/ide/ui/Run.png");
+    public static final Icon DEBUG = IconLoader.getIcon("/org/qupla/ide/ui/Debug.png");
     public static final Icon FUNCTION_INSTANCIATION = IconLoader.getIcon("/org/qupla/ide/ui/F.png");
     public static final Icon QUPLA_MODULE_FOLDER = IconLoader.getIcon("/org/qupla/ide/ui/qupla_folder.png");
     public static final Icon QUPLA_FOLDER_ROOT = IconLoader.getIcon("/org/qupla/ide/ui/qupla_folder_root.png");

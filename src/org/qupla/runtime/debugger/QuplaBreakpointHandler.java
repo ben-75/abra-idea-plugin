@@ -44,7 +44,6 @@ public class QuplaBreakpointHandler extends JavaBreakpointHandler {
 
     @Override
     public void unregisterBreakpoint(@NotNull XBreakpoint xBreakpoint, boolean temporary) {
-        System.out.println("Unregister breakpoint : "+xBreakpoint);
         final Breakpoint breakpoint = xBreakpoint.getUserData(Breakpoint.DATA_KEY);
         if(breakpoint!=null) {
             ((DebuggerManagerImpl)DebuggerManager.getInstance(myProcess.getProject())).getBreakpointManager().removeBreakpoint(breakpoint);
