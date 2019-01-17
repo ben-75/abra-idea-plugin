@@ -12,10 +12,8 @@ import com.intellij.debugger.engine.requests.RequestManagerImpl;
 import com.intellij.debugger.jdi.StackFrameProxyImpl;
 import com.intellij.debugger.jdi.ThreadReferenceProxyImpl;
 import com.intellij.debugger.requests.ClassPrepareRequestor;
-import com.intellij.debugger.settings.DebuggerSettings;
 import com.intellij.debugger.ui.breakpoints.FilteredRequestor;
 import com.intellij.openapi.application.ApplicationManager;
-import com.intellij.ui.classFilter.ClassFilter;
 import com.sun.jdi.Field;
 import com.sun.jdi.ObjectReference;
 import com.sun.jdi.ReferenceType;
@@ -75,6 +73,8 @@ public class QuplaEvalContextRequestor implements ClassPrepareRequestor {
             requestsManager.enableRequest(methodExitRequest);
 
             callStack.clear();
+
+
             requestRegistered = true;
         }
     }
@@ -136,7 +136,7 @@ public class QuplaEvalContextRequestor implements ClassPrepareRequestor {
                                         evaluationContext,
                                         token.getValue(token.referenceType().fieldByName("source")));
                                 callStack.add(0, new QuplaCallStackItem(((MethodEntryEvent) event).method().name(), exprString, lineNumber + 1, colNumber+1,modulePath));
-                                return gotActiveBreakpointHere(modulePath, lineNumber, colNumber, ((MethodEntryEvent) event).method().name());
+                                return false;
                             }
                         }
                     }
@@ -154,9 +154,6 @@ public class QuplaEvalContextRequestor implements ClassPrepareRequestor {
 
     }
 
-    private boolean gotActiveBreakpointHere(String modulePath, int lineNumber, int colNumber, String evalMethod){
-        return false;
-    }
     protected ObjectReference getThisObject(SuspendContextImpl context, LocatableEvent event) throws EvaluateException {
         ThreadReferenceProxyImpl thread = context.getThread();
         if(thread != null) {

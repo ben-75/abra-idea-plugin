@@ -1,42 +1,75 @@
 package org.qupla.runtime.debugger;
 
+import com.intellij.debugger.DebuggerBundle;
 import com.intellij.debugger.DebuggerManagerEx;
+import com.intellij.debugger.InstanceFilter;
 import com.intellij.debugger.SourcePosition;
-import com.intellij.debugger.engine.ContextUtil;
-import com.intellij.debugger.engine.DebugProcessImpl;
+import com.intellij.debugger.engine.*;
+import com.intellij.debugger.engine.evaluation.EvaluateException;
+import com.intellij.debugger.engine.evaluation.EvaluationContextImpl;
+import com.intellij.debugger.engine.events.SuspendContextCommandImpl;
 import com.intellij.debugger.engine.requests.RequestManagerImpl;
+import com.intellij.debugger.jdi.StackFrameProxyImpl;
+import com.intellij.debugger.settings.DebuggerSettings;
 import com.intellij.debugger.ui.breakpoints.BreakpointCategory;
 import com.intellij.debugger.ui.breakpoints.BreakpointWithHighlighter;
+import com.intellij.debugger.ui.breakpoints.FilteredRequestor;
 import com.intellij.icons.AllIcons;
 import com.intellij.openapi.application.ApplicationManager;
+import com.intellij.openapi.editor.Document;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.util.Key;
+import com.intellij.psi.PsiDocumentManager;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiFile;
 import com.intellij.psi.PsiManager;
 import com.intellij.ui.LayeredIcon;
+import com.intellij.ui.classFilter.ClassFilter;
 import com.intellij.xdebugger.breakpoints.XBreakpoint;
 import com.intellij.xdebugger.impl.XDebuggerUtilImpl;
-import com.sun.jdi.AbsentInformationException;
-import com.sun.jdi.Location;
-import com.sun.jdi.ReferenceType;
+import com.sun.jdi.*;
 import com.sun.jdi.event.LocatableEvent;
 import com.sun.jdi.request.BreakpointRequest;
+import com.sun.tools.jdi.*;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.qupla.language.psi.*;
 
 import javax.swing.*;
+import java.util.List;
 
-public class QuplaLineBreakpoint <P extends QuplaBreakpointProperties> extends BreakpointWithHighlighter<P> {
+public class QuplaLineBreakpoint <P extends QuplaBreakpointProperties> extends BreakpointWithHighlighter<P> implements FilteredRequestor {
 
     private final XBreakpoint myXBreakpoint;
     Key<QuplaLineBreakpoint> CATEGORY = BreakpointCategory.lookup("line_breakpoints");
-
+    private SourcePosition position;
     private PsiFile file;
+
+    private final PsiElement evaluable;
+    private final int column;
+    private final int line;
+    private final String methodName;
+    private final String modulePath;
+
 
     public QuplaLineBreakpoint(@NotNull Project project, XBreakpoint xBreakpoint) {
         super(project, xBreakpoint);
         myXBreakpoint = xBreakpoint;
+        ApplicationManager.getApplication().runReadAction(new Runnable() {
+            @Override
+            public void run() {
+                file = PsiManager.getInstance(getProject()).findFile(myXBreakpoint.getSourcePosition().getFile());
+            }
+        });
+        position = SourcePosition.createFromLine(file, myXBreakpoint.getSourcePosition().getLine());
+
+        evaluable = QuplaDebuggerUtil.findEvaluableNearElement(position.getElementAt());
+        methodName = findMethodForEvaluable(evaluable);
+        PsiDocumentManager psiDocumentManager = PsiDocumentManager.getInstance(project);
+        Document document = psiDocumentManager.getDocument(file);
+        line = document.getLineNumber(evaluable.getTextOffset());
+        column = evaluable.getTextOffset()-document.getLineStartOffset(line);
+        modulePath = ((QuplaFile)file).getImportableFilePath();
     }
 
     public static QuplaLineBreakpoint create(@NotNull Project project, XBreakpoint xBreakpoint) {
@@ -45,34 +78,16 @@ public class QuplaLineBreakpoint <P extends QuplaBreakpointProperties> extends B
     }
 
     @Override
-    protected void createOrWaitPrepare(DebugProcessImpl debugProcess, String classToBeLoaded) {
-        super.createOrWaitPrepare(debugProcess, classToBeLoaded);
-    }
-
-
-    @Override
     protected void createRequestForPreparedClass(DebugProcessImpl debugProcess, ReferenceType referenceType) {
-        System.out.println("QuplaLineBreakpoint: createRequestForPreparedClass");
         RequestManagerImpl requestsManager = (RequestManagerImpl) debugProcess.getRequestsManager();
-
-
         Location location = null;
-
         try {
             location= findLocation(referenceType);
         } catch (AbsentInformationException e) {
             e.printStackTrace();
         }
-
         if(location!=null) {
-            ApplicationManager.getApplication().runReadAction(new Runnable() {
-                @Override
-                public void run() {
-                    file = PsiManager.getInstance(getProject()).findFile(myXBreakpoint.getSourcePosition().getFile());
-                }
-            });
-            BreakpointRequest request = requestsManager.createBreakpointRequest(
-                    new QuplaBreakpointRequestor(SourcePosition.createFromLine(file, myXBreakpoint.getSourcePosition().getLine())), location);
+            BreakpointRequest request = requestsManager.createBreakpointRequest(this, location);
             requestsManager.enableRequest(request);
         }
     }
@@ -126,5 +141,117 @@ public class QuplaLineBreakpoint <P extends QuplaBreakpointProperties> extends B
     @Override
     protected P getProperties() {
         return super.getProperties();
+    }
+
+
+
+
+    @Override
+    public boolean isInstanceFiltersEnabled() {
+        return false;
+    }
+
+    @Override
+    public InstanceFilter[] getInstanceFilters() {
+        return new InstanceFilter[0];
+    }
+
+    @Override
+    public boolean isCountFilterEnabled() {
+        return false;
+    }
+
+    @Override
+    public int getCountFilter() {
+        return 0;
+    }
+
+    @Override
+    public boolean isClassFiltersEnabled() {
+        return true;
+    }
+
+    @Override
+    public ClassFilter[] getClassFilters() {
+        return new ClassFilter[]{new ClassFilter(QuplaPositionManager.QUPLA_CONTEXT_CLASSNAME)};
+    }
+
+    @Override
+    public ClassFilter[] getClassExclusionFilters() {
+        return new ClassFilter[0];
+    }
+
+    @Override
+    public String getSuspendPolicy() {
+        return DebuggerSettings.SUSPEND_ALL;
+    }
+
+
+    @Override
+    public boolean processLocatableEvent(SuspendContextCommandImpl action, LocatableEvent event) throws EventProcessingException {
+        SuspendContextImpl context = action.getSuspendContext();
+
+        String title = DebuggerBundle.message("title.error.evaluating.breakpoint.condition");
+        try {
+            StackFrameProxyImpl frameProxy = context.getThread().frame(0);
+            if (frameProxy == null) {
+                // might be if the thread has been collected
+                return false;
+            }
+            EvaluationContextImpl evaluationContext = new EvaluationContextImpl(context, frameProxy, () -> getThisObject(context, event));
+            List<Value> args = frameProxy.getArgumentValues();
+            if (args.size() == 1) {
+                Value expr = args.get(0);
+                if (expr instanceof ObjectReferenceImpl) {
+                    ReferenceTypeImpl abraExprType = null;
+                    if (expr.type().name().equals("java.util.ArrayList")) {
+                        ArrayReferenceImpl arrRef = (ArrayReferenceImpl) ((ObjectReferenceImpl) expr).getValue(((ClassTypeImpl) expr.type()).fieldByName("elementData"));
+                        expr = arrRef.getValue(0);
+                    }
+                    abraExprType = (ReferenceTypeImpl) DebuggerUtils.getSuperType(expr.type(), QuplaEvalContextRequestor.BASE_EXPR_CLASSNAME);
+                    if (abraExprType != null) {
+                        Field originField = abraExprType.fieldByName("origin");
+                        ObjectReferenceImpl token = (ObjectReferenceImpl) ((ObjectReferenceImpl) expr).getValue(originField);
+                        Field sourceField = token.referenceType().fieldByName("source");
+                        Field lineNrField = token.referenceType().fieldByName("lineNr");
+                        Field colNrField = token.referenceType().fieldByName("colNr");
+                        int lineNumber = ((IntegerValueImpl) token.getValue(lineNrField)).intValue();
+                        int colNumber = ((IntegerValueImpl) token.getValue(colNrField)).intValue();
+                        String currentPath = DebuggerUtils.getValueAsString(
+                                evaluationContext,
+                                token.getValue(token.referenceType().fieldByName("source")));
+                        boolean pause = lineNumber == line && colNumber==column && currentPath!=null && currentPath.length()>3 && currentPath.substring(0,currentPath.length()-4).equals(modulePath);
+                        if(pause){
+                            context.getDebugProcess().getPositionManager().clearCache();
+                            QuplaPositionManager.current.setLastSourcePosition(position);
+                        }
+                        return pause;
+                    }
+                }
+            }
+        } catch (final EvaluateException ex) {
+            if (ApplicationManager.getApplication().isUnitTestMode()) {
+                System.out.println(ex.getMessage());
+                return false;
+            }
+
+            throw new EventProcessingException(title, ex.getMessage(), ex);
+        }
+        return false;
+    }
+
+    private static String findMethodForEvaluable(PsiElement e){
+        if(e==null)return null;
+        if(e instanceof QuplaAssignExpr) return "evalAssign";
+        if(e instanceof QuplaSliceExpr) return "evalSlice";
+        if(e instanceof QuplaConcatExpr) return "evalConcat";
+        if(e instanceof QuplaLutExpr) return "evalLutLookup";
+        if(e instanceof QuplaMergeExpr) return "evalMerge";
+        if(e instanceof QuplaFuncExpr) return "evalFuncCall";
+        if(e instanceof QuplaCondExpr) return "evalConditional";
+        if(e instanceof QuplaStateExpr) return "evalState";
+        if(e instanceof QuplaTypeExpr) return "evalType";
+        if(e instanceof QuplaInteger) return "evalVector";
+        return null;
     }
 }

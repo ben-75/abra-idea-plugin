@@ -79,15 +79,19 @@ public class QuplaPositionManager implements MultiRequestPositionManager {
     }
 
 
-    private QuplaEvalContextRequestor quplaEvalContextRequestor = new QuplaEvalContextRequestor();
+    private QuplaEvalContextRequestor quplaEvalContextRequestor;
     @Nullable
     @Override
     public List<ClassPrepareRequest> createPrepareRequests(@NotNull ClassPrepareRequestor requestor, @NotNull SourcePosition position) throws NoDataException {
         if (position.getFile().getFileType() == QuplaFileType.INSTANCE) {
             if (evalContextClass != null) {
                 List<ClassPrepareRequest> resp = new ArrayList<>();
-                resp.add(debugProcess.getRequestsManager().createClassPrepareRequest(quplaEvalContextRequestor, classPattern));
-                resp.add(debugProcess.getRequestsManager().createClassPrepareRequest(new QuplaBreakpointPreparator(position), classPattern));
+                if(quplaEvalContextRequestor==null) { //we only need this one time
+                    quplaEvalContextRequestor = new QuplaEvalContextRequestor();
+                    resp.add(debugProcess.getRequestsManager().createClassPrepareRequest(quplaEvalContextRequestor, classPattern));
+                }
+                //we need this for every breakpoint
+                resp.add(debugProcess.getRequestsManager().createClassPrepareRequest(requestor, classPattern));
                 return resp;
             } else {
                 throw new RuntimeException("Interpreter class "+QUPLA_CONTEXT_CLASSNAME+" not found in classpath. Debugger won't work.");
