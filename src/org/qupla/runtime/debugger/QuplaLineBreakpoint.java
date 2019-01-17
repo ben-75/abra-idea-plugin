@@ -92,8 +92,8 @@ public class QuplaLineBreakpoint <P extends QuplaBreakpointProperties> extends B
         }
     }
 
-    public static Location findLocation(ReferenceType referenceType) throws AbsentInformationException {
-        String targetMethodName = "evalAssign";
+    public Location findLocation(ReferenceType referenceType) throws AbsentInformationException {
+        String targetMethodName = findMethodForEvaluable(evaluable);
         return referenceType.methodsByName(targetMethodName).get(0).allLineLocations().get(0);
     }
 
