@@ -17,19 +17,6 @@
         <properties/>
         <border type="none"/>
         <children>
-          <scrollpane id="f467f">
-            <constraints>
-              <splitpane position="left"/>
-            </constraints>
-            <properties/>
-            <border type="none"/>
-            <children>
-              <component id="e013a" class="javax.swing.JList" binding="callstackItems">
-                <constraints/>
-                <properties/>
-              </component>
-            </children>
-          </scrollpane>
           <scrollpane id="177f9">
             <constraints>
               <splitpane position="right"/>
@@ -37,10 +24,30 @@
             <properties/>
             <border type="none"/>
             <children>
-              <component id="76aba" class="javax.swing.JTree" binding="variables">
+              <component id="76aba" class="javax.swing.JTree" binding="variables" custom-create="true">
                 <constraints/>
                 <properties/>
               </component>
+            </children>
+          </scrollpane>
+          <scrollpane id="35599">
+            <constraints>
+              <splitpane position="left"/>
+            </constraints>
+            <properties/>
+            <border type="none"/>
+            <children>
+              <grid id="4e7f9" layout-manager="BorderLayout" hgap="0" vgap="0">
+                <constraints/>
+                <properties/>
+                <border type="none"/>
+                <children>
+                  <component id="e013a" class="javax.swing.JList" binding="callstackItems">
+                    <constraints border-constraint="Center"/>
+                    <properties/>
+                  </component>
+                </children>
+              </grid>
             </children>
           </scrollpane>
         </children>

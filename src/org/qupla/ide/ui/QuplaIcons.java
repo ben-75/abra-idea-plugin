@@ -19,4 +19,5 @@ public class QuplaIcons {
     public static final Icon QUPLA_MODULE_FOLDER = IconLoader.getIcon("/org/qupla/ide/ui/qupla_folder.png");
     public static final Icon QUPLA_FOLDER_ROOT = IconLoader.getIcon("/org/qupla/ide/ui/qupla_folder_root.png");
     public static final Icon QUPLA_DECORATOR = IconLoader.getIcon("/org/qupla/ide/ui/qupla_decorator.png");
+    public static final Icon QUPLA_VALUES = IconLoader.getIcon("/org/qupla/ide/ui/value.png");
 }
