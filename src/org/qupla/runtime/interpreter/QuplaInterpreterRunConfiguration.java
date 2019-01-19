@@ -27,6 +27,7 @@ public class QuplaInterpreterRunConfiguration extends ApplicationConfiguration {
     private boolean eval = false;
     private boolean echo = false;
     private boolean abra = false;
+    private boolean view = false;
     private boolean trim = false;
     private boolean tree = false;
     private boolean fpga = false;
@@ -127,6 +128,14 @@ public class QuplaInterpreterRunConfiguration extends ApplicationConfiguration {
         this.abra = abra;
     }
 
+    public boolean isView() {
+        return view;
+    }
+
+    public void setView(boolean view) {
+        this.view = view;
+    }
+
     public boolean isTrim() {
         return trim;
     }
@@ -203,6 +212,7 @@ public class QuplaInterpreterRunConfiguration extends ApplicationConfiguration {
                 element.setAttribute("eval",eval?"true":"false");
                 element.setAttribute("echo",echo?"true":"false");
                 element.setAttribute("abra",abra?"true":"false");
+                element.setAttribute("view",view?"true":"false");
                 element.setAttribute("fpga",fpga?"true":"false");
                 element.setAttribute("tree",tree?"true":"false");
                 element.setAttribute("trim",trim?"true":"false");
@@ -247,6 +257,7 @@ public class QuplaInterpreterRunConfiguration extends ApplicationConfiguration {
                 eval = attributeEquals("eval","true");
                 echo = attributeEquals("echo","true");
                 abra = attributeEquals("abra","true");
+                view = attributeEquals("view","true");
                 fpga = attributeEquals("fpga","true");
                 tree = attributeEquals("tree","true");
                 trim = attributeEquals("trim","true");

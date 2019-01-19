@@ -63,10 +63,7 @@ public class QuplaInterpreterState extends JavaCommandLineState {
         javaParameters.setMainClass("org.iota.qupla.Qupla");
         //javaParameters.getVMParametersList()
         StringBuilder sb = new StringBuilder();
-        if(runConfiguration.getTargetModule()!=null) {
-            String filePath = runConfiguration.getTargetModule().getImportableFilePath();
-            javaParameters.getProgramParametersList().add(filePath.substring(0, filePath.indexOf("/")));
-        }
+
         if(runConfiguration.isEcho()){
             javaParameters.getProgramParametersList().add("-echo");
         }
@@ -88,6 +85,17 @@ public class QuplaInterpreterState extends JavaCommandLineState {
         if(runConfiguration.isTrim()){
             javaParameters.getProgramParametersList().add("-trim");
         }
+        if(runConfiguration.isView()){
+            javaParameters.getProgramParametersList().add("-view");
+        }
+
+        //module
+        //TODO : select multiple modules
+        if(runConfiguration.getTargetModule()!=null) {
+            String filePath = runConfiguration.getTargetModule().getImportableFilePath();
+            javaParameters.getProgramParametersList().add(filePath.substring(0, filePath.indexOf("/")));
+        }
+
         String type = "";
         if(runConfiguration.getTargetTypeInstantiation()!=null){
             type=runConfiguration.getTargetTypeInstantiation().getText();

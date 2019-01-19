@@ -22,6 +22,7 @@ public class QuplaInterpreterRunConfigUI {
     public JButton copyToClipboard;
     JComboBox typeNameCombo;
     JLabel typeNameLabel;
+    public JCheckBox viewCheckBox;
     private JTextPane textPane1;
 
     private void createUIComponents() {

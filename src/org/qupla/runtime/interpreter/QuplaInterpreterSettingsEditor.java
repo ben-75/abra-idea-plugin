@@ -130,6 +130,7 @@ public class QuplaInterpreterSettingsEditor extends SettingsEditor<QuplaInterpre
         myPanel.echoCheckBox.setSelected(runConfig.isEcho());
         myPanel.verilogCheckBox.setSelected(runConfig.isFpga());
         myPanel.abraCheckBox.setSelected(runConfig.isAbra());
+        myPanel.viewCheckBox.setSelected(runConfig.isView());
         myPanel.treeCheckBox.setSelected(runConfig.isTree());
 
         updateCommandLine();
@@ -172,6 +173,7 @@ public class QuplaInterpreterSettingsEditor extends SettingsEditor<QuplaInterpre
         runCongig.setEcho(myPanel.echoCheckBox.isSelected());
         runCongig.setFpga(myPanel.verilogCheckBox.isSelected());
         runCongig.setAbra(myPanel.abraCheckBox.isSelected());
+        runCongig.setView(myPanel.viewCheckBox.isSelected());
         runCongig.setTree(myPanel.treeCheckBox.isSelected());
 
     }
@@ -311,6 +313,7 @@ public class QuplaInterpreterSettingsEditor extends SettingsEditor<QuplaInterpre
         myPanel.runEvalCheckBox.addActionListener(updateCommandLineListener);
         myPanel.runTestsCheckBox.addActionListener(updateCommandLineListener);
         myPanel.abraCheckBox.addActionListener(updateCommandLineListener);
+        myPanel.viewCheckBox.addActionListener(updateCommandLineListener);
         myPanel.treeCheckBox.addActionListener(updateCommandLineListener);
         myPanel.verilogCheckBox.addActionListener(updateCommandLineListener);
         return myPanel.rootConfigPane;
