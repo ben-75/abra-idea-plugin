@@ -26,6 +26,8 @@
         <li>Fix selection of numbers by double-click
         <li>Fix a crash when resolving symbols in test and eval statements
         <li>Fix a bug with the "Function" drop-down in configuration panel
+        <li>Flag -view is available in run config panel
+        <li>Run configuration improvements : custom args, select multiple modules, function selector rendering, ...
         </ul>
     ]]>
   </change-notes>
