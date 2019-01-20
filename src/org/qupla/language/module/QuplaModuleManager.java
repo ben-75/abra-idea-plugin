@@ -3,6 +3,7 @@ package org.qupla.language.module;
 import org.qupla.language.psi.QuplaFile;
 
 import java.util.Collection;
+import java.util.List;
 
 public interface QuplaModuleManager {
 
@@ -20,4 +21,6 @@ public interface QuplaModuleManager {
     QuplaModule getModule(String name);
 
     Collection<QuplaFile> getAllQuplaFiles();
+
+    List<QuplaModule> getImportedModules(QuplaModule module);
 }

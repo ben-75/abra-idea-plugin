@@ -8,6 +8,7 @@ import com.intellij.openapi.project.Project;
 import com.intellij.openapi.ui.ComponentWithBrowseButton;
 import com.intellij.openapi.ui.LabeledComponent;
 import com.intellij.openapi.ui.TextFieldWithBrowseButton;
+import com.intellij.ui.DocumentAdapter;
 import org.qupla.language.module.QuplaModule;
 import org.qupla.language.module.QuplaModuleManager;
 import org.qupla.language.psi.*;
@@ -17,6 +18,7 @@ import org.jetbrains.annotations.NotNull;
 import javax.swing.*;
 import javax.swing.Timer;
 import javax.swing.border.EtchedBorder;
+import javax.swing.event.DocumentEvent;
 import java.awt.*;
 import java.awt.datatransfer.Clipboard;
 import java.awt.datatransfer.StringSelection;
@@ -32,99 +34,25 @@ public class QuplaInterpreterSettingsEditor extends SettingsEditor<QuplaInterpre
 
     @Override
     protected void resetEditorFrom(@NotNull QuplaInterpreterRunConfiguration runConfig) {
-        myPanel.modules.setModel(getModulesModel(runConfig.getProject()));
-        if(runConfig.getTargetModule()!=null){
-            for(int i = 0; i< myPanel.modules.getModel().getSize(); i++){
-                if(((QuplaFileComboBoxItem) myPanel.modules.getModel().getElementAt(i)).getQuplaFile().isEquivalentTo(runConfig.getTargetModule())){
-                    myPanel.modules.setSelectedIndex(i);
-                    myPanel.functionsInSelectedModule.setModel(getFunctionsModel(((QuplaFileComboBoxItem) myPanel.modules.getModel().getElementAt(i)).getQuplaFile()));
-                    if(runConfig.getTargetFunc()!=null){
-                        for(int j = 0; j< myPanel.functionsInSelectedModule.getModel().getSize(); j++){
-                            if(((QuplaFuncStmtComboBoxItem) myPanel.functionsInSelectedModule.getModel().getElementAt(j)).getFuncStmt().isEquivalentTo(runConfig.getTargetFunc())){
-                                myPanel.functionsInSelectedModule.setSelectedIndex(j);
-                                if(runConfig.getTargetFunc().isInTemplate()) {
-                                    ComboBoxModel comboModel = getTypeInstanciationListModel(runConfig.getTargetFunc());
-                                    if(comboModel!=null && comboModel.getSize()>0) {
-                                        myPanel.targetTypeInstantiation.setModel(comboModel);
-                                        String typeLabel = runConfig.getTargetFunc().getFuncSignature().getTypeLabelWithBrackets();
-                                        myPanel.typeInstLabel.setText("Mapping for " + typeLabel + " :");
-                                        myPanel.typeInstLabel.setVisible(true);
-                                        myPanel.targetTypeInstantiation.setVisible(true);
-                                        if (runConfig.getTargetTypeInstantiation() != null) {
-                                            for (int k = 0; k < myPanel.targetTypeInstantiation.getModel().getSize(); k++) {
-                                                if (((QuplaTypeInstComboBoxItem) myPanel.targetTypeInstantiation.getModel().getElementAt(k)).getTypeInstantiation().isEquivalentTo(runConfig.getTargetTypeInstantiation())) {
-                                                    myPanel.targetTypeInstantiation.setSelectedIndex(k);
-                                                    myPanel.typeInstLabel.setVisible(true);
-                                                    myPanel.targetTypeInstantiation.setVisible(true);
-                                                    myPanel.typeNameLabel.setVisible(false);
-                                                    myPanel.typeNameCombo.setVisible(false);
-                                                    if (runConfig.getTargetTypeInstantiation() != null) {
-                                                        clearFuncParameters();
-                                                        makeFuncParameters(runConfig.getTargetFunc(), runConfig.args == null ? new ArrayList<>() : Arrays.asList(runConfig.args));
-                                                    } else {
-                                                        clearFuncParameters();
-                                                    }
-                                                    break;
-                                                }
-                                            }
-                                        } else {
-                                            myPanel.targetTypeInstantiation.setSelectedItem(null);
-                                        }
-                                    } else {
-                                        comboModel = getTypeNameListModel(runConfig.getTargetFunc());
-
-                                        if(comboModel!=null && comboModel.getSize()>0) {
-                                            myPanel.typeNameCombo.setModel(comboModel);
-                                            String typeLabel = runConfig.getTargetFunc().getFuncSignature().getTypeLabelWithBrackets();
-                                            myPanel.typeNameLabel.setText("Mapping for " + typeLabel + " :");
-                                            myPanel.typeNameLabel.setVisible(true);
-                                            myPanel.typeNameCombo.setVisible(true);
-                                            myPanel.typeInstLabel.setVisible(false);
-                                            myPanel.targetTypeInstantiation.setVisible(false);
-                                            if (runConfig.getTargetTypeName() != null) {
-                                                for (int k = 0; k < myPanel.typeNameCombo.getModel().getSize(); k++) {
-                                                    if (((QuplaTypeNameComboBoxItem) myPanel.typeNameCombo.getModel().getElementAt(k)).getQuplaTypeName().isEquivalentTo(runConfig.getTargetTypeName())) {
-                                                        myPanel.typeNameCombo.setSelectedIndex(k);
-                                                        myPanel.typeNameLabel.setVisible(true);
-                                                        myPanel.typeNameCombo.setVisible(true);
-                                                        if (runConfig.getTargetTypeName() != null) {
-                                                            clearFuncParameters();
-                                                            makeFuncParameters(runConfig.getTargetFunc(), runConfig.args == null ? new ArrayList<>() : Arrays.asList(runConfig.args));
-                                                        } else {
-                                                            clearFuncParameters();
-                                                        }
-                                                        break;
-                                                    }
-                                                }
-                                            } else {
-                                                myPanel.typeNameCombo.setSelectedItem(null);
-                                            }
-                                        }
-                                    }
-
-
-                                }else{
-                                    myPanel.typeInstLabel.setVisible(false);
-                                    myPanel.targetTypeInstantiation.setVisible(false);
-                                    myPanel.typeNameLabel.setVisible(false);
-                                    myPanel.typeNameCombo.setVisible(false);
-                                }
-                                break;
-                            }
-                        }
-                    }else{
-                        myPanel.functionsInSelectedModule.setSelectedItem(null);
-                        myPanel.targetTypeInstantiation.setVisible(false);
-                        myPanel.typeInstLabel.setVisible(false);
-                        myPanel.argsContainer.setVisible(false);
-                    }
-                    break;
-                }
+        myPanel.modules.setProject(runConfig.getProject());
+        myPanel.modules.applySelectedModules(runConfig.getQuplaModules());
+        myPanel.modules.clearListeners();
+        myPanel.modules.addListener(new ModuleSelector.Listener() {
+            @Override
+            public void onSelectionChanged(List<QuplaModule> selectedModules) {
+                myPanel.functionsInSelectedModule.setModel(getFunctionsModel(selectedModules));
+                myPanel.functionsInSelectedModule.setEnabled(myPanel.functionsInSelectedModule.getModel().getSize()>0);
+                updatePanelAccordingAvailableFunctions(runConfig);
+                updatePanelForRunMode();
+                updateCommandLine();
             }
-        }else{
-            myPanel.modules.setSelectedItem(null);
-            myPanel.functionsInSelectedModule.setSelectedItem(null);
-        }
+        });
+        getRunMode(runConfig).setSelected(true);
+
+
+        myPanel.functionsInSelectedModule.setModel(getFunctionsModel(runConfig.getQuplaModules()));
+        myPanel.functionsInSelectedModule.setEnabled(myPanel.functionsInSelectedModule.getModel().getSize()>0);
+        updatePanelAccordingAvailableFunctions(runConfig);
         myPanel.runTestsCheckBox.setSelected(runConfig.isRunTest());
         myPanel.runEvalCheckBox.setSelected(runConfig.isRunEval());
         myPanel.echoCheckBox.setSelected(runConfig.isEcho());
@@ -132,15 +60,148 @@ public class QuplaInterpreterSettingsEditor extends SettingsEditor<QuplaInterpre
         myPanel.abraCheckBox.setSelected(runConfig.isAbra());
         myPanel.viewCheckBox.setSelected(runConfig.isView());
         myPanel.treeCheckBox.setSelected(runConfig.isTree());
-
+        myPanel.customArgs.setText(runConfig.getCustomArgs());
+        updatePanelForRunMode();
         updateCommandLine();
 
     }
 
+    private void updatePanelForRunMode(){
+        if(myPanel.customRadioButton.isSelected()){
+            functionPartVisible(false);
+            optionPartVisible(false);
+            customArgsVisible(true);
+        }else if(myPanel.moduleRadioButton.isSelected()){
+            functionPartVisible(false);
+            optionPartVisible(true);
+            customArgsVisible(false);
+        }else{
+            functionPartVisible(true);
+            optionPartVisible(true);
+            customArgsVisible(false);
+        }
+        updateCommandLine();
+    }
+    private void functionPartVisible(boolean visible){
+        myPanel.functionLabel.setVisible(visible);
+        myPanel.functionsInSelectedModule.setVisible(visible);
+        myPanel.typeNameLabel.setVisible(visible);
+        myPanel.typeNameCombo.setVisible(visible);
+        myPanel.argsContainer.setVisible(visible);
+        myPanel.argsContainerLabel.setVisible(visible);
+        myPanel.typeInstLabel.setVisible(visible && myPanel.targetTypeInstantiation.getModel()!=null && myPanel.targetTypeInstantiation.getModel().getSize()>0);
+        myPanel.targetTypeInstantiation.setVisible(visible && myPanel.targetTypeInstantiation.getModel()!=null && myPanel.targetTypeInstantiation.getModel().getSize()>0);
+        myPanel.functionSeparator.setVisible(visible);
+    }
+    private void customArgsVisible(boolean visible){
+        myPanel.customArgs.setVisible(visible);
+        myPanel.argsLabel.setVisible(visible);
+    }
+
+    private void optionPartVisible(boolean visible){
+        myPanel.optionsLabel.setVisible(visible);
+        myPanel.runTestsCheckBox.setVisible(visible);
+        myPanel.runEvalCheckBox.setVisible(visible);
+        myPanel.echoCheckBox.setVisible(visible);
+        myPanel.viewCheckBox.setVisible(visible);
+        myPanel.verilogCheckBox.setVisible(visible);
+        myPanel.abraCheckBox.setVisible(visible);
+        myPanel.treeCheckBox.setVisible(visible);
+    }
+
+    private AbstractButton getRunMode(QuplaInterpreterRunConfiguration runConfig){
+        if(runConfig.getRunMode()==null)return myPanel.functionRadioButton;
+        if(runConfig.getRunMode().equals("function"))return myPanel.functionRadioButton;
+        if(runConfig.getRunMode().equals("module"))return myPanel.moduleRadioButton;
+        return myPanel.customRadioButton;
+    }
+    private void updatePanelAccordingAvailableFunctions(@NotNull QuplaInterpreterRunConfiguration runConfig) {
+        if(runConfig.getTargetFunc()!=null){
+            for(int j = 0; j< myPanel.functionsInSelectedModule.getModel().getSize(); j++){
+                if(((QuplaFuncStmtComboBoxItem) myPanel.functionsInSelectedModule.getModel().getElementAt(j)).getFuncStmt().isEquivalentTo(runConfig.getTargetFunc())){
+                    myPanel.functionsInSelectedModule.setSelectedIndex(j);
+                    if(runConfig.getTargetFunc().isInTemplate()) {
+                        ComboBoxModel comboModel = getTypeInstanciationListModel(runConfig.getTargetFunc());
+                        if(comboModel!=null && comboModel.getSize()>0) {
+                            myPanel.targetTypeInstantiation.setModel(comboModel);
+                            String typeLabel = runConfig.getTargetFunc().getFuncSignature().getTypeLabelWithBrackets();
+                            myPanel.typeInstLabel.setText("Mapping for " + typeLabel + " :");
+                            myPanel.typeInstLabel.setVisible(true);
+                            myPanel.targetTypeInstantiation.setVisible(true);
+                            if (runConfig.getTargetTypeInstantiation() != null) {
+                                for (int k = 0; k < myPanel.targetTypeInstantiation.getModel().getSize(); k++) {
+                                    if (((QuplaTypeInstComboBoxItem) myPanel.targetTypeInstantiation.getModel().getElementAt(k)).getTypeInstantiation().isEquivalentTo(runConfig.getTargetTypeInstantiation())) {
+                                        myPanel.targetTypeInstantiation.setSelectedIndex(k);
+                                        myPanel.typeInstLabel.setVisible(true);
+                                        myPanel.targetTypeInstantiation.setVisible(true);
+                                        myPanel.typeNameLabel.setVisible(false);
+                                        myPanel.typeNameCombo.setVisible(false);
+                                        if (runConfig.getTargetTypeInstantiation() != null) {
+                                            clearFuncParameters();
+                                            makeFuncParameters(runConfig.getTargetFunc(), runConfig.args == null ? new ArrayList<>() : Arrays.asList(runConfig.args));
+                                        } else {
+                                            clearFuncParameters();
+                                        }
+                                        break;
+                                    }
+                                }
+                            } else {
+                                myPanel.targetTypeInstantiation.setSelectedItem(null);
+                            }
+                        } else {
+                            comboModel = getTypeNameListModel(runConfig.getTargetFunc());
+
+                            if(comboModel!=null && comboModel.getSize()>0) {
+                                myPanel.typeNameCombo.setModel(comboModel);
+                                String typeLabel = runConfig.getTargetFunc().getFuncSignature().getTypeLabelWithBrackets();
+                                myPanel.typeNameLabel.setText("Mapping for " + typeLabel + " :");
+                                myPanel.typeNameLabel.setVisible(true);
+                                myPanel.typeNameCombo.setVisible(true);
+                                myPanel.typeInstLabel.setVisible(false);
+                                myPanel.targetTypeInstantiation.setVisible(false);
+                                if (runConfig.getTargetTypeName() != null) {
+                                    for (int k = 0; k < myPanel.typeNameCombo.getModel().getSize(); k++) {
+                                        if (((QuplaTypeNameComboBoxItem) myPanel.typeNameCombo.getModel().getElementAt(k)).getQuplaTypeName().isEquivalentTo(runConfig.getTargetTypeName())) {
+                                            myPanel.typeNameCombo.setSelectedIndex(k);
+                                            myPanel.typeNameLabel.setVisible(true);
+                                            myPanel.typeNameCombo.setVisible(true);
+                                            if (runConfig.getTargetTypeName() != null) {
+                                                clearFuncParameters();
+                                                makeFuncParameters(runConfig.getTargetFunc(), runConfig.args == null ? new ArrayList<>() : Arrays.asList(runConfig.args));
+                                            } else {
+                                                clearFuncParameters();
+                                            }
+                                            break;
+                                        }
+                                    }
+                                } else {
+                                    myPanel.typeNameCombo.setSelectedItem(null);
+                                }
+                            }
+                        }
+
+
+                    }else{
+                        myPanel.typeInstLabel.setVisible(false);
+                        myPanel.targetTypeInstantiation.setVisible(false);
+                        myPanel.typeNameLabel.setVisible(false);
+                        myPanel.typeNameCombo.setVisible(false);
+                    }
+                    break;
+                }
+            }
+        }else{
+            myPanel.functionsInSelectedModule.setSelectedItem(null);
+            myPanel.targetTypeInstantiation.setVisible(false);
+            myPanel.typeInstLabel.setVisible(false);
+            myPanel.argsContainer.setVisible(false);
+        }
+    }
+
     @Override
     protected void applyEditorTo(@NotNull QuplaInterpreterRunConfiguration runCongig) throws ConfigurationException {
-        if(myPanel.modules.getSelectedItem()!=null) {
-            runCongig.setTargetModule(((QuplaFileComboBoxItem) myPanel.modules.getSelectedItem()).getQuplaFile());
+        runCongig.setQuplaModules(myPanel.modules.getSelectedModules());
+        if(myPanel.modules.getSelectedModules().size()>0) {
             if (myPanel.functionsInSelectedModule.getSelectedItem() != null) {
                 runCongig.setTargetFunc(((QuplaFuncStmtComboBoxItem) myPanel.functionsInSelectedModule.getSelectedItem()).getFuncStmt());
                 if(myPanel.targetTypeInstantiation.getSelectedItem()!=null){
@@ -164,7 +225,6 @@ public class QuplaInterpreterSettingsEditor extends SettingsEditor<QuplaInterpre
                 runCongig.setTargetTypeInstantiation(null);
             }
         } else {
-            runCongig.setTargetModule(null);
             runCongig.setTargetFunc(null);
             runCongig.setTargetTypeInstantiation(null);
         }
@@ -175,29 +235,14 @@ public class QuplaInterpreterSettingsEditor extends SettingsEditor<QuplaInterpre
         runCongig.setAbra(myPanel.abraCheckBox.isSelected());
         runCongig.setView(myPanel.viewCheckBox.isSelected());
         runCongig.setTree(myPanel.treeCheckBox.isSelected());
-
+        runCongig.setRunMode(myPanel.functionRadioButton.isSelected()?"function":(myPanel.moduleRadioButton.isSelected()?"module":"custom"));
+        runCongig.setCustomArgs(myPanel.customArgs.getText());
     }
 
     @NotNull
     @Override
     protected JComponent createEditor() {
         myPanel = new QuplaInterpreterRunConfigUI();
-        myPanel.modules.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                if(myPanel.modules.getSelectedItem()!=null) {
-                    myPanel.functionsInSelectedModule.setModel(getFunctionsModel(((QuplaFileComboBoxItem) myPanel.modules.getSelectedItem()).getQuplaFile()));
-                    myPanel.functionsInSelectedModule.setEnabled(true);
-                    myPanel.functionsInSelectedModule.setSelectedItem(null);
-                }else{
-                    myPanel.functionsInSelectedModule.setModel(new ListComboBoxModel(new ArrayList<QuplaFileComboBoxItem>()));
-                    myPanel.functionsInSelectedModule.setEnabled(false);
-                    myPanel.typeInstLabel.setVisible(false);
-                    myPanel.targetTypeInstantiation.setVisible(false);
-                }
-                updateCommandLine();
-            }
-        });
         myPanel.functionsInSelectedModule.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -249,7 +294,6 @@ public class QuplaInterpreterSettingsEditor extends SettingsEditor<QuplaInterpre
                 updateCommandLine();
             }
         });
-        myPanel.modules.setSelectedItem(null);
         myPanel.functionsInSelectedModule.setSelectedItem(null);
 
         myPanel.targetTypeInstantiation.addActionListener(new ActionListener() {
@@ -316,6 +360,22 @@ public class QuplaInterpreterSettingsEditor extends SettingsEditor<QuplaInterpre
         myPanel.viewCheckBox.addActionListener(updateCommandLineListener);
         myPanel.treeCheckBox.addActionListener(updateCommandLineListener);
         myPanel.verilogCheckBox.addActionListener(updateCommandLineListener);
+
+        ActionListener updateRunModeListener = new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                updatePanelForRunMode();
+            }
+        };
+        myPanel.moduleRadioButton.addActionListener(updateRunModeListener);
+        myPanel.customRadioButton.addActionListener(updateRunModeListener);
+        myPanel.functionRadioButton.addActionListener(updateRunModeListener);
+        myPanel.customArgs.getDocument().addDocumentListener(new DocumentAdapter() {
+            @Override
+            protected void textChanged(DocumentEvent e) {
+                updateCommandLine();
+            }
+        });
         return myPanel.rootConfigPane;
     }
 
@@ -352,10 +412,8 @@ public class QuplaInterpreterSettingsEditor extends SettingsEditor<QuplaInterpre
     }
 
     public void updateCommandLine(){
-        if(myPanel!=null && myPanel.modules!=null && myPanel.modules.getModel()!=null) {
-            QuplaFileComboBoxItem item = (QuplaFileComboBoxItem) myPanel.modules.getModel().getElementAt(0);
-            if (item != null) {
-                Project project = item.quplaFile.getProject();
+        if(myPanel!=null && myPanel.modules!=null && myPanel.modules.getSelectedModules().size()>0) {
+                Project project = myPanel.modules.getSelectedModules().get(0).getModuleFiles().get(0).getProject();
                 QuplaInterpreterRunConfiguration dummy = (QuplaInterpreterRunConfiguration) QuplaInterpreterConfigurationType.getInstance().getConfigurationFactories()[0].createTemplateConfiguration(project);
                 try {
                     applyEditorTo(dummy);
@@ -369,9 +427,7 @@ public class QuplaInterpreterSettingsEditor extends SettingsEditor<QuplaInterpre
                     myPanel.commandLine.setText("Configuration is not complete");
                     e.printStackTrace();
                 }
-            } else {
-                myPanel.commandLine.setText("");
-            }
+
         }else{
             myPanel.commandLine.setText("");
         }
@@ -393,12 +449,30 @@ public class QuplaInterpreterSettingsEditor extends SettingsEditor<QuplaInterpre
         return new ListComboBoxModel(quplaFiles);
     }
 
-    private static ComboBoxModel getFunctionsModel(QuplaFile module){
-        if(module==null)return new ListComboBoxModel(new ArrayList());
+    private static ComboBoxModel getFunctionsModel(List<QuplaModule> quplaModules){
+        if(quplaModules==null || quplaModules.size()==0)return new ListComboBoxModel(new ArrayList());
         List<QuplaFuncStmtComboBoxItem> model = new ArrayList<>();
-        for(QuplaFuncStmt f:module.findAllFuncStmt()){
-            model.add(new QuplaFuncStmtComboBoxItem(f));
+        List<QuplaModule> done = new ArrayList<>();
+        for(QuplaModule m:quplaModules) {
+            for (QuplaFuncStmt f : m.findAllFuncStmt()) {
+                model.add(new QuplaFuncStmtComboBoxItem(m,f));
+            }
+            done.add(m);
         }
+
+        QuplaModuleManager moduleManager = quplaModules.get(0).getProject().getComponent(QuplaModuleManager.class);
+        for(QuplaModule m:quplaModules) {
+            List<QuplaModule> imported = moduleManager.getImportedModules(m);
+            for(QuplaModule qm:imported) {
+                if(!done.contains(qm)) {
+                    for (QuplaFuncStmt f : qm.findAllFuncStmt()) {
+                        model.add(new QuplaFuncStmtComboBoxItem(qm, f));
+                    }
+                    done.add(qm);
+                }
+            }
+        }
+
         return new ListComboBoxModel(model);
     }
 
@@ -439,18 +513,39 @@ public class QuplaInterpreterSettingsEditor extends SettingsEditor<QuplaInterpre
 
     public static class QuplaFuncStmtComboBoxItem {
         private final QuplaFuncStmt funcStmt;
+        private final QuplaModule module;
 
-        public QuplaFuncStmtComboBoxItem(QuplaFuncStmt funcStmt) {
+        public QuplaFuncStmtComboBoxItem(QuplaModule module, QuplaFuncStmt funcStmt) {
             this.funcStmt = funcStmt;
+            this.module = module;
+            JLabel label = new JLabel("text");
         }
+
 
         @Override
         public String toString() {
-            return funcStmt.getFuncSignature().getText()+
+            String sig = funcStmt.getFuncSignature().getText();
+            String type = sig.substring(0,sig.indexOf(" "));
+            sig = sig.substring(sig.indexOf(" ")).trim();
+            sig = sig.replaceAll("<","&lt;");
+            sig = sig.replaceAll(">","&gt;");
+            int endFuncName =
+                    Math.min(sig.indexOf("(")==-1?Integer.MAX_VALUE:sig.indexOf("("),
+                            sig.indexOf("&")==-1?Integer.MAX_VALUE:sig.indexOf("&"));
+            String funcName = sig.substring(0,endFuncName);
+            String end = sig.substring(endFuncName);
+
+            String formatted = "<font color=8b6546>"+type+"</font>&nbsp;<font color=ffc66d>"+funcName+"</font>"+end;
+            return "<html><font color=808080>["+module.getName()+subModule()+"/"+funcStmt.getContainingFile().getVirtualFile().getName()+"]&nbsp;</font>"+formatted+
                     (funcStmt.getParent() instanceof QuplaTemplateStmt ?
-                            (" (from template "+((QuplaTemplateStmt) funcStmt.getParent()).getTemplateName().getText()+")"):"");
+                            ("&nbsp;<font color=808080>(from template "+((QuplaTemplateStmt) funcStmt.getParent()).getTemplateName().getText()+")</font>"):"")+
+                    "</html>";
         }
 
+        private String subModule(){
+            if(funcStmt.getContainingFile().getVirtualFile().getParent().getName().equals(module.getName()))return "";
+            return "/"+funcStmt.getContainingFile().getVirtualFile().getParent().getName();
+        }
         public QuplaFuncStmt getFuncStmt() {
             return funcStmt;
         }

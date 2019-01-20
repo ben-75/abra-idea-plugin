@@ -15,6 +15,7 @@ import com.intellij.openapi.module.ModuleUtil;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.roots.ProjectRootManager;
 import com.intellij.openapi.vfs.VirtualFile;
+import org.qupla.language.module.QuplaModule;
 import org.qupla.language.module.QuplaModuleManager;
 import org.qupla.utils.TritUtils;
 import org.jetbrains.annotations.NotNull;
@@ -61,53 +62,66 @@ public class QuplaInterpreterState extends JavaCommandLineState {
         javaParameters.setWorkingDirectory(runConfiguration.getProject().getComponent(QuplaModuleManager.class).getFullQuplaSourceRootPath());
 
         javaParameters.setMainClass("org.iota.qupla.Qupla");
-        //javaParameters.getVMParametersList()
-        StringBuilder sb = new StringBuilder();
 
-        if(runConfiguration.isEcho()){
-            javaParameters.getProgramParametersList().add("-echo");
-        }
-        if(runConfiguration.isRunTest()){
-            javaParameters.getProgramParametersList().add("-test");
-        }
-        if(runConfiguration.isRunEval()){
-            javaParameters.getProgramParametersList().add("-eval");
-        }
-        if(runConfiguration.isAbra()){
-            javaParameters.getProgramParametersList().add("-abra");
-        }
-        if(runConfiguration.isFpga()){
-            javaParameters.getProgramParametersList().add("-fpga");
-        }
-        if(runConfiguration.isTree()){
-            javaParameters.getProgramParametersList().add("-tree");
-        }
-        if(runConfiguration.isTrim()){
-            javaParameters.getProgramParametersList().add("-trim");
-        }
-        if(runConfiguration.isView()){
-            javaParameters.getProgramParametersList().add("-view");
+        //javaParameters.getVMParametersList()
+        if(!runConfiguration.getRunMode().equals("custom")) {
+            if (runConfiguration.isEcho()) {
+                javaParameters.getProgramParametersList().add("-echo");
+            }
+            if (runConfiguration.isRunTest()) {
+                javaParameters.getProgramParametersList().add("-test");
+            }
+            if (runConfiguration.isRunEval()) {
+                javaParameters.getProgramParametersList().add("-eval");
+            }
+            if (runConfiguration.isAbra()) {
+                javaParameters.getProgramParametersList().add("-abra");
+            }
+            if (runConfiguration.isFpga()) {
+                javaParameters.getProgramParametersList().add("-fpga");
+            }
+            if (runConfiguration.isTree()) {
+                javaParameters.getProgramParametersList().add("-tree");
+            }
+            if (runConfiguration.isTrim()) {
+                javaParameters.getProgramParametersList().add("-trim");
+            }
+            if (runConfiguration.isView()) {
+                javaParameters.getProgramParametersList().add("-view");
+            }
         }
 
         //module
-        //TODO : select multiple modules
-        if(runConfiguration.getTargetModule()!=null) {
-            String filePath = runConfiguration.getTargetModule().getImportableFilePath();
-            javaParameters.getProgramParametersList().add(filePath.substring(0, filePath.indexOf("/")));
+        if(runConfiguration.getQuplaModules()!=null && runConfiguration.getQuplaModules().size()>0) {
+            for(QuplaModule m:runConfiguration.getQuplaModules()){
+                javaParameters.getProgramParametersList().add(m.getName());
+            }
         }
 
-        String type = "";
-        if(runConfiguration.getTargetTypeInstantiation()!=null){
-            type=runConfiguration.getTargetTypeInstantiation().getText();
-        }else if(runConfiguration.getTargetTypeName()!=null){
-            type="<"+runConfiguration.getTargetTypeName().getText()+">";
-        }
-        if(runConfiguration.getTargetFunc()!=null && runConfiguration.hasArgs()) {
-            for (String s : runConfiguration.getArgs()) {
-                sb.append(TritUtils.decimalValue(s)).append(",");
+        //function
+        if(runConfiguration.getRunMode().equals("function")) {
+            String type = "";
+            if (runConfiguration.getTargetTypeInstantiation() != null) {
+                type = runConfiguration.getTargetTypeInstantiation().getText();
+            } else if (runConfiguration.getTargetTypeName() != null) {
+                type = "<" + runConfiguration.getTargetTypeName().getText() + ">";
             }
-            String args = sb.substring(0,sb.length()-1);
-            javaParameters.getProgramParametersList().add(runConfiguration.getTargetFunc().getFuncSignature().getFuncName().getText() + type + "(" + args + ")");
+            StringBuilder sb = new StringBuilder();
+            if (runConfiguration.getTargetFunc() != null && runConfiguration.hasArgs()) {
+                for (String s : runConfiguration.getArgs()) {
+                    sb.append(TritUtils.decimalValue(s)).append(",");
+                }
+                String args = sb.substring(0, sb.length() - 1);
+                javaParameters.getProgramParametersList().add(runConfiguration.getTargetFunc().getFuncSignature().getFuncName().getText() + type + "(" + args + ")");
+            }
+        }
+
+        if(runConfiguration.getRunMode().equals("custom")){
+            if(runConfiguration.getCustomArgs()!=null) {
+                for (String s : runConfiguration.getCustomArgs().split(" ")) {
+                    javaParameters.getProgramParametersList().add(s);
+                }
+            }
         }
         javaParameters.setJdk(ProjectRootManager.getInstance(runConfiguration.getProject()).getProjectSdk());
 

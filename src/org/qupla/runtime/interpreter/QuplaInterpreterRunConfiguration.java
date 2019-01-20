@@ -5,19 +5,20 @@ import com.intellij.execution.Executor;
 import com.intellij.execution.application.ApplicationConfiguration;
 import com.intellij.execution.configurations.*;
 import com.intellij.execution.runners.ExecutionEnvironment;
-import com.intellij.lang.ASTNode;
 import com.intellij.openapi.application.ApplicationManager;
 import com.intellij.openapi.options.SettingsEditor;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.util.InvalidDataException;
 import com.intellij.openapi.util.WriteExternalException;
-import com.intellij.psi.tree.TokenSet;
+import org.qupla.language.module.QuplaModule;
+import org.qupla.language.module.QuplaModuleManager;
 import org.qupla.language.psi.*;
 import org.jdom.Attribute;
 import org.jdom.Element;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -31,8 +32,10 @@ public class QuplaInterpreterRunConfiguration extends ApplicationConfiguration {
     private boolean trim = false;
     private boolean tree = false;
     private boolean fpga = false;
+    private String runMode;
+    private String customArgs;
 
-    private QuplaFile targetModule = null;
+    private List<QuplaModule> quplaModules = null;
     private QuplaFuncStmt targetFunc = null;
     private QuplaTypeInstantiation targetTypeInstantiation = null;
     private QuplaTypeName targetTypeName = null;
@@ -51,26 +54,30 @@ public class QuplaInterpreterRunConfiguration extends ApplicationConfiguration {
 
     @Override
     public void checkConfiguration() throws RuntimeConfigurationException {
-        if (targetModule == null) throw new RuntimeConfigurationException("Module is not defined");
+        if (quplaModules == null || quplaModules.size()==0) throw new RuntimeConfigurationException("Module is not defined");
         if (targetFunc == null && !test && !eval && !fpga && !tree ) {
             throw new RuntimeConfigurationException("Execution target (eval, test, tree or function) is not defined");
         }
 
         if (targetFunc != null) {
-            String funcName = null;
-            if (targetFunc instanceof QuplaUseStmt) {
-                funcName = ((QuplaUseStmt) targetFunc).getTemplateNameRef().getText();
-            } else if (targetFunc instanceof QuplaFuncStmt) {
-                funcName = targetFunc.getFuncSignature().getFuncName().getText();
-            }
-            if (funcName == null) {
-                throw new RuntimeConfigurationException("Element " + targetFunc.getText() + " is not a valid evaluation target");
+            String funcName = targetFunc.getFuncSignature().getFuncName().getText();
+            if(targetFunc.isInTemplate()){
+
             }
             boolean foundTargetFunc = false;
-            for (QuplaFuncStmt n : targetModule.getAllFuncStmts()) {
-                if (n.getFuncSignature().getFuncName().getText().equals(funcName)) {
-                    foundTargetFunc = true;
-                    break;
+            for (QuplaModule targetModule : quplaModules){
+                if(targetFunc.isInTemplate()){
+                    QuplaFuncStmt func = targetModule.findFuncStmt(((QuplaTemplateStmt)targetFunc.getParent()).getTemplateName().getText(),targetFunc.getFuncSignature().getFuncName().getText());
+                    if(func!=null){
+                        foundTargetFunc = true;
+                        break;
+                    }
+                }else{
+                    QuplaFuncStmt func = targetModule.findFuncStmt(null,targetFunc.getFuncSignature().getFuncName().getText());
+                    if(func!=null){
+                        foundTargetFunc = true;
+                        break;
+                    }
                 }
             }
 
@@ -94,6 +101,31 @@ public class QuplaInterpreterRunConfiguration extends ApplicationConfiguration {
     @Override
     public RunProfileState getState(@NotNull Executor executor, @NotNull ExecutionEnvironment executionEnvironment) throws ExecutionException {
         return new QuplaInterpreterState(executionEnvironment, this);
+    }
+
+
+    public List<QuplaModule> getQuplaModules() {
+        return quplaModules;
+    }
+
+    public void setQuplaModules(List<QuplaModule> quplaModules) {
+        this.quplaModules = quplaModules;
+    }
+
+    public String getRunMode() {
+        return runMode;
+    }
+
+    public void setRunMode(String runMode) {
+        this.runMode = runMode;
+    }
+
+    public String getCustomArgs() {
+        return customArgs;
+    }
+
+    public void setCustomArgs(String customArgs) {
+        this.customArgs = customArgs;
     }
 
     public boolean isRunTest() {
@@ -160,14 +192,6 @@ public class QuplaInterpreterRunConfiguration extends ApplicationConfiguration {
         this.fpga = fpga;
     }
 
-    public QuplaFile getTargetModule() {
-        return targetModule;
-    }
-
-    public void setTargetModule(QuplaFile targetModule) {
-        this.targetModule = targetModule;
-    }
-
     public QuplaFuncStmt getTargetFunc() {
         return targetFunc;
     }
@@ -216,8 +240,15 @@ public class QuplaInterpreterRunConfiguration extends ApplicationConfiguration {
                 element.setAttribute("fpga",fpga?"true":"false");
                 element.setAttribute("tree",tree?"true":"false");
                 element.setAttribute("trim",trim?"true":"false");
-                if (targetModule != null) {
-                    element.setAttribute("targetModule", targetModule.getImportableFilePath());
+                element.setAttribute("runMode",runMode==null?"function":runMode);
+                element.setAttribute("customArgs",customArgs==null?"":customArgs);
+                StringBuilder sb = new StringBuilder();
+                for(QuplaModule m:quplaModules){
+                    sb.append(m.getName()).append(" ");
+                }
+                element.setAttribute("quplaModules",sb.toString().trim());
+
+                if (quplaModules.size()>0) {
                     if (targetFunc != null) {
                         if (targetFunc.isInTemplate()) {
                             element.setAttribute("targetFunc", ((QuplaTemplateStmt) targetFunc.getParent()).getTemplateName().getText() + ":" + targetFunc.getFuncSignature().getFuncName().getText());
@@ -253,6 +284,7 @@ public class QuplaInterpreterRunConfiguration extends ApplicationConfiguration {
             }
             @Override
             public void run() {
+                //flags
                 test = attributeEquals("test","true");
                 eval = attributeEquals("eval","true");
                 echo = attributeEquals("echo","true");
@@ -261,27 +293,39 @@ public class QuplaInterpreterRunConfiguration extends ApplicationConfiguration {
                 fpga = attributeEquals("fpga","true");
                 tree = attributeEquals("tree","true");
                 trim = attributeEquals("trim","true");
-                Attribute targetMod = element.getAttribute("targetModule");
-                if (targetMod != null) {
-                    targetModule = QuplaPsiImplUtil.findFileForPath(getProject(), targetMod.getValue());
-                    if (targetModule != null) {
+                runMode = element.getAttribute("runMode")==null?"function":element.getAttributeValue("runMode");
+                customArgs = element.getAttribute("customArgs")==null?"":element.getAttributeValue("customArgs");
+                //modules
+                Attribute quplaMod = element.getAttribute("quplaModules");
+                quplaModules = new ArrayList<>();
+                if(quplaMod!=null && quplaMod.getValue().length()>0){
+                    String[] split = quplaMod.getValue().split(" ");
+                    QuplaModuleManager moduleManager = getProject().getComponent(QuplaModuleManager.class);
+                    for(String m:split){
+                        QuplaModule quplaModule = moduleManager.getModule(m);
+                        if(quplaModule!=null && !quplaModules.contains(quplaModule)){
+                            quplaModules.add(quplaModule);
+                        }
+                    }
+                }
+
+
+                if (quplaModules.size()>0) {
                         Attribute targetF = element.getAttribute("targetFunc");
                         if (targetF != null) {
                             String tmp = targetF.getValue();
+                            String tmpl_name = null;
+                            String func_name = null;
                             if (tmp.contains(":")) {
-                                String tmpl_name = tmp.substring(0, tmp.indexOf(":"));
-                                String func_name = tmp.substring(tmp.indexOf(":") + 1);
-                                QuplaTemplateStmt tmpl = targetModule.getTemplate(tmpl_name);
-                                if (tmpl != null) {
-                                    for (ASTNode stmt : tmpl.getNode().getChildren(TokenSet.create(QuplaTypes.FUNC_STMT))) {
-                                        if (((QuplaFuncStmt) stmt.getPsi()).getFuncSignature().getFuncName().getText().equals(func_name)) {
-                                            targetFunc = (QuplaFuncStmt) stmt.getPsi();
-                                            break;
-                                        }
-                                    }
+                                tmpl_name = tmp.substring(0, tmp.indexOf(":"));
+                                func_name = tmp.substring(tmp.indexOf(":") + 1);
+                            }else{
+                                func_name = tmp;
+                            }
+                            for(QuplaModule module:quplaModules){
+                                if(targetFunc==null) {
+                                    targetFunc = module.findFuncStmt(tmpl_name, func_name);
                                 }
-                            } else {
-                                targetFunc = targetModule.getStandaloneFunc(tmp);
                             }
                             if (targetFunc != null) {
                                 if (targetFunc.isInTemplate()) {
@@ -319,7 +363,6 @@ public class QuplaInterpreterRunConfiguration extends ApplicationConfiguration {
 
                         }
                     }
-                }
             }
         });
     }

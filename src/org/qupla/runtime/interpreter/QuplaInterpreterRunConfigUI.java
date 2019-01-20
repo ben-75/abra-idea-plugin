@@ -6,7 +6,7 @@ import javax.swing.*;
 
 public class QuplaInterpreterRunConfigUI {
     public JPanel rootConfigPane;
-    JComboBox modules;
+    ModuleSelector modules;
     JComboBox functionsInSelectedModule;
     JCheckBox runTestsCheckBox;
     JCheckBox runEvalCheckBox;
@@ -23,9 +23,24 @@ public class QuplaInterpreterRunConfigUI {
     JComboBox typeNameCombo;
     JLabel typeNameLabel;
     public JCheckBox viewCheckBox;
+    public JRadioButton functionRadioButton;
+    public JRadioButton moduleRadioButton;
+    public JRadioButton customRadioButton;
+    public ButtonGroup runModeGroup;
+    public JTextField customArgs;
+    public JLabel argsLabel;
+    public JLabel optionsLabel;
+    public JLabel functionLabel;
+    public JSeparator functionSeparator;
     private JTextPane textPane1;
 
     private void createUIComponents() {
+        modules = new ModuleSelector();
         argsContainer = new JPanel(new VerticalLayout());
+        runModeGroup = new ButtonGroup();
+        runModeGroup.add(functionRadioButton);
+        runModeGroup.add(moduleRadioButton);
+        runModeGroup.add(customRadioButton);
+        functionSeparator=new JSeparator();
     }
 }
