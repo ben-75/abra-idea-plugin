@@ -227,6 +227,23 @@ public class QuplaModuleManagerImpl implements QuplaModuleManager, PersistentSta
         return resp;
     }
 
+    @Override
+    public List<QuplaModule> getImportedModules(QuplaModule module) {
+        return addImportedModules(module, new ArrayList<>());
+    }
+
+    private List<QuplaModule> addImportedModules(QuplaModule module, List<QuplaModule> resp) {
+        if(module==null) return resp;
+        for(String imported:module.getImportedModuleNames()){
+            QuplaModule importedModule = modules.get(imported);
+            if(!resp.contains(importedModule)){
+                resp.add(importedModule);
+                addImportedModules(importedModule, resp);
+            }
+        }
+        return resp;
+    }
+
     private class QuplaFileVisitor {
         public ArrayList<VirtualFile> collect(VirtualFile directory){
             final ArrayList<VirtualFile> collectedFiles = new ArrayList();

@@ -46,12 +46,13 @@ public class QuplaVarOrParamPsiReferenceImpl extends PsiReferenceBase implements
     public Object[] getVariants() {
         PsiElement funcBody = myElement;
         PsiElement myExpression = null;
-        while(!(funcBody instanceof QuplaFuncBody)){
+        while(!(funcBody instanceof QuplaFuncBody) && funcBody!=null){
             if(funcBody.getParent() instanceof QuplaFuncBody){
                 myExpression = funcBody;
             }
             funcBody = funcBody.getParent();
         }
+        if(funcBody==null) return new Object[0];
         List<PsiElement> allRefs = new ArrayList<>();
 
         //look in state vars
@@ -80,13 +81,13 @@ public class QuplaVarOrParamPsiReferenceImpl extends PsiReferenceBase implements
     private PsiElement resolveLocally(){
         PsiElement funcBody = myElement;
         PsiElement myExpression = null;
-        while(!(funcBody instanceof QuplaFuncBody)){
+        while((!(funcBody instanceof QuplaFuncBody) && funcBody!=null)){
             if(funcBody.getParent() instanceof QuplaFuncBody){
                 myExpression = funcBody;
             }
             funcBody = funcBody.getParent();
         }
-
+        if(funcBody==null)return null;
         //look in state vars
         if(((QuplaFuncBody)funcBody).getStateExprList()!=null) {
             for (QuplaStateExpr stateExpr : ((QuplaFuncBody) funcBody).getStateExprList()){

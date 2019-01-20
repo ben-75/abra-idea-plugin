@@ -32,12 +32,13 @@ public class QuplaRunConfigurationProducer extends RunConfigurationProducer<Qupl
 //        settingsEditor.super.onFirstRun(configuration, context, startRunnable);
 //    }
 
+    //TODO : fix this
     @Override
     protected boolean setupConfigurationFromContext(QuplaInterpreterRunConfiguration configuration, ConfigurationContext context, Ref<PsiElement> sourceElement) {
         if(sourceElement.get().getContainingFile() instanceof QuplaFile){
             QuplaFuncStmt func = findFuncStmt(sourceElement.get());
             if(func==null)return false;
-            configuration.setTargetModule((QuplaFile) func.getContainingFile());
+            //configuration.setTargetModule((QuplaFile) func.getContainingFile());
             configuration.setTargetFunc(func);
             configuration.setName(func.getFuncSignature().getFuncName().getText());
             return true;

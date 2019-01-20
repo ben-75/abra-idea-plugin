@@ -1,13 +1,15 @@
 package org.qupla.language.module;
 
+import com.intellij.lang.ASTNode;
 import com.intellij.openapi.application.ApplicationManager;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.psi.PsiManager;
 import com.intellij.psi.SmartPointerManager;
 import com.intellij.psi.SmartPsiElementPointer;
-import org.qupla.language.psi.QuplaFile;
-import org.qupla.language.psi.QuplaImportStmt;
+import com.intellij.psi.tree.TokenSet;
+import org.qupla.language.psi.*;
+import org.qupla.runtime.interpreter.QuplaInterpreterSettingsEditor;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -41,6 +43,10 @@ public class QuplaModule {
         });
     }
 
+    public Project getProject() {
+        return project;
+    }
+
     public List<QuplaFile> getModuleFiles(){
         return unwrap(quplaFiles);
     }
@@ -62,5 +68,47 @@ public class QuplaModule {
 
     public Set<String> getImportedModuleNames() {
         return importedModuleNames;
+    }
+
+    public QuplaFuncStmt findFuncStmt(String tmpl_name, String func_name) {
+        if(tmpl_name==null){
+            for(QuplaFile f:getModuleFiles()){
+                QuplaFuncStmt func = f.getStandaloneFunc(func_name);
+                if(func!=null)return func;
+            }
+        }else{
+            for(QuplaFile f:getModuleFiles()){
+                QuplaTemplateStmt tmpl = f.getTemplate(tmpl_name);
+                if (tmpl != null) {
+                    for (ASTNode stmt : tmpl.getNode().getChildren(TokenSet.create(QuplaTypes.FUNC_STMT))) {
+                        if (((QuplaFuncStmt) stmt.getPsi()).getFuncSignature().getFuncName().getText().equals(func_name)) {
+                            return (QuplaFuncStmt) stmt.getPsi();
+                        }
+                    }
+                }
+            }
+        }
+        return null;
+    }
+
+    public List<QuplaFuncStmt> findAllFuncStmt() {
+        ArrayList<QuplaFuncStmt> funcStmts = new ArrayList<>();
+        for(QuplaFile quplaFile:getModuleFiles()) {
+            funcStmts.addAll(quplaFile.findAllFuncStmt());
+        }
+        return funcStmts;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        QuplaModule that = (QuplaModule) o;
+        return Objects.equals(name, that.name);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(name);
     }
 }

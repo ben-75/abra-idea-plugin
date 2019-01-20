@@ -4,6 +4,7 @@ import com.intellij.psi.PsiFile;
 import org.qupla.language.psi.QuplaFile;
 
 import java.util.Collection;
+import java.util.List;
 
 public interface QuplaModuleManager {
 
@@ -23,4 +24,6 @@ public interface QuplaModuleManager {
     Collection<QuplaFile> getAllQuplaFiles();
 
     QuplaFile findQuplaFile(String modulePath);
+
+    List<QuplaModule> getImportedModules(QuplaModule module);
 }

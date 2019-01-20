@@ -1,7 +1,7 @@
 <idea-plugin>
   <id>org.qupla.language</id>
   <name>Qupla Language</name>
-  <version>0.1.4-alpha</version>
+  <version>0.1.5-alpha</version>
   <vendor url="https://github.com/ben-75/qupla-idea-plugin"/>
 
   <description><![CDATA[
@@ -23,14 +23,17 @@
 
   <change-notes><![CDATA[
         <ul>
-        <li>Requires intelliJ build 182.0+
-        <li>Support updated syntax for template instantiation
+        <li>Fix selection of numbers by double-click
+        <li>Fix a crash when resolving symbols in test and eval statements
+        <li>Fix a bug with the "Function" drop-down in configuration panel
+        <li>Flag -view is available in run config panel
+        <li>Run configuration improvements : custom args, select multiple modules, function selector rendering, ...
         </ul>
     ]]>
   </change-notes>
 
 
-  <idea-version since-build="181.0"/>
+  <idea-version since-build="182.0"/>
   <extensions defaultExtensionNs="com.intellij">
     <fileTypeFactory implementation="org.qupla.language.QuplaFileTypeFactory"/>
     <lang.parserDefinition language="Qupla" implementationClass="org.qupla.language.QuplaParserDefinition"/>
