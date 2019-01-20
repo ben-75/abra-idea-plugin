@@ -243,8 +243,12 @@ public class QuplaInterpreterRunConfiguration extends ApplicationConfiguration {
                 element.setAttribute("runMode",runMode==null?"function":runMode);
                 element.setAttribute("customArgs",customArgs==null?"":customArgs);
                 StringBuilder sb = new StringBuilder();
-                for(QuplaModule m:quplaModules){
-                    sb.append(m.getName()).append(" ");
+                if(quplaModules!=null) {
+                    for (QuplaModule m : quplaModules) {
+                        sb.append(m.getName()).append(" ");
+                    }
+                }else{
+                    quplaModules = new ArrayList<>();
                 }
                 element.setAttribute("quplaModules",sb.toString().trim());
 
@@ -284,6 +288,7 @@ public class QuplaInterpreterRunConfiguration extends ApplicationConfiguration {
             }
             @Override
             public void run() {
+
                 //flags
                 test = attributeEquals("test","true");
                 eval = attributeEquals("eval","true");
@@ -296,11 +301,29 @@ public class QuplaInterpreterRunConfiguration extends ApplicationConfiguration {
                 runMode = element.getAttribute("runMode")==null?"function":element.getAttributeValue("runMode");
                 customArgs = element.getAttribute("customArgs")==null?"":element.getAttributeValue("customArgs");
                 //modules
-                Attribute quplaMod = element.getAttribute("quplaModules");
                 quplaModules = new ArrayList<>();
+                QuplaModuleManager moduleManager = getProject().getComponent(QuplaModuleManager.class);
+
+                //upgrade code (can be deleted at some point)
+                try{
+                    String legacyTargetModule = element.getAttributeValue("targetModule");
+                    if(legacyTargetModule!=null){
+                        if(legacyTargetModule.indexOf("/")>-1){
+                            legacyTargetModule = legacyTargetModule.substring(0,legacyTargetModule.indexOf("/"));
+                        }
+                        QuplaModule legacy = moduleManager.getModule(legacyTargetModule);
+                        if(legacy!=null) {
+                            quplaModules.add(legacy);
+                        }
+                    }
+                }catch (Exception e){
+                    //ignore
+                }
+                //end of upgrade code
+
+                Attribute quplaMod = element.getAttribute("quplaModules");
                 if(quplaMod!=null && quplaMod.getValue().length()>0){
                     String[] split = quplaMod.getValue().split(" ");
-                    QuplaModuleManager moduleManager = getProject().getComponent(QuplaModuleManager.class);
                     for(String m:split){
                         QuplaModule quplaModule = moduleManager.getModule(m);
                         if(quplaModule!=null && !quplaModules.contains(quplaModule)){
