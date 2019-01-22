@@ -3,7 +3,7 @@
 Intellij plugin for the Qupla language.  
   
 The Qupla language is not completely defined yet, so consider this plugin as experimental.  
-We recommend to use the plugin with IntelliJ IDE (it also works with Android Studio) (minimal build : 171.0)  
+We recommend to use the plugin with IntelliJ IDE (it also works with Android Studio) (minimal build : 182.0)  
   
 Keep in mind that Qupla language is evolving almost every day, we do our best to keep this plugin compatible with latest Qupla version.
 If you wish to support this effort, you can make a donation on this address : BSLZW9OSZPOPWWDUWVZLLJILAATPCBCTPTSJEE9OIULLWSBWBHNJHIQYQ9TPDUHTASINTWWZAPCISEQT9RRPAXNWC9
