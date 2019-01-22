@@ -96,7 +96,7 @@ public class QuplaEvalContextRequestor implements ClassPrepareRequestor {
             requestsManager.enableRequest(methodExitRequest);
 
             callStack.clear();
-
+            QuplaCallStackItem.Factory.clear();
 
             requestRegistered = true;
         }
@@ -109,6 +109,7 @@ public class QuplaEvalContextRequestor implements ClassPrepareRequestor {
                 if (event instanceof MethodExitEvent) {
                     if (Arrays.asList(watchedEvalMethods).contains(((MethodExitEvent) event).method().name())) {
                         callStack.remove(0);
+                        QuplaCallStackItem.Factory.release();
                     }
                 }
             }
@@ -175,7 +176,7 @@ public class QuplaEvalContextRequestor implements ClassPrepareRequestor {
 
                                 //DebuggerUtils.getValueAsString(evaluationContext, token.getValue(sourceField));
 
-                                QuplaCallStackItem item = new QuplaCallStackItem(myProject,
+                                QuplaCallStackItem item = QuplaCallStackItem.Factory.newQuplaCallStackItem(myProject,
                                         ((MethodEntryEvent) event).method().name(),
                                         exprString,
                                         lineNumber + 1, colNumber + 1, stackFrame, modulePath);

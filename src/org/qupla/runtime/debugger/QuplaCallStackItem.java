@@ -26,13 +26,14 @@ import org.qupla.runtime.debugger.ui.VariablesNode;
 
 import javax.swing.tree.MutableTreeNode;
 import javax.swing.tree.TreeNode;
+import java.util.ArrayList;
 
 public class QuplaCallStackItem {
 
     private String modulePath;
-    private final int lineNumber;  //1 based index (end user friendly)
-    private final int colNumber;   //1 based index (end user friendly)
-    private final int stackFrameIndex;
+    private int lineNumber;  //1 based index (end user friendly)
+    private int colNumber;   //1 based index (end user friendly)
+    private int stackFrameIndex;
     private String expr;
     private String operation;
     private Project project;
@@ -49,6 +50,7 @@ public class QuplaCallStackItem {
         this.project = project;
         this.stackFrameIndex = stackFrameIndex;
     }
+
 
     public SourcePosition getSourcePosition() {
         if(sourcePosition==null){
@@ -79,5 +81,42 @@ public class QuplaCallStackItem {
         this.rootNode = rootNode;
     }
 
+    private QuplaCallStackItem update(Project project, String operation, String expr, int lineNumber, int colNumber, int stackFrameIndex, String modulePath){
+        this.expr = expr;
+        this.lineNumber = lineNumber;
+        this.colNumber = colNumber;
+        this.modulePath = modulePath;
+        this.operation = operation;
+        this.project = project;
+        this.stackFrameIndex = stackFrameIndex;
+        rootNode=null;
+        sourcePosition=null;
+        return this;
+    }
+
+    public static class Factory {
+        private static int currentIndex = 0;
+        private static ArrayList<QuplaCallStackItem> store = new ArrayList<>();
+
+        public static synchronized QuplaCallStackItem newQuplaCallStackItem(Project project, String operation, String expr, int lineNumber, int colNumber, int stackFrameIndex, String modulePath){
+            if(currentIndex==store.size()){
+                QuplaCallStackItem newItem = new QuplaCallStackItem(project, operation, expr, lineNumber, colNumber, stackFrameIndex, modulePath);
+                store.add(newItem);
+                currentIndex++;
+                return newItem;
+            }else{
+                return store.get(currentIndex++).update(project, operation, expr, lineNumber, colNumber, stackFrameIndex, modulePath);
+            }
+        }
+
+        public synchronized static void release(){
+            currentIndex--;
+        }
+
+        public synchronized static void clear() {
+            currentIndex=0;
+        }
+
+    }
 
 }
