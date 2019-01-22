@@ -225,14 +225,12 @@ public class QuplaLineBreakpoint <P extends QuplaBreakpointProperties> extends B
                         Field colNrField = token.referenceType().fieldByName("colNr");
                         int lineNumber = ((IntegerValueImpl) token.getValue(lineNrField)).intValue();
                         int colNumber = ((IntegerValueImpl) token.getValue(colNrField)).intValue();
-                        String currentPath = DebuggerUtils.getValueAsString(
-                                evaluationContext,
-                                token.getValue(token.referenceType().fieldByName("source")));
+                        String currentPath = DebuggerUtils.getValueAsString(evaluationContext, token.getValue(sourceField));
                         boolean pause = lineNumber == line && colNumber==column && currentPath!=null && currentPath.length()>3 && currentPath.substring(0,currentPath.length()-4).equals(modulePath);
                         if(pause){
                             context.getDebugProcess().getPositionManager().clearCache();
                             QuplaPositionManager.current.setLastSourcePosition(position);
-                            quplaEvalContextRequestor.updateQuplaDebuggerWindow();
+                            quplaEvalContextRequestor.updateQuplaDebuggerWindow(frameProxy, evaluationContext);
                         }
                         return pause;
                     }

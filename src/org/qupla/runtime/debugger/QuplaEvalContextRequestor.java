@@ -8,6 +8,7 @@ import com.intellij.debugger.engine.evaluation.EvaluateException;
 import com.intellij.debugger.engine.evaluation.EvaluationContext;
 import com.intellij.debugger.engine.evaluation.EvaluationContextImpl;
 import com.intellij.debugger.engine.events.SuspendContextCommandImpl;
+import com.intellij.debugger.engine.jdi.StackFrameProxy;
 import com.intellij.debugger.engine.requests.RequestManagerImpl;
 import com.intellij.debugger.jdi.StackFrameProxyImpl;
 import com.intellij.debugger.jdi.ThreadReferenceProxyImpl;
@@ -26,26 +27,23 @@ import com.intellij.ui.content.Content;
 import com.intellij.ui.content.ContentFactory;
 import com.intellij.ui.content.ContentManager;
 import com.intellij.xdebugger.impl.actions.FocusOnBreakpointAction;
-import com.sun.jdi.Field;
-import com.sun.jdi.ObjectReference;
-import com.sun.jdi.ReferenceType;
-import com.sun.jdi.Value;
+import com.sun.jdi.*;
 import com.sun.jdi.event.LocatableEvent;
 import com.sun.jdi.event.MethodEntryEvent;
 import com.sun.jdi.event.MethodExitEvent;
 import com.sun.jdi.request.MethodEntryRequest;
 import com.sun.jdi.request.MethodExitRequest;
 import com.sun.tools.jdi.*;
+import org.jetbrains.annotations.NotNull;
 import org.qupla.runtime.debugger.ui.QuplaDebuggerToolWindow;
 import org.qupla.runtime.debugger.ui.TritVectorNode;
 import org.qupla.runtime.debugger.ui.TritVectorView;
 import org.qupla.runtime.debugger.ui.VariablesNode;
 
 import javax.swing.*;
+import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.MutableTreeNode;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
+import java.util.*;
 
 /**
  * This class create debugger request for the QuplaEvalContext class.
@@ -84,6 +82,8 @@ public class QuplaEvalContextRequestor implements ClassPrepareRequestor {
     public void processClassPrepare(DebugProcess debugProcess, ReferenceType referenceType) {
         System.out.println("processClassPrepare");
         if (!requestRegistered) {
+            tritVectorNameField = null;
+            stackField = null;
             System.out.println("need to process class prepare here");
             RequestManagerImpl requestsManager = (RequestManagerImpl) debugProcess.getRequestsManager();
 
@@ -135,7 +135,6 @@ public class QuplaEvalContextRequestor implements ClassPrepareRequestor {
                         // might be if the thread has been collected
                         return false;
                     }
-                    EvaluationContextImpl evaluationContext = new EvaluationContextImpl(context, frameProxy, () -> getThisObject(context, event));
                     List<Value> args = frameProxy.getArgumentValues();
                     if (args.size() == 1) {
                         Value expr = args.get(0);
@@ -147,20 +146,40 @@ public class QuplaEvalContextRequestor implements ClassPrepareRequestor {
                             }
                             abraExprType = (ReferenceTypeImpl) DebuggerUtils.getSuperType(expr.type(), BASE_EXPR_CLASSNAME);
                             if (abraExprType != null) {
-                                Field originField = abraExprType.fieldByName("origin");
-                                ObjectReferenceImpl token = (ObjectReferenceImpl) ((ObjectReferenceImpl) expr).getValue(originField);
-                                Field sourceField = token.referenceType().fieldByName("source");
-                                Field lineNrField = token.referenceType().fieldByName("lineNr");
-                                Field colNrField = token.referenceType().fieldByName("colNr");
-                                int lineNumber = ((IntegerValueImpl) token.getValue(lineNrField)).intValue();
-                                int colNumber = ((IntegerValueImpl) token.getValue(colNrField)).intValue();
-                                String exprString = DebuggerUtils.getValueAsString(evaluationContext, expr);
-                                String modulePath = DebuggerUtils.getValueAsString(
-                                        evaluationContext,
-                                        token.getValue(token.referenceType().fieldByName("source")));
-                                QuplaCallStackItem item = new QuplaCallStackItem(myProject, ((MethodEntryEvent) event).method().name(), exprString, lineNumber + 1, colNumber + 1, modulePath);
-                                item.setStackFrameProxy(frameProxy);
-                                item.setRootNode(buildTree(frameProxy,evaluationContext));
+                                ObjectReferenceImpl token = (ObjectReferenceImpl) ((ObjectReferenceImpl) expr).getValue(abraExprType.fieldByName("origin"));
+                                if(sourceField==null){
+                                    sourceField = token.referenceType().fieldByName("source");
+                                    lineNrField = token.referenceType().fieldByName("lineNr");
+                                    colNrField = token.referenceType().fieldByName("colNr");
+                                    stackFrameField = frameProxy.thisObject().referenceType().fieldByName("stackFrame");
+                                    lineAndColField = Arrays.asList(lineNrField, colNrField);
+                                }
+                                Map<Field,Value> lineAndCol = token.getValues(Arrays.asList(
+                                        token.referenceType().fieldByName("lineNr"),token.referenceType().fieldByName("colNr")));
+                                int lineNumber = ((IntegerValueImpl) lineAndCol.get(token.referenceType().fieldByName("lineNr"))).intValue();
+                                int colNumber = ((IntegerValueImpl) lineAndCol.get(token.referenceType().fieldByName("colNr"))).intValue();
+                                int stackFrame = ((IntegerValueImpl) frameProxy.thisObject().getValue(frameProxy.thisObject().referenceType().fieldByName("stackFrame"))).intValue();
+                                EvaluationContextImpl evaluationContext = new EvaluationContextImpl(context, frameProxy, () -> getThisObject(context, event));
+                                String exprString = ((StringReference)context.getDebugProcess().invokeInstanceMethod(
+                                        evaluationContext, (ObjectReference) expr,
+                                        ((ObjectReferenceImpl) expr).referenceType().methodsByName("toString").get(0),
+                                        Collections.EMPTY_LIST,0)).value();
+
+                                        //DebuggerUtils.getValueAsString(evaluationContext, expr);
+                                ObjectReferenceImpl srcRef = (ObjectReferenceImpl) token.getValue(token.referenceType().fieldByName("source"));
+                                String modulePath = srcRef==null?null:((StringReference)context.getDebugProcess().invokeInstanceMethod(
+                                        evaluationContext, (ObjectReference) srcRef,
+                                        srcRef.referenceType().methodsByName("toString").get(0),
+                                        Collections.EMPTY_LIST,0)).value();
+
+
+                                //DebuggerUtils.getValueAsString(evaluationContext, token.getValue(sourceField));
+
+                                QuplaCallStackItem item = new QuplaCallStackItem(myProject,
+                                        ((MethodEntryEvent) event).method().name(),
+                                        exprString,
+                                        lineNumber + 1, colNumber + 1, stackFrame, modulePath);
+
                                 callStack.add(0, item);
                                 return false;
                             }
@@ -180,6 +199,12 @@ public class QuplaEvalContextRequestor implements ClassPrepareRequestor {
 
     }
 
+    private static Field originField;
+    private static Field lineNrField;
+    private static Field colNrField;
+    private static Field sourceField;
+    private static List<Field> lineAndColField;
+
 
     private static Field stackField;
     private static Field stackFrameField;
@@ -190,23 +215,30 @@ public class QuplaEvalContextRequestor implements ClassPrepareRequestor {
     private static Field tritVectorSizeField;
     private static Field tritVectorVectorField;
     private static Field tritVectorValueTritField;
+    private static List<Field> tritVectorFields;
 
-
-    private MutableTreeNode buildTree(StackFrameProxyImpl frame, EvaluationContext evaluationContext) throws EvaluateException {
-        if (stackField == null) {
-            stackField = frame.thisObject().referenceType().fieldByName("stack");
-            stackFrameField = frame.thisObject().referenceType().fieldByName("stackFrame");
-            ObjectReferenceImpl stackReference = (ObjectReferenceImpl) frame.thisObject().getValue(stackField);
-            elementCountField = stackReference.referenceType().fieldByName("elementCount");
-            elementDataField = stackReference.referenceType().fieldByName("elementData");
-        }
-        ObjectReferenceImpl stackReference = (ObjectReferenceImpl) frame.thisObject().getValue(stackField);
-        int stackFrame = ((IntegerValueImpl) frame.thisObject().getValue(stackFrameField)).intValue();
-        int elementCount = ((IntegerValueImpl) stackReference.getValue(elementCountField)).intValue();
-        ArrayReferenceImpl arrayRef = (ArrayReferenceImpl) stackReference.getValue(elementDataField);
-
+//    private MutableTreeNode buildTree(StackFrameProxyImpl frame, EvaluationContext evaluationContext) throws EvaluateException {
+//        if (stackField == null) {
+//            stackField = frame.thisObject().referenceType().fieldByName("stack");
+//            stackFrameField = frame.thisObject().referenceType().fieldByName("stackFrame");
+//            ObjectReferenceImpl stackReference = (ObjectReferenceImpl) frame.thisObject().getValue(stackField);
+//            elementCountField = stackReference.referenceType().fieldByName("elementCount");
+//            elementDataField = stackReference.referenceType().fieldByName("elementData");
+//        }
+//        ObjectReferenceImpl stackReference = (ObjectReferenceImpl) frame.thisObject().getValue(stackField);
+//        int stackFrame = ((IntegerValueImpl) frame.thisObject().getValue(stackFrameField)).intValue();
+//        int elementCount = ((IntegerValueImpl) stackReference.getValue(elementCountField)).intValue();
+//        ArrayReferenceImpl arrayRef = (ArrayReferenceImpl) stackReference.getValue(elementDataField);
+//
+//        MutableTreeNode root = buildVariableTree(evaluationContext, stackFrame, elementCount, arrayRef);
+//
+//        return root;
+//    }
+//
+    @NotNull
+    public static MutableTreeNode buildVariableTree(EvaluationContext evaluationContext, int stackFrame, int elementCount, ArrayReferenceImpl arrayRef) throws EvaluateException {
         MutableTreeNode root = new VariablesNode();
-
+        System.out.println("from="+stackFrame+" to="+elementCount);
         for (int j = stackFrame; j < elementCount; j++) {
             ObjectReferenceImpl tritVectorRef = (ObjectReferenceImpl) arrayRef.getValue(j);
             if (tritVectorNameField == null) {
@@ -215,24 +247,90 @@ public class QuplaEvalContextRequestor implements ClassPrepareRequestor {
                 tritVectorSizeField = tritVectorRef.referenceType().fieldByName("size");
                 tritVectorVectorField = tritVectorRef.referenceType().fieldByName("vector");
                 tritVectorValueTritField = tritVectorRef.referenceType().fieldByName("valueTrits");
+                tritVectorFields = Arrays.asList(tritVectorNameField,tritVectorOffsetField,tritVectorSizeField,tritVectorVectorField,tritVectorValueTritField);
             }
-            String name = DebuggerUtils.getValueAsString(
-                    evaluationContext, tritVectorRef.getValue(tritVectorNameField));
-            String vector = DebuggerUtils.getValueAsString(
-                    evaluationContext, tritVectorRef.getValue(tritVectorVectorField));
-            int size = ((IntegerValueImpl) tritVectorRef.getValue(tritVectorSizeField)).intValue();
-            int offset = ((IntegerValueImpl) tritVectorRef.getValue(tritVectorOffsetField)).intValue();
-            int valueTrit = ((IntegerValueImpl) tritVectorRef.getValue(tritVectorValueTritField)).intValue();
+
+            Map<Field,Value> values = tritVectorRef.getValues(tritVectorFields);
+
+            String name = ((StringReference)values.get(tritVectorNameField)).value();
+
+
+//            String vector = DebuggerUtils.getValueAsString(
+//                    evaluationContext, tritVectorRef.getValue(tritVectorVectorField));
+            ObjectReference tritBufferRef = (ObjectReference) tritVectorRef.getValue(tritVectorVectorField);
+            String vector = ((StringReference)evaluationContext.getDebugProcess().invokeInstanceMethod(
+                    evaluationContext, tritBufferRef,
+                    tritBufferRef.referenceType().methodsByName("toString").get(0),
+                    Collections.EMPTY_LIST,0)).value();
+
+            int size = ((IntegerValueImpl) values.get(tritVectorSizeField)).intValue();
+            int offset = ((IntegerValueImpl) values.get(tritVectorOffsetField)).intValue();
+            int valueTrit = ((IntegerValueImpl) values.get(tritVectorValueTritField)).intValue();
 
             TritVectorView tritVectorView = new TritVectorView(name, offset, size, valueTrit, vector);
             ((VariablesNode) root).add(new TritVectorNode(root, tritVectorView));
         }
-
         return root;
     }
 
 
-    public void updateQuplaDebuggerWindow() {
+    public void updateQuplaDebuggerWindow(StackFrameProxyImpl frame, EvaluationContext evaluationContext) {
+
+        //lazy init
+        try {
+            if (stackField == null) {
+                stackField = frame.thisObject().referenceType().fieldByName("stack");
+                stackFrameField = frame.thisObject().referenceType().fieldByName("stackFrame");
+                ObjectReferenceImpl stackReference = (ObjectReferenceImpl) frame.thisObject().getValue(stackField);
+                elementCountField = stackReference.referenceType().fieldByName("elementCount");
+                elementDataField = stackReference.referenceType().fieldByName("elementData");
+            }
+        }catch (EvaluateException e){
+            e.printStackTrace();
+            stackField = null;
+            return;
+        }
+
+
+        //prepare callstack
+        ObjectReferenceImpl stackReference = null;
+        try {
+            stackReference = (ObjectReferenceImpl) frame.thisObject().getValue(stackField);
+        }catch (EvaluateException e){
+            e.printStackTrace();
+            return;
+        }
+        ArrayReferenceImpl arrayRef = (ArrayReferenceImpl) stackReference.getValue(elementDataField);
+
+        int currentFromIndex = -1;
+        int currentToIndex = ((IntegerValueImpl) stackReference.getValue(elementCountField)).intValue();
+        int oldFromIndex = -1;
+
+        for(QuplaCallStackItem callStackItem:callStack) {
+            if(callStackItem!=callStack.get(callStack.size()-1)) {
+                try {
+                    currentFromIndex = callStackItem.getStackFrameIndex();
+                    if (oldFromIndex != -1) {
+                        if (currentFromIndex != oldFromIndex) {
+                            currentToIndex = oldFromIndex;
+                        }
+                    }
+
+                    MutableTreeNode root = buildVariableTree(evaluationContext, currentFromIndex, currentToIndex, arrayRef);
+
+                    callStackItem.setRootNode(root);
+
+                    oldFromIndex = currentFromIndex;
+                } catch (EvaluateException e) {
+                    e.printStackTrace();
+                    callStackItem.setRootNode(new DefaultMutableTreeNode("not available"));
+                }
+            }else{
+                callStackItem.setRootNode(new DefaultMutableTreeNode("(no variables)"));
+            }
+        }
+
+
         ApplicationManager.getApplication().invokeLater(new Runnable() {
             @Override
             public void run() {

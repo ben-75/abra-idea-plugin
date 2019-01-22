@@ -30,24 +30,24 @@ import javax.swing.tree.TreeNode;
 public class QuplaCallStackItem {
 
     private String modulePath;
-    private int lineNumber;  //1 based index (end user friendly)
-    private int colNumber;   //1 based index (end user friendly)
+    private final int lineNumber;  //1 based index (end user friendly)
+    private final int colNumber;   //1 based index (end user friendly)
+    private final int stackFrameIndex;
     private String expr;
     private String operation;
     private Project project;
     private MutableTreeNode rootNode;
 
     private SourcePosition sourcePosition;
-    private StackFrameProxy stackFrameProxy;
-    private EvaluationContextImpl evaluationContext;
 
-    public QuplaCallStackItem(Project project, String operation, String expr, int lineNumber, int colNumber, String modulePath) {
+    public QuplaCallStackItem(Project project, String operation, String expr, int lineNumber, int colNumber, int stackFrameIndex, String modulePath) {
         this.expr = expr;
         this.lineNumber = lineNumber;
         this.colNumber = colNumber;
         this.modulePath = modulePath;
         this.operation = operation;
         this.project = project;
+        this.stackFrameIndex = stackFrameIndex;
     }
 
     public SourcePosition getSourcePosition() {
@@ -67,8 +67,8 @@ public class QuplaCallStackItem {
         return modulePath==null?expr:"<html>"+expr + "<font color=#808080>&nbsp;&nbsp;("+lineNumber+", " + modulePath.substring(modulePath.lastIndexOf("/")+1) + ")</font></html>";
     }
 
-    public void setStackFrameProxy(StackFrameProxy stackFrameProxy) {
-        this.stackFrameProxy = stackFrameProxy;
+    public int getStackFrameIndex() {
+        return stackFrameIndex;
     }
 
     public MutableTreeNode getRootNode() {
