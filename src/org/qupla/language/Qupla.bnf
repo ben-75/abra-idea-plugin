@@ -199,7 +199,7 @@ mergeExpr           ::= concatExpr (MERGE_OPERATOR concatExpr)*
 
 concatExpr          ::= postfixExpr (AMP postfixExpr)*
 
-postfixExpr         ::= valueExpr | funcExpr | lutExpr | lutOrSliceExpr | typeExpr | sliceExpr | ('(' condExpr ')')
+postfixExpr         ::= valueExpr | funcExpr | lutExpr | lutOrSliceExpr | typeExpr | sliceExpr | sizeofExpr | ('(' condExpr ')')
 
 valueExpr           ::= float | integer | trit
 
@@ -223,6 +223,8 @@ lutExpr             ::= lutNameRef '[' (mergeExpr (COMMA mergeExpr)+) ']'
                     {
                         methods=[getResolvedSize ]
                     }
+
+sizeofExpr          ::= SIZEOF_KEYWORD typeOrPlaceHolderNameRef
 
 sliceExpr           ::= paramOrVarNameRef (DOT fieldNameRef)* rangeExpr?
                     {

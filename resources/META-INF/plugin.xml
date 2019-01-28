@@ -1,7 +1,7 @@
 <idea-plugin>
   <id>org.qupla.language</id>
   <name>Qupla Language</name>
-  <version>0.1.5-alpha</version>
+  <version>0.1.6-alpha</version>
   <vendor url="https://github.com/ben-75/qupla-idea-plugin"/>
 
   <description><![CDATA[
@@ -23,11 +23,7 @@
 
   <change-notes><![CDATA[
         <ul>
-        <li>Fix selection of numbers by double-click
-        <li>Fix a crash when resolving symbols in test and eval statements
-        <li>Fix a bug with the "Function" drop-down in configuration panel
-        <li>Flag -view is available in run config panel
-        <li>Run configuration improvements : custom args, select multiple modules, function selector rendering, ...
+        <li>sizeof keyword
         </ul>
     ]]>
   </change-notes>

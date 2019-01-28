@@ -114,6 +114,8 @@ public class QuplaSyntaxHighlighter extends SyntaxHighlighterBase  {
             return TEST_ASSERT_KEYS;
         }else if (tokenType.equals(QuplaTypes.NULL_KEYWORD)) {
             return KEYWORD_KEYS;
+        }else if (tokenType.equals(QuplaTypes.SIZEOF_KEYWORD)) {
+            return KEYWORD_KEYS;
         }else if (tokenType.equals(QuplaTypes.TRIT)) {
             return TRIT_KEYS;
         }else if (tokenType.equals(QuplaTypes.AT)) {
