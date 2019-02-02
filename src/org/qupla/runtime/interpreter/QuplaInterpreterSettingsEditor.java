@@ -438,7 +438,7 @@ public class QuplaInterpreterSettingsEditor extends SettingsEditor<QuplaInterpre
         List<QuplaFileComboBoxItem> quplaFiles = new ArrayList<>();
         for(QuplaModule module:modules){
             for(QuplaFile f:module.getModuleFiles())
-                quplaFiles.add(new QuplaFileComboBoxItem(f));
+                if(f!=null)quplaFiles.add(new QuplaFileComboBoxItem(f));
         }
         quplaFiles.sort(new Comparator<QuplaFileComboBoxItem>() {
             @Override
