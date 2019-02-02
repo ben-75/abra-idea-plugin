@@ -60,6 +60,7 @@ public class QuplaModule {
     private List<QuplaFile> unwrap(List<SmartPsiElementPointer<QuplaFile>> l){
         return l.stream()
                 .map( f -> f.getElement() )
+                .filter(Objects::nonNull)
                 .collect(Collectors.toList());
     }
 
@@ -74,20 +75,16 @@ public class QuplaModule {
     public QuplaFuncStmt findFuncStmt(String tmpl_name, String func_name) {
         if(tmpl_name==null){
             for(QuplaFile f:getModuleFiles()){
-                if(f!=null) {
-                    QuplaFuncStmt func = f.getStandaloneFunc(func_name);
-                    if (func != null) return func;
-                }
+                QuplaFuncStmt func = f.getStandaloneFunc(func_name);
+                if (func != null) return func;
             }
         }else{
             for(QuplaFile f:getModuleFiles()){
-                if(f!=null){
-                    QuplaTemplateStmt tmpl = f.getTemplate(tmpl_name);
-                    if (tmpl != null) {
-                        for (ASTNode stmt : tmpl.getNode().getChildren(TokenSet.create(QuplaTypes.FUNC_STMT))) {
-                            if (((QuplaFuncStmt) stmt.getPsi()).getFuncSignature().getFuncName().getText().equals(func_name)) {
-                                return (QuplaFuncStmt) stmt.getPsi();
-                            }
+                QuplaTemplateStmt tmpl = f.getTemplate(tmpl_name);
+                if (tmpl != null) {
+                    for (ASTNode stmt : tmpl.getNode().getChildren(TokenSet.create(QuplaTypes.FUNC_STMT))) {
+                        if (((QuplaFuncStmt) stmt.getPsi()).getFuncSignature().getFuncName().getText().equals(func_name)) {
+                            return (QuplaFuncStmt) stmt.getPsi();
                         }
                     }
                 }
@@ -99,9 +96,7 @@ public class QuplaModule {
     public List<QuplaFuncStmt> findAllFuncStmt() {
         ArrayList<QuplaFuncStmt> funcStmts = new ArrayList<>();
         for(QuplaFile quplaFile:getModuleFiles()) {
-            if(quplaFile!=null){
-                funcStmts.addAll(quplaFile.findAllFuncStmt());
-            }
+            funcStmts.addAll(quplaFile.findAllFuncStmt());
         }
         return funcStmts;
     }

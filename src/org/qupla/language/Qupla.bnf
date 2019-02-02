@@ -251,7 +251,7 @@ constTerm           ::= constFactor ((SLASH|TIMES|MODULO) constFactor)*
                         methods=[getResolvedSize ]
                     }
 
-constFactor         ::= number | typeOrPlaceHolderNameRef ('.' fieldNameRef)* | (MINUS constFactor) | ('(' constExpr ')')
+constFactor         ::= funcExpr | number | typeOrPlaceHolderNameRef ('.' fieldNameRef)* | (MINUS constFactor) | ('(' constExpr ')')
                     {
                         methods = [getResolvedSize ]
                     }
