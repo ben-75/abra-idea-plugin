@@ -1,7 +1,7 @@
 <idea-plugin>
   <id>org.qupla.language</id>
   <name>Qupla Language</name>
-  <version>0.1.6-alpha</version>
+  <version>0.1.7-alpha</version>
   <vendor url="https://github.com/ben-75/qupla-idea-plugin"/>
 
   <description><![CDATA[
@@ -24,6 +24,7 @@
   <change-notes><![CDATA[
         <ul>
         <li>sizeof keyword
+        <li>allow function expression as constant expression
         </ul>
     ]]>
   </change-notes>
