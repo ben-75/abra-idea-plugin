@@ -164,17 +164,6 @@ public class QuplaModuleManagerImpl implements QuplaModuleManager, PersistentSta
         if(startupNotificationRequired){
             VirtualFileManager.getInstance().addVirtualFileListener(new QuplaFileSystemListener(this));
 
-
-            AppExecutorUtil.getAppScheduledExecutorService().scheduleWithFixedDelay(new Runnable() {
-                @Override
-                public void run() {
-                    synchronized (QuplaModuleManagerImpl.this){
-                        populateModuleMap();
-                    }
-                }
-            }, 15, 10L , SECONDS);
-
-
             startupNotificationRequired = false;
             StringBuilder modulesList = new StringBuilder();
             for(String s:modules.keySet()){

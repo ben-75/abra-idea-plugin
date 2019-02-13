@@ -4,6 +4,7 @@ import com.intellij.lang.ASTNode;
 import com.intellij.openapi.application.ApplicationManager;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.vfs.VirtualFile;
+import com.intellij.psi.PsiFile;
 import com.intellij.psi.PsiManager;
 import com.intellij.psi.SmartPointerManager;
 import com.intellij.psi.SmartPsiElementPointer;
@@ -31,10 +32,10 @@ public class QuplaModule {
             public void run() {
                 ArrayList<QuplaFile> files = new ArrayList<>(sources.size());
                 for(VirtualFile src:sources){
-                    QuplaFile quplaFile = (QuplaFile) PsiManager.getInstance(project).findFile(src);
-                    if(quplaFile !=null){
-                        files.add(quplaFile);
-                        Collection<QuplaImportStmt> imports = quplaFile.getImportStmts();
+                    PsiFile psiFile = PsiManager.getInstance(project).findFile(src);
+                    if(psiFile instanceof QuplaFile){
+                        files.add((QuplaFile) psiFile);
+                        Collection<QuplaImportStmt> imports = ((QuplaFile) psiFile).getImportStmts();
                         for(QuplaImportStmt stmt:imports)importedModuleNames.add(stmt.getModuleName().getText());
                     }
                 }
@@ -59,6 +60,7 @@ public class QuplaModule {
     private List<QuplaFile> unwrap(List<SmartPsiElementPointer<QuplaFile>> l){
         return l.stream()
                 .map( f -> f.getElement() )
+                .filter(Objects::nonNull)
                 .collect(Collectors.toList());
     }
 
@@ -74,7 +76,7 @@ public class QuplaModule {
         if(tmpl_name==null){
             for(QuplaFile f:getModuleFiles()){
                 QuplaFuncStmt func = f.getStandaloneFunc(func_name);
-                if(func!=null)return func;
+                if (func != null) return func;
             }
         }else{
             for(QuplaFile f:getModuleFiles()){

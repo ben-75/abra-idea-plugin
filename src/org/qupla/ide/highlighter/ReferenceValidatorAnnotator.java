@@ -7,6 +7,7 @@ import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiPolyVariantReference;
 import com.intellij.psi.PsiReference;
 import com.intellij.psi.ResolveResult;
+import org.qupla.ide.ui.action.RefreshImportsIntentionAction;
 import org.qupla.language.UnresolvableTokenException;
 import org.qupla.language.psi.*;
 import org.qupla.language.psi.impl.*;
@@ -26,7 +27,7 @@ public class ReferenceValidatorAnnotator implements Annotator {
                 if(results.length==0){
                     int endOffset = element.getTextRange().getEndOffset();
                     TextRange range = new TextRange(element.getTextRange().getStartOffset(), endOffset);
-                    holder.createErrorAnnotation(range, "Unresolved");
+                    holder.createErrorAnnotation(range, "Unresolved").registerFix(new RefreshImportsIntentionAction());
                 }
             }else {
                 PsiElement resolved = null;
@@ -38,7 +39,7 @@ public class ReferenceValidatorAnnotator implements Annotator {
                 if (resolved == null) {
                     int endOffset = element.getTextRange().getEndOffset();
                     TextRange range = new TextRange(element.getTextRange().getStartOffset(), endOffset);
-                    holder.createErrorAnnotation(range, "Unresolved");
+                    holder.createErrorAnnotation(range, "Unresolved").registerFix(new RefreshImportsIntentionAction());
                 } else {
                     if (!resolved.getContainingFile().equals(element.getContainingFile())) {
                         //was resolved from import
