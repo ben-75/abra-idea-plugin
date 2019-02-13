@@ -41,7 +41,7 @@ public class ReferenceValidatorAnnotator implements Annotator {
                     TextRange range = new TextRange(element.getTextRange().getStartOffset(), endOffset);
                     holder.createErrorAnnotation(range, "Unresolved").registerFix(new RefreshImportsIntentionAction());
                 } else {
-                    if (!resolved.getContainingFile().equals(element.getContainingFile())) {
+                    if (!resolved.getContainingFile().getName().equals(element.getContainingFile().getName())) {
                         //was resolved from import
 
                         List<QuplaFile> importTree = ((QuplaFile) element.getContainingFile()).getImportTree();
