@@ -2,10 +2,7 @@ package org.qupla.language.psi.impl;
 
 import com.intellij.lang.ASTNode;
 import com.intellij.openapi.util.TextRange;
-import com.intellij.psi.PsiElement;
-import com.intellij.psi.PsiFile;
-import com.intellij.psi.PsiReference;
-import com.intellij.psi.PsiReferenceBase;
+import com.intellij.psi.*;
 import com.intellij.psi.tree.TokenSet;
 import com.intellij.util.IncorrectOperationException;
 import org.qupla.language.psi.*;
@@ -38,6 +35,51 @@ public class QuplaFieldPsiReferenceImpl extends PsiReferenceBase implements PsiR
     @Nullable
     @Override
     public PsiElement resolve() {
+        if(myElement.getParent() instanceof QuplaSliceExpr){
+            QuplaSliceExpr sliceExpr = (QuplaSliceExpr)myElement.getParent();
+            QuplaParamOrVarNameRef paramOrVarNameRef = sliceExpr.getParamOrVarNameRef();
+            PsiElement paramOrVarName = paramOrVarNameRef.getReference().resolve();
+            PsiElement typeNameOrPlaceHolderName = null;
+            if(paramOrVarName instanceof QuplaParamName){
+                QuplaFuncParameter funcParameter = (QuplaFuncParameter) paramOrVarName.getParent();
+                if(funcParameter!=null){
+                    typeNameOrPlaceHolderName = funcParameter.getTypeOrPlaceHolderNameRef().getReference().resolve();
+                }
+            }else if(paramOrVarName instanceof QuplaVarName){
+                if(paramOrVarName.getParent() instanceof QuplaStateExpr){
+                    QuplaStateExpr stateExpr = (QuplaStateExpr) paramOrVarName.getParent();
+                    typeNameOrPlaceHolderName = stateExpr.getTypeOrPlaceHolderNameRef().getReference().resolve();
+                }else if(paramOrVarName.getParent() instanceof QuplaAssignExpr){
+                    QuplaAssignExpr assignExpr = (QuplaAssignExpr) paramOrVarName.getParent();
+                    QuplaFuncExpr funcExpr = findFuncExpr(assignExpr.getCondExpr());
+                    if(funcExpr!=null){
+                        PsiReference[] refs = funcExpr.getFuncNameRef().getReferences();
+                        if(refs.length==1){
+                            PsiReference ref = refs[0];
+                            ResolveResult[] resolveResults = ((QuplaFuncPsiReferenceImpl)ref).multiResolve(false);
+                            if(resolveResults.length==1) {
+                                ResolveResult resolveResult = resolveResults[0];
+                                QuplaFuncName funcName = (QuplaFuncName) resolveResult.getElement();
+                                if (funcName != null) {
+                                    QuplaFuncSignature funcSignature = (QuplaFuncSignature) funcName.getParent();
+                                    typeNameOrPlaceHolderName = funcSignature.getTypeOrPlaceHolderNameRefList().get(0).getReference().resolve();
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+            if(typeNameOrPlaceHolderName instanceof QuplaTypeName){
+                QuplaTypeStmt typeStmt = (QuplaTypeStmt) typeNameOrPlaceHolderName.getParent();
+                for(QuplaFieldSpec fieldSpec:typeStmt.getFieldSpecList()){
+                    if(fieldSpec.getFieldName().getText().equals(myElement.getText())){
+                        return fieldSpec.getFieldName();
+                    }
+                }
+            }
+        }
+
+
         PsiElement resolved = resolveInFile(myElement.getContainingFile());
         if(resolved==null){
             resolved = resolveFromImports(myElement.getContainingFile());
@@ -45,6 +87,19 @@ public class QuplaFieldPsiReferenceImpl extends PsiReferenceBase implements PsiR
         return resolved;
     }
 
+    private QuplaFuncExpr findFuncExpr(QuplaCondExpr condExpr){
+        if(condExpr.getMergeExprList().size()==1){
+            QuplaMergeExpr mergeExpr =condExpr.getMergeExprList().get(0);
+            if(mergeExpr.getConcatExprList().size()==1){
+                QuplaConcatExpr concatExpr = mergeExpr.getConcatExprList().get(0);
+                if(concatExpr.getPostfixExprList().size()==1){
+                    QuplaPostfixExpr postfixExpr = concatExpr.getPostfixExprList().get(0);
+                    return postfixExpr.getFuncExpr();
+                }
+            }
+        }
+        return null;
+    }
     @NotNull
     @Override
     public Object[] getVariants() {
