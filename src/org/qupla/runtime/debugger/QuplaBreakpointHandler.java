@@ -12,12 +12,14 @@ import com.intellij.xdebugger.breakpoints.XBreakpoint;
 import com.intellij.xdebugger.breakpoints.XBreakpointHandler;
 import com.intellij.xdebugger.breakpoints.XBreakpointManager;
 import org.jetbrains.annotations.NotNull;
+import org.qupla.runtime.debugger.ui.QuplaDebuggerManager;
 
 public class QuplaBreakpointHandler extends JavaBreakpointHandler {
 
+    private QuplaDebugSession quplaDebugSession;
     public QuplaBreakpointHandler(@NotNull DebugProcessImpl process) {
         super(QuplaLineBreakpointType.class, process);
-
+        quplaDebugSession = process.getProject().getComponent(QuplaDebuggerManager.class).getSession(process);
 
     }
 
@@ -25,7 +27,7 @@ public class QuplaBreakpointHandler extends JavaBreakpointHandler {
     public void registerBreakpoint(@NotNull XBreakpoint xBreakpoint) {
         Breakpoint breakpoint = xBreakpoint.getUserData(Breakpoint.DATA_KEY);
         if(breakpoint==null){
-            breakpoint = QuplaLineBreakpoint.create(myProcess.getProject(),xBreakpoint);
+            breakpoint = QuplaLineBreakpoint.create(myProcess.getProject(),xBreakpoint, quplaDebugSession);
             xBreakpoint.putUserData(Breakpoint.DATA_KEY, breakpoint);
         }
         BreakpointManager.addBreakpoint(breakpoint);

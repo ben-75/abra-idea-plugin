@@ -94,7 +94,7 @@ public class QuplaPositionManager implements MultiRequestPositionManager {
                 }
                 if(requestor instanceof QuplaLineBreakpoint) {
                     //we need this for every breakpoint
-                    ((QuplaLineBreakpoint) requestor).setQuplaEvalContextRequestor(quplaEvalContextRequestor);
+                    //((QuplaLineBreakpoint) requestor).setQuplaEvalContextRequestor(quplaEvalContextRequestor);
                     resp.add(debugProcess.getRequestsManager().createClassPrepareRequest(requestor, classPattern));
                 }
                 return resp;

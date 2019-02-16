@@ -3,17 +3,26 @@ package org.qupla.runtime.debugger.action;
 import com.intellij.icons.AllIcons;
 import com.intellij.openapi.actionSystem.AnAction;
 import com.intellij.openapi.actionSystem.AnActionEvent;
+import org.qupla.runtime.debugger.QuplaDebugSession;
 
-public class StepOverQuplaInterpreter extends AnAction {
+import javax.swing.*;
+
+public class StepOverQuplaInterpreter extends QuplaDebugAction {
 
     public StepOverQuplaInterpreter() {
-        super("Step Over","Step over", AllIcons.Actions.TraceOver);
+        this(null);
+    }
+
+    public StepOverQuplaInterpreter(QuplaDebugSession session) {
+        super(session,AllIcons.Actions.TraceOver);
     }
 
     @Override
     public void actionPerformed(AnActionEvent e) {
-        System.out.println("resume...");
+        if(session!=null){
+            session.registerStepOverBreakpoint();
+        }
+        super.actionPerformed(e);
     }
-
 
 }

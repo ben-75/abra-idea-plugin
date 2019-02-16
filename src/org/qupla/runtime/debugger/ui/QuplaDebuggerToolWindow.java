@@ -65,9 +65,9 @@ public class QuplaDebuggerToolWindow {
         debuggerTabInfo.setText("Debugger");
         //debuggerTabInfo.setActions()
         ActionGroup actionGroup = new DefaultActionGroup();
-        ((DefaultActionGroup) actionGroup).add(new StepOverQuplaInterpreter());
-        ((DefaultActionGroup) actionGroup).add(new StepIntoQuplaInterpreter());
-        ((DefaultActionGroup) actionGroup).add(new StepOutQuplaInterpreter());
+        ((DefaultActionGroup) actionGroup).add(new StepOverQuplaInterpreter(mySession));
+        ((DefaultActionGroup) actionGroup).add(new StepIntoQuplaInterpreter(mySession));
+        ((DefaultActionGroup) actionGroup).add(new StepOutQuplaInterpreter(mySession));
         debuggerTabInfo.setActions(actionGroup,null);
         myTabs.addTab(debuggerTabInfo);
 

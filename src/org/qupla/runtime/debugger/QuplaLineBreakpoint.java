@@ -57,11 +57,13 @@ public class QuplaLineBreakpoint <P extends QuplaBreakpointProperties> extends B
     private final int line;
     private final String methodName;
     private final String modulePath;
-    private QuplaEvalContextRequestor quplaEvalContextRequestor;
+//    private QuplaEvalContextRequestor quplaEvalContextRequestor;
+    private final QuplaDebugSession quplaDebugSession;
 
 
-    public QuplaLineBreakpoint(@NotNull Project project, XBreakpoint xBreakpoint) {
+    public QuplaLineBreakpoint(@NotNull Project project, XBreakpoint xBreakpoint, QuplaDebugSession quplaDebugSession) {
         super(project, xBreakpoint);
+        this.quplaDebugSession = quplaDebugSession;
         myXBreakpoint = xBreakpoint;
         ApplicationManager.getApplication().runReadAction(new Runnable() {
             @Override
@@ -80,8 +82,8 @@ public class QuplaLineBreakpoint <P extends QuplaBreakpointProperties> extends B
         modulePath = ((QuplaFile)file).getImportableFilePath();
     }
 
-    public static QuplaLineBreakpoint create(@NotNull Project project, XBreakpoint xBreakpoint) {
-        QuplaLineBreakpoint breakpoint = new QuplaLineBreakpoint(project, xBreakpoint);
+    public static QuplaLineBreakpoint create(@NotNull Project project, XBreakpoint xBreakpoint, QuplaDebugSession quplaDebugSession) {
+        QuplaLineBreakpoint breakpoint = new QuplaLineBreakpoint(project, xBreakpoint, quplaDebugSession);
         return (QuplaLineBreakpoint) breakpoint.init();
     }
 
@@ -230,7 +232,7 @@ public class QuplaLineBreakpoint <P extends QuplaBreakpointProperties> extends B
                         if(pause){
                             context.getDebugProcess().getPositionManager().clearCache();
                             QuplaPositionManager.current.setLastSourcePosition(position);
-                            quplaEvalContextRequestor.updateQuplaDebuggerWindow(frameProxy, evaluationContext);
+                            quplaDebugSession.updateQuplaDebuggerWindow(frameProxy, evaluationContext);
 
                             SwingUtilities.invokeLater(new Runnable() {
                                 @Override
@@ -260,6 +262,7 @@ public class QuplaLineBreakpoint <P extends QuplaBreakpointProperties> extends B
 
     private static String findMethodForEvaluable(PsiElement e){
         if(e==null)return null;
+        if(e instanceof QuplaPostfixExpr) return findMethodForEvaluable(e.getChildren()[0]);
         if(e instanceof QuplaAssignExpr) return "evalAssign";
         if(e instanceof QuplaSliceExpr) return "evalSlice";
         if(e instanceof QuplaConcatExpr) return "evalConcat";
@@ -273,7 +276,7 @@ public class QuplaLineBreakpoint <P extends QuplaBreakpointProperties> extends B
         return null;
     }
 
-    public void setQuplaEvalContextRequestor(QuplaEvalContextRequestor quplaEvalContextRequestor) {
-        this.quplaEvalContextRequestor = quplaEvalContextRequestor;
-    }
+//    public void setQuplaEvalContextRequestor(QuplaEvalContextRequestor quplaEvalContextRequestor) {
+//        this.quplaEvalContextRequestor = quplaEvalContextRequestor;
+//    }
 }

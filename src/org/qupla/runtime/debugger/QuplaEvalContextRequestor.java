@@ -8,37 +8,22 @@ import com.intellij.debugger.engine.evaluation.EvaluateException;
 import com.intellij.debugger.engine.evaluation.EvaluationContext;
 import com.intellij.debugger.engine.evaluation.EvaluationContextImpl;
 import com.intellij.debugger.engine.events.SuspendContextCommandImpl;
-import com.intellij.debugger.engine.jdi.StackFrameProxy;
 import com.intellij.debugger.engine.requests.RequestManagerImpl;
 import com.intellij.debugger.jdi.StackFrameProxyImpl;
 import com.intellij.debugger.jdi.ThreadReferenceProxyImpl;
 import com.intellij.debugger.requests.ClassPrepareRequestor;
 import com.intellij.debugger.ui.breakpoints.FilteredRequestor;
-import com.intellij.openapi.actionSystem.ActionGroup;
-import com.intellij.openapi.actionSystem.ActionManager;
-import com.intellij.openapi.actionSystem.ActionPlaces;
-import com.intellij.openapi.actionSystem.DefaultActionGroup;
 import com.intellij.openapi.application.ApplicationManager;
 import com.intellij.openapi.project.Project;
-import com.intellij.openapi.wm.ToolWindow;
-import com.intellij.openapi.wm.ToolWindowAnchor;
-import com.intellij.openapi.wm.ToolWindowId;
-import com.intellij.openapi.wm.ToolWindowManager;
-import com.intellij.ui.content.Content;
-import com.intellij.ui.content.ContentFactory;
-import com.intellij.ui.content.ContentManager;
-import com.intellij.xdebugger.impl.actions.FocusOnBreakpointAction;
 import com.sun.jdi.*;
 import com.sun.jdi.event.LocatableEvent;
 import com.sun.jdi.event.MethodEntryEvent;
-import com.sun.jdi.event.MethodExitEvent;
 import com.sun.jdi.request.MethodEntryRequest;
 import com.sun.jdi.request.MethodExitRequest;
 import com.sun.tools.jdi.*;
 import org.jetbrains.annotations.NotNull;
 import org.qupla.runtime.debugger.ui.*;
 
-import javax.swing.*;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.MutableTreeNode;
 import java.util.*;
@@ -61,10 +46,9 @@ public class QuplaEvalContextRequestor implements ClassPrepareRequestor {
 
     public static final String BASE_EXPR_CLASSNAME = "org.iota.qupla.qupla.expression.base.BaseExpr";
 
-    private static final String[] watchedEvalMethods = new String[]{"evalAssign", "evalSlice", "evalConcat", "evalLutLookup",
-            "evalMerge", "evalFuncCall", "evalVector", "evalConditional", "evalState", "evalType"};
+    public static final List<String> WATCHED_EVAL_METHODS = Arrays.asList(new String[]{"evalAssign", "evalSlice", "evalConcat", "evalLutLookup",
+            "evalMerge", "evalFuncCall", "evalVector", "evalConditional", "evalState", "evalType"});
 
-    public List<QuplaCallStackItem> callStack = new ArrayList<>();
     private boolean requestRegistered = false;
     private final Project myProject;
     private final QuplaDebugSession session;
@@ -74,15 +58,11 @@ public class QuplaEvalContextRequestor implements ClassPrepareRequestor {
         this.myProject = session.getProject();
     }
 
-    public List<QuplaCallStackItem> getCallStack() {
-        return callStack;
-    }
-
     @Override
     public void processClassPrepare(DebugProcess debugProcess, ReferenceType referenceType) {
         if (!requestRegistered) {
-            tritVectorNameField = null;
-            stackField = null;
+//            tritVectorNameField = null;
+//            stackField = null;
             RequestManagerImpl requestsManager = (RequestManagerImpl) debugProcess.getRequestsManager();
 
             FilteredRequestor enterEvalRequestor = new EnterEvalRequestor();
@@ -93,8 +73,7 @@ public class QuplaEvalContextRequestor implements ClassPrepareRequestor {
             MethodExitRequest methodExitRequest = requestsManager.createMethodExitRequest(leaveEvalRequestor);
             requestsManager.enableRequest(methodExitRequest);
 
-            callStack.clear();
-            QuplaCallStackItem.Factory.clear();
+            session.clearCallstack();
 
             requestRegistered = true;
         }
@@ -103,15 +82,7 @@ public class QuplaEvalContextRequestor implements ClassPrepareRequestor {
     private class LeaveEvalRequestor extends QuplaEvalContextFilteredAbstractRequestor {
         @Override
         public boolean processLocatableEvent(SuspendContextCommandImpl action, LocatableEvent event) throws EventProcessingException {
-            if (!callStack.isEmpty()) {
-                if (event instanceof MethodExitEvent) {
-                    if (Arrays.asList(watchedEvalMethods).contains(((MethodExitEvent) event).method().name())) {
-                        callStack.remove(0);
-                        QuplaCallStackItem.Factory.release();
-                    }
-                }
-            }
-            return false;
+            return session.processLeaveMethod(event);
         }
 
     }
@@ -124,7 +95,7 @@ public class QuplaEvalContextRequestor implements ClassPrepareRequestor {
 
         @Override
         public boolean processLocatableEvent(SuspendContextCommandImpl action, LocatableEvent event) throws EventProcessingException {
-            if (Arrays.asList(watchedEvalMethods).contains(((MethodEntryEvent) event).method().name())) {
+            if (WATCHED_EVAL_METHODS.contains(((MethodEntryEvent) event).method().name())) {
                 SuspendContextImpl context = action.getSuspendContext();
 
                 String title = DebuggerBundle.message("title.error.evaluating.breakpoint.condition");
@@ -150,7 +121,7 @@ public class QuplaEvalContextRequestor implements ClassPrepareRequestor {
                                     sourceField = token.referenceType().fieldByName("source");
                                     lineNrField = token.referenceType().fieldByName("lineNr");
                                     colNrField = token.referenceType().fieldByName("colNr");
-                                    stackFrameField = frameProxy.thisObject().referenceType().fieldByName("stackFrame");
+                                    //stackFrameField = frameProxy.thisObject().referenceType().fieldByName("stackFrame");
                                     lineAndColField = Arrays.asList(lineNrField, colNrField);
                                 }
                                 Map<Field,Value> lineAndCol = token.getValues(Arrays.asList(
@@ -178,9 +149,8 @@ public class QuplaEvalContextRequestor implements ClassPrepareRequestor {
                                         ((MethodEntryEvent) event).method().name(),
                                         exprString,
                                         lineNumber + 1, colNumber + 1, stackFrame, modulePath);
+                                return session.processMethodEntry(item,event);
 
-                                callStack.add(0, item);
-                                return false;
                             }
                         }
                     }
@@ -205,16 +175,7 @@ public class QuplaEvalContextRequestor implements ClassPrepareRequestor {
     private static List<Field> lineAndColField;
 
 
-    private static Field stackField;
-    private static Field stackFrameField;
-    private static Field elementCountField;
-    private static Field elementDataField;
-    private static Field tritVectorNameField;
-    private static Field tritVectorOffsetField;
-    private static Field tritVectorSizeField;
-    private static Field tritVectorVectorField;
-    private static Field tritVectorValueTritField;
-    private static List<Field> tritVectorFields;
+
 
 //    private MutableTreeNode buildTree(StackFrameProxyImpl frame, EvaluationContext evaluationContext) throws EvaluateException {
 //        if (stackField == null) {
@@ -234,113 +195,8 @@ public class QuplaEvalContextRequestor implements ClassPrepareRequestor {
 //        return root;
 //    }
 //
-    @NotNull
-    public static MutableTreeNode buildVariableTree(EvaluationContext evaluationContext, int stackFrame, int elementCount, ArrayReferenceImpl arrayRef) throws EvaluateException {
-        MutableTreeNode root = new VariablesNode();
-        for (int j = stackFrame; j < elementCount; j++) {
-            ObjectReferenceImpl tritVectorRef = (ObjectReferenceImpl) arrayRef.getValue(j);
-            if (tritVectorNameField == null) {
-                tritVectorNameField = tritVectorRef.referenceType().fieldByName("name");
-                tritVectorOffsetField = tritVectorRef.referenceType().fieldByName("offset");
-                tritVectorSizeField = tritVectorRef.referenceType().fieldByName("size");
-                tritVectorVectorField = tritVectorRef.referenceType().fieldByName("vector");
-                tritVectorValueTritField = tritVectorRef.referenceType().fieldByName("valueTrits");
-                tritVectorFields = Arrays.asList(tritVectorNameField,tritVectorOffsetField,tritVectorSizeField,tritVectorVectorField,tritVectorValueTritField);
-            }
-
-            Map<Field,Value> values = tritVectorRef.getValues(tritVectorFields);
-
-            String name = ((StringReference)values.get(tritVectorNameField)).value();
 
 
-//            String vector = DebuggerUtils.getValueAsString(
-//                    evaluationContext, tritVectorRef.getValue(tritVectorVectorField));
-            ObjectReference tritBufferRef = (ObjectReference) tritVectorRef.getValue(tritVectorVectorField);
-            String vector = ((StringReference)evaluationContext.getDebugProcess().invokeInstanceMethod(
-                    evaluationContext, tritBufferRef,
-                    tritBufferRef.referenceType().methodsByName("toString").get(0),
-                    Collections.EMPTY_LIST,0)).value();
-
-            int size = ((IntegerValueImpl) values.get(tritVectorSizeField)).intValue();
-            int offset = ((IntegerValueImpl) values.get(tritVectorOffsetField)).intValue();
-            int valueTrit = ((IntegerValueImpl) values.get(tritVectorValueTritField)).intValue();
-
-            TritVectorView tritVectorView = new TritVectorView(name, offset, size, valueTrit, vector);
-            ((VariablesNode) root).add(new TritVectorNode(root, tritVectorView));
-        }
-        return root;
-    }
-
-
-    public void updateQuplaDebuggerWindow(StackFrameProxyImpl frame, EvaluationContext evaluationContext) {
-
-        //lazy init
-        try {
-            if (stackField == null) {
-                stackField = frame.thisObject().referenceType().fieldByName("stack");
-                stackFrameField = frame.thisObject().referenceType().fieldByName("stackFrame");
-                ObjectReferenceImpl stackReference = (ObjectReferenceImpl) frame.thisObject().getValue(stackField);
-                elementCountField = stackReference.referenceType().fieldByName("elementCount");
-                elementDataField = stackReference.referenceType().fieldByName("elementData");
-            }
-        }catch (EvaluateException e){
-            e.printStackTrace();
-            stackField = null;
-            return;
-        }
-
-
-        //prepare callstack
-        ObjectReferenceImpl stackReference = null;
-        try {
-            stackReference = (ObjectReferenceImpl) frame.thisObject().getValue(stackField);
-        }catch (EvaluateException e){
-            e.printStackTrace();
-            return;
-        }
-        ArrayReferenceImpl arrayRef = (ArrayReferenceImpl) stackReference.getValue(elementDataField);
-
-        int currentFromIndex = -1;
-        int currentToIndex = ((IntegerValueImpl) stackReference.getValue(elementCountField)).intValue();
-        int oldFromIndex = -1;
-
-        for(QuplaCallStackItem callStackItem:callStack) {
-            if(callStackItem!=callStack.get(callStack.size()-1)) {
-                try {
-                    currentFromIndex = callStackItem.getStackFrameIndex();
-                    if (oldFromIndex != -1) {
-                        if (currentFromIndex != oldFromIndex) {
-                            currentToIndex = oldFromIndex;
-                        }
-                    }
-
-                    MutableTreeNode root = buildVariableTree(evaluationContext, currentFromIndex, currentToIndex, arrayRef);
-
-                    callStackItem.setRootNode(root);
-
-                    oldFromIndex = currentFromIndex;
-                } catch (EvaluateException e) {
-                    e.printStackTrace();
-                    callStackItem.setRootNode(new DefaultMutableTreeNode("not available"));
-                }
-            }else{
-                callStackItem.setRootNode(new DefaultMutableTreeNode("(no variables)"));
-            }
-        }
-
-
-        ApplicationManager.getApplication().invokeLater(new Runnable() {
-            @Override
-            public void run() {
-                QuplaDebugSession session = myProject.getComponent(QuplaDebuggerManager.class).getSession(evaluationContext.getDebugProcess());
-                if(session!=null){
-                    session.publishCallStack(getCallStack());
-                }
-            }
-        });
-    }
-
-    QuplaDebuggerToolWindow quplaDebuggerToolWindow;
 
     protected ObjectReference getThisObject(SuspendContextImpl context, LocatableEvent event) throws EvaluateException {
         ThreadReferenceProxyImpl thread = context.getThread();
