@@ -131,7 +131,7 @@ public class QuplaLineBreakpoint <P extends QuplaBreakpointProperties> extends B
 
     @Override
     public String getDisplayName() {
-        return null;
+        return "Qupla breakpoint";
     }
 
     @Override
@@ -231,6 +231,15 @@ public class QuplaLineBreakpoint <P extends QuplaBreakpointProperties> extends B
                             context.getDebugProcess().getPositionManager().clearCache();
                             QuplaPositionManager.current.setLastSourcePosition(position);
                             quplaEvalContextRequestor.updateQuplaDebuggerWindow(frameProxy, evaluationContext);
+
+                            SwingUtilities.invokeLater(new Runnable() {
+                                @Override
+                                public void run() {
+                                    ToolWindow quplaDebugger = ToolWindowManager.getInstance(getProject()).getToolWindow(QuplaDebuggerToolWindow.ID);
+                                    if(quplaDebugger!=null)quplaDebugger.activate(null);
+                                }
+                            });
+
                         }
                         return pause;
                     }

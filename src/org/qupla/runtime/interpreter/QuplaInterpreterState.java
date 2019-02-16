@@ -167,4 +167,8 @@ public class QuplaInterpreterState extends JavaCommandLineState {
 
         return children;
     }
+
+    public QuplaInterpreterRunConfiguration getRunConfiguration() {
+        return runConfiguration;
+    }
 }

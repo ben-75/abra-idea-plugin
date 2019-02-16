@@ -21,6 +21,7 @@ import com.intellij.openapi.actionSystem.DefaultActionGroup;
 import com.intellij.openapi.application.ApplicationManager;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.wm.ToolWindow;
+import com.intellij.openapi.wm.ToolWindowAnchor;
 import com.intellij.openapi.wm.ToolWindowId;
 import com.intellij.openapi.wm.ToolWindowManager;
 import com.intellij.ui.content.Content;
@@ -35,10 +36,7 @@ import com.sun.jdi.request.MethodEntryRequest;
 import com.sun.jdi.request.MethodExitRequest;
 import com.sun.tools.jdi.*;
 import org.jetbrains.annotations.NotNull;
-import org.qupla.runtime.debugger.ui.QuplaDebuggerToolWindow;
-import org.qupla.runtime.debugger.ui.TritVectorNode;
-import org.qupla.runtime.debugger.ui.TritVectorView;
-import org.qupla.runtime.debugger.ui.VariablesNode;
+import org.qupla.runtime.debugger.ui.*;
 
 import javax.swing.*;
 import javax.swing.tree.DefaultMutableTreeNode;
@@ -69,9 +67,11 @@ public class QuplaEvalContextRequestor implements ClassPrepareRequestor {
     public List<QuplaCallStackItem> callStack = new ArrayList<>();
     private boolean requestRegistered = false;
     private final Project myProject;
+    private final QuplaDebugSession session;
 
-    public QuplaEvalContextRequestor(Project project) {
-        this.myProject = project;
+    public QuplaEvalContextRequestor(QuplaDebugSession session) {
+        this.session = session;
+        this.myProject = session.getProject();
     }
 
     public List<QuplaCallStackItem> getCallStack() {
@@ -80,11 +80,9 @@ public class QuplaEvalContextRequestor implements ClassPrepareRequestor {
 
     @Override
     public void processClassPrepare(DebugProcess debugProcess, ReferenceType referenceType) {
-        System.out.println("processClassPrepare");
         if (!requestRegistered) {
             tritVectorNameField = null;
             stackField = null;
-            System.out.println("need to process class prepare here");
             RequestManagerImpl requestsManager = (RequestManagerImpl) debugProcess.getRequestsManager();
 
             FilteredRequestor enterEvalRequestor = new EnterEvalRequestor();
@@ -239,7 +237,6 @@ public class QuplaEvalContextRequestor implements ClassPrepareRequestor {
     @NotNull
     public static MutableTreeNode buildVariableTree(EvaluationContext evaluationContext, int stackFrame, int elementCount, ArrayReferenceImpl arrayRef) throws EvaluateException {
         MutableTreeNode root = new VariablesNode();
-        System.out.println("from="+stackFrame+" to="+elementCount);
         for (int j = stackFrame; j < elementCount; j++) {
             ObjectReferenceImpl tritVectorRef = (ObjectReferenceImpl) arrayRef.getValue(j);
             if (tritVectorNameField == null) {
@@ -335,15 +332,10 @@ public class QuplaEvalContextRequestor implements ClassPrepareRequestor {
         ApplicationManager.getApplication().invokeLater(new Runnable() {
             @Override
             public void run() {
-                if (quplaDebuggerToolWindow == null) {
-                    ToolWindow toolWindow = ToolWindowManager.getInstance(myProject).getToolWindow(ToolWindowId.DEBUG);
-                    ContentManager contentManager = toolWindow.getContentManager();
-                    ContentFactory contentFactory = ContentFactory.SERVICE.getInstance();
-                    quplaDebuggerToolWindow = new QuplaDebuggerToolWindow(toolWindow);
-                    Content content = contentFactory.createContent(quplaDebuggerToolWindow.getContent(), "Qupla CallStack", false);
-                    toolWindow.getContentManager().addContent(content);
+                QuplaDebugSession session = myProject.getComponent(QuplaDebuggerManager.class).getSession(evaluationContext.getDebugProcess());
+                if(session!=null){
+                    session.publishCallStack(getCallStack());
                 }
-                quplaDebuggerToolWindow.applyCallStack(getCallStack());
             }
         });
     }

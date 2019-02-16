@@ -18,6 +18,7 @@ import com.sun.jdi.request.ClassPrepareRequest;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.qupla.language.QuplaFileType;
+import org.qupla.runtime.debugger.ui.QuplaDebuggerManager;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -87,7 +88,8 @@ public class QuplaPositionManager implements MultiRequestPositionManager {
             if (evalContextClass != null) {
                 List<ClassPrepareRequest> resp = new ArrayList<>();
                 if(quplaEvalContextRequestor==null) { //we only need this one time
-                    quplaEvalContextRequestor = new QuplaEvalContextRequestor(debugProcess.getProject());
+                    QuplaDebugSession session = debugProcess.getProject().getComponent(QuplaDebuggerManager.class).getSession(debugProcess);
+                    quplaEvalContextRequestor = new QuplaEvalContextRequestor(session);
                     resp.add(debugProcess.getRequestsManager().createClassPrepareRequest(quplaEvalContextRequestor, classPattern));
                 }
                 if(requestor instanceof QuplaLineBreakpoint) {

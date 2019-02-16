@@ -17,6 +17,8 @@ public class QuplaBreakpointHandler extends JavaBreakpointHandler {
 
     public QuplaBreakpointHandler(@NotNull DebugProcessImpl process) {
         super(QuplaLineBreakpointType.class, process);
+
+
     }
 
     @Override
@@ -27,7 +29,6 @@ public class QuplaBreakpointHandler extends JavaBreakpointHandler {
             xBreakpoint.putUserData(Breakpoint.DATA_KEY, breakpoint);
         }
         BreakpointManager.addBreakpoint(breakpoint);
-        System.out.println("Register breakpoint : "+breakpoint);
         final Breakpoint bpt = breakpoint;
         myProcess.getManagerThread().schedule(new DebuggerCommandImpl() {
             @Override

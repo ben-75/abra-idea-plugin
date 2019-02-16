@@ -70,6 +70,12 @@
       <option name="workspace" value="true" />
       <loadForDefaultProject/>
     </component>
+    <component>
+      <interface-class>org.qupla.runtime.debugger.ui.QuplaDebuggerManager</interface-class>
+      <implementation-class>org.qupla.runtime.debugger.ui.QuplaDebuggerManagerImpl</implementation-class>
+      <option name="workspace" value="true" />
+      <loadForDefaultProject/>
+    </component>
   </project-components>
   <actions>
     <!-- Add your actions here -->
@@ -78,6 +84,22 @@
             class="org.qupla.ide.ui.action.MarkAsQuplaSourceRoot"
             text="Mark as Qupla Sources Root" description="This directory contains Qupla modules">
       <add-to-group group-id="ProjectViewPopupMenu" anchor="last"/>
+    </action>
+    <action id="ResumeQuplaInterpreter" class="org.qupla.runtime.debugger.action.ResumeQuplaInterpreter"
+            text="Resume Qupla Interpreter" description="Resume Qupla Interpreter">
+      <keyboard-shortcut keymap="$default" first-keystroke="F9"/>
+    </action>
+    <action id="StepOverQuplaInterpreter" class="org.qupla.runtime.debugger.action.StepOverQuplaInterpreter"
+            text="Step over" description="Step over">
+      <keyboard-shortcut keymap="$default" first-keystroke="F8"/>
+    </action>
+    <action id="StepIntoQuplaInterpreter" class="org.qupla.runtime.debugger.action.StepIntoQuplaInterpreter"
+            text="Step into" description="Step into">
+      <keyboard-shortcut keymap="$default" first-keystroke="F7"/>
+    </action>
+    <action id="StepOutQuplaInterpreter" class="org.qupla.runtime.debugger.action.StepOutQuplaInterpreter"
+            text="Step out" description="Step out">
+      <keyboard-shortcut keymap="$default" first-keystroke="SHIFT F7"/>
     </action>
   </actions>
 

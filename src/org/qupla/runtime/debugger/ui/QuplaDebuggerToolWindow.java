@@ -1,18 +1,24 @@
 package org.qupla.runtime.debugger.ui;
 
 import com.intellij.debugger.SourcePosition;
-import com.intellij.debugger.engine.evaluation.EvaluateException;
-import com.intellij.debugger.engine.jdi.StackFrameProxy;
-import com.intellij.debugger.jdi.LocalVariableProxyImpl;
-import com.intellij.debugger.jdi.StackFrameProxyImpl;
+import com.intellij.execution.impl.ConsoleViewImpl;
 import com.intellij.icons.AllIcons;
-import com.intellij.openapi.wm.ToolWindow;
-import com.intellij.ui.GroupedElementsRenderer;
+import com.intellij.openapi.actionSystem.*;
+import com.intellij.openapi.actionSystem.impl.ActionToolbarImpl;
+import com.intellij.openapi.project.Project;
+import com.intellij.ui.JBColor;
+import com.intellij.ui.tabs.TabInfo;
+import com.intellij.ui.tabs.impl.ActionPanel;
 import com.intellij.ui.treeStructure.Tree;
+import com.intellij.xdebugger.impl.actions.ResumeAction;
 import com.jgoodies.common.collect.ArrayListModel;
-import org.jetbrains.debugger.Variable;
 import org.qupla.ide.ui.QuplaIcons;
 import org.qupla.runtime.debugger.QuplaCallStackItem;
+import org.qupla.runtime.debugger.QuplaDebugSession;
+import org.qupla.runtime.debugger.action.ResumeQuplaInterpreter;
+import org.qupla.runtime.debugger.action.StepIntoQuplaInterpreter;
+import org.qupla.runtime.debugger.action.StepOutQuplaInterpreter;
+import org.qupla.runtime.debugger.action.StepOverQuplaInterpreter;
 
 import javax.swing.*;
 import javax.swing.event.ListSelectionEvent;
@@ -20,16 +26,21 @@ import javax.swing.event.ListSelectionListener;
 import javax.swing.tree.*;
 import java.awt.*;
 import java.util.List;
-import java.util.Stack;
+
+import static com.intellij.execution.ui.ConsoleViewContentType.LOG_INFO_OUTPUT;
 
 public class QuplaDebuggerToolWindow {
-    public static final String ID = "Qupla Debugger:";
+    public static final String ID = "Qupla Debugger";
     private JPanel myToolWindowContent;
     private JList callstackItems;
     private JTree variables;
     private JSplitPane jSplitpane;
+    private QuplaRunnerTabs myTabs;
+    private QuplaDebugSession mySession;
 
-    public QuplaDebuggerToolWindow(ToolWindow toolWindow) {
+    public QuplaDebuggerToolWindow(Project project, QuplaDebugSession session) {
+        this.mySession = session;
+        myTabs = new QuplaRunnerTabs(project);
         jSplitpane.setContinuousLayout(true);
         callstackItems.setBorder(BorderFactory.createEmptyBorder(10,0,10,0));
         callstackItems.addListSelectionListener(new ListSelectionListener() {
@@ -49,17 +60,52 @@ public class QuplaDebuggerToolWindow {
             }
         });
 
+
+        TabInfo debuggerTabInfo = new TabInfo(jSplitpane);
+        debuggerTabInfo.setText("Debugger");
+        //debuggerTabInfo.setActions()
+        ActionGroup actionGroup = new DefaultActionGroup();
+        ((DefaultActionGroup) actionGroup).add(new StepOverQuplaInterpreter());
+        ((DefaultActionGroup) actionGroup).add(new StepIntoQuplaInterpreter());
+        ((DefaultActionGroup) actionGroup).add(new StepOutQuplaInterpreter());
+        debuggerTabInfo.setActions(actionGroup,null);
+        myTabs.addTab(debuggerTabInfo);
+
+        ConsoleViewImpl languageConsole = new ConsoleViewImpl(project,true);
+        languageConsole.print("Qupla console",LOG_INFO_OUTPUT);
+        TabInfo consoleTabInfo = new TabInfo(languageConsole);
+        consoleTabInfo.setText("Console");
+        consoleTabInfo.setIcon(AllIcons.Debugger.Console);
+        consoleTabInfo.setActions(actionGroup,null);
+        myTabs.addTab(consoleTabInfo);
+
+        myToolWindowContent = new JPanel(new BorderLayout());
+        myToolWindowContent.add(myTabs,BorderLayout.CENTER);
+
+        ActionGroup globalActionGroup = new DefaultActionGroup();
+        ResumeAction resumeAction = new ResumeAction();
+        resumeAction.getTemplatePresentation().setIcon(AllIcons.Actions.Resume);
+        ((DefaultActionGroup) globalActionGroup).add(resumeAction);
+        ActionToolbarImpl globalActionPanel = (ActionToolbarImpl) ActionManager.getInstance().createActionToolbar(ActionPlaces.UNKNOWN,globalActionGroup,false);
+        globalActionPanel.setBorder(BorderFactory.createLineBorder(JBColor.LIGHT_GRAY, 1));
+        myToolWindowContent.add(globalActionPanel,BorderLayout.WEST);
+
     }
 
 
 
-    public JPanel getContent() {
+    public JComponent getContent() {
         return myToolWindowContent;
     }
 
     public void applyCallStack(List<QuplaCallStackItem> callstack){
-        callstackItems.setModel(new ArrayListModel(callstack));
-        callstackItems.setSelectedIndex(0);
+        if(callstack==null){
+            callstackItems.setModel(new ArrayListModel());
+            variables.setModel(null);
+        }else {
+            callstackItems.setModel(new ArrayListModel(callstack));
+            callstackItems.setSelectedIndex(0);
+        }
     }
 
     private void createUIComponents() {
