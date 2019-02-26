@@ -17,5 +17,4 @@ public class ResumeQuplaInterpreter extends AnAction {
     }
 
 
-
 }

@@ -17,9 +17,11 @@ import org.jdom.Attribute;
 import org.jdom.Element;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.qupla.runtime.debugger.QuplaPositionManager;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 public class QuplaInterpreterRunConfiguration extends ApplicationConfiguration {
@@ -105,7 +107,7 @@ public class QuplaInterpreterRunConfiguration extends ApplicationConfiguration {
 
 
     public List<QuplaModule> getQuplaModules() {
-        return quplaModules;
+        return quplaModules==null? Collections.emptyList():quplaModules;
     }
 
     public void setQuplaModules(List<QuplaModule> quplaModules) {
@@ -389,4 +391,9 @@ public class QuplaInterpreterRunConfiguration extends ApplicationConfiguration {
             }
         });
     }
+
+    public String getContextClassName() {
+        return QuplaPositionManager.QUPLA_CONTEXT_CLASSNAME;
+    }
+
 }

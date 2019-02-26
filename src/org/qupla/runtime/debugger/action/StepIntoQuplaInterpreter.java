@@ -26,5 +26,9 @@ public class StepIntoQuplaInterpreter extends QuplaDebugAction {
         super.actionPerformed(e);
     }
 
+    @Override
+    protected boolean isEnabled(AnActionEvent e) {
+        return session!=null && session.isActive();
+    }
 
 }

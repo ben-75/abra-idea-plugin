@@ -15,6 +15,8 @@ import com.intellij.debugger.requests.ClassPrepareRequestor;
 import com.intellij.debugger.ui.breakpoints.FilteredRequestor;
 import com.intellij.openapi.application.ApplicationManager;
 import com.intellij.openapi.project.Project;
+import com.intellij.openapi.wm.ToolWindow;
+import com.intellij.openapi.wm.ToolWindowManager;
 import com.sun.jdi.*;
 import com.sun.jdi.event.LocatableEvent;
 import com.sun.jdi.event.MethodEntryEvent;
@@ -24,6 +26,7 @@ import com.sun.tools.jdi.*;
 import org.jetbrains.annotations.NotNull;
 import org.qupla.runtime.debugger.ui.*;
 
+import javax.swing.*;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.MutableTreeNode;
 import java.util.*;
@@ -149,7 +152,9 @@ public class QuplaEvalContextRequestor implements ClassPrepareRequestor {
                                         ((MethodEntryEvent) event).method().name(),
                                         exprString,
                                         lineNumber + 1, colNumber + 1, stackFrame, modulePath);
-                                return session.processMethodEntry(item,event);
+                                session.processMethodEntry(item,event);
+
+                                return true;
 
                             }
                         }

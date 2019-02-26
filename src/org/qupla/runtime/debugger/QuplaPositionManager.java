@@ -87,11 +87,11 @@ public class QuplaPositionManager implements MultiRequestPositionManager {
         if (position.getFile().getFileType() == QuplaFileType.INSTANCE) {
             if (evalContextClass != null) {
                 List<ClassPrepareRequest> resp = new ArrayList<>();
-                if(quplaEvalContextRequestor==null) { //we only need this one time
-                    QuplaDebugSession session = debugProcess.getProject().getComponent(QuplaDebuggerManager.class).getSession(debugProcess);
-                    quplaEvalContextRequestor = new QuplaEvalContextRequestor(session);
-                    resp.add(debugProcess.getRequestsManager().createClassPrepareRequest(quplaEvalContextRequestor, classPattern));
-                }
+//                if(quplaEvalContextRequestor==null) { //we only need this one time
+//                    QuplaDebugSession session = debugProcess.getProject().getComponent(QuplaDebuggerManager.class).getSession(debugProcess);
+//                    quplaEvalContextRequestor = new QuplaEvalContextRequestor(session);
+//                    resp.add(debugProcess.getRequestsManager().createClassPrepareRequest(quplaEvalContextRequestor, classPattern));
+//                }
                 if(requestor instanceof QuplaLineBreakpoint) {
                     //we need this for every breakpoint
                     //((QuplaLineBreakpoint) requestor).setQuplaEvalContextRequestor(quplaEvalContextRequestor);

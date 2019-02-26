@@ -27,7 +27,7 @@ public class QuplaBreakpointHandler extends JavaBreakpointHandler {
     public void registerBreakpoint(@NotNull XBreakpoint xBreakpoint) {
         Breakpoint breakpoint = xBreakpoint.getUserData(Breakpoint.DATA_KEY);
         if(breakpoint==null){
-            breakpoint = QuplaLineBreakpoint.create(myProcess.getProject(),xBreakpoint, quplaDebugSession);
+            breakpoint = QuplaLineBreakpoint.create(myProcess.getProject(),xBreakpoint);
             xBreakpoint.putUserData(Breakpoint.DATA_KEY, breakpoint);
         }
         BreakpointManager.addBreakpoint(breakpoint);

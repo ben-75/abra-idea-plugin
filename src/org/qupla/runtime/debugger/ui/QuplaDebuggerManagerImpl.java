@@ -26,7 +26,7 @@ public class QuplaDebuggerManagerImpl implements QuplaDebuggerManager {
     }
 
     public QuplaDebugSession createSession(DebugProcess debugProcess, QuplaInterpreterRunConfiguration runConfiguration){
-        QuplaDebugSession session = new QuplaDebugSession(debugProcess, runConfiguration);
+        QuplaDebugSession session = new QuplaDebugSession(debugProcess, runConfiguration, runConfiguration.getContextClassName());
         mySessions.put(debugProcess.getProcessHandler(),session);
 
 
@@ -38,7 +38,13 @@ public class QuplaDebuggerManagerImpl implements QuplaDebuggerManager {
         ContentFactory contentFactory = ContentFactory.SERVICE.getInstance();
         QuplaDebuggerToolWindow quplaDebuggerToolWindow = new QuplaDebuggerToolWindow(myProject, session);
         Content content = contentFactory.createContent(quplaDebuggerToolWindow.getContent(), session.getRunConfiguration().getName(), false);
-        contentManager.addContent(content);
+        contentManager.addContent(content,0);
+        contentManager.setSelectedContent(content);
+        Content deadContent = contentManager.findContent(session.getRunConfiguration().getName()+" (DEAD)");
+        if(deadContent!=null){
+            contentManager.removeContent(deadContent,true);
+        }
+
         session.setContent(content);
         session.setQuplaDebuggerToolWindow(quplaDebuggerToolWindow);
         return session;

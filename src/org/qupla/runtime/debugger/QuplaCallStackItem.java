@@ -38,7 +38,8 @@ public class QuplaCallStackItem {
     private String operation;
     private Project project;
     private MutableTreeNode rootNode;
-
+    private boolean stopAfterDrop = false;
+    private boolean stopAfterPush = false;
     private SourcePosition sourcePosition;
 
     public QuplaCallStackItem(Project project, String operation, String expr, int lineNumber, int colNumber, int stackFrameIndex, String modulePath) {
@@ -91,7 +92,54 @@ public class QuplaCallStackItem {
         this.stackFrameIndex = stackFrameIndex;
         rootNode=null;
         sourcePosition=null;
+        stopAfterDrop = false;
+        stopAfterPush = false;
         return this;
+    }
+
+    public void setStopAfterDrop() {
+        stopAfterDrop = true;
+    }
+
+    public boolean isStopAfterDrop() {
+        return stopAfterDrop;
+    }
+
+    public void setStopAfterPush() {
+        stopAfterPush = true;
+    }
+
+    public boolean isStopAfterPush() {
+        return stopAfterPush;
+    }
+
+    public void clearStopAfterPush(){
+        stopAfterPush = false;
+    }
+
+    public String toSimpleString() {
+        return (modulePath==null?expr:expr + " ("+lineNumber+", " + modulePath.substring(modulePath.lastIndexOf("/")+1) + ")")+"\n";
+    }
+
+    public String getModulePath() {
+        return modulePath;
+    }
+
+    public int getLine() {
+        return lineNumber;
+    }
+
+    public int getCol(){
+        return colNumber;
+    }
+
+    public String getExpr() {
+        return expr;
+    }
+
+    public String getLocationString() {
+        if (modulePath==null) return null;
+        return modulePath.substring(modulePath.lastIndexOf("/")+1) +", line "+lineNumber;
     }
 
     public static class Factory {

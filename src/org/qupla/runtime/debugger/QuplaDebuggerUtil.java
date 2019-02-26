@@ -1,8 +1,21 @@
 package org.qupla.runtime.debugger;
 
+import com.intellij.debugger.engine.DebugProcess;
+import com.intellij.debugger.engine.requests.RequestManagerImpl;
+import com.intellij.debugger.ui.breakpoints.FilteredRequestor;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiWhiteSpace;
+import com.sun.jdi.AbsentInformationException;
+import com.sun.jdi.Location;
+import com.sun.jdi.Method;
+import com.sun.jdi.ReferenceType;
+import com.sun.jdi.request.BreakpointRequest;
 import org.qupla.language.psi.*;
+import org.qupla.runtime.debugger.requestor.EvalEntryRequestor;
+import org.qupla.runtime.debugger.requestor.EvalExitRequestor;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class QuplaDebuggerUtil {
 
@@ -56,5 +69,34 @@ public class QuplaDebuggerUtil {
 
     public static PsiElement findEvaluableNearElement(PsiElement element) {
         return findEvaluable(QuplaDebuggerUtil.getQuplaPsiElement(element));
+    }
+
+
+    public static void registerContextBreakpoints(DebugProcess debugProcess, ReferenceType referenceType, String methodName, FilteredRequestor entryRequestor, FilteredRequestor exitRequestor){
+        registerContextBreakpoints(debugProcess, referenceType, methodName, -79, entryRequestor, exitRequestor);
+    }
+
+    public static void registerContextBreakpoints(DebugProcess debugProcess, ReferenceType referenceType, String methodName, int returnBytecode, FilteredRequestor entryRequestor, FilteredRequestor exitRequestor){
+        Method method = referenceType.methodsByName(methodName).get(0);
+        try {
+            RequestManagerImpl requestManager = (RequestManagerImpl) debugProcess.getRequestsManager();
+
+            Location firstLine = method.allLineLocations().get(0);
+            BreakpointRequest request = requestManager.createBreakpointRequest(entryRequestor,firstLine);
+            requestManager.enableRequest(request);
+
+            List<Location> exitLocations = new ArrayList<>();
+            byte[] bytecodes = method.bytecodes();
+            for(int i=0;i<bytecodes.length;i++){
+                if(bytecodes[i]==returnBytecode)exitLocations.add(method.locationOfCodeIndex(i));
+            }
+            for(Location exitLoc:exitLocations){
+                BreakpointRequest exitRequest = requestManager.createBreakpointRequest(exitRequestor,exitLoc);
+                requestManager.enableRequest(exitRequest);
+            }
+
+        } catch (AbsentInformationException e) {
+            e.printStackTrace();
+        }
     }
 }

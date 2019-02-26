@@ -28,6 +28,7 @@ import java.awt.*;
 import java.util.List;
 
 import static com.intellij.execution.ui.ConsoleViewContentType.LOG_INFO_OUTPUT;
+import static com.intellij.execution.ui.ConsoleViewContentType.NORMAL_OUTPUT;
 
 public class QuplaDebuggerToolWindow {
     public static final String ID = "Qupla Debugger";
@@ -71,27 +72,31 @@ public class QuplaDebuggerToolWindow {
         debuggerTabInfo.setActions(actionGroup,null);
         myTabs.addTab(debuggerTabInfo);
 
-        ConsoleViewImpl languageConsole = new ConsoleViewImpl(project,true);
-        languageConsole.print("Qupla console",LOG_INFO_OUTPUT);
-        TabInfo consoleTabInfo = new TabInfo(languageConsole);
+        ConsoleViewImpl consoleView = new ConsoleViewImpl(project,true);
+        TabInfo consoleTabInfo = new TabInfo(consoleView.getComponent());
         consoleTabInfo.setText("Console");
         consoleTabInfo.setIcon(AllIcons.Debugger.Console);
         consoleTabInfo.setActions(actionGroup,null);
         myTabs.addTab(consoleTabInfo);
+        mySession.registerConsoleView(consoleView);
 
         myToolWindowContent = new JPanel(new BorderLayout());
         myToolWindowContent.add(myTabs,BorderLayout.CENTER);
 
-        ActionGroup globalActionGroup = new DefaultActionGroup();
+        DefaultActionGroup globalActionGroup = new DefaultActionGroup();
         ResumeAction resumeAction = new ResumeAction();
         resumeAction.getTemplatePresentation().setIcon(AllIcons.Actions.Resume);
-        ((DefaultActionGroup) globalActionGroup).add(resumeAction);
+        globalActionGroup.add(resumeAction);
         ActionToolbarImpl globalActionPanel = (ActionToolbarImpl) ActionManager.getInstance().createActionToolbar(ActionPlaces.UNKNOWN,globalActionGroup,false);
         globalActionPanel.setBorder(BorderFactory.createLineBorder(JBColor.LIGHT_GRAY, 1));
         myToolWindowContent.add(globalActionPanel,BorderLayout.WEST);
+        jSplitpane.setDividerLocation(300);
 
     }
 
+    public void hideDebugTab(){
+        myTabs.remove(0);
+    }
 
 
     public JComponent getContent() {

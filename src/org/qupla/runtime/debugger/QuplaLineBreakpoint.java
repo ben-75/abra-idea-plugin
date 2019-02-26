@@ -40,6 +40,7 @@ import com.sun.tools.jdi.*;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.qupla.language.psi.*;
+import org.qupla.runtime.debugger.ui.QuplaDebuggerManager;
 import org.qupla.runtime.debugger.ui.QuplaDebuggerToolWindow;
 
 import javax.swing.*;
@@ -57,14 +58,14 @@ public class QuplaLineBreakpoint <P extends QuplaBreakpointProperties> extends B
     private final int line;
     private final String methodName;
     private final String modulePath;
+    private QuplaDebuggerManager quplaDebuggerManager;
 //    private QuplaEvalContextRequestor quplaEvalContextRequestor;
-    private final QuplaDebugSession quplaDebugSession;
 
 
-    public QuplaLineBreakpoint(@NotNull Project project, XBreakpoint xBreakpoint, QuplaDebugSession quplaDebugSession) {
+    public QuplaLineBreakpoint(@NotNull Project project, XBreakpoint xBreakpoint) {
         super(project, xBreakpoint);
-        this.quplaDebugSession = quplaDebugSession;
         myXBreakpoint = xBreakpoint;
+        quplaDebuggerManager = project.getComponent(QuplaDebuggerManager.class);
         ApplicationManager.getApplication().runReadAction(new Runnable() {
             @Override
             public void run() {
@@ -82,8 +83,8 @@ public class QuplaLineBreakpoint <P extends QuplaBreakpointProperties> extends B
         modulePath = ((QuplaFile)file).getImportableFilePath();
     }
 
-    public static QuplaLineBreakpoint create(@NotNull Project project, XBreakpoint xBreakpoint, QuplaDebugSession quplaDebugSession) {
-        QuplaLineBreakpoint breakpoint = new QuplaLineBreakpoint(project, xBreakpoint, quplaDebugSession);
+    public static QuplaLineBreakpoint create(@NotNull Project project, XBreakpoint xBreakpoint) {
+        QuplaLineBreakpoint breakpoint = new QuplaLineBreakpoint(project, xBreakpoint);
         return (QuplaLineBreakpoint) breakpoint.init();
     }
 
@@ -193,7 +194,7 @@ public class QuplaLineBreakpoint <P extends QuplaBreakpointProperties> extends B
 
     @Override
     public String getSuspendPolicy() {
-        return DebuggerSettings.SUSPEND_ALL;
+        return DebuggerSettings.SUSPEND_THREAD;
     }
 
 
@@ -208,7 +209,6 @@ public class QuplaLineBreakpoint <P extends QuplaBreakpointProperties> extends B
                 // might be if the thread has been collected
                 return false;
             }
-            EvaluationContextImpl evaluationContext = new EvaluationContextImpl(context, frameProxy, () -> getThisObject(context, event));
             List<Value> args = frameProxy.getArgumentValues();
             if (args.size() == 1) {
                 Value expr = args.get(0);
@@ -227,12 +227,13 @@ public class QuplaLineBreakpoint <P extends QuplaBreakpointProperties> extends B
                         Field colNrField = token.referenceType().fieldByName("colNr");
                         int lineNumber = ((IntegerValueImpl) token.getValue(lineNrField)).intValue();
                         int colNumber = ((IntegerValueImpl) token.getValue(colNrField)).intValue();
+                        EvaluationContextImpl evaluationContext = new EvaluationContextImpl(context, frameProxy, () -> getThisObject(context, event));
                         String currentPath = DebuggerUtils.getValueAsString(evaluationContext, token.getValue(sourceField));
                         boolean pause = lineNumber == line && colNumber==column && currentPath!=null && currentPath.length()>3 && currentPath.substring(0,currentPath.length()-4).equals(modulePath);
                         if(pause){
                             context.getDebugProcess().getPositionManager().clearCache();
                             QuplaPositionManager.current.setLastSourcePosition(position);
-                            quplaDebugSession.updateQuplaDebuggerWindow(frameProxy, evaluationContext);
+                            quplaDebuggerManager.getSession(context.getDebugProcess()).updateQuplaDebuggerWindow(frameProxy, evaluationContext);
 
                             SwingUtilities.invokeLater(new Runnable() {
                                 @Override
