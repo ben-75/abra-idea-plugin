@@ -201,7 +201,7 @@ concatExpr          ::= postfixExpr (AMP postfixExpr)*
 
 postfixExpr         ::= valueExpr | funcExpr | lutExpr | lutOrSliceExpr | typeExpr | sliceExpr | sizeofExpr | ('(' condExpr ')')
 
-valueExpr           ::= float | integer | trit
+valueExpr           ::= float | bool | integer | trit
 
 typeExpr            ::= typeOrPlaceHolderNameRef '{' fieldAssignExpr+ '}'
                     {
@@ -261,12 +261,12 @@ typeSize            ::= '[' constExpr ']'
                         methods=[getResolvedSize]
                     }
 
-tritList            ::= trit (COMMA trit)*
+tritList            ::= tritOrBool (COMMA tritOrBool)*
                     {
                         methods = [getLength]
                     }
 
-
+tritOrBool          ::= trit | bool
 
 varName             ::= IDENTIFIER
                     {
@@ -382,6 +382,8 @@ moduleNameRef       ::= IDENTIFIER
 environmentName     ::= IDENTIFIER
 
 private trit        ::= MINUS|TRIT
+
+bool                ::= FALSE_KEYWORD | TRUE_KEYWORD
 
 number              ::= DIGITS
                     {
