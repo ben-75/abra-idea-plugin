@@ -1,7 +1,7 @@
 <idea-plugin>
   <id>org.qupla.language</id>
   <name>Qupla Language</name>
-  <version>0.1.9-alpha</version>
+  <version>0.1.10-alpha</version>
   <vendor url="https://github.com/ben-75/qupla-idea-plugin"/>
 
   <description><![CDATA[
@@ -23,8 +23,7 @@
 
   <change-notes><![CDATA[
         <ul>
-        <li>Fix a performance issue (that may cause IDE freeze !)
-        <li>New quick fix : "Refresh modules" on unresolved symbols
+        <li>Support 'true' and 'false' keywords
         </ul>
     ]]>
   </change-notes>

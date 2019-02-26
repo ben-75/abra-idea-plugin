@@ -51,6 +51,8 @@ DELAY_KEYWORD=(delay)
 TEST_KEYWORD=(test)
 EVAL_KEYWORD=(eval)
 NULL_KEYWORD=(null)
+TRUE_KEYWORD=(true)
+FALSE_KEYWORD=(false)
 SIZEOF_KEYWORD=(sizeof)
 IDENTIFIER=([A-Za-z_])([A-Za-z0-9_])*
 OPEN_BRACKET=(\[)
@@ -109,6 +111,8 @@ QUESTION_MARK=(\?)
   {TEST_KEYWORD}              { return TEST_KEYWORD; }
   {EVAL_KEYWORD}              { return EVAL_KEYWORD; }
   {NULL_KEYWORD}              { return NULL_KEYWORD; }
+  {TRUE_KEYWORD}              { return TRUE_KEYWORD; }
+  {FALSE_KEYWORD}             { return FALSE_KEYWORD; }
   {SIZEOF_KEYWORD}            { return SIZEOF_KEYWORD; }
   {IDENTIFIER}                { return IDENTIFIER; }
   {CLOSE_BRACKET}             { return CLOSE_BRACKET; }

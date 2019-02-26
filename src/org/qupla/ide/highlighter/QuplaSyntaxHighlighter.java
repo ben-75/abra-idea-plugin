@@ -64,10 +64,7 @@ public class QuplaSyntaxHighlighter extends SyntaxHighlighterBase  {
 
     private static final TextAttributesKey[] BAD_CHAR_KEYS = new TextAttributesKey[]{BAD_CHARACTER};
     private static final TextAttributesKey[] COMMENT_KEYS = new TextAttributesKey[]{COMMENT};
-    private static final TextAttributesKey[] TEST_COMMENT_KEYS = new TextAttributesKey[]{QUPLA_TEST_ASSERTION_PREFIX};
-    private static final TextAttributesKey[] EXPR_COMMENT_KEYS = new TextAttributesKey[]{QUPLA_EXPR_ASSERTION_PREFIX};
     private static final TextAttributesKey[] TEST_ASSERT_KEYS = new TextAttributesKey[]{QUPLA_TEST_ASSERTION};
-    private static final TextAttributesKey[] EXPR_ASSERT_KEYS = new TextAttributesKey[]{QUPLA_EXPR_ASSERTION};
     private static final TextAttributesKey[] KEYWORD_KEYS = new TextAttributesKey[]{KEYWORD};
     private static final TextAttributesKey[] ENV_KEYWORD_KEYS = new TextAttributesKey[]{ENV_KEYWORD};
     private static final TextAttributesKey[] TRIT_KEYS = new TextAttributesKey[]{QUPLA_TRIT};
@@ -95,6 +92,10 @@ public class QuplaSyntaxHighlighter extends SyntaxHighlighterBase  {
         }else if (tokenType.equals(QuplaTypes.TYPE_KEYWORD)) {
             return KEYWORD_KEYS;
         }else if (tokenType.equals(QuplaTypes.USE_KEYWORD)) {
+            return KEYWORD_KEYS;
+        }else if (tokenType.equals(QuplaTypes.TRUE_KEYWORD)) {
+            return KEYWORD_KEYS;
+        }else if (tokenType.equals(QuplaTypes.FALSE_KEYWORD)) {
             return KEYWORD_KEYS;
         }else if (tokenType.equals(QuplaTypes.STATE_KEYWORD)) {
             return KEYWORD_KEYS;
