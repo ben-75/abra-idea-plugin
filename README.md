@@ -84,6 +84,7 @@ setup your environment the PsiViewer is already enabled in your main instance of
   
   ### Qupla Debugger
   
+![Debugger](https://github.com/ben-75/qupla-idea-plugin/blob/master/doc/debugger_clean.png?raw=true)
 Debugging qupla code requires to define a Qupla Interpreter Run Configuration. 
 
 You can put line breakpoints on executable code in qpl files.
@@ -109,3 +110,7 @@ For a better user experience when using qupla debugger it is recommended to disa
 Motivation : this preference will force the focus to the java debug window when a breakpoint is hit. Disabling it give the control back to the qupla plugin so that the Qupla Debugger tab will be focused when a Qupla breakpoint is hit.
 
 To disable this preference: open editor "Settings..." (Ctrl+Alt+S) and uncheck "Show debug window on breakpoint" under "Build, Execution, Deployment > Debugger"
+
+Here is a suitable configuration for the Qupla debugger
+
+![Run configuration for debugger](https://github.com/ben-75/qupla-idea-plugin/blob/master/doc/runconfigpanel.png?raw=true)
