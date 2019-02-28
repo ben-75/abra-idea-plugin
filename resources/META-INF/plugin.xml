@@ -1,7 +1,7 @@
 <idea-plugin>
   <id>org.qupla.language</id>
   <name>Qupla Language</name>
-  <version>0.1.10-beta</version>
+  <version>0.1.11-alpha</version>
   <vendor url="https://github.com/ben-75/qupla-idea-plugin"/>
 
   <description><![CDATA[
@@ -17,7 +17,6 @@
       <li> Braces matching
       <li> Check args count
       <li> Integration with Qupla interpreter
-      <li> Debugger for Qupla language
       <li> ...
       </ul>
     ]]></description>
@@ -56,10 +55,10 @@
     <runConfigurationProducer implementation="org.qupla.runtime.interpreter.QuplaRunConfigurationProducer"/>
     <iconLayerProvider implementation="org.qupla.ide.ui.QuplaIconProvider" order="last"/>
 
-    <programRunner implementation="org.qupla.runtime.debugger.QuplaInterpreterDebugRunner"/>
-    <xdebugger.breakpointType implementation="org.qupla.runtime.debugger.QuplaLineBreakpointType"/>
-    <debugger.javaBreakpointHandlerFactory implementation="org.qupla.runtime.debugger.QuplaBreakpointHandlerFactory"/>
-    <debugger.positionManagerFactory implementation="org.qupla.runtime.debugger.QuplaPositionManagerFactory"/>
+    <!--<programRunner implementation="org.qupla.runtime.debugger.QuplaInterpreterDebugRunner"/>-->
+    <!--<xdebugger.breakpointType implementation="org.qupla.runtime.debugger.QuplaLineBreakpointType"/>-->
+    <!--<debugger.javaBreakpointHandlerFactory implementation="org.qupla.runtime.debugger.QuplaBreakpointHandlerFactory"/>-->
+    <!--<debugger.positionManagerFactory implementation="org.qupla.runtime.debugger.QuplaPositionManagerFactory"/>-->
 
   </extensions>
 
