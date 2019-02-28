@@ -1,7 +1,7 @@
 <idea-plugin>
   <id>org.qupla.language</id>
   <name>Qupla Language</name>
-  <version>0.1.10-alpha</version>
+  <version>0.1.10-beta</version>
   <vendor url="https://github.com/ben-75/qupla-idea-plugin"/>
 
   <description><![CDATA[
@@ -17,6 +17,7 @@
       <li> Braces matching
       <li> Check args count
       <li> Integration with Qupla interpreter
+      <li> Debugger for Qupla language
       <li> ...
       </ul>
     ]]></description>
