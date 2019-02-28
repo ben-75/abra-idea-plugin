@@ -367,12 +367,11 @@ public class QuplaDebugSession implements DebugProcessListener {
             System.out.println("Prepare context");
             mapper.setStackFrameField(referenceType.fieldByName("stackFrame"));
             for (String methodName : new String[]{"evalAssign", "evalSlice", "evalLutLookup",
-                    "evalMerge", "evalFuncCall", "evalConcat", "evalConditional", "evalType"}) {
+                    "evalMerge", "evalFuncCall", "evalConcat", "evalConditional", "evalType", "evalState"}) {
                 EvalEntryRequestor entryRequestor = new EvalEntryRequestor(QuplaDebugSession.this, methodName, mapper);
                 EvalExitRequestor exitRequestor = new EvalExitRequestor(QuplaDebugSession.this, methodName);
                 QuplaDebuggerUtil.registerContextBreakpoints(debugProcess, referenceType, methodName, entryRequestor, exitRequestor);
             }
-            //TODO : "evalConcat"
             //TODO : "evalState
         }
     }

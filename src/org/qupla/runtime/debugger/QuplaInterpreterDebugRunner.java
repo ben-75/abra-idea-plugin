@@ -49,7 +49,7 @@ public class QuplaInterpreterDebugRunner  extends GenericDebuggerRunner {
 
     @Override
     public boolean canRun(@NotNull String executorId, @NotNull RunProfile profile) {
-        return super.canRun(executorId, profile) && profile instanceof QuplaInterpreterRunConfiguration;
+        return super.canRun(executorId, profile) && profile instanceof QuplaInterpreterRunConfiguration && !((QuplaInterpreterRunConfiguration)profile).isAbra();
     }
 
     @Nullable

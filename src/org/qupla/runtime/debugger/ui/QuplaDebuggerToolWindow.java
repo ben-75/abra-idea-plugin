@@ -1,6 +1,7 @@
 package org.qupla.runtime.debugger.ui;
 
 import com.intellij.debugger.SourcePosition;
+import com.intellij.execution.actions.StopProcessAction;
 import com.intellij.execution.impl.ConsoleViewImpl;
 import com.intellij.icons.AllIcons;
 import com.intellij.openapi.actionSystem.*;
@@ -10,6 +11,7 @@ import com.intellij.ui.JBColor;
 import com.intellij.ui.tabs.TabInfo;
 import com.intellij.ui.tabs.impl.ActionPanel;
 import com.intellij.ui.treeStructure.Tree;
+import com.intellij.xdebugger.impl.actions.MuteBreakpointAction;
 import com.intellij.xdebugger.impl.actions.ResumeAction;
 import com.jgoodies.common.collect.ArrayListModel;
 import org.qupla.ide.ui.QuplaIcons;
@@ -86,7 +88,17 @@ public class QuplaDebuggerToolWindow {
         DefaultActionGroup globalActionGroup = new DefaultActionGroup();
         ResumeAction resumeAction = new ResumeAction();
         resumeAction.getTemplatePresentation().setIcon(AllIcons.Actions.Resume);
+
+        StopProcessAction stopProcessAction = new StopProcessAction("Stop","Stop Qupla Debugger", mySession.getDebugProcess().getProcessHandler());
+        stopProcessAction.getTemplatePresentation().setIcon(AllIcons.Actions.Suspend);
+
+//        MuteBreakpointAction muteBreakpointAction = new MuteBreakpointAction();
+//        muteBreakpointAction.getTemplatePresentation().setIcon(AllIcons.Debugger.MuteBreakpoints);
+
         globalActionGroup.add(resumeAction);
+        globalActionGroup.add(stopProcessAction);
+//        globalActionGroup.addSeparator();
+//        globalActionGroup.add(muteBreakpointAction);
         ActionToolbarImpl globalActionPanel = (ActionToolbarImpl) ActionManager.getInstance().createActionToolbar(ActionPlaces.UNKNOWN,globalActionGroup,false);
         globalActionPanel.setBorder(BorderFactory.createLineBorder(JBColor.LIGHT_GRAY, 1));
         myToolWindowContent.add(globalActionPanel,BorderLayout.WEST);
