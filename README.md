@@ -96,11 +96,11 @@ There is also a console tab were you can trace the execution flow.
 
 #### Debugger limitations
 
-  - Currently the debugger is only available when interpreting the code in qupla context. It means that it won't allows you to debug in 'abra' or 'verilog' context.In other words, if you want to use the debugger: be sure to NOT CHECK the 'abra' or 'verilog' checkbox in the run configuration panel.
+  - Currently the debugger is only available when interpreting the code in qupla context. It means that it won't allows you to debug in 'abra' context.In other words, if you want to use the debugger: be sure to NOT CHECK the 'abra' checkbox in the run configuration panel.
   - Another limitation is the overhead caused by the debugger. It is quite huge and will considerably slowdown the execution. So I strongly recommend to try to :
       - use it only on small portions of code
-      - don't use it with the 'test' or 'eval' options (it will work, but will be very slow)
-      - use it with specific 'function' calls and short input when possible (i.e. prefer &lt;Int&gt; of &lt;Hash9&gt;)
+      - don't use it with the 'test' or 'eval' options (it will work, but will be really very slow)
+      - use it with specific 'function' calls and short inputs when possible (i.e. prefer &lt;Int&gt; of &lt;Hash9&gt;)
   
 #### User experience
 
