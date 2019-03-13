@@ -1,7 +1,7 @@
 <idea-plugin>
   <id>org.qupla.language</id>
   <name>Qupla Language</name>
-  <version>0.1.11-alpha</version>
+  <version>0.1.12-alpha</version>
   <vendor url="https://github.com/ben-75/qupla-idea-plugin"/>
 
   <description><![CDATA[
