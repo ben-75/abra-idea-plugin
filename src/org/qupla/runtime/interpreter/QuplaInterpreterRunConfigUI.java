@@ -32,6 +32,7 @@ public class QuplaInterpreterRunConfigUI {
     public JLabel optionsLabel;
     public JLabel functionLabel;
     public JSeparator functionSeparator;
+    public JCheckBox yamlCheckBox;
     private JTextPane textPane1;
 
     private void createUIComponents() {

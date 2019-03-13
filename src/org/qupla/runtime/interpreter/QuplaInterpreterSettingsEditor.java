@@ -59,6 +59,7 @@ public class QuplaInterpreterSettingsEditor extends SettingsEditor<QuplaInterpre
         myPanel.verilogCheckBox.setSelected(runConfig.isFpga());
         myPanel.abraCheckBox.setSelected(runConfig.isAbra());
         myPanel.viewCheckBox.setSelected(runConfig.isView());
+        myPanel.yamlCheckBox.setSelected(runConfig.isYaml());
         myPanel.treeCheckBox.setSelected(runConfig.isTree());
         myPanel.customArgs.setText(runConfig.getCustomArgs());
         updatePanelForRunMode();
@@ -234,6 +235,7 @@ public class QuplaInterpreterSettingsEditor extends SettingsEditor<QuplaInterpre
         runCongig.setFpga(myPanel.verilogCheckBox.isSelected());
         runCongig.setAbra(myPanel.abraCheckBox.isSelected());
         runCongig.setView(myPanel.viewCheckBox.isSelected());
+        runCongig.setYaml(myPanel.yamlCheckBox.isSelected());
         runCongig.setTree(myPanel.treeCheckBox.isSelected());
         runCongig.setRunMode(myPanel.functionRadioButton.isSelected()?"function":(myPanel.moduleRadioButton.isSelected()?"module":"custom"));
         runCongig.setCustomArgs(myPanel.customArgs.getText());

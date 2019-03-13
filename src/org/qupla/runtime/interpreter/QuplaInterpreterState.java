@@ -89,6 +89,9 @@ public class QuplaInterpreterState extends JavaCommandLineState {
             if (runConfiguration.isView()) {
                 javaParameters.getProgramParametersList().add("-view");
             }
+            if (runConfiguration.isYaml()) {
+                javaParameters.getProgramParametersList().add("-yaml");
+            }
         }
 
         //module
