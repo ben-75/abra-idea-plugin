@@ -73,7 +73,7 @@ typeStmt            ::= TYPE_KEYWORD typeName ( typeSize | ('{' fieldSpec+ '}') 
                         pin=1
                     }
 
-fieldSpec           ::= fieldName typeSize
+fieldSpec           ::= typeOrPlaceHolderNameRef fieldName
                     {
                         mixin="org.qupla.language.psi.impl.QuplaDefinitionImpl"
                         implements="org.qupla.language.psi.QuplaDefinition"
@@ -201,7 +201,7 @@ concatExpr          ::= postfixExpr (AMP postfixExpr)*
 
 postfixExpr         ::= valueExpr | funcExpr | lutExpr | lutOrSliceExpr | typeExpr | sliceExpr | sizeofExpr | ('(' condExpr ')')
 
-valueExpr           ::= float | bool | integer | trit
+valueExpr           ::= float | bool | integer | trit | bitLiteral | tritLiteral | tryteLiteral | hexLiteral
 
 typeExpr            ::= typeOrPlaceHolderNameRef '{' fieldAssignExpr+ '}'
                     {
@@ -396,3 +396,12 @@ integer             ::= MINUS? number
                     }
 
 float               ::= integer DOT number
+
+
+bitLiteral          ::= BIT_PREFIX BIT_LIT
+
+tritLiteral         ::= TRT_PREFIX TRIT_LIT
+
+tryteLiteral        ::= TRT_PREFIX TRYTE_LIT
+
+hexLiteral          ::= HEX_PREFIX HEX_LIT

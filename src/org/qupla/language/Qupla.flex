@@ -63,15 +63,24 @@ OPEN_PAR=(\()
 CLOSE_PAR=(\))
 OPEN_TAG=(<)
 CLOSE_TAG=(>)
-DIGIT=[0-9]
 DIGITS=[0-9]+
 TRIT=[-01]
+TRIT_LIT=[-01]+
+TRYTE_LIT=[9A-Z]+
+BIT_LIT=[01]+
+HEX_LIT=[0-9A-Fa-f]+
+TRT_PREFIX=(0t)
+BIT_PREFIX=(0b)
+HEX_PREFIX=(0x)
 RANGE_OPERATOR=(\.\.)
 SMART_RANGE_OPERATOR=(:)
 ASSIGN=[=]
 QUESTION_MARK=(\?)
 
 %state LUT_BODY
+%state TRT_LITERAL
+%state HEX_LITERAL
+%state BIT_LITERAL
 
 %%
   {WHITE_SPACE}               { return WHITE_SPACE; }
@@ -80,11 +89,16 @@ QUESTION_MARK=(\?)
 
   {OPEN_BRACE}                { return OPEN_BRACE; }
   {OPEN_BRACKET}              { return OPEN_BRACKET; }
+<TRT_LITERAL> {TRIT_LIT}      { yybegin(YYINITIAL); return TRIT_LIT; }
+<TRT_LITERAL> {TRYTE_LIT}     { yybegin(YYINITIAL); return TRYTE_LIT; }
+<HEX_LITERAL> {HEX_LIT}       { yybegin(YYINITIAL); return HEX_LIT; }
+<BIT_LITERAL> {BIT_LIT}       { yybegin(YYINITIAL); return BIT_LIT; }
 
 <LUT_BODY> {TRIT}             { return TRIT; }
 <LUT_BODY> {CLOSE_BRACE}      { yybegin(YYINITIAL); return CLOSE_BRACE; }
-//  {ZERO}                      { return ZERO; }
-//  {ONE}                       { return ONE; }
+  {TRT_PREFIX}                { yybegin(TRT_LITERAL); return TRT_PREFIX; }
+  {BIT_PREFIX}                { yybegin(BIT_LITERAL); return BIT_PREFIX; }
+  {HEX_PREFIX}                { yybegin(HEX_LITERAL); return HEX_PREFIX; }
   {MINUS}                     { return MINUS; }
   {PLUS}                      { return PLUS; }
   {TIMES}                     { return TIMES; }

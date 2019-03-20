@@ -345,8 +345,8 @@ public class QuplaPsiImplUtil {
             @Override
             public String getLocationString() {
                 try{
-                    int sz = element.getTypeSize().getResolvedSize();
-                    String txt = sz<=0?element.getTypeSize().getText():sz+"";
+                    int sz = element.getTypeOrPlaceHolderNameRef().getResolvedSize();
+                    String txt = sz<=0?element.getTypeOrPlaceHolderNameRef().getText():sz+"";
                     if(txt.startsWith("["))txt = txt.substring(1);
                     if(txt.endsWith("]"))txt = txt.substring(0,txt.length()-1);
                     return "["+(sz<=0?txt:sz)+"]";
@@ -364,7 +364,7 @@ public class QuplaPsiImplUtil {
     }
 
     public static int getResolvedSize(QuplaFieldSpec fieldSpec){
-        return fieldSpec.getTypeSize().getResolvedSize();
+        return fieldSpec.getTypeOrPlaceHolderNameRef().getResolvedSize();
     }
 
     //====================================================================
@@ -776,7 +776,7 @@ public class QuplaPsiImplUtil {
     public static int getResolvedSize(QuplaFieldNameRef fieldNameRef) throws UnresolvableTokenException {
         QuplaFieldName resolved = (QuplaFieldName)fieldNameRef.getReference().resolve();
         if(resolved!=null){
-            return ((QuplaFieldSpec)resolved.getParent()).getTypeSize().getResolvedSize();
+            return ((QuplaFieldSpec)resolved.getParent()).getTypeOrPlaceHolderNameRef().getResolvedSize();
         }
         throw new UnresolvableTokenException(fieldNameRef.getText());
     }

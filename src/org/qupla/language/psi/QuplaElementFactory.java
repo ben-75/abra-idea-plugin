@@ -19,7 +19,7 @@ public class QuplaElementFactory {
     }
 
     public static QuplaFieldName createQuplaFieldName(Project project, String name) {
-        final QuplaFile file = createFile(project, "type t{"+name+" [1]}");
+        final QuplaFile file = createFile(project, "type t{Tryte "+name+"}");
         return ((QuplaTypeStmt) file.getFirstChild()).getFieldSpecList().get(0).getFieldName();
     }
 

@@ -101,11 +101,11 @@ public class EvalEntryRequestor extends QuplaRequestor {
                         if(srcToString==null){
                             srcToString = ((ObjectReferenceImpl) expr).referenceType().methodsByName("toString").get(0);
                         }
-                        String exprString = ((StringReference)context.getDebugProcess().invokeInstanceMethod(
-                                evaluationContext, (ObjectReference) expr,
-                                srcToString,
-                                Collections.EMPTY_LIST,0)).value();
-
+//                        String exprString = ((StringReference)context.getDebugProcess().invokeInstanceMethod(
+//                                evaluationContext, (ObjectReference) expr,
+//                                srcToString,
+//                                Collections.EMPTY_LIST,0)).value();
+                        String exprString = "blabla";
                         //DebuggerUtils.getValueAsString(evaluationContext, expr);
                         if(pathNameField==null && srcRef!=null){
                             pathNameField = srcRef.referenceType().fieldByName("pathName");

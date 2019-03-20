@@ -113,13 +113,13 @@ public class QuplaDebugSession implements DebugProcessListener {
         callStack.add(0, item);
         if(consoleView!=null){
 
-            consoleView.print(indent.toString()+item.getExpr(), ConsoleViewContentType.NORMAL_OUTPUT);
-            if(item.getModulePath()!=null) {
-                consoleView.print("    (", ConsoleViewContentType.NORMAL_OUTPUT);
-                consoleView.printHyperlink(item.getLocationString(), new QuplaHyperlinkInfo(item.getModulePath(), item.getLine(), item.getCol()));
-                consoleView.print(")", ConsoleViewContentType.NORMAL_OUTPUT);
-            }
-            consoleView.print("\n", ConsoleViewContentType.NORMAL_OUTPUT);
+//            consoleView.print(indent.toString()+item.getExpr(), ConsoleViewContentType.NORMAL_OUTPUT);
+//            if(item.getModulePath()!=null) {
+//                consoleView.print("    (", ConsoleViewContentType.NORMAL_OUTPUT);
+//                consoleView.printHyperlink(item.getLocationString(), new QuplaHyperlinkInfo(item.getModulePath(), item.getLine(), item.getCol()));
+//                consoleView.print(")", ConsoleViewContentType.NORMAL_OUTPUT);
+//            }
+//            consoleView.print("\n", ConsoleViewContentType.NORMAL_OUTPUT);
 
         }
         indent.append("  ");
