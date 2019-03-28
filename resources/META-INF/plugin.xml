@@ -23,7 +23,7 @@
 
   <change-notes><![CDATA[
         <ul>
-        <li>Support literals
+        <li>Fix trit literal selection
         </ul>
     ]]>
   </change-notes>
