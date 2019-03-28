@@ -1,7 +1,7 @@
 <idea-plugin>
   <id>org.qupla.language</id>
   <name>Qupla Language</name>
-  <version>0.1.13-alpha</version>
+  <version>0.1.14-alpha</version>
   <vendor url="https://github.com/ben-75/qupla-idea-plugin"/>
 
   <description><![CDATA[
@@ -54,6 +54,7 @@
     <programRunner implementation="org.qupla.runtime.interpreter.QuplaInterpreterProgramRunner"/>
     <runConfigurationProducer implementation="org.qupla.runtime.interpreter.QuplaRunConfigurationProducer"/>
     <iconLayerProvider implementation="org.qupla.ide.ui.QuplaIconProvider" order="last"/>
+    <extendWordSelectionHandler implementation="org.qupla.ide.tools.TritLiteralSelectioner"/>
 
     <!--<programRunner implementation="org.qupla.runtime.debugger.QuplaInterpreterDebugRunner"/>-->
     <!--<xdebugger.breakpointType implementation="org.qupla.runtime.debugger.QuplaLineBreakpointType"/>-->
